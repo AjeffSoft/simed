@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Financeiro/LayoutFinanceiro}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+<head>
+	<title>Pesquisar movimentações</title>
+</head>
+
+<body>
+	<section layout:fragment="conteudo">
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Pesquisar movimentações</h1>
+					</div>
+
+					<div class="col-sm-2">
+						<div class="aw-page-header-controls">
+							<a class="btn  btn-warning" th:href="@{/financeiro/movimentacao/novo}">
+								<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Cadastrar</span>
+							</a>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+			<form method="GET" th:object="${movimentacaoFilter}">
+				<div class="row">
+					<div class="col-sm-7  form-group">
+						<label for="empresa" class="control-label">Empresa</label>
+						<select id="empresa" class="form-control" th:field="*{empresa}">
+							<option th:each="empresa : ${empresas}" th:value="${empresa.id}" th:text="${empresa.fantasia}"></option>
+						</select>
+					</div>
+					
+					<div class="form-group  col-sm-5">
+						<label class="control-label">Status</label> 
+						<div>
+	  						<div class="radio  radio-inline">
+		    					<input id="aberto" type="radio" value="false" th:field="*{fechado}"/>
+		    					<label for="aberto" >Aberto</label>
+	    					</div>
+
+	  						<div class="radio  radio-inline">
+		    					<input id="fechado" type="radio" value="true" checked="checked" th:field="*{fechado}"/>
+		    					<label for="fechado">Fechado</label>
+	    					</div>
+
+<!-- 		  					<div class="radio  radio-inline"> -->
+<!-- 			    				<input id="todosTipos" type="radio" value="" th:checked="*{status} == null" name="status"/> -->
+<!-- 			    				<label for="todosTipos" >Todos</label> -->
+<!-- 		    				</div> -->
+						</div>
+					</div>					
+				</div>
+				<button type="submit" class="btn  btn-primary">Pesquisar</button>
+				
+			</form>
+			
+			<div class="table-responsive  bw-tabela-simples">
+				<table class="table  table-hover" th:with="total=0">
+					<thead>
+						<tr>
+
+							<th class="table-col-pequena">Cód</th>
+							<th class="table-col-pequena">Data Inicial</th>
+							<th class="table-col-pequena">Data Final</th>
+							<th class="table-col-pequena">Total Abertura</th>
+							<th class="table-col-pequena">Total Créditos</th>
+							<th class="table-col-pequena">Total Débitos</th>
+							<th class="table-col-pequena">Saldo Período</th>
+							<th class="table-col-pequena">Abertura+Período</th>
+							<th class="table-col-pequena">Total Pendente</th>
+							<th class="table-col-pequena">Data Fechamento</th>
+							<th class="table-col-pequena">Status</th>
+							<th class="table-agencia-col-acoes"></th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						<tr th:each="movimentacao : ${pagina.conteudo}">
+							<td th:text="${movimentacao.id}"></td>
+							<td th:text="${{movimentacao.dataInicio}}"></td>
+							<td th:text="${{movimentacao.dataFinal}}"></td>
+							<td th:text="${{movimentacao.totalAbertura}}"></td>
+							<td th:text="${{movimentacao.totalCreditos}}"></td>
+							<td th:text="${{movimentacao.totalDebitos}}"></td>
+							<td th:text="${{movimentacao.totalPeriodo}}"></td>
+							<td th:text="${{movimentacao.totalGeral}}"></td>
+							<td th:text="${{movimentacao.totalPendente}}"></td>
+							<td th:text="${{movimentacao.dataFechamento}}"></td>
+
+							<td>
+								<th:block th:if="${movimentacao.fechado}">
+									<span class="label  label-danger">Fechado</span>
+								</th:block>
+
+								<th:block th:unless="${movimentacao.fechado}">
+									<span class="label  label-success">Aberto</span>
+								</th:block>
+							</td>
+
+							<td class="text-center">
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes" th:href="@{/financeiro/movimentacao/detalhe/{id}(id=${movimentacao.id})}"> 
+									<i class="glyphicon glyphicon-eye-open"></i>
+								</a>
+
+								<a class="btn  btn-link  btn-xs js-tooltip" title="Fechar" href="#" th:unless="${movimentacao.fechado}"
+									th:href="@{/financeiro/movimentacao/fechar/{id}(id=${movimentacao.id})}">
+									<i class="glyphicon glyphicon-ok"></i>
+								</a>
+
+								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir" href="#" th:unless="${movimentacao.fechado}"
+									data:url="@{/financeiro/movimentacao/excluir/{id}(id=${movimentacao.id})}"	data:objeto="${movimentacao.id}">
+									<i class="glyphicon glyphicon-trash"></i>
+								</a>
+							</td>
+						</tr>
+						
+						<tr th:if="${pagina.vazia}">
+							<td colspan="11"> Nenhuma movimentação encontrada</td>
+						</tr>
+
+					</tbody>
+				</table>
+			</div>
+
+			<!-- COMPONENTE THYMELEAF PARA PAGINAÇÃO -->	
+			<simed:pagination page="${pagina}"/>						
+
+		</div>		
+	</section>
+	
+<th:block layout:fragment="javascript-extra">
+</th:block>	
+</body>
+</html>

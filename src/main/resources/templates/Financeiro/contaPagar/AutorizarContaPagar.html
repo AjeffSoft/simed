@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Financeiro/LayoutFinanceiro}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+<head>
+	<title>Autorizar contas a pagar</title>
+</head>
+
+<body>
+	<section layout:fragment="conteudo">
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Autorize as contas a pagar para pagamento</h1>
+					</div>
+					
+					<div class="col-sm-2">
+						<div class="aw-page-header-controls">
+							<a class="btn  btn-warning" th:href="@{/financeiro/pagamento/contasAutorizadas}">Selecionar Contas</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+			<form method="GET" th:object="${contaPagarFilter}">
+				<div class="row">
+					<div class="col-sm-3  form-group">
+						<label for="empresa" class="control-label">Empresa</label>
+						<select id="empresa" class="form-control" th:field="*{empresa}">
+							<option th:each="empresa : ${empresas}" th:value="${empresa.id}" th:text="${empresa.fantasia}"></option>
+						</select>
+					</div>
+
+					<div class="form-group  col-sm-5">
+						<label class="control-label" for="fornecedor">Fornecedor</label>
+						<input type="text" class="form-control" id="fornecedor"  autofocus="autofocus" th:field="*{fornecedor}" maxlength="30"/>
+					</div>
+					
+					<div class="form-group  col-sm-4">
+						<label for="vencimentoInicio">Vencimento</label>
+						<div class="form-inline">
+							<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="vencimentoInicio" 
+								th:field="*{vencimentoInicio}" autocomplete="off" placeholder="Data Inicial"/>
+							<label for="vencimentoFim" class="aw-form-label-between">até</label>
+							<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="vencimentoFim" 
+								th:field="*{vencimentoFim}" autocomplete="off" placeholder="Data Final"/>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-lg-12">
+						<button type="submit" class="btn  btn-primary">Pesquisar</button>
+						<a class="btn  btn-danger" th:href="@{/financeiro/pagamento/pesquisar}">Cancelar</a>
+					</div>	
+				</div>
+				
+			</form>
+		
+			<br>
+			
+			<div class="table-responsive  bw-tabela-simples">
+				<table class="table  table-hover">
+					<thead>
+						<tr>
+							<th class="table-col-minima">
+								<simed:order page="${pagina}" field="empresa" text="Emp"/>
+							</th>
+						
+							<th class="table-col-pequeno">
+								<simed:order page="${pagina}" field="notaFiscal" text="NF"/>
+							</th>
+
+							<th class="table-col-grande">
+								<simed:order page="${pagina}" field="fornecedor" text="Fornecedor"/>
+							</th>
+
+							<th class="table-col-grande">
+								<simed:order page="${pagina}" field="historico" text="Histórico"/>
+							</th>
+							
+							<th class="table-col-grande">
+								<simed:order page="${pagina}" field="vencimento" text="Vencimento"/>
+							</th>
+
+							<th class="table-col-grande">
+								<simed:order page="${pagina}" field="valor" text="Valor"/>
+							</th>
+
+							<th class="table-agencia-col-acoes"></th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						<tr th:each="contaPagar : ${pagina.conteudo}">
+							<td th:text="${contaPagar.empresa.sigla}"></td>
+							<td th:text="${contaPagar.notaFiscal}"></td>
+							<td th:text="${contaPagar.fornecedor.nome}"></td>
+							<td th:text="${contaPagar.historico}"></td>
+							<td th:text="${{contaPagar.vencimento}}"></td>
+							<td th:text="${{contaPagar.valor}}"></td>
+
+							<td class="text-center">
+								<a class="btn  btn-link  btn-xs  js-tooltip  js-autorizar-btn" title="Autorizar" data:codigo="${contaPagar.id}"
+									sec:authorize-url="/financeiro/contaPagar/autorizar"> 
+									<i class="glyphicon glyphicon-ok"></i>
+								</a>							
+							</td>
+						</tr>
+						
+						<tr th:if="${pagina.vazia}">
+							<td colspan="7"> Nenhuma conta a pagar para autorizar</td>
+						</tr>
+						
+						
+					</tbody>
+				</table>
+			</div>
+
+			<!-- COMPONENTE THYMELEAF PARA PAGINAÇÃO -->	
+			<simed:pagination page="${pagina}"/>						
+
+		</div>
+	</section>
+
+	<th:block layout:fragment="javascript-extra">
+		<script th:src="@{/javascripts/contaPagar.autorizar.js}"></script>
+	</th:block>	
+
+</body>
+</html>

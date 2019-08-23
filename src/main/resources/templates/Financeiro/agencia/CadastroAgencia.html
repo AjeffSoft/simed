@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Financeiro/LayoutFinanceiro}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+	<link rel="stylesheet" type="text/css" th:href="@{/stylesheets/vendors/bootstrap-toggle.min.css}"/>
+	<title>Cadastro de agencia bancária</title>
+</head>
+
+
+	<section layout:fragment="conteudo">
+
+		<!-- CABEÇALHO DO CADASTRO -->
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1 th:if="${agencia.novo}">Cadastro de agencia bancária</h1>
+						<h1 th:unless="${agencia.novo}">Alterar a agencia - [[${agencia.agencia}]]</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+
+
+			<form method="POST" th:object="${agencia}" class="form-vertical  js-form-loading" 
+			th:action="${agencia.novo} ? @{/financeiro/agencia/nova} : @{/financeiro/agencia/{id}(id=${agencia.id})}">
+			
+				<!-- COMPONENTE THYMELEAF PARA MENSAGENS DE ERRO E SUCESSO -->	
+				<simed:message/>
+			
+				<input type="hidden" th:field="*{id}">
+
+				<div class="row">
+					<div class="col-sm-2  form-group"  simed:classforerror="agencia">
+						<label for="agencia" class="control-label">Agencia*</label>
+						<input id="agencia" type="text" class="form-control" th:field="*{agencia}" autofocus="autofocus" maxlength="10">
+					</div>
+
+					<div class="col-sm-1  form-group" simed:classforerror="dv">
+						<label for="dv" class="control-label">DV</label>
+						<input id="dv" type="text" class="form-control" th:field="*{dv}" maxlength="2"/>
+					</div>
+
+					<div class="col-sm-7  form-group" simed:classforerror="banco">
+						<label for="banco" class="control-label">Banco*</label>
+						<div class="bw-field-action">
+							<select id="banco" class="form-control" th:field="*{banco}">
+								<option value="">Selecione um banco</option>
+								<option th:each="banco : ${bancos}" th:value="${banco.id}" th:text="${banco.nome} + ' - Código: ' +${banco.codigo}"></option>
+							</select>
+							<div class="bw-field-action__icon" sec:authorize-url="/financeiro/banco/novo">
+								<a href="#" data-toggle="modal" data-target="#modalCadastroRapidoBanco">
+									<i class="glyphicon  glyphicon-plus-sign  bw-glyphicon-large"></i>
+								</a>
+							</div>														
+						</div>
+					</div>
+					
+					<div class="form-group  col-sm-2">
+						<label class="control-label">Situação</label>
+						<div>
+							<input id="situacao" type="checkbox" checked data-toggle="toggle" class="form-control"  data-size="small"
+							 data-on="Ativo" data-off="Inativo" data-onstyle="success" data-offstyle="danger" th:field="*{situacao}"/>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+						<button class="btn  btn-primary" type="submit">Salvar</button>
+						<a class="btn  btn-default" sec:authorize-url="/financeiro/agencia/pesquisar">Voltar</a>
+				</div>
+			</form>
+		</div>
+
+		<div th:replace="Financeiro/banco/CadastroRapidoBanco :: modal"></div>
+	</section>
+	
+	<th:block layout:fragment="javascript-extra">
+		<script th:src="@{/javascripts/cadastroRapido/financeiro/banco.cadastro-rapido.js}"></script>
+		<script th:src="@{/javascripts/vendors/bootstrap-toggle.min.js}"></script>
+		
+		<script>
+			$('#situacao').bootstrapToggle();	
+		</script>
+
+	</th:block>	
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Financeiro/LayoutFinanceiro}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head><title>Gerar imposto</title></head>
+
+
+	<section layout:fragment="conteudo">
+
+		<!-- CABEÇALHO DO CADASTRO -->
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Gerar imposto</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+
+
+			<form id="form" method="POST" th:object="${imposto}" class="form-vertical  js-form-loading" 
+				th:action="@{/financeiro/imposto/gerar/{id}(id=${imposto.id})}">
+			
+				<simed:message/>
+			
+				<input type="hidden" th:field="*{id}">
+				<input type="hidden" th:field="*{apuracao}">
+				<input type="hidden" th:field="*{documento}">
+				<input type="hidden" th:field="*{codigo}">
+				<input type="hidden" th:field="*{nome}">
+				<input type="hidden" th:field="*{status}">
+				<input type="hidden" th:field="*{dataPago}">
+				<input type="hidden" th:field="*{valorNF}">
+				<input type="hidden" th:field="*{emissaoNF}">
+				<input type="hidden" th:field="*{numeroNF}">
+				<input type="hidden" th:field="*{gerarDarf}">
+				<input type="hidden" th:field="*{contaPagarOrigem}">
+
+
+				<div class="row">
+					<div class="col-sm-2  form-group"  simed:classforerror="empresa">
+						<label for="empresa" class="control-label">Empresa</label>
+						<select id="empresa" class="form-control" th:field="*{empresa}">
+							<option th:each="empresa : ${empresas}" th:value="${empresa.id}" th:text="${empresa.fantasia}"></option>
+						</select>
+					</div>
+					
+					<div class="col-sm-2  form-group" simed:classforerror="vencimento">
+						<label for="vencimento" class="control-label">Vencimento*</label>
+						<input id="vencimento" type="text" class="form-control  js-date" th:field = "*{vencimento}" autocomplete="off"/>
+					</div>
+					
+					<div class="col-sm-2  form-group">
+						<label for="valor" class="control-label">Valor</label>
+						<div class="input-group">
+							<input id="valor" type="text" class="form-control  js-decimal" th:field = "*{valor}"/>
+							<div class="input-group-addon">R$</div>
+						</div>
+					</div>
+					
+					<div class="col-sm-2  form-group">
+						<label for="multa" class="control-label">Multa</label>
+						<div class="input-group">
+							<input id="multa" type="text" class="form-control  js-decimal" th:field = "*{multa}"/>
+							<div class="input-group-addon">R$</div>
+						</div>
+					</div>
+
+
+					<div class="col-sm-2  form-group">
+						<label for="juros" class="control-label">Juros</label>
+						<div class="input-group">
+							<input id="juros" type="text" class="form-control  js-decimal" th:field = "*{juros}"/>
+							<div class="input-group-addon">R$</div>
+						</div>
+					</div>
+
+					<div class="col-sm-2  form-group">
+						<label for="total" class="control-label">Total</label>
+						<div class="input-group">
+							<input id="total" type="text" class="form-control  js-decimal" th:field = "*{total}" disabled="disabled"/>
+							<div class="input-group-addon">R$</div>
+						</div>
+					</div>					
+				</div>
+				
+				<div class="row">
+					<div>
+						<div class="col-sm-12  form-group" simed:classforerror="historico">
+							<label for="historico" class="control-label">Histórico*</label>
+							<textarea id="historico" class="form-control" th:field = "*{historico}" rows="2" maxlength="200"></textarea>
+						</div>
+					</div>				
+				</div>
+						
+				<div class="form-group">
+					<button class="btn  btn-success" type="submit">Gerar Imposto</button>
+					<a class="btn  btn-default" href="javascript:history.back(1);"> Cancelar e/ou voltar	</a>
+				</div>
+		</form>
+	</div>
+	
+</section>
+
+<th:block layout:fragment="javascript-extra">
+<script th:src="@{/javascripts/validate/gerarImposto.validate.js}"></script>
+
+<script>
+	function formatarValor(valor){
+		if (valor != 0 || valor != ''){
+		  valor = valor.replace(".","");
+		  valor = valor.replace(",",".");
+		}
+		  return parseFloat(valor);
+		}
+	
+	$(function() {
+		  $("#multa,#juros,#valor").on('keyup', function() {
+		    var multa = formatarValor($('#multa').val() || 0);
+		    var juros = formatarValor($('#juros').val() || 0);
+		    var valor = formatarValor($('#valor').val() || 0);
+			var total = valor + juros + multa;
+			var tFixed = total.toFixed(2);
+			$('#total').val(tFixed);
+		  });
+		});
+	</script>
+</th:block>
+
+</html>

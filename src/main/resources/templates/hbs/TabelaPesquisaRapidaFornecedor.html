@@ -1,0 +1,27 @@
+<script id="tabela-pesquisa-rapida-fornecedor" type="text/x-handlebars-template">
+<div class="table-responsive  bw-tabela-simples" style="margin-top: 15px">
+	<table class="table  table-hover">
+		<thead>
+			<tr>
+				<th class="col-sm-2">Razão Social</th>
+				<th class="col-sm-2">Fantasia</th>
+			</tr>
+		</thead>
+				
+		<tbody>
+			{{#if .}}
+				{{#each .}}
+					<tr data-codigo="{{id}}" data-nome="{{nome}}" data-fantasia="{{fantasia}}" class="js-fornecedor-pesquisa-rapida">
+						<td>{{nome}}</td>
+						<td>{{fantasia}}</td>
+ 					</tr>
+				{{/each}}
+			{{else}}
+				<tr>
+					<td colspan="2">Nenhum fornecedor encontrado</td>
+				</tr>
+			{{/if}}
+		</tbody>
+	</table>
+</div>
+</script>

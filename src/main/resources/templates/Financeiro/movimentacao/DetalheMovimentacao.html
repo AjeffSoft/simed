@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Financeiro/LayoutFinanceiro}"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+
+<title>Detalhe da Movimentação</title> 
+
+</head>
+
+
+	<section layout:fragment="conteudo">
+
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Movimentação nº: [[${movimentacao.id}]]</h1>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-xs-12">
+						<p th:if="${movimentacao.fechado}">Status: <span class="label  label-danger">Fechado</span></p> 
+						<p th:unless="${movimentacao.fechado}">Status: <span  class="label  label-success">Aberto</span></p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid" >
+			<form id="form" method="GET" th:object="${movimentacao}" class="form-vertical  js-form-loading"
+				th:action="@{/financeiro/movimentacao/detalhe/{id}(id=${movimentacao.id})}">
+			
+			<input type="hidden" th:field="*{id}">
+			
+				<div class="tab-content">
+					<div class="tab-pane active" id="dados">
+						<div class="row">
+							<div class="col-sm-2  form-group">
+								<label for="emissao" class="label label-default">Data Inicio</label>
+								<h3 id="emissao" th:text="${{movimentacao.dataInicio}}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="dataFinal" class="label label-default">Data Final</label>
+								<h3 id="dataFinal" th:text="${{movimentacao.dataFinal}}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="valor" class="label label-default">Saldo Abertura</label>
+								<h3 id="valor" th:text="${{movimentacao.totalAbertura}}"></h3>
+							</div>
+							
+							<div class="col-sm-2  form-group">
+								<label for="valorFinal" class="label label-default">Total Creditos</label>
+								<h3 id="valorFinal" th:text="${{movimentacao.totalCreditos}}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="valorFinal" class="label label-default">Total Debitos</label>
+								<h3 id="valorFinal" th:text="${{movimentacao.totalDebitos}}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="valorFinal" class="label label-default">Saldo Período</label>
+								<h3 id="valorFinal" th:text="${{movimentacao.totalPeriodo}}"></h3>
+							</div>
+						</div>
+						
+						<div class="row">
+							<div class="col-sm-2  form-group">
+								<label for="empresa" class="label label-default">Empresa</label>
+								<h3 id="empresa" th:text="${movimentacao.empresa.fantasia}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="tipo" class="label label-default">Total Pendente</label>
+								<h3 id="tipo" th:text="${{movimentacao.totalPendente}}"></h3>
+							</div>
+						
+							<div class="col-sm-2  form-group">
+								<label for="fechamento" class="label label-default">Data Fechamento</label>
+								<h3 id="fechamento" th:text="${{movimentacao.dataFechamento}}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="saldo" class="label label-default">Saldo Geral</label>
+								<h3 id="saldo" th:text="${{movimentacao.totalGeral}}"></h3>
+							</div>
+						</div>						
+					</div>
+					
+					<br>
+					
+						<div class="table-responsive  bw-tabela-simples">
+							<table class="table  table-hover" th:with="total=0">
+								<thead>
+									<tr>
+										<th class="table-col-minima">Conta/Banco/Tipo</th>
+										<th class="table-col-minima">Saldo Abertura</th>
+										<th class="table-col-minima">Valor Creditos</th>
+										<th class="table-col-minima">Valor Debitos</th>
+										<th class="table-col-minima">Saldo Período</th>
+										<th class="table-col-minima">Saldo Geral</th>
+										<th class="table-col-acoes"></th>
+									</tr>
+								</thead>
+								
+								<tbody>
+									<tr th:each="mov : ${movBancarias}">
+										<td th:text="${mov.contaEmpresa.conta}+' / '+${mov.contaEmpresa.agencia.banco.nome}+' - '+${mov.contaEmpresa.tipo.descricao}"></td>
+										<td th:text="${{mov.valorAbertura}}"></td>
+										<td th:text="${{mov.valorCreditos}}"></td>
+										<td th:text="${{mov.valorDebitos}}"></td>
+										<td th:text="${{mov.saldoPeriodo}}"></td>
+										<td th:text="${{mov.saldoGeral}}"></td>
+										<td class="text-center">
+											<a target="'_blank'" class="btn  btn-link  btn-xs  js-tooltip" title="Extrato"
+													th:href="@{/financeiro/movimentacao/imprimirExtratoIndividual/{id}(id=${mov.id})}"> 
+												<i class="glyphicon glyphicon-print"></i>
+											</a>
+										</td>										
+										
+									</tr>
+								</tbody>
+							</table>
+						</div>					
+				</div>
+				
+				<br>
+														
+				<div class="form-group">
+					<a target="'_blank'" class="btn  btn-info" th:href="@{/financeiro/movimentacao/imprimirDetalhe/{id}(id=${movimentacao.id})}">Imprimir</a>
+					<a target="'_blank'" class="btn  btn-info" th:href="@{/financeiro/movimentacao/imprimirDebito/{id}(id=${movimentacao.id})}">Débitos</a>
+					<a target="'_blank'" class="btn  btn-info" th:href="@{/financeiro/movimentacao/imprimirCredito/{id}(id=${movimentacao.id})}">Créditos</a>
+					<a class="btn  btn-default" href="javascript:history.back(1);">Cancelar e/ou voltar</a>
+				</div>
+			</form>
+			
+		</div>
+	</section>
+
+	<th:block layout:fragment="javascript-extra">
+
+	<script>
+		$(function() {
+			$('.js-abas a').click(function (e) {
+				e.preventDefault();
+				$(this).tab('show');
+			});
+		});
+	</script>
+	</th:block>	
+</html>

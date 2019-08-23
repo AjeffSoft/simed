@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/LayoutPadrao}"
+	xmlns:sinte="http://sintecoop.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+	<link rel="stylesheet" type="text/css" th:href="@{/stylesheets/vendors/bootstrap-toggle.min.css}"/>
+	<title>Conta de Empresa</title> 
+</head>
+
+
+	<section layout:fragment="conteudo">
+
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1 th:if = "${contaEmpresa.novo}">Cadastro de contas bancárias: [[${empresa.nome}]]</h1>
+						<h1 th:unless = "${contaEmpresa.novo}">Alterar as contas bancárias: [[${contaEmpresa.empresa.nome}]]</h1>
+					</div>
+
+					<div class="col-xs-2" sec:authorize-url="/empresa/pesquisar">
+						<div class="aw-page-header-controls" >
+							<a class="btn  btn-default" th:href="@{/empresa/pesquisar}">
+								<i class="glyphicon  glyphicon-search"></i> <span class="hidden-xs  hidden-sm">Pesquisar Empresas</span>
+							</a>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid" >
+			<form id="form" method="POST" th:object="${contaEmpresa}" class="form-vertical  js-form-loading" sec:authorize-url="/empresa/nova"
+				th:action="${contaEmpresa.novo} ? @{/contaEmpresa/nova} : @{/contaEmpresa/{id}(id=${contaEmpresa.id})}">
+			
+			<!-- COMPONENTE THYMELEAF PARA MENSAGENS DE ERRO E SUCESSO -->	
+			<sinte:message/>
+
+			<input type="hidden" th:value="${idEmpresa}" name="idEmpresa"/>
+			<input type="hidden" th:field="*{id}">
+			<input type="hidden" th:field="*{saldo}">
+			<input type="hidden" th:field="*{valorPendente}">
+
+				<div class="row">
+					<div class="col-sm-2  form-group">
+						<label for="conta">Conta nº *</label>
+						<input id="conta" type="text" class="form-control" th:field="*{conta}" maxlength="15"/>
+					</div>
+					
+					<div class="col-sm-3  form-group">
+						<label for="tipo">Tipo*</label>
+						<select id="tipo" class="form-control" th:field="*{tipo}">
+							<option th:each = "tipo : ${tipos}" th:value="${tipo}" th:text = "${tipo.descricao}"></option>
+						</select>
+					</div>					
+					
+					<div class="col-sm-5  form-group">
+						<label for="comboAgencia" class="control-label">Agencia/Banco*</label>
+						<select id="comboAgencia" class="form-control" th:field="*{agencia}">
+							<option value="">Selecione uma agencia...</option>
+							<option th:each="agencia : ${agencias}" th:value="${agencia.id}" th:text="${agencia.agencia}+ ' - ' + ${agencia.banco.nome}"></option>
+						</select>
+					</div>	
+
+					<div class="form-group  col-sm-2">
+						<label class="control-label">Situação</label>
+						<div>
+							<input id="situacao" type="checkbox" checked data-toggle="toggle" class="form-control"  data-size="small"
+							 data-on="Ativo" data-off="Inativo" data-onstyle="success" data-offstyle="danger" th:field="*{situacao}"/>
+						</div>
+					</div>
+										
+				</div>
+				
+				<div class="form-group">
+					<button class="btn  btn-primary" type="submit">Salvar</button>
+					<a class="btn  btn-danger" th:href="@{/empresa/pesquisar}" sec:authorize-url="/empresa/pesquisar"> Cancelar e/ou voltar</a>
+					
+				</div>
+			</form>
+			
+
+
+			<div class="table-responsive  bw-tabela-simples">
+				<table class="table  table-hover">
+					<thead>
+						<tr>
+							<th class="table-col-pequena"> Conta</th>
+ 							<th class="table-col-pequena"> Tipo Conta</th>
+							<th class="table-col-pequena"> Agencia/ Banco</th>
+							<th class="table-col-pequena"> Saldo R$</th>
+							<th class="table-col-grande">Situação</th>
+							<th class="table-agencia-col-acoes"></th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						<tr th:each="conta : ${contas}">
+							<td th:text="${conta.conta}"></td>
+							<td th:text="${conta.tipo}"></td>
+							<td th:text="${conta.agencia.agencia} + ' / ' + ${conta.agencia.banco.nome}"></td>
+							<td th:text="${{conta.saldo}}"></td>
+							<td>
+								<th:block th:if="${conta.situacao}">
+									<span class="label  label-success">Ativo</span>
+								</th:block>
+
+								<th:block th:unless="${conta.situacao}">
+									<span class="label  label-danger">Inativo</span>
+								</th:block>
+							</td>
+							
+							<td class="text-center">
+ 								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar" th:href="@{/contaEmpresa/alterar/{id}(id=${conta.id})}"
+ 										sec:authorize-url="/empresa/alterar/**">  
+ 									<i class="glyphicon glyphicon-pencil"></i> 
+ 								</a> 
+								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir" href="#" sec:authorize-url="/empresa/excluir/**"
+									data:url="@{/contaEmpresa/excluir/{id}(id=${conta.id})}" data:objeto="${conta.conta}" >
+									<i class="glyphicon glyphicon-trash"></i>
+								</a>
+							</td>
+						</tr>
+						<tr th:if="${#lists.isEmpty(contas)}">
+							<td colspan="5">Nenhuma conta encontrada</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</section>
+
+	<th:block layout:fragment="javascript-extra">
+		<script th:src="@{/javascripts/validate/contaEmpresa.validate.js}"></script>			
+		<script th:src="@{/javascripts/vendors/bootstrap-toggle.min.js}"></script>
+
+		<script>
+			$('#situacao').bootstrapToggle();	
+		</script>
+	
+		<script type="text/javascript">
+ 			$(function (){
+ 				$('#form').validate();			
+ 			});  
+ 		</script> 
+	
+	</th:block>	
+</html>

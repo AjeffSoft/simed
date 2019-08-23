@@ -1,0 +1,152 @@
+
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Financeiro/LayoutFinanceiro}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+<head>
+	<title>Cadastro de pagamento</title>
+</head>
+
+<body>
+	<section layout:fragment="conteudo">
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Cadastro de pagamento</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+			<form method="POST" th:object="${pagamento}" th:action="@{/financeiro/pagamento/novo}" id="form">
+
+				<simed:message/>
+
+				<input type = "hidden" th:field="*{id}"> 
+				<input type = "hidden" th:field="*{fechado}"> 
+				<input type = "hidden" th:field="*{status}"> 
+				
+				<div class="row">
+					<div class="col-sm-3  form-group">
+						<label for="data" class="control-label">Data*</label>
+						<input id="data" type="text" class="form-control  js-date" th:field="*{data}" autocomplete="off"/>
+					</div>
+
+					<div class="col-sm-6  form-group">
+						<label for="contaBanco" class="control-label">Conta Bancária*</label>
+						<select id="contaBanco" class="form-control" th:field="*{contaEmpresa}">
+							<option value = "">Selecione a conta bancária para pagamento...</option>
+							<option th:each="conta : ${contasBancos}" th:value="${conta.id}" th:text="${conta.nome}+' - '+${conta.empresa.fantasia} + ' - ' +  ${conta.agencia.banco.nome} +' - '+ ${conta.conta}"></option>
+						</select>
+					</div>	
+
+				</div>					
+
+				<div class="row">
+					<div class="col-sm-3  form-group">
+						<label for="sexo" class="control-label">Tipo</label>
+						<div>
+							<div class = "radio  radio-inline">
+								<input type="radio" id="debito" name="tipo" value="DEBITO" th:field="*{tipo}" checked>
+								<label class="control-label" for="debito">Débito</label>							
+							</div>
+		
+							<div class = "radio  radio-inline">
+								<input type="radio" id="cheque" name="tipo" value="CHEQUE" th:field="*{tipo}">
+								<label class="control-label" for="cheque">Cheque</label>							
+							</div>
+		
+							<div class = "radio  radio-inline">
+								<input type="radio" id="transferencia" name="tipo" value="TRANSFERENCIA" th:field="*{tipo}">
+								<label class="control-label" for="transferência">Transferência</label>							
+							</div>
+		
+						</div>
+					</div>
+
+					<div class="form-group  col-sm-2">
+						<label class="control-label">Tipo Emissão</label>
+						<div>
+							<input id="tipoEmissao" type="checkbox" checked data-toggle="toggle" class="form-control"  data-size="small"
+							 data-on="Agrupado" data-off="Individual" data-onstyle="info" data-offstyle="info" th:field="*{unico}"/>
+						</div>
+					</div>
+
+					<div class="col-sm-2  form-group">
+						<label for="numCheque" class="control-label">Cheque nº</label>
+						<input id="numCheque" type="text" class="form-control" th:field="*{numCheque}" maxlength="20" />
+					</div>						
+
+				</div>
+				
+				<div class="table-responsive  bw-tabela-simples">
+					<table class="table  table-hover">
+						<thead>
+							<tr>
+								<th class="table-col-minimo"></th>						
+								<th class="table-col-minimo">Emp</th>
+								<th class="table-col-grande" >Fornecedor</th>
+								<th class="table-col-pequeno">Vencimento</th>
+								<th class="table-col-minimo">Parcela</th>
+								<th class="table-col-pequeno">Nota Fiscal</th>
+								<th class="table-col-medio">Valor</th>
+							</tr>
+						</thead>
+						
+						<tbody>
+							<tr th:each="item : ${contasSelecionadas}">
+								<td> <input id="id" type="hidden" name="idConta" th:value="${item.id}"/></td>
+								<td th:text="${item.empresa.sigla}"></td>
+								<td th:text="${item.fornecedor.nome}"></td>
+								<td th:text="${{item.vencimento}}"></td>
+								<td th:text="${item.parcela} +'/'+ ${item.totalParcela}"></td>
+								<td th:text="${item.notaFiscal}"></td>
+								<td th:text="${{item.valor}}"></td>
+							</tr>
+							
+							<tr th:if="${#lists.isEmpty(contasSelecionadas)}">
+								<td colspan="7"> Nenhuma conta autorizada para pagamento</td>
+							</tr>							
+						</tbody>
+					</table>
+					
+					<p class="text-center  font-weight-bold"> <strong>TOTAL R$: [[${{soma}}]]</strong></p>
+					<br>
+					
+				</div>
+														
+				<div class="form-group">
+					<button class="btn  btn-success" type="submit">Confirmar</button>
+					<a class="btn  btn-danger" th:href="@{/financeiro/pagamento/contasAutorizadas}">Cancelar</a>
+					
+				</div>
+
+				<br>
+			</form>						
+		</div>		
+	</section>
+	
+	<th:block layout:fragment="javascript-extra">
+	<script th:src="@{/javascripts/validate/pagamento.validate.js}"></script>			
+	<script th:src="@{/javascripts/vendors/bootstrap-toggle.min.js}"></script>
+
+		<script type="text/javascript">
+ 			$(function (){
+ 				$('#form').validate();			
+ 			});  
+ 		</script> 
+		
+		<script>
+			$('#tipoEmissao').bootstrapToggle();	
+		</script>
+		
+	</th:block>		
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Financeiro/LayoutFinanceiro}"
+	xmlns:sinte="http://sintecoop.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+	<title>Detalhe do Cliente</title> 
+	
+	<style>
+		.pdfobject-container { height: 500px;}
+		.pdfobject { border: 1px solid #666; }
+	</style>	
+</head>
+
+	<section layout:fragment="conteudo">
+
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Detalhe de: [[${fornecedor.fantasia}]]</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid" >
+			<form id="form" method="GET" th:object="${fornecedor}" class="form-vertical  js-form-loading"
+				th:action="@{/financeiro/cliente/detalhe/{id}(id=${fornecedor.id})}"  enctype="multpart/form-data">
+			
+			<input type="hidden" th:field="*{id}">
+			
+			
+				<div class="row">
+					<div class="form-group  col-lg-12">
+						<ul class="nav nav-tabs  js-abas">
+						  <li role="presentation" class="active"><a href="#dados">Cadastro</a></li>
+						  <li role="presentation" ><a href="#contas">Contas do cliente</a></li>
+						</ul>
+					</div>
+				</div>			
+
+				<div class="tab-content">
+					<div class="tab-pane active" id="dados">
+						<div class="row">
+							<div class="col-sm-7  form-group">
+								<label for="nome" class="label label-default">Razão Social</label>
+								<h3 id="nome" th:text="${fornecedor.nome}"></h3>
+							</div>
+
+							<div class="col-sm-3  form-group">
+								<label for="fantasia" class="label label-default">Fantasia</label>
+								<h3 id="fantasia" th:text="${fornecedor.fantasia}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="sigla" class="label label-default">Sigla</label>
+								<h3 id="sigla" th:text="${fornecedor.sigla}"></h3>
+							</div>
+
+						</div>
+						
+						<div class="row">
+							<div class="col-sm-7  form-group">
+								<label for="endereco" class="label label-default">Endereço</label>
+								<h3 id="endereco" th:text="${fornecedor.endereco.logradouro}"></h3>
+							</div>
+
+							<div class="col-sm-3  form-group">
+								<label for="bairro" class="label label-default">Bairro</label>
+								<h3 id="bairro" th:text="${fornecedor.endereco.bairro}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="cep" class="label label-default">CEP</label>
+								<h3 id="cep" th:text="${fornecedor.endereco.cep}"></h3>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-sm-7  form-group">
+								<label for="cidade" class="label label-default">Cidade/UF</label>
+								<h3 id="cidade" th:text="${fornecedor.endereco.cidade.nome} +'/'+${fornecedor.endereco.cidade.uf}"></h3>
+							</div>
+
+							<div class="col-sm-3  form-group">
+								<label for="telefone" class="label label-default">Telefone</label>
+								<h3 id="telefone" th:text="${fornecedor.telefone}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="celular" class="label label-default">Celular</label>
+								<h3 id="celular" th:text="${fornecedor.celular}"></h3>
+							</div>
+						</div>				
+
+						<div class="row">
+							<div class="col-sm-2  form-group">
+								<label for="doc" class="label label-default">CPF/CNPJ</label>
+								<h3 id="doc" th:text="${fornecedor.documento1}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="doc1" class="label label-default">PIS/IE</label>
+								<h3 id="doc1" th:text="${fornecedor.documento2}"></h3>
+							</div>
+						</div>				
+						
+					</div>
+					
+					<div class="tab-pane" id="contas">
+						<div class="table-responsive  bw-tabela-simples">
+							<table class="table  table-hover" th:with="total=0">
+								<thead>
+									<tr>
+										<th class="table-col-minima">Emp</th>
+										<th class="table-col-minima">Emissão</th>
+										<th class="table-col-minima">Vencimento</th>
+										<th class="table-col-grande">Histórico</th>
+										<th class="table-col-minima">Valor</th>
+										<th class="table-col-minima">Parcelas</th>
+										<th class="table-col-minima">Data Recebido</th>
+										<th class="table-col-minima">Status</th>
+									</tr>
+								</thead>
+								
+								<tbody>
+									<tr th:each="conta : ${contasReceber}">
+										<td th:text="${conta.empresa.sigla}"></td>
+										<td th:text="${{conta.dataEmissao}}"></td>
+										<td th:text="${{conta.vencimento}}"></td>
+										<td th:text="${conta.historico}"></td>
+										<td th:text="${{conta.valor}}"></td>
+										<td th:text="${conta.parcela}+'/'+${conta.totalParcela}"></td>
+										<td th:text="${{conta.dataRecebido}}"></td>
+										<td th:text="${conta.status}"></td>
+										<td class="text-center">
+										</td>
+
+									</tr>
+									<tr th:if="${#lists.isEmpty(contasReceber)}">
+										<td colspan="8">Nenhuma conta a receber cadastrada</td>
+									</tr>									
+								</tbody>
+							</table>
+						</div>
+					</div>
+					
+				</div>
+				
+				<br>
+														
+				<div class="form-group">
+					<a target="'_blank'" class="btn  btn-info" th:href="@{/financeiro/cliente/historico/{id}(id=${fornecedor.id})}">Imprimir</a>
+					<a class="btn  btn-default" href="javascript:history.back(1);">Voltar</a>
+				</div>
+			</form>
+		</div>
+	</section>
+
+	<th:block layout:fragment="javascript-extra">
+
+	<script>
+		$(function() {
+			$('.js-abas a').click(function (e) {
+				e.preventDefault();
+				$(this).tab('show');
+			});
+		});
+	</script>
+	</th:block>	
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Financeiro/LayoutFinanceiro}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+<title>Confirmação de pagamento</title> </head>
+
+	<section layout:fragment="conteudo">
+
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-12">
+						<h1>Confirmação do pagamento nº : [[${pagamento.documento}]]</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid" >
+		
+			<form id="form" method="POST" th:object="${pagamento}" class="form-vertical  js-form-loading"
+				th:action="@{/financeiro/pagamento/pagar/{id}(id=${pagamento.id})}">
+
+				<simed:message/>
+				<input type="hidden" th:field="*{id}">
+				<input type="hidden" th:field="*{documento}">
+				<input type="hidden" th:field="*{data}">
+				<input type="hidden" th:field="*{tipo}">
+				<input type="hidden" th:field="*{valor}">
+				<input type="hidden" th:field="*{fechado}">
+				<input type="hidden" th:field="*{status}">
+				<input type="hidden" th:field="*{contaEmpresa}">
+				<input type="hidden" th:field="*{empresa}">
+				<input type="hidden" th:field="*{movimentacao}">
+		
+				
+				<div class="row">
+					<div class="col-sm-3  form-group">
+						<label for="empresa" class="label label-default">Empresa Pagadora</label>
+						<h3 id="empresa" th:text="${pagamento.empresa.fantasia}"></h3>
+					</div>
+
+					<div class="col-sm-2  form-group">
+						<label for="emissao" class="label label-default">Emissão</label>
+						<h3 id="emissao" th:text="${{pagamento.data}}"></h3>
+					</div>
+
+					<div class="col-sm-2  form-group">
+						<label for="tipo" class="label label-default">Tipo Pgto</label>
+						<h3 id="tipo" th:text="${pagamento.tipo}"></h3>
+					</div>
+
+					<div class="col-sm-2  form-group">
+						<label for="valor" class="label label-default">Valor Total R$</label>
+						<h3 id="valor" th:text="${{pagamento.valor}}"></h3>
+					</div>
+
+					<div class="col-sm-3  form-group">
+						<label for="banco" class="label label-default">Banco</label>
+						<h3 id="banco" th:text="${pagamento.contaEmpresa.agencia.banco.nome}"></h3>
+					</div>
+				</div>				
+				
+				<div class="row">
+					<div class="col-xs-12">
+						<h3>Itens do Pagamento</h3>
+					</div>
+				</div>
+				
+				<div class="table-responsive  bw-tabela-simples">
+					<table class="table  table-hover" th:with="total=0">
+						<thead>
+							<tr>
+								<th class="table-col-minima">Emp</th>
+								<th class="table-col-minima">NF</th>
+								<th class="table-col-minima">Parcela</th>
+								<th class="table-col-minima">Fornecedor</th>
+								<th class="table-col-minima">Conta Secundária</th>
+								<th class="table-col-minima">Emissão</th>
+								<th class="table-col-minima">Vencimento</th>
+								<th class="table-col-minima">Valor</th>
+							</tr>
+						</thead>
+						
+						<tbody>
+							<tr th:each="conta : ${contas}">
+								<td th:text="${conta.empresa.sigla}"></td>
+								<td th:text="${conta.notaFiscal}"></td>
+								<td th:text="${conta.parcela}+'/'+${conta.totalParcela}"></td>
+								<td th:text="${conta.fornecedor.fantasia}"></td>
+								<td th:text="${conta.planoContaSecundaria.nome}"></td>
+								<td th:text="${{conta.dataEmissao}}"></td>
+								<td th:text="${{conta.vencimento}}"></td>
+								<td th:text="${{conta.valor}}"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>		
+
+				
+				<br>
+				
+				<div class="row" th:if="${pagamento.cheque}">
+					<div class="col-sm-2  form-group">
+						<label for="data" class="control-label">Data*</label>
+						<input id="data" type="text" class="form-control  js-date" th:field = "*{dataPago}" autocomplete="off"/>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<button class="btn  btn-success" type="submit">Confirmar</button>
+					<a class="btn  btn-danger" href="javascript:history.back(1);">Cancelar</a>
+				</div>
+			</form>
+		</div>
+	</section>
+
+	<th:block layout:fragment="javascript-extra">
+		<script type="text/javascript">
+ 			$(function (){
+ 				$('#form').validate();			
+ 			});  
+ 		</script> 
+	
+	<script th:src="@{/javascripts/validate/pagamentoConta.validate.js}"></script>			
+	</th:block>	
+</html>

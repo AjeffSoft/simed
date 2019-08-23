@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+	version="2.1">
+	
+	<named-native-query name="ContaPagar.contaPagarXpagamento" result-set-mapping="contaPagarXpagamentoMapping">
+		<query>
+			select (select sum(valor) from conta_pagar where id_empresa =:emp and month(vencimento) =:mes) AS pagar, (select sum(valor) from pagamento where pago = true and id_empresa =:emp and month(data) =:mes) AS pagamento		
+		</query>
+	</named-native-query>
+
+	<named-native-query name="ContaPagar.contaPagarXpagamentoAno" result-set-mapping="contaPagarXpagamentoAnoMapping">
+		<query>
+			select (select sum(valor) from conta_pagar where id_empresa =:emp and year(vencimento) =:ano) AS pagar, (select sum(valor) from pagamento where pago = true and id_empresa =:emp and year(data) =:ano) AS pagamento		
+		</query>
+	</named-native-query>
+
+	
+	<named-native-query name="Recebimento.pagoAberto" result-set-mapping="recebimentoPagoAbertoMapping">
+		<query>
+			select (select sum(valor) from conta_receber where id_empresa =:emp and month(vencimento) =:mes and recebido = false) AS receber, (select sum(valor) from recebimento_conta inner join conta_empresa on recebimento_conta.id_conta_empresa = conta_empresa.id inner join empresa on conta_empresa.id_empresa = empresa.id where empresa.id =:emp and month(data) =:mes) AS recebimento		
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Saldo.receberXpagarMes" result-set-mapping="receberXpagarMesMapping">
+		<query>
+			select (select sum(valor) - sum(valor_recebido) from conta_receber where id_empresa =:emp and month(vencimento) =:mes) AS receber, (select sum(valor) from conta_pagar where id_empresa =:emp and month(vencimento) =:mes) AS pagar	
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Saldo.receberXpagarAno" result-set-mapping="receberXpagarAnoMapping">
+		<query>
+			select (select sum(valor) - sum(valor_recebido) from conta_receber where id_empresa =:emp and year(vencimento) =:ano) AS receber, (select sum(valor) from conta_pagar where id_empresa =:emp and year(vencimento) =:ano) AS pagar	
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Saldo.contasPagarESaldoConta" result-set-mapping="contasPagarESaldoContaMapping">
+		<query>
+			select (select sum(valor) from conta_pagar where id_empresa =:emp and month(vencimento) =:mes and pago = false) AS pagar, (select sum(saldo) from conta_empresa where id_empresa =:emp and tipo = 'CORRENTE' and ativo = 1) AS saldo		
+		</query>
+	</named-native-query>
+
+	<named-native-query name="Recebimento.pagoAbertoAno" result-set-mapping="recebimentoPagoAbertoAnoMapping">
+		<query>
+			select (select sum(valor) from conta_receber where id_empresa =:emp and year(vencimento) =:ano and recebido = false) AS receber, (select sum(valor) from recebimento_conta inner join conta_empresa on recebimento_conta.id_conta_empresa = conta_empresa.id inner join empresa on conta_empresa.id_empresa = empresa.id where empresa.id =:emp and year(data) =:ano) AS recebimento		
+		</query>
+	</named-native-query>
+
+
+	
+	<named-native-query name="Pagamento.semestre" result-set-mapping="pagamentoSemestreMapping">
+		<query>
+			select date_format(data, '%Y/%m') mes
+			 , count(*) total, sum(valor) AS pago
+			from pagamento
+			where data > DATE_SUB(NOW(), INTERVAL 6 MONTH)
+			 and pago = true and id_empresa =:emp
+			group by date_format(data, '%Y/%m')   
+			order by date_format(data, '%Y/%m') desc
+		</query>
+	</named-native-query>
+
+	
+	<named-native-query name="Recebimento.semestre" result-set-mapping="recebimentoSemestreMapping">
+		<query>
+			select date_format(vencimento, '%Y/%m') mes
+			 , count(*) total, sum(valor_recebido) AS pago
+			from conta_receber
+			where vencimento > DATE_SUB(NOW(), INTERVAL 6 MONTH)
+			 and recebido = true and id_empresa =:emp
+			group by date_format(vencimento, '%Y/%m')   
+			order by date_format(vencimento, '%Y/%m') desc
+		</query>
+	</named-native-query>
+
+<!-- 	<named-native-query name="Pagamento.trimestre" result-set-mapping="pagamentoTrimestreMapping"> -->
+<!-- 		<query> -->
+<!-- 			select date_format(vencimento, '%Y/%m') mes -->
+<!-- 			 , count(*) total, sum(valor) AS valor -->
+<!-- 			from conta_pagar -->
+<!-- 			where vencimento &lt; date_add(NOW(), INTERVAL 3 MONTH) -->
+<!-- 			 and pago = false and id_empresa =:emp -->
+<!-- 			group by date_format(vencimento, '%Y/%m')    -->
+<!-- 			order by date_format(vencimento, '%Y/%m') desc -->
+<!-- 		</query> -->
+<!-- 	</named-native-query> -->
+
+<!-- 	<named-native-query name="Recebimento.trimestre" result-set-mapping="recebimentoTrimestreMapping"> -->
+<!-- 		<query> -->
+<!-- 			select date_format(vencimento, '%Y/%m') mes -->
+<!-- 			 , count(*) total, sum(valor) AS valor -->
+<!-- 			from conta_receber -->
+<!-- 			where vencimento &lt; date_add(NOW(), INTERVAL 3 MONTH) -->
+<!-- 			 and aberto = true and id_empresa =:emp -->
+<!-- 			group by date_format(vencimento, '%Y/%m')    -->
+<!-- 			order by date_format(vencimento, '%Y/%m') desc -->
+<!-- 		</query> -->
+<!-- 	</named-native-query>	 -->
+	
+	
+	<sql-result-set-mapping name="contaPagarXpagamentoMapping">
+		<constructor-result target-class="com.ajeffsoft.sintecoop.dto.financeiro.ContaPagarContaXpagamento">
+			<column name="pagar" class="java.math.BigDecimal"/>
+			<column name="pagamento" class="java.math.BigDecimal"/>
+		</constructor-result>
+	</sql-result-set-mapping>
+
+	<sql-result-set-mapping name="contaPagarXpagamentoAnoMapping">
+		<constructor-result target-class="com.ajeffsoft.sintecoop.dto.financeiro.ContaPagarContaXpagamento">
+			<column name="pagar" class="java.math.BigDecimal"/>
+			<column name="pagamento" class="java.math.BigDecimal"/>
+		</constructor-result>
+	</sql-result-set-mapping>
+
+	<sql-result-set-mapping name="recebimentoPagoAbertoMapping">
+		<constructor-result target-class="com.ajeffsoft.sintecoop.dto.financeiro.RecebimentoPagoAberto">
+			<column name="receber" class="java.math.BigDecimal"/>
+			<column name="recebimento" class="java.math.BigDecimal"/>
+		</constructor-result>
+	</sql-result-set-mapping>
+
+	<sql-result-set-mapping name="recebimentoPagoAbertoAnoMapping">
+		<constructor-result target-class="com.ajeffsoft.sintecoop.dto.financeiro.RecebimentoPagoAberto">
+			<column name="receber" class="java.math.BigDecimal"/>
+			<column name="recebimento" class="java.math.BigDecimal"/>
+		</constructor-result>
+	</sql-result-set-mapping>
+
+	<sql-result-set-mapping name="receberXpagarMesMapping">
+		<constructor-result target-class="com.ajeffsoft.sintecoop.dto.financeiro.ReceberXpagar">
+			<column name="receber" class="java.math.BigDecimal"/>
+			<column name="pagar" class="java.math.BigDecimal"/>
+		</constructor-result>
+	</sql-result-set-mapping>
+
+	<sql-result-set-mapping name="receberXpagarAnoMapping">
+		<constructor-result target-class="com.ajeffsoft.sintecoop.dto.financeiro.ReceberXpagar">
+			<column name="receber" class="java.math.BigDecimal"/>
+			<column name="pagar" class="java.math.BigDecimal"/>
+		</constructor-result>
+	</sql-result-set-mapping>
+
+	<sql-result-set-mapping name="contasPagarESaldoContaMapping">
+		<constructor-result target-class="com.ajeffsoft.sintecoop.dto.financeiro.PagarXsaldoContas">
+			<column name="saldo" class="java.math.BigDecimal"/>
+			<column name="pagar" class="java.math.BigDecimal"/>
+		</constructor-result>
+	</sql-result-set-mapping>
+
+	<sql-result-set-mapping name="pagamentoSemestreMapping">
+		<constructor-result target-class="com.ajeffsoft.sintecoop.dto.financeiro.PagamentoSemestre">
+			<column name="pago" class="java.math.BigDecimal"/>
+			<column name="mes" class="java.lang.String"/>
+			<column name="total" class="java.lang.Integer"/>
+		</constructor-result>
+	</sql-result-set-mapping>
+
+	<sql-result-set-mapping name="recebimentoSemestreMapping">
+		<constructor-result target-class="com.ajeffsoft.sintecoop.dto.financeiro.RecebimentoSemestre">
+			<column name="pago" class="java.math.BigDecimal"/>
+			<column name="mes" class="java.lang.String"/>
+			<column name="total" class="java.lang.Integer"/>
+		</constructor-result>
+	</sql-result-set-mapping>
+
+<!-- 	<sql-result-set-mapping name="pagamentoTrimestreMapping"> -->
+<!-- 		<constructor-result target-class="com.ajeffsoft.sintecoop.dto.financeiro.ContaPagarTrimestre"> -->
+<!-- 			<column name="valor" class="java.math.BigDecimal"/> -->
+<!-- 			<column name="mes" class="java.lang.String"/> -->
+<!-- 			<column name="total" class="java.lang.Integer"/> -->
+<!-- 		</constructor-result> -->
+<!-- 	</sql-result-set-mapping> -->
+	
+<!-- 	<sql-result-set-mapping name="recebimentoTrimestreMapping"> -->
+<!-- 		<constructor-result target-class="com.ajeffsoft.sintecoop.dto.financeiro.ContaReceberTrimestre"> -->
+<!-- 			<column name="valor" class="java.math.BigDecimal"/> -->
+<!-- 			<column name="mes" class="java.lang.String"/> -->
+<!-- 			<column name="total" class="java.lang.Integer"/> -->
+<!-- 		</constructor-result> -->
+<!-- 	</sql-result-set-mapping>	 -->
+		
+</entity-mappings>

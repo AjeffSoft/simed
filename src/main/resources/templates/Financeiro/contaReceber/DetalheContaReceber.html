@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Financeiro/LayoutFinanceiro}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+
+<title>Detalhe da Conta</title> 
+
+<style>
+	.pdfobject-container { height: 500px;}
+	.pdfobject { border: 1px solid #666; }
+</style>
+
+</head>
+
+
+	<section layout:fragment="conteudo">
+
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Detalhe da conta a receber nº: [[${contaReceber.documento}]]</h1>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-xs-12">
+						<p> <strong>Status: [[${contaReceber.status}]]</strong></p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid" >
+			<form id="form" method="GET" th:object="${contaReceber}" class="form-vertical  js-form-loading"
+				th:action="@{/financeiro/contaReceber/detalheConta/{id}(id=${contaReceber.id})}" enctype="multpart/form-data">
+			
+			<input type="hidden" th:value="${idContaReceber}" name="idContaReceber"/>
+			<input type="hidden" th:field="*{id}">
+			
+			
+				<div class="row">
+					<div class="form-group  col-lg-12">
+						<ul class="nav nav-tabs  js-abas">
+						  <li role="presentation" class="active"><a href="#dados">Cadastro</a></li>
+						  <li role="presentation" ><a href="#recebimento">Recebimento</a></li>
+						</ul>
+					</div>
+				</div>			
+
+				<div class="tab-content">
+					<div class="tab-pane active" id="dados">
+						<div class="row">
+							<div class="col-sm-3  form-group">
+								<label for="empresa" class="label label-default">Empresa</label>
+								<h3 id="empresa" th:text="${contaReceber.empresa.fantasia}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="emissao" class="label label-default">Emissão</label>
+								<h3 id="emissao" th:text="${{contaReceber.dataEmissao}}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="vencimento" class="label label-default">Vencimento</label>
+								<h3 id="vencimento" th:text="${{contaReceber.vencimento}}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="valor" class="label label-default">Valor R$</label>
+								<h3 id="valor" th:text="${{contaReceber.valor}}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="saldo" class="label label-default">Saldo R$</label>
+								<h3 id="saldo" th:text="${{contaReceber.valor - contaReceber.valorRecebido}}"></h3>
+							</div>
+
+							<div class="col-sm-1  form-group">
+								<label for="parcela" class="label label-default">Parcela</label>
+								<h3 id="parcela" th:text="${contaReceber.parcela} +'/'+ ${contaReceber.totalParcela}"></h3>
+							</div>
+						</div>
+						
+						<div class="row">
+							<div class="col-sm-12  form-group">
+								<label for="historico" class="label label-default">Histórico</label>
+								<h3 id="empresa" th:text="${contaReceber.historico}"></h3>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-sm-3  form-group">
+								<label for="fantasia" class="label label-default">Fornecedor</label>
+								<h3 id="fantasia" th:text="${contaReceber.fornecedor.fantasia}"></h3>
+							</div>
+
+							<div class="col-sm-7  form-group">
+								<label for="fornecedor" class="label label-default">Razão Social</label>
+								<h3 id="fornecedor" th:text="${contaReceber.fornecedor.nome}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="documento" class="label label-default">Documento</label>
+								<h3 id="documento" th:text="${contaReceber.fornecedor.documento1}"></h3>
+							</div>
+						</div>				
+
+
+						<div class="row">
+							<div class="col-sm-3  form-group">
+								<label for="documento" class="label label-default">Documento nº</label>
+								<h3 id="documento" th:text="${contaReceber.documento}"></h3>
+							</div>
+
+							<div class="col-sm-3  form-group">
+								<label for="planoConta" class="label label-default">Plano de Conta</label>
+								<h3 id="planoConta" th:text="${contaReceber.planoContaSecundaria.planoConta.nome}"></h3>
+							</div>
+
+							<div class="col-sm-6  form-group">
+								<label for="subPlano" class="label label-default">Conta Secundária</label>
+								<h3 id="subPlano" th:text="${contaReceber.planoContaSecundaria.nome}"></h3>
+							</div>
+						</div>				
+					</div>
+					
+			<!-- DADOS DO PAGAMENTO -->
+					<div class="tab-pane" id="recebimento">
+						<div class="table-responsive  bw-tabela-simples">
+							<table class="table  table-hover" th:with="total=0">
+								<thead>
+									<tr>
+										<th class="table-col-minima">Data</th>
+										<th class="table-col-minima">Valor</th>
+										<th class="table-col-minima">Conta bancária</th>
+										<th class="table-col-minima">Situação</th>
+										<th class="table-col-minima"></th>
+
+									</tr>
+								</thead>
+								
+								<tbody>
+									<tr th:each="recebimento : ${recebimentos}">
+										<td th:text="${{recebimento.data}}"></td>
+										<td th:text="${{recebimento.valor}}"></td>
+										<td th:text="${recebimento.contaEmpresa.conta} +'/'+${recebimento.contaEmpresa.agencia.banco.nome}"></td>
+
+										<td>
+											<th:block th:unless="${recebimento.fechado}">
+												<span class="label  label-info">Aberto</span>
+											</th:block>
+											
+											<th:block th:if="${recebimento.fechado}">
+												<span class="label  label-success">Fechado</span>
+											</th:block>
+										</td>
+
+										<td class="text-center">
+											<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir" href="#" th:unless="${recebimento.fechado}"
+												data:url="@{/financeiro/recebimento/excluir/{id}(id=${recebimento.id})}" data:objeto="${{recebimento.valor}}">
+												<i class="glyphicon glyphicon-trash"></i>
+											</a>
+										</td>
+
+
+									</tr>
+									<tr th:if="${#lists.isEmpty(recebimentos)}">
+										<td colspan="4">Nenhum recebimento cadastrado</td>
+									</tr>									
+								</tbody>
+							</table>
+						</div>
+					</div>
+
+
+				</div>
+				
+				<br>
+														
+				<div class="form-group">
+					<a target="'_blank'" class="btn  btn-info" th:href="@{/financeiro/contaReceber/imprimirDetalhe/{id}(id=${contaReceber.id})}">Imprimir</a>
+					<a class="btn  btn-default" href="javascript:history.back(1);">Cancelar e/ou voltar</a>
+				</div>
+			</form>
+
+		</div>
+	</section>
+
+	<th:block layout:fragment="javascript-extra">
+
+	<script>
+		$(function() {
+			$('.js-abas a').click(function (e) {
+				e.preventDefault();
+				$(this).tab('show');
+			});
+		});
+	</script>
+	</th:block>	
+</html>

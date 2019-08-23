@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{layout/LayoutSimples}">
+
+<head>
+	<title>Simed</title>
+</head>
+
+<section layout:fragment="conteudo">
+
+	<div class="page-header">
+		<div class="container-fluid">
+			<h1>Seja bem vindo ao Simed</h1>
+		</div>
+	</div>
+
+	<div class="container-fluid">
+	<a th:href="@{/financeiro}">Módulo Financeiro</a> <br>
+	<a th:href="@{/geral}">Módulo Geral</a> <br>
+	</div>
+</section>
+
+</html>

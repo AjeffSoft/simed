@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:th="http://www.thymeleaf.org"
+	layout:decorate="~{Geral/LayoutGeral}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+
+<head>
+	<title>Cadastro de Usuários</title>
+	
+</head>
+
+<section layout:fragment="conteudo">
+
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-xs-10">
+					<h1 th:if="${usuario.novo}">Cadastro de Usuário</h1>
+					<h1 th:unless="${usuario.novo}">Alterando o usuário(a) - [[${usuario.nome}]]</h1>
+
+				</div>
+					
+			 		<div class="col-sm-2" sec:authorize-url="/usuario">
+						<div class="aw-page-header-controls">
+							<a class="btn  btn-warning" th:href="@{/usuario}">
+								<i class="glyphicon  glyphicon-search"></i> <span class="hidden-xs  hidden-sm">Pesquisar Usuário</span>
+							</a>
+						</div>
+					</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="container-fluid">
+	
+		<th:block th:include="fragments/MensagemSucesso"></th:block>
+	
+		<form method="POST" th:object="${usuario}" enctype="multipart/form-data" 
+		th:action="${usuario.novo}? @{/usuario/novo} : @{/usuario/{id}(id=${usuario.id})}" >
+
+		<th:block th:include="fragments/MensagensErroValidacao"></th:block>			
+
+		<input type="hidden" th:field="*{id}"/>
+
+
+			<div class="row">
+				<div class="form-group  col-sm-10 bw-required"  th:classappend="${#fields.hasErrors('nome')} ? has-error">
+					<label for="nome" class="control-label">Nome de Usuário</label>
+					<input type="text" class="form-control" id="nome" autofocus="autofocus" th:field="*{nome}" maxlength="30"/>
+				</div>
+				
+				
+				<div class="form-group  col-sm-2">
+					<label class="control-label">Status</label>
+					<div>
+						<input id="status" type="checkbox" checked data-toggle="toggle" class="form-control"  data-size="small"
+						 data-on="Ativo" data-off="Inativo" data-onstyle="success" data-offstyle="danger" th:field="*{ativo}"/>
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="form-group  col-sm-6 bw-required"  th:classappend="${#fields.hasErrors('email')} ? has-error">
+					<label for="email" class="control-label">E-mail</label>
+					<input type="text" class="form-control" id="email" th:field="*{email}" placeholder="exemplo@sinte.com.br" maxlength="100"/>
+				</div>
+				
+			</div>
+			
+			<br><br>
+			
+			<div class="row">
+				<div class="form-group  col-sm-4"  th:classappend="${#fields.hasErrors('senha')} ? has-error">
+					<label for="senha" class="control-label">Senha</label> 
+					<input type="password" class="form-control" id="senha" th:field="*{senha}" maxlength="120"/>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="form-group  col-sm-4" th:classappend="${#fields.hasErrors('confirmacaoSenha')} ? has-error">
+					<label for="confirmacaoSenha" class="control-label">Confirmação de Senha</label> 
+					<input type="password" class="form-control" id="confirmacaoSenha" th:field="*{confirmacaoSenha}" maxlength="120"/>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="form-group  col-sm-10  bw-required" th:classappend="${#fields.hasErrors('grupos')} ? has-error">
+					<label class="control-label">Grupos</label> 
+					<div>
+						<th:block th:each="grupo : ${grupos}">
+	  						<div class="checkbox  checkbox-inline"> 
+		    					<input type="checkbox" th:value="${grupo.id}" th:field="*{grupos}"/>
+		    					<label th:text="${grupo.nome}" th:for="${#ids.prev('grupos')}">Administrador</label>
+	    					</div>
+						</th:block>
+					</div>
+				</div>
+			</div>			
+
+			<div class="row">
+				<div class="form-group  col-sm-10  bw-required" th:classappend="${#fields.hasErrors('empresas')} ? has-error">
+					<label class="control-label">Empresas</label> 
+					<div>
+						<th:block th:each="empresa : ${empresas}">
+	  						<div class="checkbox  checkbox-inline"> 
+		    					<input type="checkbox" th:value="${empresa.id}" th:field="*{empresas}"/>
+		    					<label th:text="${empresa.fantasia}" th:for="${#ids.prev('empresas')}">Unimed</label>
+	    					</div>
+						</th:block>
+					</div>
+				</div>
+			</div>			
+
+			<div class="form-group">
+				<button type="submit" class="btn  btn-primary">Salvar</button>
+				<a class="btn  btn-default" th:href="@{/usuario/pesquisar}" sec:authorize-url="/usuario">Voltar</a>
+			</div>		
+		</form>
+	</div>
+</section>
+
+<th:block layout:fragment="javascript-extra">
+		<script th:src="@{/javascripts/vendors/bootstrap-toggle.min.js}"></script>
+		
+		<script>
+			$('#status').bootstrapToggle();	
+		</script>
+</th:block>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Financeiro/LayoutFinanceiro}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+	<title>Detalhe do Imposto</title> 
+</head>
+
+
+	<section layout:fragment="conteudo">
+
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Detalhe do imposto</h1>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-xs-12">
+						<p> <strong>Status: [[${imposto.status}]]</strong></p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid" >
+			<form id="form" method="GET" th:object="${imposto}" class="form-vertical  js-form-loading"
+				th:action="@{/financeiro/imposto/detalhe/{id}(id=${imposto.id})}" enctype="multpart/form-data">
+			
+			<input type="hidden" th:value="${idContaPagar}" name="idContaPagar"/>
+			<input type="hidden" th:field="*{id}">
+			
+			
+				<div class="row">
+					<div class="form-group  col-lg-12">
+						<ul class="nav nav-tabs  js-abas">
+						  <li role="presentation" class="active"><a href="#dados">Cadastro</a></li>
+						</ul>
+					</div>
+				</div>			
+
+				<div class="tab-content">
+					<div class="tab-pane active" id="dados">
+						<div class="row">
+							<div class="col-sm-2  form-group">
+								<label for="codigo" class="label label-default">Código</label>
+								<h3 id="codigo" th:text="${imposto.codigo}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="nome" class="label label-default">Nome</label>
+								<h3 id="nome" th:text="${imposto.nome}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="vencimento" class="label label-default">Vencimento</label>
+								<h3 id="vencimento" th:text="${{imposto.vencimento}}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="notaFiscal" class="label label-default">Nota Fiscal</label>
+								<h3 id="notaFiscal" th:text="${imposto.numeroNF}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="emissaoNF" class="label label-default">Vencimento</label>
+								<h3 id="emissaoNF" th:text="${{imposto.emissaoNF}}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="valorNF" class="label label-default">Valor NF</label>
+								<h3 id="valorNF" th:text="${{imposto.valorNF}}"></h3>
+							</div>
+						</div>
+						
+						<div class="row">
+							<div class="col-sm-2  form-group">
+								<label for="valor" class="label label-default">Valor R$</label>
+								<h3 id="valor" th:text="${{imposto.valor}}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="multa" class="label label-default">Multa R$</label>
+								<h3 id="multa" th:text="${{imposto.multa}}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="juros" class="label label-default">Juros R$</label>
+								<h3 id="juros" th:text="${{imposto.juros}}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="total" class="label label-default">Total R$</label>
+								<h3 id="total" th:text="${{imposto.total}}"></h3>
+							</div>
+
+							<div class="col-sm-4  form-group">
+								<label for="historico" class="label label-default">Histórico</label>
+								<h3 id="historico" th:text="${imposto.historico}"></h3>
+							</div>
+						</div>
+
+						<br>
+	
+						<div class="table-responsive  bw-tabela-simples">
+							<table class="table  table-hover" th:with="total=0">
+								<thead>
+									<tr>
+										<th class="table-col-minima">Documento</th>
+										<th class="table-col-minima">Emissão</th>
+										<th class="table-col-minima">Fornecedor</th>
+										<th class="table-col-minima">Vencimento</th>
+										<th class="table-col-minima">Conta Secundária</th>
+										<th class="table-col-minima">Status</th>
+									</tr>
+								</thead>
+								
+								<tbody>
+									<tr th:each="conta : ${contas}">
+										<td th:text="${conta.documento}"></td>
+										<td th:text="${{conta.dataEmissao}}"></td>
+										<td th:text="${conta.fornecedor.fantasia}"></td>
+										<td th:text="${{conta.vencimento}}"></td>
+										<td th:text="${conta.planoContaSecundaria.nome}"></td>
+										<td th:text="${conta.status}"></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+	
+									
+					</div>
+					
+					
+					
+			<!-- DADOS DO PAGAMENTO -->
+					<div class="tab-pane" id="pagamento">
+
+					</div>										
+				</div>
+				
+				<br>
+														
+				<div class="form-group">
+					<a class="btn  btn-default" href="javascript:history.back(1);">Voltar</a>
+				</div>
+			</form>
+		</div>
+	</section>
+
+	<th:block layout:fragment="javascript-extra">
+	</th:block>	
+</html>

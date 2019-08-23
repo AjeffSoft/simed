@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/LayoutPadrao}"
+	xmlns:sinte="http://sintecoop.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+
+<title>Anexar arquivos</title> 
+
+	<style>
+		.pdfobject-container { height: 500px;}
+		.pdfobject { border: 1px solid #666; }
+	</style>
+
+</head>
+
+
+	<section layout:fragment="conteudo">
+
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>UPLOAD DE ANEXOS - CONTA A PAGAR</h1>
+					</div>
+
+					<div class="col-xs-2">
+						<div class="aw-page-header-controls" >
+							<a class="btn  btn-default" th:href="@{/financeiro/contaPagar/pesquisar}">
+								<i class="glyphicon  glyphicon-search"></i> <span class="hidden-xs  hidden-sm">Pesquisar</span>
+							</a>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid" >
+			<form id="form" method="POST" th:object="${uploadContaPagar}" class="form-vertical  js-form-loading"
+				th:action="@{/financeiro/uploadContaPagar/novo}" enctype="multpart/form-data">
+			
+			<!-- COMPONENTE THYMELEAF PARA MENSAGENS DE ERRO E SUCESSO -->	
+			<sinte:message/>
+
+			<input type="hidden" th:value="${idContaPagar}" name="idContaPagar"/>
+			<input type="hidden" th:field="*{id}">
+			
+
+				<div class="row">
+					<div class="col-sm-2  form-group">
+						<label for="tipo">Tipo*</label>
+						<select id="tipo" class="form-control" th:field="*{tipo}">
+							<option value="">Selecione uma opção</option>
+							<option value="AUTORIZAÇÃO">Autorização</option>
+							<option value="COMPROVANTE">Comprovante</option>
+							<option value="NOTA FISCAL">Nota fiscal</option>
+							<option value="OUTROS">Outros</option>
+						</select>
+					</div>					
+
+					<div class="form-group  col-sm-3">
+						  <div class="form-group" >
+						    <label for="upload">Upload Anexo</label>
+						    <input type="file" class="form-control-file   btn  btn-info" id="upload" th:field="*{upload}">
+						  </div>
+					</div>
+
+					<div class="col-sm-7  form-group">
+						<label for="anotacao">Anotações</label>
+						<input id="anotacao" type="text" class="form-control" th:field="*{anotacao}" maxlength="100"/>
+					</div>
+											
+				</div>
+				
+<!-- 				<div class="row"> -->
+<!-- 					<div class="form-group  col-sm-10"> -->
+<!-- 						<label class="control-label">Anexo*</label> -->
+<!-- 						<div class="js-upload"> -->
+<!-- 						    <input type="file" id="upload-select"  class = "btn-info" th:field="*{upload}"> -->
+<!-- 						</div> -->
+<!-- 					</div> -->
+				
+<!-- 				</div>				 -->
+				
+				<div class="form-group">
+					<button class="btn  btn-primary" type="submit">Salvar</button>
+					<a class="btn  btn-danger" th:href="@{/financeiro/contaPagar/pesquisar}"> Cancelar e/ou voltar	</a>
+				</div>
+			</form>
+
+
+			<!-- Modal -->
+<!-- 			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"> -->
+<!-- 			  <div class="modal-dialog" role="document"> -->
+<!-- 			    <div class="modal-content"> -->
+<!-- 			      <div class="modal-body"> -->
+<!-- 						<div id="pdf" class="pdfobject-container  pdfobject"></div> -->
+<!-- 			      </div> -->
+<!-- 			      <div class="modal-footer"> -->
+<!-- 			        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button> -->
+<!-- 			      </div> -->
+<!-- 			    </div> -->
+<!-- 			  </div> -->
+<!-- 			</div> -->
+
+			<div class="table-responsive  bw-tabela-simples">
+				<table class="table  table-hover">
+					<thead>
+						<tr>
+							<th class="table-col-pequena">Tipo Arquivo</th>
+							<th class="table-col-pequena">Nome Arquivo</th>
+							<th class="table-col-pequena">Path Arquivo</th>
+							<th class="table-col-pequena">Anotações</th>
+							<th class="table-agencia-col-acoes"></th>
+						</tr>
+					</thead>
+					
+<!-- 					<tbody> -->
+<!-- 						<tr th:each="upload : ${uploads}"> -->
+<!-- 							<td th:text="${upload.tipo.descricao}"></td> -->
+<!-- 							<td th:text="${upload.upload}"></td> -->
+<!-- 							<td th:text="${upload.anotacao}"></td> -->
+<!-- 							<td class="text-center"> -->
+<!--  								<a title="Visualizar" class="btn  btn-link  btn-xs js-tooltip view-pdf"  data-toggle="modal" data-target="#myModal" -->
+<!--  									data:objeto="${upload.upload}"> -->
+<!--  									<i class="glyphicon glyphicon-zoom-in"></i>  -->
+<!--  								</a>  -->
+<!-- 								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir" href="#" th:if="${upload.contaPagar.aberto}" -->
+<!-- 									data:url="@{/financeiro/uploadContaPagar/excluir/{id}(id=${upload.id})}" data:objeto="${upload.tipo}" > -->
+<!-- 									<i class="glyphicon glyphicon-trash"></i> -->
+<!-- 								</a> -->
+<!-- 							</td> -->
+<!-- 						</tr> -->
+<!-- 						<tr th:if="${#lists.isEmpty(uploads)}"> -->
+<!-- 							<td colspan="4">Nenhum arquivo encontrado</td> -->
+<!-- 						</tr> -->
+<!-- 					</tbody> -->
+				</table>
+			</div>
+		</div>
+	</section>
+
+	<th:block layout:fragment="javascript-extra">
+	<script th:src="@{/javascripts/validate/upload.validate.js}"></script>	
+	
+
+	<script type="text/javascript">
+		$(function (){
+			$('#form').validate();			
+		});  
+	</script> 
+
+	<script type="text/javascript">
+	
+	$(function(){    
+	    $('.view-pdf').on('click',function(){
+			var botaoClicado = $(event.currentTarget);
+	        var objeto = botaoClicado.data('objeto');
+	        console.log('>>>>>>', objeto);
+	        console.log('>>>>>>', botaoClicado);
+
+	        $('#pdf').html("<object data='/simed/financeiro/uploadContaPagar/upload/" + objeto + "'" + " type='application/pdf' width='100%' height='100%'></object>")
+	    });    
+	})
+	</script> 
+
+	
+	</th:block>	
+</html>

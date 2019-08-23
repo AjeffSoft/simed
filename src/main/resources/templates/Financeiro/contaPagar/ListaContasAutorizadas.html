@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Financeiro/LayoutFinanceiro}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+<head>
+	<title>Contas a pagar autorizadas</title>
+</head>
+
+<body>
+	<section layout:fragment="conteudo">
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Selecione as contas a pagar para pagamento</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+			<form method="GET" th:action="@{/financeiro/pagamento/novo}">
+				
+				<br>				
+				
+				<div class="table-responsive  bw-tabela-simples">
+					<table class="table  table-hover">
+						<thead>
+							<tr>	
+								<td class="table-col-pequeno"></td>						
+								<th class="table-col-pequeno">Empresa</th>
+								<th class="table-col-grande">Nota Fiscal</th>
+								<th class="table-col-grande" >Fornecedor</th>
+								<th class="table-col-grande">Vencimento</th>
+								<th class="table-col-grande">Valor</th>
+								<th class="table-agencia-col-acoes"></th>
+							</tr>
+						</thead>
+						
+						<tbody>
+							<tr th:each="contaPagar : ${contasAutorizadas}">
+								<td>
+									<div class="checkbox  aw-checkbox-no-margin">
+								 		<input type="checkbox" name="idConta" th:value="${contaPagar.id}">
+								 		<label></label>
+									</div>
+								</td>	
+								<td th:text="${contaPagar.empresa.sigla}"></td>
+								<td th:text="${contaPagar.notaFiscal}"></td>
+								<td th:text="${contaPagar.fornecedor.nome}"></td>
+								<td th:text="${{contaPagar.vencimento}}"></td>
+								<td th:text="${{contaPagar.valor}}"></td>
+
+								<td class="text-center">
+									<a class="btn  btn-link  btn-xs  js-tooltip  js-cancelar-btn" title="Cancelar" data:codigo="${contaPagar.id}"
+										sec:authorize-url="/financeiro/contaPagar/cancelarAutorizar"> 
+										<i class="glyphicon glyphicon-remove"></i>
+									</a>							
+								</td>
+							
+							</tr>
+							
+							<tr th:if="${#lists.isEmpty(contasAutorizadas)}">
+								<td colspan="7"> Nenhuma conta autorizada</td>
+							</tr>							
+						</tbody>
+					</table>
+				</div>
+				
+				<div class="row">
+					<div class="col-sm-3">
+						<button type="submit" class="btn  btn-success">Emitir Pagamento</button>
+						<a class="btn  btn-default" th:href="@{/financeiro/pagamento/pesquisar}">Cancelar e/ou voltar</a>
+					</div>					
+				</div>
+				
+				
+			</form>
+
+			
+		</div>		
+	</section>
+
+	<th:block layout:fragment="javascript-extra">
+		<script th:src="@{/javascripts/contaPagar.cancelarAutorizar.js}"></script>
+	</th:block>	
+
+</body>
+</html>

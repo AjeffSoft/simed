@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:sinte="http://sintecoop.ajeffsoft.com"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+	
+<body>
+<aside class="aw-layout-sidebar  js-sidebar" th:fragment="layout-sidebar">
+	<div class="aw-layout-sidebar__content">
+
+    	<nav class="aw-menu  js-menu">
+      		<ul class="aw-menu__list">
+
+        		<li class="aw-menu__item">
+          			<a th:href="@{/}"><i class="fa  fa-fw  fa-home"></i><span>Inicio</span></a>
+        		</li>
+
+				<li class="aw-menu__item">
+          			<a href="#">
+            			<i class="fa  fa-fw  fa-university"></i><span>Financeiro</span>
+            			<i class="aw-menu__navigation-icon  fa"></i>
+          			</a>
+      
+          			<ul class="aw-menu__list  aw-menu__list--sublist">
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/financeiro}">
+			            	<a th:href="@{/financeiro/extrato/selecionarConta}">Extrato</a>
+			            </li>
+
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/financeiro}">
+			            	<a th:href="@{/financeiro/movimentacao/pesquisar}">Movimentação</a>
+			            </li>
+
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/financeiro}">
+			            	<a th:href="@{/financeiro/planoConta/pesquisar}">Planos de conta</a>
+			            </li>
+			            
+          			</ul>
+          		</li>
+
+				<li class="aw-menu__item">
+          			<a href="#">
+            			<i class="fa  fa-fw  fa-usd"></i><span>Contas a Pagar</span>
+            			<i class="aw-menu__navigation-icon  fa"></i>
+          			</a>
+          			<ul class="aw-menu__list  aw-menu__list--sublist">
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/financeiro/contaPagar}">
+			            	<a th:href="@{/financeiro/contaPagar/pesquisar}">Contas a pagar</a>
+			            </li>
+			            
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/financeiro/contaPagar}">
+			            	<a th:href="@{/financeiro/imposto/pesquisar}">Impostos</a>
+			            </li>
+
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/financeiro/contaPagar}"
+			            	sec:authorize-url="/financeiro/fornecedor/pesquisar">
+			            	<a th:href="@{/financeiro/fornecedor/pesquisar}">Fornecedores</a>
+			            </li>
+
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/financeiro/contaPagar}">
+			            	<a th:href="@{/financeiro/pagamento/autorizarConta}">Autorizar contas</a>
+						</li>
+
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/financeiro/contaPagar}">
+			            	<a th:href="@{/financeiro/pagamento/pesquisar}">Pagamentos</a>
+						</li>
+						
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/financeiro/contaPagar}">
+			            	<a th:href="@{/financeiro/transferencia/pesquisar}">Transferencias</a>
+			            </li>			            
+
+          			</ul>
+        		</li>        		
+          		
+        		<li class="aw-menu__item">
+          			<a href="#">
+            			<i class="fa  fa-fw  fa-money"></i><span>Contas a Receber</span>
+            			<i class="aw-menu__navigation-icon  fa"></i>
+          			</a>
+      
+          			<ul class="aw-menu__list  aw-menu__list--sublist">
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/financeiro/contaReceber}">
+			            	<a th:href="@{/financeiro/contaReceber/pesquisar}">Contas Receber</a>
+			            </li>
+
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/financeiro/contaReceber}">
+			            	<a th:href="@{/financeiro/cliente/pesquisar}">Clientes</a>
+			            </li>			            
+          			</ul>
+        		</li>
+          		
+				<li class="aw-menu__item">
+          			<a href="#">
+            			<i class="fa  fa-fw  fa-file-text"></i><span>Cadastros</span>
+            			<i class="aw-menu__navigation-icon  fa"></i>
+          			</a>
+      
+          			<ul class="aw-menu__list  aw-menu__list--sublist">
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/geral}">
+			            	<a th:href="@{/financeiro/agencia/pesquisar}">Agencias bancárias</a>
+			            </li>			            
+          			</ul>
+
+          			<ul class="aw-menu__list  aw-menu__list--sublist">
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/geral}">
+			            	<a th:href="@{/financeiro/banco/pesquisar}">Bancos</a>
+			            </li>			            
+          			</ul>
+        		</li>          			
+      		</ul>
+    	</nav>
+	</div>
+</aside>
+</body>
+</html>

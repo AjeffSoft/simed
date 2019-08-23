@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:sinte="http://sintecoop.ajeffsoft.com"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+	
+<body>
+<aside class="aw-layout-sidebar  js-sidebar" th:fragment="layout-sidebar">
+	<div class="aw-layout-sidebar__content">
+
+    	<nav class="aw-menu  js-menu">
+      		<ul class="aw-menu__list">
+
+        		<li class="aw-menu__item">
+          			<a th:href="@{/}"><i class="fa  fa-fw  fa-home"></i><span>Dashboard</span></a>
+        		</li>
+
+        		<li class="aw-menu__item">
+          			<a href="#">
+            			<i class="fa  fa-fw  fa-file-text"></i><span>Cadastros</span>
+            			<i class="aw-menu__navigation-icon  fa"></i>
+          			</a>
+      
+          			<ul class="aw-menu__list  aw-menu__list--sublist">
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/financeiro/contaPagar}"
+			            	sec:authorize-url="/financeiro/contaPagar/pesquisar">
+			            	<a th:href="@{/financeiro/contaPagar/pesquisar}">Conta Pagar</a>
+			            </li>
+			            
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/financeiro/contaReceber}"
+			            	sec:authorize-url="/financeiro/contaReceber/pesquisar">
+			            	<a th:href="@{/financeiro/contaReceber/pesquisar}">Conta Receber</a>
+			            </li>
+			            
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/financeiro/imposto}"
+			            	sec:authorize-url="/financeiro/imposto/pesquisar">
+			            	<a th:href="@{/financeiro/imposto/pesquisar}">Impostos</a>
+			            </li>
+
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/financeiro/fornecedor}"
+			            	sec:authorize-url="/financeiro/fornecedor/pesquisar">
+			            	<a th:href="@{/financeiro/fornecedor/pesquisar}">Fornecedores</a>
+			            </li>
+
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/financeiro/cliente}"
+			            	sec:authorize-url="/financeiro/cliente/pesquisar">
+			            	<a th:href="@{/financeiro/cliente/pesquisar}">Clientes</a>
+			            </li>			            
+
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/financeiro/agencia}"
+			            	sec:authorize-url="/financeiro/agencia/pesquisar">
+			            	<a th:href="@{/financeiro/agencia/pesquisar}">Agencia bancária</a>
+			            </li>			            
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/financeiro/planoConta}"
+			            	sec:authorize-url="/financeiro/planoConta/pesquisar">
+			            	<a th:href="@{/financeiro/planoConta/pesquisar}">Plano de Conta</a>
+			            </li>
+
+          			</ul>
+        		</li>
+
+				<li class="aw-menu__item">
+          			<a href="#">
+            			<i class="fa  fa-fw  fa-usd"></i><span>Pagamentos</span>
+            			<i class="aw-menu__navigation-icon  fa"></i>
+          			</a>
+          			<ul class="aw-menu__list  aw-menu__list--sublist">
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/financeiro/pagamento}"
+			            	sec:authorize-url="/financeiro/pagamento/pesquisar">
+			            	<a th:href="@{/financeiro/pagamento/pesquisar}">Emissão</a>
+						</li>
+
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/financeiro/conta}"
+			            	sec:authorize-url="/financeiro/pagamento/autorizarConta">
+			            	<a th:href="@{/financeiro/pagamento/autorizarConta}">Autorizar Contas</a>
+						</li>
+						
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/financeiro/transferencia}"
+			            	sec:authorize-url="/financeiro/transferencia/pesquisar">
+			            	<a th:href="@{/financeiro/transferencia/pesquisar}">Transferencias</a>
+			            </li>			            
+
+          			</ul>
+        		</li>        		
+
+        		<li class="aw-menu__item">
+          			<a href="#">
+            			<i class="fa  fa-fw  fa-money"></i><span>Financeiro</span>
+            			<i class="aw-menu__navigation-icon  fa"></i>
+          			</a>
+      
+          			<ul class="aw-menu__list  aw-menu__list--sublist">
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/financeiro/extrato}"
+			            	sec:authorize-url="/financeiro/extrato/selecionarConta">
+			            	<a th:href="@{/financeiro/extrato/selecionarConta}">Extrato</a>
+			            </li>
+
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/financeiro/movimentacao}">
+			            	<a th:href="@{/financeiro/movimentacao/pesquisar}">Movimentação</a>
+			            </li>
+          			</ul>
+
+					<li class="aw-menu__item">
+	          			<a href="#">
+	            			<i class="fa  fa-fw  fa-search"></i><span>Pesquisa Satisfação</span>
+	            			<i class="aw-menu__navigation-icon  fa"></i>
+	          			</a>
+	          			<ul class="aw-menu__list  aw-menu__list--sublist">
+				            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/pesquisaSatisfacao/inicio}">
+				            	<a th:href="@{/pesquisaSatisfacao/inicio}">Inicio</a>
+							</li>
+	          			</ul>
+	        		</li> 
+
+
+        		
+				<li class="aw-menu__item">
+          			<a href="#">
+            			<i class="fa  fa-fw  fa-cog"></i><span>Configurações</span>
+            			<i class="aw-menu__navigation-icon  fa"></i>
+          			</a>
+      
+          			<ul class="aw-menu__list  aw-menu__list--sublist">
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/usuario}"	sec:authorize-url="/usuario">
+			            	<a th:href="@{/usuario}">Usuários</a>
+			            </li>
+          			</ul>
+
+          			<ul class="aw-menu__list  aw-menu__list--sublist">
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/grupo}" sec:authorize-url="/grupo/pesquisar">
+			            	<a th:href="@{/grupo/pesquisar}">Grupos</a>
+			            </li>
+          			</ul>
+
+          			<ul class="aw-menu__list  aw-menu__list--sublist">
+			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/permissao}" sec:authorize-url="/permissao/pesquisar">
+			            	<a th:href="@{/permissao/pesquisar}">Permissões</a>
+			            </li>
+          			</ul>
+
+        		</li>        		
+      		</ul>
+    	</nav>
+	</div>
+</aside>
+</body>
+</html>

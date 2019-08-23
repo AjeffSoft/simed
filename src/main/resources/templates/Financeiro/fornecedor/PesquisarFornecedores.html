@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Financeiro/LayoutFinanceiro}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+<head>
+	<title>Fornecedores</title>
+</head>
+
+<body>
+	<section layout:fragment="conteudo">
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Pesquisar fornecedores</h1>
+					</div>
+					
+					<div class="col-sm-2" sec:authorize-url="/financeiro/fornecedor/novo">
+						<div class="aw-page-header-controls">
+							<a class="btn  btn-warning" th:href="@{/financeiro/fornecedor/novo}">
+								<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Cadastrar</span>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+			<form method="GET" th:object="${fornecedorFilter}">
+				<div class="row">
+					<div class="form-group  col-sm-5">
+						<label class="control-label" for="nome">Nome</label>
+						<input type="search" class="form-control" id="nome" th:field="*{nome}" autofocus="autofocus" maxlength="60"/>
+					</div>
+
+					<div class="form-group  col-sm-5">
+						<label class="control-label" for="fantasia">Fantasia</label>
+						<input type="text" class="form-control" id="fantasia" th:field="*{fantasia}" maxlength="60"/>
+					</div>
+	
+					<div class="form-group  col-sm-2">
+						<label class="control-label" for="documento1">CPF/CNPJ</label>
+						<input type="text" class="form-control" id="documento1" th:field="*{documento1}" placeholder="Informe com a pontuação" maxlength="20"/>
+					</div>
+				</div>	
+			
+				<div class="form-group">
+					<button type="submit" class="btn  btn-primary">Pesquisar</button>
+					<a class="btn  btn-info" th:href="@{/financeiro/contaPagar/pesquisar}" sec:authorize-url="/financeiro/contaPagar/pesquisar">Conta a Pagar</a>
+				</div>			
+			</form>
+		
+			<br>
+			
+			<div class="table-responsive  bw-tabela-simples">
+				<table class="table  table-hover">
+					<thead>
+						<tr>
+							<th class="table-col-grande">
+								<simed:order page="${pagina}" field="nome" text="Nome"/>
+							</th>
+
+							<th class="table-col-grande">
+								<simed:order page="${pagina}" field="fantasia" text="Fantasia"/>
+							</th>
+
+							<th class="table-col-pequeno">
+								<simed:order page="${pagina}" field="documento1" text="Documento"/>
+							</th>
+							<th class="table-col-grande">
+								<simed:order page="${pagina}" field="endereco.cidade" text="Cidade"/>
+							</th>
+							<th class="table-col-grande">Telefone</th>
+							<th class="table-agencia-col-acoes"></th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						<tr th:each="fornecedor : ${pagina.conteudo}">
+							<td th:text="${fornecedor.nome}"></td>
+							<td th:text="${fornecedor.fantasia}"></td>
+							<td th:text="${fornecedor.documento1}"></td>
+							<td th:text="${fornecedor.endereco.cidade.nome} +' /'+ ${fornecedor.endereco.cidade.uf} "></td>
+							<td th:text="${fornecedor.telefone}"></td>
+							<td class="text-center">
+								
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes" sec:authorize-url="/financeiro/fornecedor/detalhe/**"
+									th:href="@{/financeiro/fornecedor/detalhe/{id}(id=${fornecedor.id})}"> 
+									<i class="glyphicon glyphicon-eye-open"></i>
+								</a>							
+								
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar" sec:authorize-url="/financeiro/fornecedor/alterar/**"
+										th:href="@{/financeiro/fornecedor/alterar/{id}(id=${fornecedor.id})}"> 
+									<i class="glyphicon glyphicon-pencil"></i>
+								</a>
+								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir" href="#" sec:authorize-url="/financeiro/fornecedor/excluir/**"
+									data:url="@{/financeiro/fornecedor/excluir/{id}(id=${fornecedor.id})}"
+									data:objeto="${fornecedor.nome}">
+									<i class="glyphicon glyphicon-trash"></i>
+								</a>
+							</td>
+						</tr>
+						
+						<tr th:if="${pagina.vazia}">
+							<td colspan="5"> Nenhum fornecedor encontrado</td>
+						</tr>
+						
+						
+					</tbody>
+				</table>
+			</div>
+
+			<!-- COMPONENTE THYMELEAF PARA PAGINAÇÃO -->	
+			<simed:pagination page="${pagina}"/>						
+
+		</div>		
+	</section>
+</body>
+</html>

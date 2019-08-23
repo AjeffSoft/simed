@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Financeiro/LayoutFinanceiro}"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+<head>
+	<title>Selecionar conta</title>
+</head>
+
+<body>
+	<section layout:fragment="conteudo">
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Selecione a conta bancária para exibir o extrato</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+			<form method="GET" th:object="${extratoFilter}" th:action="@{/financeiro/extrato/pesquisar}">
+			
+				<div class="row">	
+					<div class="col-sm-3  form-group">
+						<label for="empresa" class="control-label">Empresa</label>
+						<select id="empresa" class="form-control">
+							<option th:each="empresa : ${empresas}" th:value="${empresa.id}" th:text="${empresa.fantasia}"></option>
+						</select>
+					</div>
+
+ 					<div class="col-sm-9  form-group">
+						<label for="conta" class="control-label">Conta Bancária*</label>
+						<div class="bw-field-action">
+							<input type = "hidden" id="inputHiddenContaSelecionado">
+							<select id="conta" class="form-control" data:url="@{/contaEmpresa}" name="contaEmpresa">
+							</select>
+
+							<div class="bw-field-action__icon  js-img-loading" style="display: none">
+								<img th:src="@{/images/mini-loading.gif}"/>
+							</div>
+						</div>  
+					</div>
+				</div>	
+				
+				<button type="submit" class="btn  btn-info">Abrir extrato</button>
+			</form>
+		</div>		
+	</section>
+	
+<th:block layout:fragment="javascript-extra">
+	<script th:src="@{/javascripts/extrato.combo-selecionar-contas.js}"></script>
+</th:block>	
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Financeiro/LayoutFinanceiro}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+<head>
+	<title>Planos de contas</title>
+</head>
+
+<body>
+	<section layout:fragment="conteudo">
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Pesquisar planos de conta</h1>
+					</div>
+					
+					<div class="col-sm-2" sec:authorize-url="/financeiro/planoConta/novo">
+						<div class="aw-page-header-controls">
+							<a class="btn  btn-warning" th:href="@{/financeiro/planoConta/novo}">
+								<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Cadastrar</span>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+			<form method="GET" th:object="${planoContaFilter}">
+				<div class="row">
+					<div class="form-group  col-sm-9">
+						<label class="control-label" for="nome">Nome</label>
+						<input type="text" class="form-control" id="nome" th:field="*{nome}" autofocus="autofocus" maxlength="30"/>
+					</div>
+					
+					<div class="form-group  col-sm-3">
+						<label class="control-label">Tipo</label> 
+						<div>
+	  						<div class="radio  radio-inline">
+		    					<input id="credito" type="radio" value="CRÉDITO" th:field="*{tipo}"/>
+		    					<label for="credito" >Crédito</label>
+	    					</div>
+
+	  						<div class="radio  radio-inline">
+		    					<input id="debito" type="radio" value="DÉBITO" th:field="*{tipo}"/>
+		    					<label for="debito" >Débito</label>
+	    					</div>
+
+		  					<div class="radio  radio-inline">
+			    				<input id="todosTipos" type="radio" value="" th:checked="*{tipo} == null" name="tipo"/>
+			    				<label for="todosTipos" >Todos</label>
+		    				</div>
+						</div>
+					</div>							
+				</div>	
+				
+				<button type="submit" class="btn  btn-primary">Pesquisar</button>
+				<a class="btn  btn-info" th:href="@{/financeiro/pagamento/relatorio}" sec:authorize-url="/financeiro/pagamento/relatorio">Relatório</a>
+			</form>
+		
+			<br>
+			
+			<div class="table-responsive  bw-tabela-simples">
+				<table class="table  table-hover">
+					<thead>
+						<tr>
+							<th class="table-col-grande">
+								<simed:order page="${pagina}" field="nome" text="Nome"/>
+							</th>
+							<th class="table-col-pequeno">
+								<simed:order page="${pagina}" field="tipo" text="Tipo"/>
+							</th>
+							<th class="table-agencia-col-minimo">Situação</th>
+							<th class="table-agencia-col-acoes"></th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						<tr th:each="planoConta : ${pagina.conteudo}">
+							<td th:text="${planoConta.nome}"></td>
+							<td th:text="${planoConta.tipo}"></td>
+							<td>
+								<th:block th:if="${planoConta.situacao}">
+									<span class="label  label-success">Ativo</span>
+								</th:block>
+
+								<th:block th:unless="${planoConta.situacao}">
+									<span class="label  label-dander">Inativo</span>
+								</th:block>
+							</td>							
+							<td class="text-center">
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Contas Secundárias"
+										th:href="@{/financeiro/planoContaSecundaria/nova/{idPlanoConta}(idPlanoConta=${planoConta.id})}"> 
+									<i class="glyphicon glyphicon-plus"></i>
+								</a>
+
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes"
+										th:href="@{/financeiro/planoConta/detalhe/{id}(id=${planoConta.id})}"> 
+									<i class="glyphicon glyphicon-eye-open"></i>
+								</a>
+							
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar" sec:authorize-url="/financeiro/planoConta/alterar/**"
+										th:href="@{/financeiro/planoConta/alterar/{id}(id=${planoConta.id})}"> 
+									<i class="glyphicon glyphicon-pencil"></i>
+								</a>
+								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir" href="#" sec:authorize-url="/financeiro/planoConta/excluir/**"
+									data:url="@{/financeiro/planoConta/excluir/{id}(id=${planoConta.id})}"
+									data:objeto="${planoConta.nome}">
+									<i class="glyphicon glyphicon-trash"></i>
+								</a>
+							</td>
+						</tr>
+						
+						<tr th:if="${pagina.vazia}">
+							<td colspan="4"> Nenhum plano de conta encontrado</td>
+						</tr>
+						
+						
+					</tbody>
+				</table>
+			</div>
+
+			<!-- COMPONENTE THYMELEAF PARA PAGINAÇÃO -->	
+			<simed:pagination page="${pagina}"/>						
+
+		</div>		
+	</section>
+</body>
+</html>

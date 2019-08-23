@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Financeiro/LayoutFinanceiro}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+<head>
+	<title>Pesquisar contas a receber</title>
+</head>
+
+<body>
+	<section layout:fragment="conteudo">
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Pesquisar contas a receber</h1>
+					</div>
+
+					<div class="col-sm-2" sec:authorize-url="/financeiro/contaReceber/nova">
+						<div class="aw-page-header-controls">
+							<a class="btn  btn-warning" th:href="@{/financeiro/contaReceber/nova}">
+								<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Cadastrar</span>
+							</a>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+			<form method="GET" th:object="${contaReceberFilter}">
+				<div class="row">
+					<div class="col-sm-4  form-group">
+						<label for="empresa" class="control-label">Empresa</label>
+						<select id="empresa" class="form-control" th:field="*{empresa}">
+							<option th:each="empresa : ${empresas}" th:value="${empresa.id}" th:text="${empresa.fantasia}"></option>
+						</select>
+					</div>
+
+					<div class="form-group  col-sm-4">
+						<label class="control-label" for="fornecedor">Cliente</label>
+						<input type="text" class="form-control" id="nome"  autofocus="autofocus" th:field="*{fornecedor}" maxlength="30"/>
+					</div>
+					
+					<div class="form-group  col-sm-4">
+						<label class="control-label">Status</label> 
+						<div>
+	  						<div class="radio  radio-inline">
+		    					<input id="aberto" type="radio" value="ABERTO" th:field="*{status}"/>
+		    					<label for="aberto" >Aberto</label>
+	    					</div>
+
+	  						<div class="radio  radio-inline">
+		    					<input id="recebido" type="radio" value="RECEBIDO" th:field="*{status}"/>
+		    					<label for="recebido">Recebido</label>
+	    					</div>
+
+		  					<div class="radio  radio-inline">
+			    				<input id="todosTipos" type="radio" value="" th:checked="*{status} == null" name="status"/>
+			    				<label for="todosTipos" >Todos</label>
+		    				</div>
+						</div>
+					</div>					
+					
+				</div>
+				
+				<div class="row">
+					<div class="form-group  col-sm-4">
+						<label for="vencimentoInicio">Vencimento</label>
+						<div class="form-inline">
+							<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="vencimentoInicio" 
+								th:field="*{vencimentoInicio}" autocomplete="off" placeholder="Data Inicial"/>
+							<label for="vencimentoFim" class="aw-form-label-between">até</label>
+							<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="vencimentoFim" 
+								th:field="*{vencimentoFim}" autocomplete="off" placeholder="Data Final"/>
+						</div>
+					</div>		
+
+					<div class="form-group  col-sm-4">
+						<label for="valorInicio">Valor R$</label>
+						<div class="form-inline">
+							<input type="text" class="form-control  aw-form-control-inline-sm  js-decimal" id="valorInicio" 
+								th:field="*{valorInicio}" autocomplete="off" placeholder="Valor Inicial"/>
+							<label for="valorFim" class="aw-form-label-between">até</label>
+							<input type="text" class="form-control  aw-form-control-inline-sm  js-decimal" id="valorFim" 
+								th:field="*{valorFim}" autocomplete="off" placeholder="Valor Final"/>
+						</div>
+					</div>
+				</div>	
+									
+				<div class="form-group">
+					<button class="btn  btn-primary" type="submit">Pesquisar</button>
+					<a class="btn  btn-info" th:href="@{/financeiro/contaReceber/relatorio}" sec:authorize-url="/financeiro/contaReceber/relatorio">Relatórios</a>
+				</div>
+			</form>
+		
+			<div class="table-responsive  bw-tabela-simples">
+				<table class="table  table-hover">
+					<thead>
+						<tr>
+							<th class="table-col-minima">
+								<simed:order page="${pagina}" field="empresa" text="Emp"/>
+							</th>
+
+							<th class="table-col-minima">
+								<simed:order page="${pagina}" field="documento" text="Documento"/>
+							</th>
+
+							<th class="table-col-grande">
+								<simed:order page="${pagina}" field="fornecedor" text="Cliente"/>
+							</th>
+							
+							<th class="table-col-grande">
+								<simed:order page="${pagina}" field="vencimento" text="Vencimento"/>
+							</th>
+
+							<th class="table-col-grande">
+								<simed:order page="${pagina}" field="valor" text="Valor"/>
+							</th>
+
+							<th class="table-col-grande">Saldo</th>
+
+							<th class="table-col-grande">
+								<simed:order page="${pagina}" field="status" text="Status"/>
+							</th>
+
+							<th class="table-agencia-col-acoes"></th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						<tr th:each="contaReceber : ${pagina.conteudo}">
+							<td th:text="${contaReceber.empresa.sigla}"></td>
+							<td th:text="${contaReceber.documento}"></td>
+							<td th:text="${contaReceber.fornecedor.nome}"></td>
+							<td th:text="${{contaReceber.vencimento}}"></td>
+							<td th:text="${{contaReceber.valor}}"></td>
+							<td th:text="${{contaReceber.valor - contaReceber.valorRecebido}}"></td>
+							<td>
+								<th:block th:if="${contaReceber.aberto}">
+									<span class="label  label-info">Aberto</span>
+								</th:block>
+
+								<th:block th:if="${contaReceber.recebido}">
+									<span class="label  label-success">Recebido</span>
+								</th:block>
+								
+							</td>
+
+							<td class="text-center">
+
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Receber" th:if = "${contaReceber.aberto}" sec:authorize-url="/financeiro/contaReceber/receber/**"
+										th:href="@{/financeiro/recebimento/novo/{idContaReceber}(idContaReceber=${contaReceber.id})}"> 
+									<i class="glyphicon glyphicon-ok"></i>
+								</a>
+
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes" sec:authorize-url="/financeiro/contaReceber/detalheConta/**"
+										th:href="@{/financeiro/contaReceber/detalheConta/{id}(id=${contaReceber.id})}"> 
+									<i class="glyphicon glyphicon-eye-open"></i>
+								</a>
+								
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar" sec:authorize-url="/financeiro/contaReceber/alterar/**"
+										th:href="@{/financeiro/contaReceber/alterar/{id}(id=${contaReceber.id})}" th:if = "${contaReceber.aberto}"> 
+									<i class="glyphicon glyphicon-pencil"></i>
+								</a>
+
+								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir" href="#" th:if="${contaReceber.aberto}"
+									data:url="@{/financeiro/contaReceber/excluir/{id}(id=${contaReceber.id})}"
+									data:objeto="${contaReceber.documento}" sec:authorize-url="/financeiro/contaReceber/excluir/**">
+									<i class="glyphicon glyphicon-trash"></i>
+								</a>
+							</td>
+						</tr>
+						
+						<tr th:if="${pagina.vazia}">
+							<td colspan="7"> Nenhuma conta a receber encontrada</td>
+						</tr>
+						
+						
+					</tbody>
+				</table>
+				<p class="text-center  font-weight-bold">TOTAL R$: [[${{total}}]]</p>
+				<br>
+			</div>
+
+			<!-- COMPONENTE THYMELEAF PARA PAGINAÇÃO -->	
+			<simed:pagination page="${pagina}"/>						
+
+		</div>		
+	</section>
+	
+<th:block layout:fragment="javascript-extra">
+		<script th:src="@{/javascripts/contaReceber.cancelarRecebimento.js}"></script>
+
+</th:block>	
+</body>
+</html>

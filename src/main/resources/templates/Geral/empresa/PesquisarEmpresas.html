@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/LayoutPadrao}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+<head>
+	<title>Empresas</title>
+</head>
+
+<body>
+	<section layout:fragment="conteudo">
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Pesquisar empresas</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+			<form method="GET" th:object="${empresaFilter}">
+				<div class="row">
+					<div class="form-group  col-sm-8">
+						<label class="control-label" for="nome">Nome</label>
+						<input type="text" class="form-control" id="nome" th:field="*{nome}" autofocus="autofocus" maxlength="60"/>
+					</div>
+
+					<div class="form-group  col-sm-4">
+						<label class="control-label" for="cnpj">CNPJ</label>
+						<input type="text" class="form-control  js-cnpj" id="cnpj" th:field="*{cnpj}"/>
+					</div>
+				</div>	
+				
+				<button type="submit" class="btn  btn-primary">Pesquisar</button>
+			</form>
+		
+			<br>
+			
+			<div class="table-responsive  bw-tabela-simples">
+				<table class="table  table-hover">
+					<thead>
+						<tr>
+							<th class="table-col-pequena">Sigla</th>
+
+							<th class="table-col-grande">
+								<simed:order page="${pagina}" field="nome" text="Nome"/>
+							</th>
+
+							<th class="table-col-grande">
+								<simed:order page="${pagina}" field="fantasia" text="Fantasia"/>
+							</th>
+
+							<th class="table-col-pequena">
+								<simed:order page="${pagina}" field="cnpj" text="CNPJ"/>
+							</th>
+							<th class="table-col-grande">
+								<simed:order page="${pagina}" field="endereco.cidade" text="Cidade"/>
+							</th>
+							<th class="table-agencia-col-acoes"></th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						<tr th:each="empresa : ${pagina.conteudo}">
+							<td th:text="${empresa.sigla}"></td>
+							<td th:text="${empresa.nome}"></td>
+							<td th:text="${empresa.fantasia}"></td>
+							<td th:text="${empresa.cnpj}"></td>
+							<td th:text="${empresa.endereco.cidade.nome} +' /'+ ${empresa.endereco.cidade.uf} "></td>
+							<td class="text-center">
+							
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Conta Bancária" sec:authorize-url="/contaEmpresa/nova/**"
+										th:href="@{/contaEmpresa/nova/{idEmpresa}(idEmpresa=${empresa.id})}"> 
+									<i class="glyphicon glyphicon-plus"></i>
+								</a>
+															
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar"  sec:authorize-url="/empresa/alterar/**"
+										th:href="@{/empresa/alterar/{id}(id=${empresa.id})}"> 
+									<i class="glyphicon glyphicon-pencil"></i>
+								</a>
+								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir" href="#" sec:authorize-url="/empresa/excluir/**"
+									data:url="@{/empresa/excluir/{id}(id=${empresa.id})}"
+									data:objeto="${empresa.nome}">
+									<i class="glyphicon glyphicon-trash"></i>
+								</a>
+							</td>
+						</tr>
+						
+						<tr th:if="${pagina.vazia}">
+							<td colspan="6"> Nenhuma empresa encontrada</td>
+						</tr>
+						
+						
+					</tbody>
+				</table>
+			</div>
+
+			<!-- COMPONENTE THYMELEAF PARA PAGINAÇÃO -->	
+			<simed:pagination page="${pagina}"/>						
+
+		</div>		
+	</section>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Financeiro/LayoutFinanceiro}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+
+<title>Comprovante</title> 
+
+</head>
+
+
+	<section layout:fragment="conteudo">
+
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Pagamento emitido com sucesso!</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid" >
+			<form id="form" method="GET" class="form-vertical  js-form-loading">
+				<div class="form-group">
+					<a class="btn  btn-info" th:href="@{/financeiro/pagamento/contasAutorizadas}">Novo Pagamento</a>
+					<a th:href="@{/financeiro/pagamento/pesquisar}" class="btn  btn-default">Voltar</a>
+				</div>
+			</form>	
+		</div>
+	</section>
+</html>

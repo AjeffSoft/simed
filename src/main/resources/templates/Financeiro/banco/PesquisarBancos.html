@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Financeiro/LayoutFinanceiro}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+<head>
+	<title>Bancos</title>
+</head>
+
+<body>
+	<section layout:fragment="conteudo">
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Pesquisa de bancos</h1>
+					</div>
+					
+					<div class="col-sm-2" sec:authorize-url="/financeiro/banco/novo">
+						<div class="aw-page-header-controls">
+							<a class="btn  btn-default" th:href="@{/financeiro/banco/novo}">
+								<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Novo Banco</span>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+			<form method="GET" th:object="${bancoFilter}">
+				<div class="row">
+					<div class="form-group  col-sm-8">
+						<label class="control-label" for="nome">Nome</label>
+						<input type="text" class="form-control" id="nome" th:field="*{nome}" autofocus="autofocus" maxlength="30"/>
+					</div>
+					
+					<div class="form-group  col-sm-4">
+						<label class="control-label" for="codigo">Código</label>
+						<input type="text" class="form-control" id="codigo" th:field="*{codigo}" maxlength="5"/>
+					</div>
+				</div>
+				
+				
+				<button type="submit" class="btn  btn-primary">Pesquisar</button>
+			</form>
+		
+			<br>
+			
+			<div class="table-responsive  bw-tabela-simples">
+				<table class="table  table-hover">
+					<thead>
+						<tr>
+							<th class="table-col-minima">
+								<simed:order page="${pagina}" field="codigo" text="Código"/>
+							</th>
+							<th class="table-col-grande">
+								<simed:order page="${pagina}" field="nome" text="Nome"/>
+							</th>
+							<th class="table-col-grande">Situação</th>
+							
+							<th class="table-agencia-col-acoes"></th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						<tr th:each="banco : ${pagina.conteudo}">
+							<td th:text="${banco.codigo}"></td>
+							<td th:text="${banco.nome}"></td>
+							
+							<td>
+								<th:block th:if="${banco.situacao}">
+									<span class="label  label-success">Ativo</span>
+								</th:block>
+
+								<th:block th:unless="${banco.situacao}">
+									<span class="label  label-danger">Inativo</span>
+								</th:block>
+							</td>
+							
+							<td class="text-center">
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar" sec:authorize-url="/financeiro/banco/alterar/**"
+										th:href="@{/financeiro/banco/alterar/{id}(id=${banco.id})}"> 
+									<i class="glyphicon glyphicon-pencil"></i>
+								</a>
+								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir" href="#" sec:authorize-url="/financeiro/banco/excluir/**"
+									data:url="@{/financeiro/banco/excluir/{id}(id=${banco.id})}" data:objeto="${banco.nome}">
+									<i class="glyphicon glyphicon-trash"></i>
+								</a>
+							</td>
+						</tr>
+						
+						<tr th:if="${pagina.vazia}">
+							<td colspan="3"> Nenhum banco encontrado</td>
+						</tr>
+						
+						
+					</tbody>
+				</table>
+			</div>
+
+			<!-- COMPONENTE THYMELEAF PARA PAGINAÇÃO -->	
+			<simed:pagination page="${pagina}"/>						
+
+		</div>		
+	</section>
+</body>
+</html>

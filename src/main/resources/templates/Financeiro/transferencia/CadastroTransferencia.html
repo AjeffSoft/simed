@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Financeiro/LayoutFinanceiro}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+    <title>Cadastro de transferencias</title>
+</head>
+
+<body>
+	<section layout:fragment="conteudo">
+	
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-sm-10">
+						<h1 >Cadastro de transferência bancária</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+	
+		<div class="container-fluid">
+	
+			<form id="form" method="POST" th:object="${transferenciaContas}" class="form-vertical  js-form-loading"
+				th:action="${transferenciaContas.novo} ? @{/financeiro/transferencia/novo} : @{/financeiro/transferencia/{id}(id=${transferenciaContas.id})}">
+
+				<simed:message/>
+
+				<input type="hidden" th:field="*{id}">
+				
+				<div class="row">
+					<div class="col-sm-2  form-group" simed:classforerror="data">
+						<label for="emissao" class="control-label">Data*</label>
+						<input id="emissao" type="text" class="form-control  js-date" th:field = "*{data}" autocomplete="off"/>
+					</div>
+					
+					<div class="col-sm-2  form-group" simed:classforerror="tipo">
+						<label for="tipo" class="control-label">Tipo*</label>
+						<select id="tipo" class="form-control" th:field="*{tipo}">
+							<option value = "">Selecione...</option>
+							<option value="APLICAÇÃO">Aplicação</option>
+							<option value="DÉBITO AUTORIZADO">Débito autorizado</option>
+							<option value="REPASSE">Repasse</option>
+							<option value="TRANSFERENCIA">Transferencia</option>
+						</select>
+					</div>
+					
+					<div class="col-sm-2  form-group" simed:classforerror="valor">
+						<label for="valor" class="control-label">Valor*</label>
+						<div class="input-group">
+							<input id="valor" type="text" class="form-control  js-decimal" th:field = "*{valor}"/>
+							<div class="input-group-addon">R$</div>
+						</div>
+					</div>
+
+					<div>
+						<div class="col-sm-6  form-group">
+							<label for="observacao" class="control-label">Observações</label>
+							<input id="observacao" type="text" class="form-control" th:field = "*{observacao}" maxlength="60">
+						</div>				
+					</div>				
+				</div>
+				
+				<div class="row">	
+					<div class="col-sm-4  form-group">
+						<label for="empresa" class="control-label">Origem*</label>
+						<select id="empresa" class="form-control">
+							<option th:each="empresa : ${empresas}" th:value="${empresa.id}" th:text="${empresa.fantasia}"></option>
+						</select>
+					</div>
+
+ 					<div class="col-sm-8  form-group" simed:classforerror="contaOrigem">
+						<label for="conta" class="control-label">Conta Origem*</label>
+						<div class="bw-field-action">
+							<input type = "hidden" id="inputHiddenContaSelecionado">
+							<select id="conta" class="form-control" data:url="@{/contaEmpresa}" th:field="*{contaOrigem}">
+							</select>
+
+							<div class="bw-field-action__icon  js-img-loading" style="display: none">
+								<img th:src="@{/images/mini-loading.gif}"/>
+							</div>
+						</div>  
+					</div>
+				</div>				
+				
+				
+				<div class="row">
+					<div class="col-sm-12  form-group" simed:classforerror="contaDestino">
+						<label class="control-label">Conta de Destino*</label>
+						<select id="destino" class="form-control" th:field="*{contaDestino}">
+							<option value = "">Selecione a conta de destino</option>
+							<option th:each="destino : ${contasDestino}" th:value="${destino.id}" th:text="${destino.nome}+' - '+${destino.empresa.fantasia} + ' - ' +  ${destino.agencia.banco.nome} +' - '+ ${destino.conta}"></option>
+						</select>
+					</div>			
+				</div>
+				
+				<div class="form-group">
+						<button class="btn  btn-primary" type="submit">Salvar</button>
+						<a class="btn  btn-default" sec:authorize-url="/financeiro/transferencia/pesquisar" th:href="@{/financeiro/transferencia/pesquisar}"> Cancelar e/ou voltar	</a>
+				</div>
+			</form>
+		</div>
+	        
+	</section>
+<th:block layout:fragment="javascript-extra">
+	<script th:src="@{/javascripts/simed.combo-empresa-contaBanco.js}"></script>
+</th:block>	
+	
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Financeiro/LayoutFinanceiro}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+	<link rel="stylesheet" type="text/css" th:href="@{/stylesheets/vendors/bootstrap-toggle.min.css}"/>
+    <title>Cadastro de banco</title>
+</head>
+
+<body>
+	<section layout:fragment="conteudo">
+	
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-sm-10">
+						<h1 th:if="${banco.novo}">Cadastro de banco</h1>
+						<h1 th:unless="${banco.novo}">Alterando o banco [[${banco.nome}]]</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+	
+		<div class="container-fluid">
+	
+			<form id="form" method="POST" th:object="${banco}" class="form-vertical  js-form-loading"
+				th:action="${banco.novo} ? @{/financeiro/banco/novo} : @{/financeiro/banco/{id}(id=${banco.id})}">
+
+				<!-- COMPONENTE THYMELEAF PARA MENSAGENS DE ERRO E SUCESSO -->	
+				<simed:message/>
+		
+				
+				<input type="hidden" th:field="*{id}">
+
+				<div class="row">
+					<div class="col-sm-2  form-group" simed:classforerror="codigo">
+						<label for="codigo" class="control-label">Código*</label>
+						<input id="codigo" type="text" class="form-control" th:field="*{codigo}" maxlength="5"/>
+					</div>
+					
+					<div class="col-sm-8  form-group" simed:classforerror="nome">
+						<label for="nome" class="control-label">Nome*</label>
+						<input id="nome" type="text" class="form-control" th:field="*{nome}" maxlength="30"/>
+					</div>
+
+					<div class="form-group  col-sm-2">
+						<label class="control-label">Situação</label>
+						<div>
+							<input id="situacao" type="checkbox" checked data-toggle="toggle" class="form-control"  data-size="small"
+							 data-on="Ativo" data-off="Inativo" data-onstyle="success" data-offstyle="danger" th:field="*{situacao}"/>
+						</div>
+					</div>
+				</div>
+				
+				<div class="form-group">
+						<button class="btn  btn-primary" type="submit">Salvar</button>
+						<a class="btn  btn-default" th:href="@{/financeiro/banco/pesquisar}">Voltar	</a>
+				</div>
+		
+			</form>
+		</div>
+	        
+	</section>
+
+	<th:block layout:fragment="javascript-extra">
+		<script th:src="@{/javascripts/vendors/bootstrap-toggle.min.js}"></script>
+		
+		<script>
+			$('#situacao').bootstrapToggle();	
+		</script>
+
+	</th:block>	
+	
+</body>
+</html>

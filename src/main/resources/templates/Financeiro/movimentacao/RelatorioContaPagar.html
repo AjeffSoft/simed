@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Financeiro/LayoutFinanceiro}"
+	xmlns:brewer="http://brewer.algaworks.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+<head>
+	<title>Filtro Relatório</title>
+</head>
+
+<body>
+	<section layout:fragment="conteudo">
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Filtrar relatório de conta a pagar</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	
+		<div class="container-fluid">
+			<form method="POST" th:object="${periodoRelatorio}" th:action="@{/financeiro/contaPagar/relatorio}" id = "form"> 
+			
+				<div class="row">
+					<div class="col-sm-4  form-group">
+						<label for="comboFornecedor" class="control-label">Fornecedor</label>
+						<div class="bw-field-action">
+							<select id="comboFornecedor" class="form-control" th:field="*{fornecedor}">
+								<option value="">Selecione...</option>
+								<option th:each="fornecedor : ${fornecedores}" th:value="${fornecedor.id}" th:text="${fornecedor.fantasia}"></option>
+							</select>
+						</div>
+					</div>							
+					
+					<div class="col-sm-4  form-group">
+						<label for="comboEmpresa" class="control-label">Empresa</label>
+						<div class="bw-field-action">
+							<select id="comboEmpresa" class="form-control" th:field="*{empresa}">
+								<option value="">Selecione...</option>
+								<option th:each="empresa : ${empresas}" th:value="${empresa.id}" th:text="${empresa.fantasia}"></option>
+							</select>
+						</div>
+					</div>							
+					
+					<div class="col-sm-2  form-group">
+						<label for="comboConta" class="control-label">Plano Conta</label>
+						<div class="bw-field-action">
+							<select id="comboConta" class="form-control" th:field="*{planoConta}">
+								<option value="">Selecione...</option>
+								<option th:each="conta : ${contas}" th:value="${conta.id}" th:text="${conta.nome}"></option>
+							</select>
+						</div>
+					</div>							
+
+					<div class="col-sm-2  form-group">
+						<label for="sexo" class="control-label">Status</label>
+						<div class="bw-field-action">
+							<select id="sexo" class="form-control" th:field="*{status}">
+								<option value= "">Todos</option>
+			                    <option value="ABERTO">Aberto</option>
+			                    <option value="AUTORIZADO">Autorizado</option>
+			                    <option value="EMITIDO">Emitido</option>
+			                    <option value="PAGO">Pago</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="form-group  col-sm-4">
+						<label for="dataInicial">Vencimento</label>
+						<div class="form-inline">
+							<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="dataInicial" 
+								th:field="*{dataInicio}" autocomplete="off" placeholder="Data Inicial"/>
+							<label for="dataFinal" class="aw-form-label-between">até</label>
+							<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="dataFinal" 
+								th:field="*{dataFim}" autocomplete="off" placeholder="Data Final"/>
+						</div>
+					</div>
+
+					<div class="form-group  col-sm-4">
+						<label for="emisssaInicial">Emissão</label>
+						<div class="form-inline">
+							<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="emissaoInicial" 
+								th:field="*{emissaoInicio}" autocomplete="off" placeholder="Emissão Inicial"/>
+							<label for="emissaoFinal" class="aw-form-label-between">até</label>
+							<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="emissaoFinal" 
+								th:field="*{emissaoFim}" autocomplete="off" placeholder="Emissão Final"/>
+						</div>
+					</div>
+
+					<div class="form-group  col-sm-4">
+						<label for="valorInicial">Valor</label>
+						<div class="form-inline">
+							<input type="text" class="form-control  aw-form-control-inline-sm  js-decimal" id="valorInicial" 
+								th:field="*{valorInicio}" autocomplete="off" placeholder="Valor Inicial"/>
+							<label for="valorFinal" class="aw-form-label-between">até</label>
+							<input type="text" class="form-control  aw-form-control-inline-sm  js-decimal" id="valorFinal" 
+								th:field="*{valorFim}" autocomplete="off" placeholder="Valor Final"/>
+						</div>
+					</div>
+				</div>
+				
+				<br>	
+					
+				<div class="row">
+					<div class="col-lg-2 col-sm-2  form-group">
+						<label for="tipo" class="control-label">Tipo do Relatório</label>
+						<div>
+							<div class = "radio">
+								<input type="radio" id="listaSimples" name="tipo" value="simplificado" th:field="*{tipoRelatorio}">
+								<label class="control-label" for="listaSimples">Simplificado</label>							
+							</div>
+
+							<div class = "radio">
+								<input type="radio" id="listaCompleta" name="tipo" value="detalhado" th:field="*{tipoRelatorio}">
+								<label class="control-label" for="listaCompleta">Detalhado</label>							
+							</div>
+						</div>
+					</div>
+
+					<div class="col-lg-2 col-sm-2  form-group">
+						<label for="tipo" class="control-label">Ordenação</label>
+						<div>
+							<div class = "radio">
+								<input type="radio" id="orderFornecedor" name="tipo" value="fornecedor" th:field="*{ordenar}">
+								<label class="control-label" for="orderFornecedor">Fornecedor</label>							
+							</div>
+
+							<div class = "radio">
+								<input type="radio" id="orderEmpresa" name="tipo" value="empresa" th:field="*{ordenar}">
+								<label class="control-label" for="orderEmpresa">Empresa</label>							
+							</div>
+
+							<div class = "radio">
+								<input type="radio" id="orderVencimento" name="tipo" value="vencimento" th:field="*{ordenar}">
+								<label class="control-label" for="orderVencimento">Vencimento</label>							
+							</div>
+
+							<div class = "radio">
+								<input type="radio" id="orderValor" name="tipo" value="valor" th:field="*{ordenar}">
+								<label class="control-label" for="orderValor">Valor</label>							
+							</div>
+						</div>
+					</div>
+
+				</div>									
+
+				<div class="row" style="clear: both" >
+					<div class="col-lg-12">
+						<button formtarget="_blank" class="btn  btn-success" type="submit">Gerar Relatório</button>
+						<a class="btn  btn-danger" th:href="@{/financeiro/contaPagar/pesquisar}"> Cancelar e/ou voltar	</a>
+					</div>
+				</div>
+
+			</form>
+		</div>	
+	</section>
+	<th:block layout:fragment="javascript-extra">
+		<script th:src="@{/javascripts/validate/periodoRelatorio.validate.js}"></script>			
+
+		<script type="text/javascript">
+ 			$(function (){
+ 				$('#form').validate();			
+ 			});  
+ 		</script> 
+	</th:block>	
+	
+</body>
+</html>

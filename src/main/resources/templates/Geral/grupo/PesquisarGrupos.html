@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	layout:decorate="~{Geral/LayoutGeral}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+	
+<head>
+	<title>Grupos de usuários</title>
+</head>
+
+<body>
+	<section layout:fragment="conteudo">
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Pesquisar grupos de usuários</h1>
+					</div>
+					
+					<div class="col-sm-2">
+						<div class="aw-page-header-controls" sec:authorize-url="/grupo/novo">
+							<a class="btn  btn-warning" th:href="@{/grupo/novo}">
+								<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Cadastrar</span>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	
+		<div class="container-fluid">
+			<form method="GET" th:object="${grupoFilter}">
+				<div class="row">
+					<div class="form-group  col-sm-10">
+						<label class="control-label" for="nome">Nome do Grupo</label>
+						<input type="text" class="form-control" id="nome" autofocus="autofocus" th:field="*{nome}"/>
+					</div>
+				</div>
+	
+		
+				<button type="submit" class="btn  btn-primary">Pesquisar</button>
+			</form>
+
+		
+		<br><br>
+		
+			<div class="table-responsive  bw-tabela-simples">
+				<table class="table  table-hover">
+					<thead>
+						<tr>
+							<th class="table-agencia-col-banco">
+								<simed:order page="${pagina}" field="nome" text="Nome"/>						
+							</th>
+							<th class="table-agencia-col-acoes"></th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						<tr th:each="grupo : ${pagina.conteudo}">
+							<td th:text="${grupo.nome}"></td>
+							<td class="text-center">
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar" th:href="@{/grupo/alterar/{id}(id=${grupo.id})}"
+										sec:authorize-url="/grupo/alterar/**"> 
+									<i class="glyphicon glyphicon-pencil"></i>
+								</a>
+								<a class="btn  btn-link  btn-xs  js-tooltip  js-excluir-btn" title="Excluir" href="#"
+									data:url="@{/grupo/excluir/{id}(id=${grupo.id})}" sec:authorize-url="/grupo/excluir/**"
+									data:objeto="${grupo.nome}">
+									<i class="glyphicon glyphicon-trash"></i>
+								</a>
+							</td>
+						</tr>
+						<tr th:if="${pagina.vazia}">
+							<td colspan="2">Nenhum grupo encontrado</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<simed:pagination page="${pagina}"/>
+		</div>					
+	</section>
+</body>
+</html>	
