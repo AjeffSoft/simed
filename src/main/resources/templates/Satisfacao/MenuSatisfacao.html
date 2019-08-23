@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+	
+<body>
+<aside class="aw-layout-sidebar  js-sidebar" th:fragment="layout-sidebar">
+	<div class="aw-layout-sidebar__content">
+
+    	<nav class="aw-menu  js-menu">
+      		<ul class="aw-menu__list">
+
+        		<li class="aw-menu__item">
+          			<a th:href="@{/}"><i class="fa  fa-fw  fa-home"></i><span>Inicio</span></a>
+        		</li>
+
+				<li class="aw-menu__item">
+          			<a href="#">
+            			<i class="fa  fa-fw  fa-search"></i><span>Pesquisa</span>
+            			<i class="aw-menu__navigation-icon  fa"></i>
+          			</a>
+      
+          			<ul class="aw-menu__list  aw-menu__list--sublist">
+			            <li class="aw-menu__item  aw-menu__item--link" simed:menu="@{/satisfacao}">
+			            	<a th:href="@{/satisfacao/inicio}">Iniciar</a>
+			            </li>
+
+			            <li class="aw-menu__item  aw-menu__item--link" simed:menu="@{/satisfacao}">
+			            	<a th:href="@{/satisfacao/pergunta/pesquisar}">Perguntas</a>
+			            </li>			            
+          			</ul>
+          		</li>
+      		</ul>
+    	</nav>
+	</div>
+</aside>
+</body>
+</html>

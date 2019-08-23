@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	
+<head>
+	<meta charset="UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+	<link rel="stylesheet" type="text/css" th:href="@{/layoutPesquisa/bootstrap/css/bootstrap.min.css}"/>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	<title>Pesquisa de Satisfação</title>
+
+</head>
+<body>
+
+<div class="container-fluid  container-inicio" style="background-image: url('/simed/images/background1.png');">
+	<form method="GET" th:action="@{/pesquisaSatisfacao/novo}">
+		<div class="row">
+			<div style="height: 600px; width: 1200px;">
+				<div class="row" style="height:100px; margin-top: 400px;">
+					<div class="col-sm-11  form-group" align="right">
+
+						<div class="load" style="width: 200px;height: 190px;position: absolute;top: 0%;left: 70%;color: blue;">
+							<img alt="loading" th:src="@{/layoutPesquisa/loading.gif}">
+						</div>					
+						<button id="iniciar" class="btn  btn-success botoes" type="submit" style="width: 356px;height: 124px;font-size: 2rem; border-radius: 20px">Iniciar Pesquisa</button>
+					</div>
+				</div>	
+
+				<div class="row" style="height:50px; margin-top: 50px;">
+					<div class="col-sm-11  form-group" align="left">
+						<a class="btn  btn-danger  botoes" th:href="@{/logout}" style="width: 72px;height: 32px;border-radius: 20px">Logout</a>
+					</div>
+				</div>	
+
+
+			</div>				
+		</div>
+
+
+	</form>
+</div>
+
+	<script th:src="@{/layoutPesquisa/bootstrap/js/bootstrap.min.js}"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
+	<script>
+	    $(document).ready(function() {
+  		  $('.load').hide();
+  		  $('.botoes').show();
+    	});
+	 </script>	
+
+	<script>
+	    $('.botoes').click(function() {
+  		  $('.load').show();
+  		  $('.botoes').hide();
+    	});
+	 </script>
+
+</body>
+</html>

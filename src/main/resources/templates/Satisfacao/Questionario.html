@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sinte="http://sintecoop.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	
+<head>
+	<meta charset="UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+</head>
+<body>
+
+	<div class="container-fluid  visible" th:fragment="questionario">
+		
+		<th:block th:each="questionario, iterStat: ${questionarios}">
+
+		<div class="row">
+			<div class="questionario" style="height: 600px;width: 1200px;padding-left: 0px;padding-right: 0px;padding-top: 0px;padding-bottom: 0px;border-top-width: 0px;" th:id="'pergunta' + ${iterStat.count}" >
+
+				<div class="row" style="margin-top: 70px; height: 150px;">
+					<div class="col-sm-12  form-group">
+						<h1 class="text-justify  text-center  text-break  font-weight-bold  display-4" id="nomePergunta">[[${questionario.pergunta.nome}]]</h1>
+						<input id="pergunta" type="hidden" th:value="${questionario.pergunta.id}"/>							
+					</div>
+				</div>
+			
+				<div class="row" style="height:200px;" >
+					<div class="col-sm-1 form-group"></div>
+					<div class="col-sm-10 form-group" style="margin-top: 50px;">
+						
+						<div class="radios">
+							<input th:id="'nota'+ ${iterStat.count+1}" name="notas" type="radio" value="1">
+							<label th:for="'nota'+ ${iterStat.count+1}">Péssimo</label>
+							<input th:id="'nota'+ ${iterStat.count+2}" name="notas" type="radio" value="2">
+							<label th:for="'nota'+ ${iterStat.count+2}">Ruim</label>
+							<input th:id="'nota'+ ${iterStat.count+3}" name="notas" type="radio" value="3">
+							<label th:for="'nota'+ ${iterStat.count+3}">Regular</label>
+							<input th:id="'nota'+ ${iterStat.count+4}" name="notas" type="radio" value="4">
+							<label th:for="'nota'+ ${iterStat.count+4}">Bom</label>
+							<input th:id="'nota'+ ${iterStat.count+5}" name="notas" type="radio" value="5">
+							<label th:for="'nota'+ ${iterStat.count+5}">Ótimo</label>
+						</div>
+					</div>
+
+					<div class="col-sm-1 form-group"></div>
+				</div>
+
+				<div class="row" style="height: 170px;">
+					<div class="col-sm-11  form-group  areaBotoes" align="right">
+						<a class="btn  btn-success  btn-proximo" th:unless="${iterStat.last}" th:href="'#pergunta' + ${iterStat.count+1}"
+							style="width: 226px; height: 74px; font-size: 2rem; border-radius: 15px">Próximo</a>							
+						<a class="btn  btn-success  btn-incluir-questionario" th:if="${iterStat.last}" href="#critica"
+							style="width: 226px; height: 74px; font-size: 2rem; border-radius: 15px">Próximo</a>							
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

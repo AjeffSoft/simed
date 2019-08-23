@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
-	xmlns:sinte="http://sintecoop.ajeffsoft.com"
+	xmlns:simed="http://simed.ajeffsoft.com"
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 	
@@ -22,7 +22,7 @@
             			<i class="aw-menu__navigation-icon  fa"></i>
           			</a>
           			<ul class="aw-menu__list  aw-menu__list--sublist">
-			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/empresa}">
+			            <li class="aw-menu__item  aw-menu__item--link" simed:menu="@{/empresa}">
 			            	<a th:href="@{/empresa/pesquisar}">Empresas</a>
 			            </li>
           			</ul>
@@ -35,15 +35,15 @@
           			</a>
       
           			<ul class="aw-menu__list  aw-menu__list--sublist">
-			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/configuracao}">
+			            <li class="aw-menu__item  aw-menu__item--link" simed:menu="@{/configuracao}">
 			            	<a th:href="@{/usuario/pesquisar}">Usuários</a>
 			            </li>
 
-			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/configuracao}">
+			            <li class="aw-menu__item  aw-menu__item--link" simed:menu="@{/configuracao}">
 			            	<a th:href="@{/grupo/pesquisar}">Grupos</a>
 			            </li>
 
-			            <li class="aw-menu__item  aw-menu__item--link" sinte:menu="@{/configuracao}">
+			            <li class="aw-menu__item  aw-menu__item--link" simed:menu="@{/configuracao}">
 			            	<a th:href="@{/permissao/pesquisar}">Permissões</a>
 			            </li>
 

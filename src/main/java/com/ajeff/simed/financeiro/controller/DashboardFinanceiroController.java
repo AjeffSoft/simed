@@ -1,4 +1,4 @@
-package com.ajeff.simed.geral.controller;
+package com.ajeff.simed.financeiro.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -10,29 +10,15 @@ import com.ajeff.simed.geral.security.UsuarioSistema;
 import com.ajeff.simed.geral.service.UsuarioService;
 
 @Controller
-public class DashboardController {
+public class DashboardFinanceiroController {
 	
 	@Autowired
 	private UsuarioService usuarioService;
 	
-	
-	@GetMapping("/")
-	public ModelAndView index(@AuthenticationPrincipal UsuarioSistema usuarioSistema) {	
-		ModelAndView mv = new ModelAndView("Index");
-		mv.addObject("empresas", usuarioService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
-		return mv;
-	}
 
 	@GetMapping("/financeiro")
 	public ModelAndView financeiro(@AuthenticationPrincipal UsuarioSistema usuarioSistema) {	
 		ModelAndView mv = new ModelAndView("Financeiro/Dashboard");
-		mv.addObject("empresas", usuarioService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
-		return mv;
-	}
-	
-	@GetMapping("/geral")
-	public ModelAndView geral(@AuthenticationPrincipal UsuarioSistema usuarioSistema) {	
-		ModelAndView mv = new ModelAndView("Geral/DashboardGeral");
 		mv.addObject("empresas", usuarioService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
 		return mv;
 	}
