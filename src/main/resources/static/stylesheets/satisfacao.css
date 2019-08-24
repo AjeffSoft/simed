@@ -1,10 +1,30 @@
+.centered {
+    margin: 0 auto !important;
+    float: none !important;
+}
+
 .backgroundImage-inicio{
 	background-image: url('/simed/images/background1.png');
 }
 
+.backgroundImage-fim{
+	height:600px; 
+	width:1200px;	
+	background-image: url('/simed/images/background2.png');
+}
+
+
 .container-principal {
+	padding: 0px;
+	margin: 0px;
 	height:600px; 
 	width:1200px;
+}
+
+.container-pergunta {
+    margin: 15px;
+    width: 1170px;
+    height: 570px;
 }
 
 .area-botao-iniciar{
@@ -37,4 +57,17 @@
 	width:72px;
 	height:32px;
 	border-radius:20px
+}
+
+.btn-proximo {
+	width:226px; 
+	height:74px;
+	font-size:3rem;
+	border-radius:15px
+}
+
+.area-pergunta-botao {
+	height: 285px;
+	margin-left: 0px;
+	margin-right: 0px;
 }

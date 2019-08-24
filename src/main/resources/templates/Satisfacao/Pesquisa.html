@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
 	xmlns:th="http://www.thymeleaf.org"
-	xmlns:sinte="http://sintecoop.ajeffsoft.com"
+	xmlns:simed="http://simed.ajeffsoft.com"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 	
 <head>
@@ -15,88 +15,72 @@
 
 </head>
 <body>
-	<div th:replace="PesquisaSatisfacao/Questionario :: questionario">...</div>	
+	<div th:replace="Satisfacao/Questionario :: questionario">...</div>	
 	
-	<div class="container-fluid">
-		<div class="table-responsive  bw-tabela-simples">
-			<form method="POST" th:object="${pesquisaSatisfacao}" class="form-horizontal  js-form-loading" th:action="@{/pesquisaSatisfacao/novo}">			
+	<div class="container-fluid  container-principal">
+			<form method="POST" th:object="${pesquisaSatisfacao}" class="form-vertical  js-form-loading" th:action="@{/satisfacao/novo}">			
 				<input type="hidden" th:field="*{id}"/>
 				<input type="hidden" id="uuid" th:field="*{uuid}"/>
 
-				<div class="row">
-					<div style="height: 600px; width: 1200px;" id="critica">
-						<div class="row" style="height:250px; margin-top: 50px;">
-						
-							<div class="col-sm-12  form-group" align="center">
-								<h2 class="control-label  display-4" style="color: #5e5e5e">Criticas e Sugestões</h2>
-								<textarea id="critica" class="form-control" rows="6" maxlength="200" th:field="*{sugestao}"
-									placeholder="Gostaria de deixar um elogio, crítica ou sugestão para o meu atendimento?"
-									style="width: 826px;"></textarea>
-							</div>
-						</div>	
-					
-						<div class="row" style="height: 300px;">
-							<div class="col-sm-11  form-group  areaBotoes" align="right">
-								<a class="btn  btn-success  btn-proximo" href="#identificar"
-									style="width: 226px; height: 74px; font-size: 2rem; border-radius: 15px">Próximo</a>							
-							</div>
+				<div class="row  container-pergunta  hidden" id="sugestao">
+					<div class="row area-pergunta-botao">
+						<div class="col-sm-12 centered form-group">
+							<h2 class="control-label  display-4">Criticas e Sugestões</h2>
+							<textarea id="critica" class="form-control" rows="6" maxlength="200" th:field="*{sugestao}"
+								placeholder="Gostaria de deixar um elogio, crítica ou sugestão para o meu atendimento?"></textarea>
 						</div>
-					</div>				
+	
+						<div class="col-sm-3  centered form-group  areaBotoes">
+							<a class="btn  btn-success  btn-proximo" href="#identificacao">Próximo</a>							
+						</div>
+					</div>	
 				</div>					
 
-
-				<div class="row">
-					<div style="height: 600px; width: 1200px;" id="identificar">
-
-						<div class="row" style="height:50px; margin-top: 50px;">
-							<div class="col-sm-12  form-group" align="center">
-								<h2 class="control-label  display-4" style="color: #5e5e5e">Deseja se identificar?</h2>
-							</div>
-						</div>	
-
-						<div class="row" style="height:150px; margin-top: 50px;">
-							<div class="col-sm-8  form-group" align="center">
-								<input id="nomeCliente" class="form-control" maxlength="80" th:field="*{cliente}"
-									placeholder="Informe o seu nome" style="width: 600px;"/>
-							</div>
-
-							<div class="col-sm-4  form-group" align="center">
-								<input id="telefone" type="text" class="form-control  js-phone" th:field="*{telefone}" placeholder="Telefone" style="width: 250px;"/>
-							</div>
-						</div>	
-					
-						<div class="row" style="height: 300px;">
-							<div class="col-sm-11  form-group  areaBotoes" align="right">
-								<a class="btn  btn-success  btn-proximo" href="#finalizar"
-									style="width: 226px; height: 74px; font-size: 2rem; border-radius: 15px">Próximo</a>							
-							</div>
+				<div class="row  container-pergunta  hidden" id="identificacao">
+					<div class="row area-pergunta-botao">
+						<div class="col-sm-12 centered form-group">
+							<h2 class="control-label  display-4">Nome e Telefone</h2>
+							<input id="nomeCliente" class="form-control" maxlength="80" th:field="*{cliente}"
+									placeholder="Informe o seu nome"/>
 						</div>
-					</div>				
-				</div>					
 
-				<div class="row">
+						<div class="col-sm-3 form-group">
+							<input id="telefone" type="text" class="form-control  js-phone" th:field="*{telefone}" placeholder="Telefone"/>
+						</div>
+	
+						<div class="col-sm-3  centered form-group  areaBotoes">
+							<a class="btn  btn-success  btn-proximo" href="#identificar">Próximo</a>							
+						</div>
+					</div>	
+				</div>
+									
+
+				<div class="row  backgroundImage-fim" id="finalizar" >
+					<div class="row" style="margin-top: 200px;">
+						<div class="col-sm-3 form-group">
+							<div class="load  area-loading">
+								<img alt="loading" th:src="@{/layoutPesquisa/loading.gif}">
+							</div>					
+							<button class="btn  btn-success  botao-iniciar  btnFinalizar" type="submit">Salvar Pesquisa</button>
+							<a class="btn  btn-danger" th:href="@{/satisfacao/inicio}" style="width: 163px;height: 57px;font-size: 1.5rem;border-radius: 15px">Cancelar</a>
+						</div>
+					</div>
+				</div>				
+				
+				
+				
+				
+				
+				
+				
+				
+				<div class="row  hidden">
 					<div style="height: 600px; width: 1200px; background-image: url('/simed/images/background2.png');" id="finalizar" >
 					
-						<div class="row" style="height:150px; margin-top: 200px;">
-							<div class="col-sm-12  form-group" align="center">
-
-								<div class="load" style="width: 200px;height: 190px;position: absolute;top: 0%;left: 40%;color: blue;">
-									<img alt="loading" th:src="@{/layoutPesquisa/loading.gif}">
-								</div>					
-
-								<button class="btn  btn-success  btnFinalizar" type="submit" style="width: 326px;height: 114px;font-size: 2rem;border-radius: 15px">Salvar Pesquisa</button>
-							</div>
-						</div>	
-					
-						<div class="row" style="height:100px;">
-							<div class="col-sm-12  form-group btnFinalizar" align="center">
-								<a class="btn  btn-danger" th:href="@{/pesquisaSatisfacao/inicio}" style="width: 163px;height: 57px;font-size: 1.5rem;border-radius: 15px">Cancelar</a>
-							</div>
-						</div>	
+							
 					</div>				
 				</div>
 			</form>
-		</div>	
 	</div>
 	
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
