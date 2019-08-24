@@ -16,7 +16,7 @@ public class DashboardSatisfacaoController {
 	private UsuarioService usuarioService;
 		
 
-	@GetMapping("/pesqsatisfacao")
+	@GetMapping("/satisfacao")
 	public ModelAndView inicio(@AuthenticationPrincipal UsuarioSistema usuarioSistema) {	
 		ModelAndView mv = new ModelAndView("Satisfacao/DashboardSatisfacao");
 		mv.addObject("empresas", usuarioService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));

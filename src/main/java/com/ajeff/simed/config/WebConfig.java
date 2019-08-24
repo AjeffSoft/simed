@@ -45,12 +45,13 @@ import com.ajeff.simed.financeiro.controller.FornecedorController;
 import com.ajeff.simed.geral.controller.UsuarioController;
 import com.ajeff.simed.geral.controller.converter.CidadeConverter;
 import com.ajeff.simed.geral.thymeleaf.SimedDialect;
+import com.ajeff.simed.satisfacao.controller.PesquisaSatisfacaoControler;
 import com.github.mxab.thymeleaf.extras.dataattribute.dialect.DataAttributeDialect;
 
 import nz.net.ultraq.thymeleaf.LayoutDialect;
 
 @Configuration
-@ComponentScan(basePackageClasses= {UsuarioController.class, FornecedorController.class})
+@ComponentScan(basePackageClasses= {UsuarioController.class, FornecedorController.class, PesquisaSatisfacaoControler.class})
 @EnableWebMvc
 @EnableSpringDataWebSupport
 @EnableAsync
