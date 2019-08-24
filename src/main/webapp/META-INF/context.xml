@@ -5,7 +5,7 @@
             factory="org.apache.naming.factory.BeanFactory"
             type="com.mchange.v2.c3p0.ComboPooledDataSource"
             driverClass="com.mysql.cj.jdbc.Driver"
-			jdbcUrl="jdbc:mysql://localhost/simed?useSSL=false&amp;useTimezone=true&amp;serverTimezone=UTC"
+			jdbcUrl="jdbc:mysql://localhost:3306/simed?allowPublicKeyRetrieval=true&amp;useTimezone=true&amp;serverTimezone=UTC"
             user="root"
             password="1q2w3e4r5t" 
             initialPoolSize="5" 
