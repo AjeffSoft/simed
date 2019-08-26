@@ -56,6 +56,8 @@ public class Empresa implements Serializable{
 	private Endereco endereco;
 	
 	
+	
+	
 	@PrePersist
 	@PreUpdate
 	private void prePersistUpdate() {

@@ -15,12 +15,14 @@
 
 </head>
 <body>
-	<div th:replace="Satisfacao/Questionario :: questionario">...</div>	
 	
 	<div class="container-fluid  container-principal">
 			<form method="POST" th:object="${pesquisaSatisfacao}" class="form-vertical  js-form-loading" th:action="@{/satisfacao/novo}">			
 				<input type="hidden" th:field="*{id}"/>
 				<input type="hidden" id="uuid" th:field="*{uuid}"/>
+
+				<div th:replace="Satisfacao/Questionario :: questionario">...</div>	
+				
 
 				<div class="row  container-pergunta  hidden" id="sugestao">
 					<div class="row area-pergunta-botao">
@@ -66,13 +68,7 @@
 						</div>
 					</div>
 				</div>				
-				
-				
-				
-				
-				
-				
-				
+
 				
 				<div class="row  hidden">
 					<div style="height: 600px; width: 1200px; background-image: url('/simed/images/background2.png');" id="finalizar" >
