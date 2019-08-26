@@ -16,7 +16,7 @@
 </head>
 <body>
 	
-	<div class="container-fluid  container-principal">
+	<div class="container-fluid">
 			<form method="POST" th:object="${pesquisaSatisfacao}" class="form-vertical  js-form-loading" th:action="@{/satisfacao/novo}">			
 				<input type="hidden" th:field="*{id}"/>
 				<input type="hidden" id="uuid" th:field="*{uuid}"/>
@@ -24,7 +24,7 @@
 				<div th:replace="Satisfacao/Questionario :: questionario">...</div>	
 				
 
-				<div class="row  container-pergunta  hidden" id="sugestao">
+				<div class="row  container-principal" id="sugestao">
 					<div class="row area-pergunta-botao">
 						<div class="col-sm-12 centered form-group">
 							<h2 class="control-label  display-4">Criticas e Sugestões</h2>
@@ -38,7 +38,7 @@
 					</div>	
 				</div>					
 
-				<div class="row  container-pergunta  hidden" id="identificacao">
+				<div class="row  container-principal" id="identificacao">
 					<div class="row area-pergunta-botao">
 						<div class="col-sm-12 centered form-group">
 							<h2 class="control-label  display-4">Nome e Telefone</h2>
@@ -79,9 +79,7 @@
 			</form>
 	</div>
 	
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-	<script th:src="@{/layoutPesquisa/pesquisa.TabelaQuestionario.js}"></script>
-	<script th:src="@{/layoutPesquisa/jquery.radios-to-slider.js}"></script>
+	<script th:src="@{/javascripts/satisfacao.tabela-questionario.js}"></script>
 
 	<script>
 	    $(document).ready(function() {
@@ -96,17 +94,6 @@
   		  $('.btnFinalizar').hide();
     	});
 	 </script>	
-
-	
-	<script>
-	$(".radios").radiosToSlider({
-		size: 'medium',
-	  	animation: true,
-	  	fitContainer: true,
-	  	isDisable: false,
-	  	onSelect: null
-	});
-
 </script>	
 </body>
 </html>

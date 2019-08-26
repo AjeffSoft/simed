@@ -16,10 +16,10 @@
 		
 		<th:block th:each="questionario, iterStat: ${questionarios}">
 
-		<div class="row">
-			<div class="questionario" style="height: 600px;width: 1200px;padding-left: 0px;padding-right: 0px;padding-top: 0px;padding-bottom: 0px;border-top-width: 0px;" th:id="'pergunta' + ${iterStat.count}" >
+		<div class="row  container-principal" style="background-color: yellow">
+			<div class="questionario" th:id="'pergunta' + ${iterStat.count}" >
 
-				<div class="row" style="margin-top: 70px; height: 150px;">
+				<div class="row" style="margin-top: 70px; height: 150px; background-color: red">
 					<div class="col-sm-12  form-group">
 						<h1 class="text-justify  text-center  text-break  font-weight-bold  display-4" id="nomePergunta">[[${questionario.pergunta.nome}]]</h1>
 						<input id="pergunta" type="hidden" th:value="${questionario.pergunta.id}"/>							
