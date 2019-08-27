@@ -9,6 +9,7 @@
 	<link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/algaworks.min.css}"/>
 	<link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/application.css}"/>
 	<link rel="stylesheet" type="text/css" th:href="@{/stylesheets/satisfacao.css}"/>
+	<link rel="stylesheet" type="text/css" th:href="@{/stylesheets/vendors/jquery-radiocharm.css}"/>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
 	<title>Pesquisa</title>
@@ -79,8 +80,18 @@
 			</form>
 	</div>
 	
+	<script th:src="@{/layout/javascripts/vendors.min.js}"></script>
+	<script th:src="@{/layout/javascripts/algaworks.min.js}"></script>
 	<script th:src="@{/javascripts/satisfacao.tabela-questionario.js}"></script>
+	<script th:src="@{/javascripts/vendors/jquery-radiocharm.js}"></script>
 
+	<script>
+	$('input:radio').radiocharm({
+		  'uncheckable': false
+		});
+	
+	</script>
+	
 	<script>
 	    $(document).ready(function() {
   		  $('.load').hide();
@@ -94,6 +105,5 @@
   		  $('.btnFinalizar').hide();
     	});
 	 </script>	
-</script>	
 </body>
 </html>

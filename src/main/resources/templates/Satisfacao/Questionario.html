@@ -9,6 +9,7 @@
 	<meta charset="UTF-8"/>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	
 </head>
 <body>
 
@@ -16,10 +17,10 @@
 		
 		<th:block th:each="questionario, iterStat: ${questionarios}">
 
-		<div class="row  container-principal" style="background-color: yellow">
+		<div class="row  container-principal">
 			<div class="questionario" th:id="'pergunta' + ${iterStat.count}" >
 
-				<div class="row" style="margin-top: 70px; height: 150px; background-color: red">
+				<div class="row" style="margin-top: 70px; height: 150px">
 					<div class="col-sm-12  form-group">
 						<h1 class="text-justify  text-center  text-break  font-weight-bold  display-4" id="nomePergunta">[[${questionario.pergunta.nome}]]</h1>
 						<input id="pergunta" type="hidden" th:value="${questionario.pergunta.id}"/>							
@@ -30,18 +31,12 @@
 					<div class="col-sm-1 form-group"></div>
 					<div class="col-sm-10 form-group" style="margin-top: 50px;">
 						
-						<div class="radios">
-							<input th:id="'nota'+ ${iterStat.count+1}" name="notas" type="radio" value="1">
-							<label th:for="'nota'+ ${iterStat.count+1}">Péssimo</label>
-							<input th:id="'nota'+ ${iterStat.count+2}" name="notas" type="radio" value="2">
-							<label th:for="'nota'+ ${iterStat.count+2}">Ruim</label>
-							<input th:id="'nota'+ ${iterStat.count+3}" name="notas" type="radio" value="3">
-							<label th:for="'nota'+ ${iterStat.count+3}">Regular</label>
-							<input th:id="'nota'+ ${iterStat.count+4}" name="notas" type="radio" value="4">
-							<label th:for="'nota'+ ${iterStat.count+4}">Bom</label>
-							<input th:id="'nota'+ ${iterStat.count+5}" name="notas" type="radio" value="5">
-							<label th:for="'nota'+ ${iterStat.count+5}">Ótimo</label>
-						</div>
+						<input data-radiocharm-background-color="C0392B" data-radiocharm-text-color="FFF" data-radiocharm-label="PÉSSIMO" type="radio">
+						<input data-radiocharm-label="RUIM" data-radiocharm-background-color="D65548" data-radiocharm-text-color="FFF" type="radio">
+						<input data-radiocharm-label="REGULAR" data-radiocharm-background-color="F1C40F" data-radiocharm-text-color="FFF" type="radio">
+						<input data-radiocharm-label="BOM" data-radiocharm-background-color="2dca3a" data-radiocharm-text-color="FFF" type="radio">
+						<input data-radiocharm-label="ÓTIMO" data-radiocharm-background-color="1b7923" data-radiocharm-text-color="FFF" type="radio">
+
 					</div>
 
 					<div class="col-sm-1 form-group"></div>
