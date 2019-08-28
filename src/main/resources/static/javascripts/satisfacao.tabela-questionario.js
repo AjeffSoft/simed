@@ -4,7 +4,7 @@ Sinte.TabelaQuestionario = (function() {
 	
 	function TabelaQuestionario() {
 		this.inputPergunta = $('.js-pergunta');
-		this.inputNota = $('.js-nota');
+//		this.inputNota = $('.js-nota');
 		this.Uuid = $('#uuid');
 		this.btnIncluir = $('.btn-incluir-questionario');
 	}
@@ -18,10 +18,15 @@ Sinte.TabelaQuestionario = (function() {
 		var uuid = this.Uuid.val().trim();
 		
 		var questoes = $('.questionario');
+		var nota1 = $(".radio1").val();
+		console.log(nota1);
 		
 		questoes.each(function(i, questao){
 			var primeiro = questoes[i];
-			var nota = $(primeiro).find(".radios").data("value");
+			var nota = $(primeiro).find(".radio").data("value");
+
+			console.log(primeiro);
+
 			console.log(nota);
 //			var botaoClicado = $(event.currentTarget);
 //			var idPergunta = botaoClicado.data('pergunta');
