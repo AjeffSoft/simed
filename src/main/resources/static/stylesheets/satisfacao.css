@@ -1,11 +1,12 @@
+body{
+	background-image: url('/simed/images/background1.png');
+}
+
 .centered {
     margin: 0 auto !important;
     float: none !important;
 }
 
-.backgroundImage-inicio{
-	background-image: url('/simed/images/background1.png');
-}
 
 .backgroundImage-fim{
 	background-image: url('/simed/images/background2.png');

@@ -2,19 +2,15 @@
 <html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:simed="http://simed.ajeffsoft.com"
+	layout:decorate="~{Satisfacao/LayoutSatisfacaoSimples}"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 	
 <head>
-	<link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/vendors.min.css}"/>
-	<link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/algaworks.min.css}"/>
-	<link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/application.css}"/>
-	<link rel="stylesheet" type="text/css" th:href="@{/stylesheets/satisfacao.css}"/>
-	<link rel="stylesheet" type="text/css" th:href="@{/stylesheets/vendors/jquery-radiocharm.css}"/>
 
 	<title>Pesquisa</title>
 
 </head>
-<body>
+<section layout:fragment="conteudo">
 	
 	<div class="container-fluid">
 			<form method="POST" th:object="${pesquisaSatisfacao}" class="form-vertical  js-form-loading" th:action="@{/satisfacao/novo}">			
@@ -104,5 +100,5 @@
   		  $('.btnFinalizar').hide();
     	});
 	 </script>	
-</body>
+</section>
 </html>
