@@ -1,47 +1,68 @@
-var Sinte = Sinte || {};
+var Simed = Simed || {};
 
-Sinte.TabelaQuestionario = (function() {
+Simed.TabelaQuestionario = (function() {
 	
 	function TabelaQuestionario() {
-		this.inputPergunta = $('.js-pergunta');
-//		this.inputNota = $('.js-nota');
 		this.Uuid = $('#uuid');
 		this.btnIncluir = $('.btn-incluir-questionario');
 	}
 	
 	TabelaQuestionario.prototype.iniciar = function() {
-		this.btnIncluir.on('click', onBotaoClicado.bind(this));
+		this.btnIncluir.on('click', onSelecionado.bind(this));
+
 	}
 	
+	
+	function onSelecionado (){
+		var idPergunta = $(this).find("#perguntaQuestao").val();
+		var nota = $('.js-notas:checked').val();
+		console.log("Pergunta: ", idPergunta);
+		console.log("Nota: ", nota);			
+		
+		
+	}
 
 	function onBotaoClicado(event){
 		var uuid = this.Uuid.val().trim();
 		
 		var questoes = $('.questionario');
-		var nota1 = $(".radio1").val();
-		console.log(nota1);
 		
-		questoes.each(function(i, questao){
-			var primeiro = questoes[i];
-			var nota = $(primeiro).find(".radio").data("value");
 
-			console.log(primeiro);
-
-			console.log(nota);
-//			var botaoClicado = $(event.currentTarget);
-//			var idPergunta = botaoClicado.data('pergunta');
-			var idPergunta = $(primeiro).find("#pergunta").val();
-
-			console.log(idPergunta);
 			
-			var resposta = $.ajax({
-				url: 'questao',
-				method: 'POST',
-				data: {
-					idPergunta: idPergunta, nota: nota, uuid: uuid
-				}
+		
+		
+		questoes.each(function(i){
+
+			console.log("Pergunta: ", idPergunta);
+			console.log("Nota: ", perg);			
+			
+			var perg2 = $(questao).find('.js-notas2:checked').val();
+			console.log("Nota: ", perg2);			
+			//
+//			console.log(nota);
+//
+//			var idPergunta = $(primeiro).find("#pergunta").val();
+//
+//			console.log(idPergunta);
+//			
+//			var resposta = $.ajax({
+//				url: 'questao',
+//				method: 'POST',
+//				data: {
+//					idPergunta: idPergunta, nota: nota, uuid: uuid
+//				}
 			});
-		});
+
+//		$('.js-notas').each(function(){
+//			if($(this).is(':checked'))
+//				var nota = $(this).val();
+//			console.log(nota);
+//		})
+		
+		
+		
+//		});
+			
 
 		
 //		resposta.done(function(data){
@@ -55,7 +76,7 @@ Sinte.TabelaQuestionario = (function() {
 
 $(function() {
 	
-	var tabelaQuestionario = new Sinte.TabelaQuestionario();
+	var tabelaQuestionario = new Simed.TabelaQuestionario();
 	tabelaQuestionario.iniciar();
 	
 });
