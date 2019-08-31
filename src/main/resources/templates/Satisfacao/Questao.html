@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sinte="http://sintecoop.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	
+<head>
+	<meta charset="UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	
+</head>
+<body>
+
+	<div class="container-fluid  visible" th:fragment="questao">
+		
+		<th:block th:each="questao, iterStat: ${questoes}">
+			<div class="row">
+				<div class="col-sm-12  form-group">
+					<h1 class="text-justify  text-center  text-break  font-weight-bold  display-4" id="nomePergunta">[[${questao.nome}]]</h1>
+					<input type="hidden" th:value="${questao.id}"/>							
+				</div>
+			</div>
+		</th:block>
+	</div>
+</body>
+</html>

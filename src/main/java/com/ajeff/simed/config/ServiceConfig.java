@@ -8,10 +8,10 @@ import com.ajeff.simed.financeiro.service.FornecedorService;
 import com.ajeff.simed.financeiro.storage.UploadContaPagarStorageLocal;
 import com.ajeff.simed.financeiro.storage.UploadStorage;
 import com.ajeff.simed.geral.service.UsuarioService;
-import com.ajeff.simed.satisfacao.service.PesquisaSatisfacaoService;
+import com.ajeff.simed.satisfacao.service.PesquisaService;
 
 @Configuration
-@ComponentScan(basePackageClasses = {UsuarioService.class, FornecedorService.class, PesquisaSatisfacaoService.class})
+@ComponentScan(basePackageClasses = {UsuarioService.class, FornecedorService.class, PesquisaService.class})
 public class ServiceConfig {
 	
 	@Bean

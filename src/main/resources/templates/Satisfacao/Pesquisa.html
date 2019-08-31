@@ -2,154 +2,23 @@
 <html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:simed="http://simed.ajeffsoft.com"
+	layout:decorate="~{Satisfacao/LayoutSatisfacaoSimples}"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 	
 <head>
-	<link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/vendors.min.css}"/>
-	<link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/algaworks.min.css}"/>
-	<link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/application.css}"/>
-	<link rel="stylesheet" type="text/css" th:href="@{/stylesheets/satisfacao.css}"/>
-	<link rel="stylesheet" type="text/css" th:href="@{/stylesheets/vendors/jquery-radiocharm.css}"/>
-
 	<title>Pesquisa</title>
-
 </head>
-<body>
+	<section layout:fragment="conteudo">
 	
-	<div class="container-fluid">
-			<form method="POST" th:object="${pesquisaSatisfacao}" class="form-vertical  js-form-loading" th:action="@{/satisfacao/novo}">			
+		<div class="container-fluid">
+			<form method="POST" th:object="${pesquisa}" class="form-vertical  js-form-loading" th:action="@{/satisfacao/novo}">			
 				<input type="hidden" th:field="*{id}"/>
 				<input type="hidden" id="uuid" th:field="*{uuid}"/>
-
-<!-- 				<div th:replace="Satisfacao/Questionario :: questionario">...</div>	 -->
 				
-
-				<div class="row  container-principal" id="sugestao">
-					<div class="row area-pergunta-botao">
-						<div class="col-sm-12 centered form-group">
-							<h2 class="control-label  display-4">Criticas e Sugestões</h2>
-							<textarea id="critica" class="form-control" rows="6" maxlength="200" th:field="*{sugestao}"
-								placeholder="Gostaria de deixar um elogio, crítica ou sugestão para o meu atendimento?"></textarea>
-						</div>
-	
-						<div class="col-sm-3  centered form-group  areaBotoes">
-							<a class="btn  btn-success  btn-proximo" href="#identificacao">Próximo</a>							
-						</div>
-					</div>	
-				</div>					
-
-				<div class="row  container-principal" id="identificacao">
-					<div class="row area-pergunta-botao">
-						<div class="col-sm-12 centered form-group">
-							<h2 class="control-label  display-4">Nome e Telefone</h2>
-							<input id="nomeCliente" class="form-control" maxlength="80" th:field="*{cliente}"
-									placeholder="Informe o seu nome"/>
-						</div>
-
-						<div class="col-sm-3 form-group">
-							<input id="telefone" type="text" class="form-control  js-phone" th:field="*{telefone}" placeholder="Telefone"/>
-						</div>
-	
-						<div class="col-sm-3  centered form-group  areaBotoes">
-							<a class="btn  btn-success  btn-proximo" href="#identificar">Próximo</a>							
-						</div>
-					</div>	
-				</div>
+				<div th:replace="Satisfacao/Questao :: questao">...</div>	
 				
-				
-				<div class="row  container-principal" id="perguntas">
-					<th:block th:each="questionario, iterStat: ${questionarios}">
-
-						<div class="row  container-principal">
-							<div class="questionario" th:id="'pergunta' + ${iterStat.count}" >
-				
-								<div class="row" style="margin-top: 70px; height: 150px">
-									<div class="col-sm-12  form-group">
-										<h1 class="text-justify  text-center  text-break  font-weight-bold  display-4" id="nomePergunta">[[${questionario.pergunta.nome}]]</h1>
-										<input id="perguntaQuestao" type="hidden" th:field="*{questionario.pergunta}"/>							
-										<input id="perguntaQuestao" type="hidden" th:value="${questionario.pergunta.id}"/>							
-									</div>
-								</div>
-							
-								<div class="row" style="height:200px;" >
-									<div class="col-sm-10 form-group" style="margin-top: 50px;">
-										
-										<div class="radios">
-											<input class = "js-notas" data-radiocharm-background-color="C0392B" data-radiocharm-text-color="FFF" 
-											data-radiocharm-label="PÉSSIMO" type="radio" value="1">
-											<input class = "js-notas" data-radiocharm-label="RUIM" data-radiocharm-background-color="D65548" 
-											data-radiocharm-text-color="FFF" type="radio" value="2">
-											<input class = "js-notas" data-radiocharm-label="REGULAR" data-radiocharm-background-color="F1C40F" 
-											data-radiocharm-text-color="FFF" type="radio" value="3">
-											<input class = "js-notas" data-radiocharm-label="BOM" data-radiocharm-background-color="2dca3a" 
-											data-radiocharm-text-color="FFF" type="radio" value="4">
-											<input class = "js-notas" data-radiocharm-label="ÓTIMO" data-radiocharm-background-color="1b7923" 
-											data-radiocharm-text-color="FFF" type="radio" value="5">
-										</div>
-									</div>
-				
-								</div>
-				
-								<div class="row" style="height: 170px;">
-									<div class="col-sm-11  form-group  areaBotoes" align="right">
-										<a class="btn  btn-success  btn-proximo" th:href="'#pergunta' + ${iterStat.count+1}"
-											style="width: 226px; height: 74px; font-size: 2rem; border-radius: 15px">Prximo</a>							
-										<a class="btn  btn-success  btn-incluir-questionario"  href="#critica"
-											style="width: 226px; height: 74px; font-size: 2rem; border-radius: 15px">Próximo</a>							
-									</div>
-								</div>
-							</div>
-						</div>
-					</th:block>
-				</div>				
-									
-
-				<div class="row  backgroundImage-fim" id="finalizar" >
-					<div class="row" style="margin-top: 200px;">
-						<div class="col-sm-3 form-group">
-							<div class="load  area-loading">
-								<img alt="loading" th:src="@{/layoutPesquisa/loading.gif}">
-							</div>					
-							<button class="btn  btn-success  botao-iniciar  btnFinalizar" type="submit">Salvar Pesquisa</button>
-							<a class="btn  btn-danger" th:href="@{/satisfacao/inicio}" style="width: 163px;height: 57px;font-size: 1.5rem;border-radius: 15px">Cancelar</a>
-						</div>
-					</div>
-				</div>				
-
-				
-				<div class="row  hidden">
-					<div style="height: 600px; width: 1200px; background-image: url('/simed/images/background2.png');" id="finalizar" >
-					
-							
-					</div>				
-				</div>
 			</form>
-	</div>
-	
-	<script th:src="@{/layout/javascripts/vendors.min.js}"></script>
-	<script th:src="@{/layout/javascripts/algaworks.min.js}"></script>
-	<script th:src="@{/javascripts/satisfacao.tabela-questionario.js}"></script>
-	<script th:src="@{/javascripts/vendors/jquery-radiocharm.js}"></script>
+		</div>
 
-	<script>
-	$('input:radio').radiocharm({
-		  'uncheckable': true
-		});
-	
-	</script>
-	
-	<script>
-	    $(document).ready(function() {
-  		  $('.load').hide();
-  		  $('.btnFinalizar').show();
-    	});
-	 </script>	
-
-	<script>
-	    $('.btnFinalizar').click(function() {
-  		  $('.load').show();
-  		  $('.btnFinalizar').hide();
-    	});
-	 </script>	
-</body>
+</section>
 </html>

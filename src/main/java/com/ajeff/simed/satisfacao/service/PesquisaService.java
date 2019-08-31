@@ -10,16 +10,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ajeff.simed.geral.model.Usuario;
 import com.ajeff.simed.satisfacao.model.Pesquisa;
-import com.ajeff.simed.satisfacao.repository.PesquisasSatisfacaoRepository;
+import com.ajeff.simed.satisfacao.repository.PesquisasRepository;
 
 @Service
-public class PesquisaSatisfacaoService {
+public class PesquisaService {
 
 	@SuppressWarnings("unused")
-	private static final Logger LOG = LoggerFactory.getLogger(PesquisaSatisfacaoService.class);	
+	private static final Logger LOG = LoggerFactory.getLogger(PesquisaService.class);	
 	
 	@Autowired
-	private PesquisasSatisfacaoRepository repository;
+	private PesquisasRepository repository;
 	
 	@Transactional
 	public void salvar(Pesquisa pesquisa, Usuario usuario) {

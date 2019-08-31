@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.ajeff.simed.satisfacao.model.Pesquisa;
 
-public interface PesquisasSatisfacaoRepository extends JpaRepository<Pesquisa, Long>{
+public interface PesquisasRepository extends JpaRepository<Pesquisa, Long>{
 
 }

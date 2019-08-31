@@ -41,20 +41,20 @@ public class Pergunta implements Serializable {
 		this.id = id;
 	}
 
-	public Long getNota() {
-		return nota;
+	public Resposta getResposta() {
+		return resposta;
 	}
 
-	public void setNota(Long nota) {
-		this.nota = nota;
+	public void setResposta(Resposta resposta) {
+		this.resposta = resposta;
 	}
 
-	public Questao getPergunta() {
-		return pergunta;
+	public Questao getQuestao() {
+		return questao;
 	}
 
-	public void setPergunta(Questao pergunta) {
-		this.pergunta = pergunta;
+	public void setQuestao(Questao questao) {
+		this.questao = questao;
 	}
 
 	public Pesquisa getPesquisa() {

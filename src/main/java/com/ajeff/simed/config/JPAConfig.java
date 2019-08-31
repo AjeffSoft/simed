@@ -22,10 +22,10 @@ import com.ajeff.simed.geral.model.ContaEmpresa;
 import com.ajeff.simed.geral.model.Usuario;
 import com.ajeff.simed.geral.repository.UsuariosRepository;
 import com.ajeff.simed.satisfacao.model.Pesquisa;
-import com.ajeff.simed.satisfacao.repository.PesquisasSatisfacaoRepository;
+import com.ajeff.simed.satisfacao.repository.PesquisasRepository;
 
 @Configuration
-@EnableJpaRepositories(basePackageClasses = {UsuariosRepository.class, FornecedoresRepository.class, PesquisasSatisfacaoRepository.class}, enableDefaultTransactions=false )
+@EnableJpaRepositories(basePackageClasses = {UsuariosRepository.class, FornecedoresRepository.class, PesquisasRepository.class}, enableDefaultTransactions=false )
 @ComponentScan("com.ajeff.simed")
 @EnableTransactionManagement
 public class JPAConfig {
