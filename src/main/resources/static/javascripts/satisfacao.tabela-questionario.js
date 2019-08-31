@@ -8,7 +8,7 @@ Simed.TabelaQuestionario = (function() {
 	}
 	
 	TabelaQuestionario.prototype.iniciar = function() {
-		this.btnIncluir.on('click', onSelecionado.bind(this));
+		this.btnIncluir.on('click', onBotaoClicado.bind(this));
 
 	}
 	
@@ -27,42 +27,24 @@ Simed.TabelaQuestionario = (function() {
 		
 		var questoes = $('.questionario');
 		
+		questoes.each(function(i, questao){
+			var primeiro = questoes[i];
+			var nota = $(primeiro).find(".radios").data("value");
+			console.log(nota);
+//			var botaoClicado = $(event.currentTarget);
+//			var idPergunta = botaoClicado.data('pergunta');
+			var idPergunta = $(primeiro).find("#pergunta").val();
 
+			console.log(idPergunta);
 			
-		
-		
-		questoes.each(function(i){
-
-			console.log("Pergunta: ", idPergunta);
-			console.log("Nota: ", perg);			
-			
-			var perg2 = $(questao).find('.js-notas2:checked').val();
-			console.log("Nota: ", perg2);			
-			//
-//			console.log(nota);
-//
-//			var idPergunta = $(primeiro).find("#pergunta").val();
-//
-//			console.log(idPergunta);
-//			
-//			var resposta = $.ajax({
-//				url: 'questao',
-//				method: 'POST',
-//				data: {
-//					idPergunta: idPergunta, nota: nota, uuid: uuid
-//				}
+			var resposta = $.ajax({
+				url: 'questao',
+				method: 'POST',
+				data: {
+					idPergunta: idPergunta, nota: nota, uuid: uuid
+				}
 			});
-
-//		$('.js-notas').each(function(){
-//			if($(this).is(':checked'))
-//				var nota = $(this).val();
-//			console.log(nota);
-//		})
-		
-		
-		
-//		});
-			
+		});
 
 		
 //		resposta.done(function(data){

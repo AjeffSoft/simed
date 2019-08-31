@@ -60,9 +60,9 @@ public class PesquisaSatisfacaoControler {
 
 	
 	@PostMapping("/novo")
-	public ModelAndView salvar(@Valid PesquisaSatisfacao pesquisa, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
-		pesquisa.adicionarQuestionarios(tabelaQuestionarios.getQuestionarios(pesquisa.getUuid()));
-		service.salvar(pesquisa, usuarioSistema.getUsuario());
+	public ModelAndView salvar(@Valid PesquisaSatisfacao pesquisaSatisfacao, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
+		pesquisaSatisfacao.adicionarQuestionarios(tabelaQuestionarios.getQuestionarios(pesquisaSatisfacao.getUuid()));
+		service.salvar(pesquisaSatisfacao, usuarioSistema.getUsuario());
 		return new ModelAndView("redirect:/satisfacao/inicio");
 	}	
 }
