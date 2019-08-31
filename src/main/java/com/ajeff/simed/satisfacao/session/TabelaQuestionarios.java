@@ -3,21 +3,21 @@ package com.ajeff.simed.satisfacao.session;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ajeff.simed.satisfacao.model.Questao;
 import com.ajeff.simed.satisfacao.model.Pergunta;
-import com.ajeff.simed.satisfacao.model.Questionario;
 
 class TabelaQuestionarios {
 	
 	private String uuid;
-	private List<Questionario> questionarios = new ArrayList<>();
+	private List<Pergunta> questionarios = new ArrayList<>();
 	
 	public TabelaQuestionarios(String uuid) {
 		this.uuid = uuid;
 	}
 	
 	
-	public void adicionarQuestao(Pergunta pergunta, Long nota) {
-		Questionario questionario = new Questionario();
+	public void adicionarQuestao(Questao pergunta, Long nota) {
+		Pergunta questionario = new Pergunta();
 		questionario.setPergunta(pergunta);
 		questionario.setNota(nota);
 		
@@ -28,7 +28,7 @@ class TabelaQuestionarios {
 		return questionarios.size();
 	}
 
-	public List<Questionario> getQuestionarios() {
+	public List<Pergunta> getQuestionarios() {
 		return questionarios;
 	}
 

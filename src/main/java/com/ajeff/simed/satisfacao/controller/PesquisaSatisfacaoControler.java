@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ajeff.simed.geral.security.UsuarioSistema;
+import com.ajeff.simed.satisfacao.model.Questao;
+import com.ajeff.simed.satisfacao.model.Pesquisa;
 import com.ajeff.simed.satisfacao.model.Pergunta;
-import com.ajeff.simed.satisfacao.model.PesquisaSatisfacao;
-import com.ajeff.simed.satisfacao.model.Questionario;
 import com.ajeff.simed.satisfacao.repository.PerguntasRepository;
 import com.ajeff.simed.satisfacao.service.PesquisaSatisfacaoService;
 import com.ajeff.simed.satisfacao.service.QuestionarioService;
@@ -43,9 +43,9 @@ public class PesquisaSatisfacaoControler {
 	}
 
 	@GetMapping("/novo")
-	public ModelAndView novo(PesquisaSatisfacao pesquisaSatisfacao, Questionario questionario, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
+	public ModelAndView novo(Pesquisa pesquisaSatisfacao, Pergunta questionario, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
 		ModelAndView mv = new ModelAndView("Satisfacao/Pesquisa");
-		List<Questionario> questionarios = questionarioService.listarTodasAsPerguntas(pesquisaSatisfacao, usuarioSistema);
+		List<Pergunta> questionarios = questionarioService.listarTodasAsPerguntas(pesquisaSatisfacao, usuarioSistema);
 		pesquisaSatisfacao.setUuid(UUID.randomUUID().toString());
 		mv.addObject("questionarios", questionarios);
 		return mv;
@@ -53,14 +53,14 @@ public class PesquisaSatisfacaoControler {
 	
 	@PostMapping("/questao")
 	public @ResponseBody String adicionarQuestao(Long idPergunta, Long nota, String uuid) {
-		Pergunta pergunta = perguntaRepository.findOne(idPergunta);
+		Questao pergunta = perguntaRepository.findOne(idPergunta);
 		tabelaQuestionarios.adicionarQuestao(uuid, pergunta, nota);
 		return "questão adicionada!";
 	}
 
 	
 	@PostMapping("/novo")
-	public ModelAndView salvar(@Valid PesquisaSatisfacao pesquisaSatisfacao, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
+	public ModelAndView salvar(@Valid Pesquisa pesquisaSatisfacao, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
 		pesquisaSatisfacao.adicionarQuestionarios(tabelaQuestionarios.getQuestionarios(pesquisaSatisfacao.getUuid()));
 		service.salvar(pesquisaSatisfacao, usuarioSistema.getUsuario());
 		return new ModelAndView("redirect:/satisfacao/inicio");

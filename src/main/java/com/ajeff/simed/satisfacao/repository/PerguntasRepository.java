@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.ajeff.simed.geral.model.Empresa;
-import com.ajeff.simed.satisfacao.model.Pergunta;
+import com.ajeff.simed.satisfacao.model.Questao;
 
-public interface PerguntasRepository extends JpaRepository<Pergunta, Long>{
+public interface PerguntasRepository extends JpaRepository<Questao, Long>{
 
-	List<Pergunta> findByEmpresa(Empresa empresa);
+	List<Questao> findByEmpresa(Empresa empresa);
 }

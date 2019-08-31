@@ -21,7 +21,7 @@ import com.ajeff.simed.financeiro.repository.FornecedoresRepository;
 import com.ajeff.simed.geral.model.ContaEmpresa;
 import com.ajeff.simed.geral.model.Usuario;
 import com.ajeff.simed.geral.repository.UsuariosRepository;
-import com.ajeff.simed.satisfacao.model.PesquisaSatisfacao;
+import com.ajeff.simed.satisfacao.model.Pesquisa;
 import com.ajeff.simed.satisfacao.repository.PesquisasSatisfacaoRepository;
 
 @Configuration
@@ -57,7 +57,7 @@ public class JPAConfig {
 		factory.setPackagesToScan(Usuario.class.getPackage().getName(), 
 				Fornecedor.class.getPackage().getName(),
 				ContaEmpresa.class.getPackage().getName(),
-				PesquisaSatisfacao.class.getPackage().getName());
+				Pesquisa.class.getPackage().getName());
 		//factory.setMappingResources("sql/consultas-nativas.xml");
 		factory.afterPropertiesSet();
 		return factory.getObject();

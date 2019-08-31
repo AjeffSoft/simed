@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ajeff.simed.geral.security.UsuarioSistema;
+import com.ajeff.simed.satisfacao.model.Questao;
+import com.ajeff.simed.satisfacao.model.Pesquisa;
 import com.ajeff.simed.satisfacao.model.Pergunta;
-import com.ajeff.simed.satisfacao.model.PesquisaSatisfacao;
-import com.ajeff.simed.satisfacao.model.Questionario;
 import com.ajeff.simed.satisfacao.repository.PerguntasRepository;
 import com.ajeff.simed.satisfacao.repository.QuestionariosRepository;
 
@@ -27,13 +27,13 @@ public class QuestionarioService {
 	@Autowired
 	private PerguntasRepository perguntaRepository;
 	
-	public List<Questionario> listarTodasAsPerguntas(PesquisaSatisfacao pesquisa, UsuarioSistema usuarioSistema) {
-		List<Pergunta> perguntas = perguntaRepository.findByEmpresa(usuarioSistema.getUsuario().getEmpresa());
+	public List<Pergunta> listarTodasAsPerguntas(Pesquisa pesquisa, UsuarioSistema usuarioSistema) {
+		List<Questao> perguntas = perguntaRepository.findByEmpresa(usuarioSistema.getUsuario().getEmpresa());
 
-		List<Questionario> questoes = new ArrayList<>();
+		List<Pergunta> questoes = new ArrayList<>();
 
-		for (Pergunta p : perguntas) {
-			Questionario questao = new Questionario();
+		for (Questao p : perguntas) {
+			Pergunta questao = new Pergunta();
 			questao.setPergunta(p);
 			questao.setNota(0L);
 			questoes.add(questao);
@@ -42,11 +42,11 @@ public class QuestionarioService {
 	}
 
 	@Transactional
-	public void salvar(Questionario questionario) {
+	public void salvar(Pergunta questionario) {
 		repository.save(questionario);
 	}
 
-	public Questionario findOne(Long id) {
+	public Pergunta findOne(Long id) {
 		return repository.findOne(id);
 	}
 	

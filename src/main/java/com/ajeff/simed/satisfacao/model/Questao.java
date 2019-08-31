@@ -2,8 +2,9 @@ package com.ajeff.simed.satisfacao.model;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -11,9 +12,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.ajeff.simed.geral.model.Empresa;
+import com.ajeff.simed.satisfacao.model.enumerations.TipoResposta;
+
 @Entity
-@Table(name = "questionario")
-public class Questionario implements Serializable {
+@Table(name = "questao")
+public class Questao implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -21,15 +25,14 @@ public class Questionario implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 
-	private Long nota;
+	private String nome;
+	
+	@Enumerated(EnumType.STRING)
+	private TipoResposta tipoResposta;
 	
 	@ManyToOne
-	@JoinColumn(name = "id_pergunta")
-	private Pergunta pergunta;
-	
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "id_pesquisa")
-	private PesquisaSatisfacao pesquisa;
+	@JoinColumn(name = "id_empresa")
+	private Empresa empresa;
 
 	public Long getId() {
 		return id;
@@ -39,28 +42,28 @@ public class Questionario implements Serializable {
 		this.id = id;
 	}
 
-	public Long getNota() {
-		return nota;
+	public String getNome() {
+		return nome;
 	}
 
-	public void setNota(Long nota) {
-		this.nota = nota;
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 
-	public Pergunta getPergunta() {
-		return pergunta;
+	public Empresa getEmpresa() {
+		return empresa;
 	}
 
-	public void setPergunta(Pergunta pergunta) {
-		this.pergunta = pergunta;
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
+	}	
+	
+	public TipoResposta getTipoResposta() {
+		return tipoResposta;
 	}
 
-	public PesquisaSatisfacao getPesquisa() {
-		return pesquisa;
-	}
-
-	public void setPesquisa(PesquisaSatisfacao pesquisa) {
-		this.pesquisa = pesquisa;
+	public void setTipoResposta(TipoResposta tipoResposta) {
+		this.tipoResposta = tipoResposta;
 	}
 
 	@Override
@@ -79,7 +82,7 @@ public class Questionario implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Questionario other = (Questionario) obj;
+		Questao other = (Questao) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ajeff.simed.geral.model.Usuario;
-import com.ajeff.simed.satisfacao.model.PesquisaSatisfacao;
+import com.ajeff.simed.satisfacao.model.Pesquisa;
 import com.ajeff.simed.satisfacao.repository.PesquisasSatisfacaoRepository;
 
 @Service
@@ -22,7 +22,7 @@ public class PesquisaSatisfacaoService {
 	private PesquisasSatisfacaoRepository repository;
 	
 	@Transactional
-	public void salvar(PesquisaSatisfacao pesquisa, Usuario usuario) {
+	public void salvar(Pesquisa pesquisa, Usuario usuario) {
 		pesquisa.setData(LocalDateTime.now());
 		if (pesquisa.getCliente().equals(null) || pesquisa.getCliente().equals("")) {
 			pesquisa.setCliente("ANÔNIMO");

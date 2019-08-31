@@ -7,8 +7,8 @@ import java.util.Set;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 
+import com.ajeff.simed.satisfacao.model.Questao;
 import com.ajeff.simed.satisfacao.model.Pergunta;
-import com.ajeff.simed.satisfacao.model.Questionario;
 
 @SessionScope
 @Component
@@ -16,7 +16,7 @@ public class TabelaQuestionariosSession {
 	
 	private Set<TabelaQuestionarios> tabelas = new HashSet<>();
 
-	public void adicionarQuestao(String uuid, Pergunta pergunta, Long nota) {
+	public void adicionarQuestao(String uuid, Questao pergunta, Long nota) {
 		TabelaQuestionarios tabela = buscarTabelaPorUuid(uuid);
 		tabela.adicionarQuestao(pergunta, nota);
 		tabelas.add(tabela);
@@ -32,7 +32,7 @@ public class TabelaQuestionariosSession {
 	}
 
 	
-	public List<Questionario> getQuestionarios(String uuid) {
+	public List<Pergunta> getQuestionarios(String uuid) {
 		return buscarTabelaPorUuid(uuid).getQuestionarios();		
 	}
 

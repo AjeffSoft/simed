@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,7 +18,7 @@ import com.ajeff.simed.geral.model.Usuario;
 
 @Entity
 @Table(name = "pesquisa")
-public class PesquisaSatisfacao implements Serializable {
+public class Pesquisa implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -31,16 +30,12 @@ public class PesquisaSatisfacao implements Serializable {
 	
 	private String cliente;
 
-	private String telefone;
-
-	private String sugestao;
-	
 	@ManyToOne
 	@JoinColumn(name = "id_usuario")
 	private Usuario usuario;
 	
-	@OneToMany(mappedBy="pesquisa", cascade = CascadeType.ALL)
-	private List<Questionario> questionarios;
+	@OneToMany(mappedBy="pesquisa")
+	private List<Pergunta> perguntas;
 	
 	@Transient
 	private String uuid;	
@@ -61,22 +56,6 @@ public class PesquisaSatisfacao implements Serializable {
 		this.data = data;
 	}
 
-	public String getTelefone() {
-		return telefone;
-	}
-
-	public void setTelefone(String telefone) {
-		this.telefone = telefone;
-	}
-
-	public String getSugestao() {
-		return sugestao;
-	}
-
-	public void setSugestao(String sugestao) {
-		this.sugestao = sugestao;
-	}
-
 	public Usuario getUsuario() {
 		return usuario;
 	}
@@ -92,23 +71,20 @@ public class PesquisaSatisfacao implements Serializable {
 	public void setCliente(String cliente) {
 		this.cliente = cliente;
 	}
-
-	public List<Questionario> getQuestionarios() {
-		return questionarios;
-	}
-
-	public void setQuestionarios(List<Questionario> questionarios) {
-		this.questionarios = questionarios;
-	}
-
-	public String getUuid() {
-		return uuid;
-	}
 	
-	public void adicionarQuestionarios(List<Questionario> questionarios) {
-		this.questionarios = questionarios;
-		this.questionarios.forEach(i -> i.setPesquisa(this));
-	}	
+	public List<Pergunta> getPerguntas() {
+		return perguntas;
+	}
+
+	public void setPerguntas(List<Pergunta> perguntas) {
+		this.perguntas = perguntas;
+	}
+
+
+//	public void adicionarQuestionarios(List<Pergunta> questionarios) {
+//		this.questionarios = questionarios;
+//		this.questionarios.forEach(i -> i.setPesquisa(this));
+//	}	
 
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
@@ -130,7 +106,7 @@ public class PesquisaSatisfacao implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		PesquisaSatisfacao other = (PesquisaSatisfacao) obj;
+		Pesquisa other = (Pesquisa) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

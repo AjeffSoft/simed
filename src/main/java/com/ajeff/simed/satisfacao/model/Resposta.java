@@ -2,18 +2,19 @@ package com.ajeff.simed.satisfacao.model;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.ajeff.simed.satisfacao.model.enumerations.TipoResposta;
+
 @Entity
-@Table(name = "questionario")
-public class Pergunta implements Serializable {
+@Table(name = "resposta")
+public class Resposta implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -21,16 +22,11 @@ public class Pergunta implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 
-	private Long nota;
+	private String nome;
 	
-	@ManyToOne
-	@JoinColumn(name = "id_pergunta")
-	private Questao pergunta;
+	@Enumerated(EnumType.STRING)
+	private TipoResposta tipoResposta;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "id_pesquisa")
-	private Pesquisa pesquisa;
-
 	public Long getId() {
 		return id;
 	}
@@ -39,28 +35,20 @@ public class Pergunta implements Serializable {
 		this.id = id;
 	}
 
-	public Long getNota() {
-		return nota;
+	public String getNome() {
+		return nome;
 	}
 
-	public void setNota(Long nota) {
-		this.nota = nota;
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 
-	public Questao getPergunta() {
-		return pergunta;
+	public TipoResposta getTipoResposta() {
+		return tipoResposta;
 	}
 
-	public void setPergunta(Questao pergunta) {
-		this.pergunta = pergunta;
-	}
-
-	public Pesquisa getPesquisa() {
-		return pesquisa;
-	}
-
-	public void setPesquisa(Pesquisa pesquisa) {
-		this.pesquisa = pesquisa;
+	public void setTipoResposta(TipoResposta tipoResposta) {
+		this.tipoResposta = tipoResposta;
 	}
 
 	@Override
@@ -79,7 +67,7 @@ public class Pergunta implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Pergunta other = (Pergunta) obj;
+		Resposta other = (Resposta) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
