@@ -2,6 +2,7 @@ package com.ajeff.simed.satisfacao.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -27,6 +28,7 @@ public class Questao implements Serializable {
 
 	private String nome;
 	
+	@Column(name = "tipo_resposta")
 	@Enumerated(EnumType.STRING)
 	private TipoResposta tipoResposta;
 	

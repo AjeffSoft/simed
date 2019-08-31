@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "questionario")
+@Table(name = "pergunta")
 public class Pergunta implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -21,11 +21,13 @@ public class Pergunta implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 
-	private Long nota;
+	@ManyToOne
+	@JoinColumn(name = "id_resposta")
+	private Resposta resposta;
 	
 	@ManyToOne
-	@JoinColumn(name = "id_pergunta")
-	private Questao pergunta;
+	@JoinColumn(name = "id_questao")
+	private Questao questao;
 	
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "id_pesquisa")
