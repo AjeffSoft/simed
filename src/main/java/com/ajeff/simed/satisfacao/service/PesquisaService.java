@@ -24,9 +24,7 @@ public class PesquisaService {
 	@Transactional
 	public void salvar(Pesquisa pesquisa, Usuario usuario) {
 		pesquisa.setData(LocalDateTime.now());
-		if (pesquisa.getCliente().equals(null) || pesquisa.getCliente().equals("")) {
-			pesquisa.setCliente("ANÔNIMO");
-		}
+		pesquisa.setCliente("ANÔNIMO");
 		pesquisa.setUsuario(usuario);
 		repository.save(pesquisa);
 	}
