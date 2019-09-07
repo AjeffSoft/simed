@@ -20,6 +20,8 @@ public class Pergunta implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
+	
+	private String resp;
 
 	@ManyToOne
 	@JoinColumn(name = "id_resposta")
@@ -63,6 +65,14 @@ public class Pergunta implements Serializable {
 
 	public void setPesquisa(Pesquisa pesquisa) {
 		this.pesquisa = pesquisa;
+	}
+
+	public String getResp() {
+		return resp;
+	}
+
+	public void setResp(String resp) {
+		this.resp = resp;
 	}
 
 	@Override
