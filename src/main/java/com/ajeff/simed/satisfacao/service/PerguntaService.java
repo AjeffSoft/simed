@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ajeff.simed.geral.model.Empresa;
 import com.ajeff.simed.geral.security.UsuarioSistema;
 import com.ajeff.simed.satisfacao.model.Questao;
 import com.ajeff.simed.satisfacao.model.Pesquisa;
@@ -25,7 +26,7 @@ public class PerguntaService {
 	@Autowired
 	private PerguntasRepository repository;
 	@Autowired
-	private QuestoesRepository perguntaRepository;
+	private QuestaoService questaoService;
 	
 //	public List<Pergunta> listarTodasAsPerguntas(Pesquisa pesquisa, UsuarioSistema usuarioSistema) {
 //		List<Questao> perguntas = perguntaRepository.findByEmpresa(usuarioSistema.getUsuario().getEmpresa());
@@ -36,12 +37,28 @@ public class PerguntaService {
 //	}
 
 	@Transactional
-	public void salvar(Pergunta questionario) {
-		repository.save(questionario);
+	public void salvar(Pergunta pergunta) {
+		repository.save(pergunta);
 	}
 
 	public Pergunta findOne(Long id) {
 		return repository.findOne(id);
+	}
+
+	public List<Pergunta> findByQuestaoEmpresa(Empresa empresa) {
+		return repository.findByQuestaoEmpresa(empresa);
+	}
+
+	public List<Pergunta> listarPerguntasPorEmpresa(Empresa empresa) {
+		List<Questao> questoes = questaoService.listarTodasAsQuestoes(empresa);
+		List<Pergunta> perguntas = new ArrayList<>();
+		for (Questao q : questoes) {
+			Pergunta pergunta = new Pergunta();
+			pergunta.setQuestao(q);
+			perguntas.add(pergunta);
+			System.out.println(pergunta.getQuestao().getNome());
+		}
+		return perguntas;
 	}
 	
 //	@GetMapping("/novo")

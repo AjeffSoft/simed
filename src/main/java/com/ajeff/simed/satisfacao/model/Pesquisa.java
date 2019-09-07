@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -34,7 +35,7 @@ public class Pesquisa implements Serializable {
 	@JoinColumn(name = "id_usuario")
 	private Usuario usuario;
 	
-	@OneToMany(mappedBy="pesquisa")
+	@OneToMany(mappedBy="pesquisa", cascade = CascadeType.ALL)
 	private List<Pergunta> perguntas;
 	
 	@Transient

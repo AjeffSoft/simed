@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ajeff.simed.geral.security.UsuarioSistema;
+import com.ajeff.simed.satisfacao.model.Pergunta;
 import com.ajeff.simed.satisfacao.model.Pesquisa;
-import com.ajeff.simed.satisfacao.model.Questao;
 import com.ajeff.simed.satisfacao.service.PerguntaService;
 import com.ajeff.simed.satisfacao.service.PesquisaService;
 import com.ajeff.simed.satisfacao.service.QuestaoService;
@@ -52,9 +52,10 @@ public class PesquisaSatisfacaoControler {
 	@GetMapping("/novo")
 	public ModelAndView novo(Pesquisa pesquisa, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
 		ModelAndView mv = new ModelAndView("Satisfacao/Pesquisa");
-		List<Questao> questoes = questaoService.listarTodasAsQuestoes(pesquisa, usuarioSistema);
+		List<Pergunta> perguntas = perguntaService.listarPerguntasPorEmpresa(usuarioSistema.getUsuario().getEmpresa());
 		pesquisa.setUuid(UUID.randomUUID().toString());
-		mv.addObject("questoes", questoes);
+		pesquisa.setPerguntas(perguntas);
+		mv.addObject("todasPerguntas", perguntas);
 		return mv;
 	}	
 	

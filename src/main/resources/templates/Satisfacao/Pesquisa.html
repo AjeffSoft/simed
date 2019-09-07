@@ -15,7 +15,33 @@
 				<input type="hidden" th:field="*{id}"/>
 				<input type="hidden" id="uuid" th:field="*{uuid}"/>
 				
-				<div th:replace="Satisfacao/Questao :: questao">...</div>	
+				<th:block th:each="pergunta, iterStat : ${todasPerguntas}" th:field="*{perguntas}">
+					<h1 th:text="${pergunta.questao.nome}"></h1>
+					
+					************IMPLEMENTAR JS PARA OS RADIOS CHECKED E SALVAR 
+					
+					
+					<div class="row">
+						<div class="form-group  col-sm-12">
+							<div>
+		  						<div class="radio  radio-inline">
+			    					<input id="ruim" type="radio" value="RUIM" th:name="${'r' + iterStat.count +1}"/>
+			    					<label for="ruim" >Ruim</label>
+		    					</div>
+		  						<div class="radio  radio-inline">
+			    					<input  id="bom" type="radio" value="BOM" th:name="${'r' + iterStat.count +1}"/>
+			    					<label for="bom">Bom</label>
+		    					</div>
+		  						<div class="radio  radio-inline">
+			    					<input  id="otimo" type="radio" value="OTIMO" th:name="${'r' + iterStat.count +1}"/>
+			    					<label  for="otimo">Ótimo</label>
+		    					</div>
+							</div>
+						</div>					
+					</div>					
+					
+				</th:block>
+				
 				
 				<div class="row">
 					<div class="col-sm-3 form-group">
@@ -23,6 +49,8 @@
 					</div>
 				</div>								
 			</form>
+			
+<!-- 			<div th:replace="Satisfacao/Pergunta :: pergunta">...</div> -->
 		</div>
 
 </section>

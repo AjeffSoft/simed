@@ -1,6 +1,5 @@
 package com.ajeff.simed.satisfacao.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -8,9 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ajeff.simed.geral.security.UsuarioSistema;
-import com.ajeff.simed.satisfacao.model.Pergunta;
-import com.ajeff.simed.satisfacao.model.Pesquisa;
+import com.ajeff.simed.geral.model.Empresa;
 import com.ajeff.simed.satisfacao.model.Questao;
 import com.ajeff.simed.satisfacao.repository.QuestoesRepository;
 
@@ -23,9 +20,13 @@ public class QuestaoService {
 	@Autowired
 	private QuestoesRepository repository;
 
-	public List<Questao> listarTodasAsQuestoes(Pesquisa pesquisa, UsuarioSistema usuarioSistema) {
-		List<Questao> questoes = repository.findByEmpresa(usuarioSistema.getUsuario().getEmpresa());
+	public List<Questao> listarTodasAsQuestoes(Empresa empresa) {
+		List<Questao> questoes = repository.findByEmpresa(empresa);
 		return questoes;
+	}
+
+	public Questao findOne(Long idQuestao) {
+		return repository.findOne(idQuestao);
 	}
 
 
