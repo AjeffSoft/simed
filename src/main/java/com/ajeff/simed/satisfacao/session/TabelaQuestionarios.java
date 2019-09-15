@@ -16,11 +16,12 @@ class TabelaQuestionarios {
 	}
 	
 	
-	public void adicionarQuestao(Questao pergunta, Long nota) {
+	public void adicionarQuestao(Questao questao, String resposta) {
 		Pergunta questionario = new Pergunta();
-		questionario.setPergunta(pergunta);
-		questionario.setNota(nota);
+		questionario.setQuestao(questao);
+		questionario.setResp(resposta);
 		
+		System.out.println("Q: " + questionario.getResp());
 		questionarios.add(questionario);
 	}
 	

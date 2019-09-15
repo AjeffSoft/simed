@@ -82,10 +82,10 @@ public class Pesquisa implements Serializable {
 	}
 
 
-//	public void adicionarQuestionarios(List<Pergunta> questionarios) {
-//		this.questionarios = questionarios;
-//		this.questionarios.forEach(i -> i.setPesquisa(this));
-//	}	
+	public void adicionarQuestionarios(List<Pergunta> perguntas) {
+		this.perguntas = perguntas;
+		this.perguntas.forEach(i -> i.setPesquisa(this));
+	}	
 
 	public String getUuid() {
 		return uuid;

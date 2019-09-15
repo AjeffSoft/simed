@@ -95,5 +95,23 @@ public class Questao implements Serializable {
 
 	public boolean isNovo() {
 		return this.id == null;
-	}	
+	}
+	
+	
+	public boolean isTipoNota() {
+		return this.tipoResposta.equals(TipoResposta.NOTA);
+	}
+	
+	public boolean isTipoSimNao() {
+		return this.tipoResposta.equals(TipoResposta.SIMNAO);
+	}
+
+	public boolean isTipoIndicacao() {
+		return this.tipoResposta.equals(TipoResposta.INDICACAO);
+	}
+
+	public boolean isTipoServico() {
+		return this.tipoResposta.equals(TipoResposta.SERVICO);
+	}
+	
 }

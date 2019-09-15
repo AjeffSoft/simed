@@ -16,9 +16,9 @@ public class TabelaQuestionariosSession {
 	
 	private Set<TabelaQuestionarios> tabelas = new HashSet<>();
 
-	public void adicionarQuestao(String uuid, Questao pergunta, Long nota) {
+	public void adicionarQuestao(String uuid, Questao questao, String resposta) {
 		TabelaQuestionarios tabela = buscarTabelaPorUuid(uuid);
-		tabela.adicionarQuestao(pergunta, nota);
+		tabela.adicionarQuestao(questao, resposta);
 		tabelas.add(tabela);
 	}
 

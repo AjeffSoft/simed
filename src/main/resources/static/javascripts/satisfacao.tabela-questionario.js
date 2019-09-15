@@ -13,35 +13,23 @@ Simed.TabelaQuestionario = (function() {
 	}
 	
 	
-	function onSelecionado (){
-		var idPergunta = $(this).find("#perguntaQuestao").val();
-		var nota = $('.js-notas:checked').val();
-		console.log("Pergunta: ", idPergunta);
-		console.log("Nota: ", nota);			
-		
-		
-	}
-
+	
 	function onBotaoClicado(event){
+		event.preventDefault();
 		var uuid = this.Uuid.val().trim();
 		
 		var questoes = $('.questionario');
-		
+	
 		questoes.each(function(i, questao){
-			var primeiro = questoes[i];
-			var nota = $(primeiro).find(".radios").data("value");
-			console.log(nota);
-//			var botaoClicado = $(event.currentTarget);
-//			var idPergunta = botaoClicado.data('pergunta');
-			var idPergunta = $(primeiro).find("#pergunta").val();
-
-			console.log(idPergunta);
+			var pergunta = $(questao).find(".pergunta").val();
+			var resposta = $(questao).find("input[type=radio]:checked").val();
+			console.log(pergunta, " - ", resposta);
 			
 			var resposta = $.ajax({
 				url: 'questao',
 				method: 'POST',
 				data: {
-					idPergunta: idPergunta, nota: nota, uuid: uuid
+					pergunta: pergunta, resposta: resposta, uuid: uuid
 				}
 			});
 		});

@@ -10,48 +10,227 @@
 </head>
 	<section layout:fragment="conteudo">
 	
-		<div class="container-fluid">
+		<div class="container-fluid  css-container-principal">
 			<form method="POST" th:object="${pesquisa}" class="form-vertical  js-form-loading" th:action="@{/satisfacao/novo}">			
 				<input type="hidden" th:field="*{id}"/>
 				<input type="hidden" id="uuid" th:field="*{uuid}"/>
 				
-				<th:block th:each="pergunta, iterStat : ${todasPerguntas}" th:field="*{perguntas}">
-					<h1 th:text="${pergunta.questao.nome}"></h1>
-					
-					************IMPLEMENTAR JS PARA OS RADIOS CHECKED E SALVAR 
-					
-					
-					<div class="row">
-						<div class="form-group  col-sm-12">
-							<div>
-		  						<div class="radio  radio-inline">
-			    					<input id="ruim" type="radio" value="RUIM" th:name="${'r' + iterStat.count +1}"/>
-			    					<label for="ruim" >Ruim</label>
-		    					</div>
-		  						<div class="radio  radio-inline">
-			    					<input  id="bom" type="radio" value="BOM" th:name="${'r' + iterStat.count +1}"/>
-			    					<label for="bom">Bom</label>
-		    					</div>
-		  						<div class="radio  radio-inline">
-			    					<input  id="otimo" type="radio" value="OTIMO" th:name="${'r' + iterStat.count +1}"/>
-			    					<label  for="otimo">Ótimo</label>
-		    					</div>
+				<th:block  th:each="pergunta, iterStat : ${todasPerguntas}" th:field="*{perguntas}">
+
+					<div class = "questao  hidden" th:id="'questao' + ${iterStat.count}" th:if="${pergunta.questao.tipoNota}">
+						<div class="row  nomeQuestao">
+							<div class="form-group  col-sm-12">
+								<h1 class = "h1" th:text="${pergunta.questao.nome}"></h1>
 							</div>
-						</div>					
-					</div>					
+						</div>
+						<div class="row  questionario">
+		 					<input class = "pergunta" type="hidden" th:value="${pergunta.questao.id}"/>
+							<div class="form-group  col-sm-12">
+								<div>
+			  						<div class="radio  radio-inline">
+				    					<input class="nota" th:id="'r' + ${iterStat.count}" type="radio" value="PÉSSIMO" th:name="'r' + ${iterStat.count}"/>
+				    					<label th:for="'r' + ${iterStat.count}" >Péssimo</label>
+			    					</div>
+									<div class="radio  radio-inline">
+				    					<input class="nota" th:id="'r' + ${iterStat.count+1}" type="radio" value="RUIM" th:name="'r' + ${iterStat.count}"/>
+				    					<label th:for="'r' + ${iterStat.count+1}" >Ruim</label>
+			    					</div>
+			  						<div class="radio  radio-inline">
+				    					<input class="nota" th:id="'r' + ${iterStat.count+2}" type="radio" value="REGULAR" th:name="'r' + ${iterStat.count}"/>
+				    					<label th:for="'r' + ${iterStat.count+2}">Regular</label>
+			    					</div>
+			  						<div class="radio  radio-inline">
+				    					<input class="nota" th:id="'r' + ${iterStat.count+3}" type="radio" value="BOM" th:name="'r' + ${iterStat.count}"/>
+				    					<label th:for="'r' + ${iterStat.count+3}">Bom</label>
+			    					</div>
+			  						<div class="radio  radio-inline">
+				    					<input class="nota" th:id="'r' + ${iterStat.count+4}" type="radio" value="OTIMO" th:name="'r' + ${iterStat.count}"/>
+				    					<label th:for="'r' + ${iterStat.count+4}">Ótimo</label>
+			    					</div>
+								</div>
+							</div>					
+						</div>
+						<div class="row  botoes">
+							<div class="col-sm-3 form-group">
+								<a class="btn  btn-success" th:id="'botao'+${iterStat.count}" th:unless="${iterStat.last}" th:href="'#questao' + ${iterStat.count+1}">Próximo</a>
+								<a class="btn  btn-success btn-incluir-questionario" th:if="${iterStat.last}" href="#cliente">Próximo -></a>
+							</div>
+						</div>							
+					</div>						
+						
+						
+					<div class = "questao  hidden" th:id="'questao' + ${iterStat.count}" th:if="${pergunta.questao.tipoSimNao}">
+						<div class="row  nomeQuestao">
+							<div class="form-group  col-sm-12">
+								<h1 th:text="${pergunta.questao.nome}"></h1>
+							</div>
+						</div>						
+						<div class="row  questionario">
+		 					<input class = "pergunta" type="hidden" th:value="${pergunta.questao.id}"/>
+							<div class="form-group  col-sm-12">
+								<div>
+			  						<div class="radio  radio-inline">
+				    					<input class="nota" th:id="'r' + ${iterStat.count+50}" type="radio" value="SIM" th:name="'r' + ${iterStat.count}"/>
+				    					<label th:for="'r' + ${iterStat.count}" >Sim</label>
+			    					</div>
+			  						<div class="radio  radio-inline">
+				    					<input  class="nota" th:id="'r' + ${iterStat.count+1}" type="radio" value="NAO" th:name="'r' + ${iterStat.count}"/>
+				    					<label th:for="'r' + ${iterStat.count+51}">Não</label>
+			    					</div>
+								</div>
+							</div>					
+						</div>
+						<div class="row  botoes">
+							<div class="col-sm-3 form-group">
+								<a class="btn  btn-success" th:id="'botao'+${iterStat.count}" th:unless="${iterStat.last}" th:href="'#questao' + ${iterStat.count+1}">Próximo</a>
+								<a class="btn  btn-success btn-incluir-questionario" th:if="${iterStat.last}" href="#cliente">Próximo -></a>
+							</div>
+						</div>							
+					</div>
 					
+					<div class = "questao  hidden" th:id="'questao' + ${iterStat.count}" th:if="${pergunta.questao.tipoIndicacao}">
+						<div class="row  nomeQuestao">
+							<div class="form-group  col-sm-12">
+								<h1 th:text="${pergunta.questao.nome}"></h1>
+							</div>
+						</div>						
+						<div class="row  questionario">
+		 					<input class = "pergunta" type="hidden" th:value="${pergunta.questao.id}"/>
+							<div class="form-group  col-sm-12">
+								<div>
+			  						<div class="radio  radio-inline">
+				    					<input class="nota" th:id="'r' + ${iterStat.count}" type="radio" value="MÉDICOS" th:name="'r' + ${iterStat.count}"/>
+				    					<label th:for="'r' + ${iterStat.count}" >Médicos</label>
+			    					</div>
+			  						<div class="radio  radio-inline">
+				    					<input  class="nota" th:id="'r' + ${iterStat.count+1}" type="radio" value="AMIGOS" th:name="'r' + ${iterStat.count}"/>
+				    					<label th:for="'r' + ${iterStat.count+1}">Amigos</label>
+			    					</div>
+			  						<div class="radio  radio-inline">
+				    					<input  class="nota" th:id="'r' + ${iterStat.count+2}" type="radio" value="PROPAGANDA" th:name="'r' + ${iterStat.count}"/>
+				    					<label th:for="'r' + ${iterStat.count+2}">Propaganda</label>
+			    					</div>
+			  						<div class="radio  radio-inline">
+				    					<input  class="nota" th:id="'r' + ${iterStat.count+3}" type="radio" value="OUTROS" th:name="'r' + ${iterStat.count}"/>
+				    					<label th:for="'r' + ${iterStat.count+3}">Outros</label>
+			    					</div>
+								</div>
+							</div>					
+						</div>
+						<div class="row  botoes">
+							<div class="col-sm-3 form-group">
+								<a class="btn  btn-success" th:id="'botao'+${iterStat.count}" th:unless="${iterStat.last}" th:href="'#questao' + ${iterStat.count+1}">Próximo</a>
+								<a class="btn  btn-success btn-incluir-questionario" th:if="${iterStat.last}" href="#cliente">Próximo -></a>
+							</div>
+						</div>							
+					</div>
+						
+					
+					<div class = "questao  hidden" th:id="'questao' + ${iterStat.count}" th:if="${pergunta.questao.tipoServico}">
+						<div class="row  nomeQuestao">
+							<div class="form-group  col-sm-12">
+								<h1 th:text="${pergunta.questao.nome}"></h1>
+							</div>
+						</div>						
+						<div class="row  questionario ">
+		 					<input class = "pergunta" type="hidden" th:value="${pergunta.questao.id}"/>
+							<div class="form-group  col-sm-12">
+								<div>
+			  						<div class="radio  radio-inline">
+				    					<input class="nota" th:id="'r' + ${iterStat.count}" type="radio" value="MÉDICOS" th:name="'r' + ${iterStat.count}"/>
+				    					<label th:for="'r' + ${iterStat.count}" >Exames</label>
+			    					</div>
+			  						<div class="radio  radio-inline">
+				    					<input  class="nota" th:id="'r' + ${iterStat.count+1}" type="radio" value="AMIGOS" th:name="'r' + ${iterStat.count}"/>
+				    					<label th:for="'r' + ${iterStat.count+1}">Autorização</label>
+			    					</div>
+			  						<div class="radio  radio-inline">
+				    					<input  class="nota" th:id="'r' + ${iterStat.count+2}" type="radio" value="PROPAGANDA" th:name="'r' + ${iterStat.count}"/>
+				    					<label th:for="'r' + ${iterStat.count+2}">Boletos</label>
+			    					</div>
+			  						<div class="radio  radio-inline">
+				    					<input  class="nota" th:id="'r' + ${iterStat.count+3}" type="radio" value="OUTROS" th:name="'r' + ${iterStat.count}"/>
+				    					<label th:for="'r' + ${iterStat.count+3}">Cancelamentos</label>
+			    					</div>
+								</div>
+							</div>					
+						</div>
+						<div class="row  botoes">
+							<div class="col-sm-3 form-group">
+								<a class="btn  btn-success" th:id="'botao'+${iterStat.count}" th:unless="${iterStat.last}" th:href="'#questao' + ${iterStat.count+1}">Próximo</a>
+								<a class="btn  btn-success btn-incluir-questionario" th:if="${iterStat.last}" href="#cliente">Próximo -></a>
+							</div>
+						</div>							
+					</div>
 				</th:block>
 				
 				
-				<div class="row">
+				<div class="row  hidden btnSalvar">
 					<div class="col-sm-3 form-group">
 						<button class="btn  btn-success " type="submit">Salvar Pesquisa</button>
 					</div>
 				</div>								
 			</form>
-			
-<!-- 			<div th:replace="Satisfacao/Pergunta :: pergunta">...</div> -->
 		</div>
 
 </section>
+
+<th:block layout:fragment="javascript-extra">
+	<script th:src="@{/javascripts/satisfacao.tabela-questionario.js}"></script>
+	 <script>
+	 $(function(){
+		 $('#questao1').removeClass('hidden');
+	 });
+
+	 	$('#botao1').click(function(){
+			$('#questao1').addClass('hidden');
+			$('#questao2').removeClass('hidden');
+	 	})
+	 	
+	 	$('#botao2').click(function(){
+			$('#questao2').addClass('hidden');
+			$('#questao3').removeClass('hidden');
+	 	})
+	 	
+	 	$('#botao3').click(function(){
+			$('#questao3').addClass('hidden');
+			$('#questao4').removeClass('hidden');
+	 	})
+	 	
+	 	$('#botao4').click(function(){
+			$('#questao4').addClass('hidden');
+			$('#questao5').removeClass('hidden');
+	 	})
+	 	
+	 	$('#botao5').click(function(){
+			$('#questao5').addClass('hidden');
+			$('#questao6').removeClass('hidden');
+	 	})
+	 	
+	 	$('#botao6').click(function(){
+			$('#questao6').addClass('hidden');
+			$('#questao7').removeClass('hidden');
+	 	})
+	 	
+	 	$('#botao7').click(function(){
+			$('#questao7').addClass('hidden');
+			$('#questao8').removeClass('hidden');
+	 	})
+	 	
+	 	$('#botao8').click(function(){
+			$('#questao8').addClass('hidden');
+			$('#questao9').removeClass('hidden');
+	 	})
+	 	
+	 	$('#botao9').click(function(){
+			$('#questao9').addClass('hidden');
+			$('#questao10').removeClass('hidden');
+	 	})
+	 	
+	 	$('.btn-incluir-questionario').click(function(){
+			$('#questao10').addClass('hidden');
+			$('.btnSalvar').removeClass('hidden');
+	 	})	 	
+	 </script>
+</th:block>
 </html>

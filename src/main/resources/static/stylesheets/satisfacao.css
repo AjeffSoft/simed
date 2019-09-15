@@ -1,68 +1,28 @@
-.centered {
-    margin: 0 auto !important;
-    float: none !important;
+body {
+	background-color: black;
+	adding-bottom: 0px;
 }
 
-
-.backgroundImage-fim{
-	background-image: url('/simed/images/background2.png');
+.css-container-principal{
+	background-color: green;
 }
 
-
-.container-principal {
-	padding: 0px;
-	margin: 0px;
-	height:600px; 
-	width:1200px;
+form {
+	background-color: yellow;
 }
 
-.container-pergunta {
-    margin: 15px;
-    width: 1170px;
-    height: 570px;
+.questao{
+	background-color: red;
 }
 
-.area-botao-iniciar{
-	height:100px; 
-	margin-top:400px;
+.nomeQuestao {
+	margin-bottom:130px;
 }
 
-.botao-iniciar {
-	width:356px;
-	height:124px;
-	font-size:2rem; 
-	border-radius:20px
+.questionario {
+	margin-bottom:130px;
 }
 
-.area-loading {
-	width: 200px;
-	height: 190px;
-	position: absolute;
-	top: 0%;
-	left: 70%;
-	color: blue;
-}
-
-.area-botao-logout {
-	height:50px; 
-	margin-top:50px;
-}
-
-.botao-logout {
-	width:72px;
-	height:32px;
-	border-radius:20px
-}
-
-.btn-proximo {
-	width:226px; 
-	height:74px;
-	font-size:3rem;
-	border-radius:15px
-}
-
-.area-pergunta-botao {
-	height: 285px;
-	margin-left: 0px;
-	margin-right: 0px;
+.botoes {
+	margin-bottom:100px;
 }
