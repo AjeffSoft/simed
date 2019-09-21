@@ -1,28 +1,19 @@
 body {
-	background-color: black;
 	adding-bottom: 0px;
 }
 
-.css-container-principal{
-	background-color: green;
-}
-
-form {
-	background-color: yellow;
-}
-
-.questao{
-	background-color: red;
-}
-
 .nomeQuestao {
-	margin-bottom:130px;
+	height: 250px;
 }
 
 .questionario {
-	margin-bottom:130px;
+	height: 150px;
 }
 
 .botoes {
-	margin-bottom:100px;
+	height: 200px;
+}
+
+.css-a {
+	width:300px;
 }
