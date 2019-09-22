@@ -20,164 +20,150 @@
 	
 						<div class = "questao  d-none" th:id="'questao' + ${iterStat.count}" th:if="${pergunta.questao.tipoNota}">
 							<div class="row  nomeQuestao justify-content-end  align-items-center">
-								<div class="form-group  col-sm-10" style="background-color: yellow;">
+								<div class="form-group  col-sm-10">
 									<h1 class = "text-break  font-weight-bold  text-center" th:text="${pergunta.questao.nome}"></h1>
 								</div>
 							</div>
 							<div class="row  questionario justify-content-end  align-items-center">
 			 					<input class = "pergunta" type="hidden" th:value="${pergunta.questao.id}"/>
 								<div class="form-group  text-center col-sm-10">
-<!-- 									<div> -->
-<!-- 				  						<div class="radio  form-check-inline"> -->
-<!-- 					    					<input class="nota  form-check-input" th:id="'r' + ${iterStat.count}" type="radio" value="PÉSSIMO" th:name="'r' + ${iterStat.count}"/> -->
-<!-- 					    					<label class="form-check-label" th:for="'r' + ${iterStat.count}" >Péssimo</label> -->
-
-<!-- 				    					</div> -->
-<!-- 										<div class="radio  form-check-inline"> -->
-<!-- 					    					<input class="nota form-check-input" th:id="'r' + ${iterStat.count+1}" type="radio" value="RUIM" th:name="'r' + ${iterStat.count}"/> -->
-<!-- 					    					<label class="form-check-label" th:for="'r' + ${iterStat.count+1}" >Ruim</label> -->
-<!-- 				    					</div> -->
-<!-- 				  						<div class="radio  form-check-inline"> -->
-<!-- 					    					<input class="nota  form-check-input" th:id="'r' + ${iterStat.count+2}" type="radio" value="REGULAR" th:name="'r' + ${iterStat.count}"/> -->
-<!-- 					    					<label class="form-check-label" th:for="'r' + ${iterStat.count+2}">Regular</label> -->
-<!-- 				    					</div> -->
-<!-- 				  						<div class="radio  form-check-inline"> -->
-<!-- 					    					<input class="nota  form-check-input" th:id="'r' + ${iterStat.count+3}" type="radio" value="BOM" th:name="'r' + ${iterStat.count}"/> -->
-<!-- 					    					<label class="form-check-label" th:for="'r' + ${iterStat.count+3}">Bom</label> -->
-<!-- 				    					</div> -->
-<!-- 				  						<div class="radio  form-check-inline"> -->
-<!-- 					    					<input class="nota  form-check-input" th:id="'r' + ${iterStat.count+4}" type="radio" value="OTIMO" th:name="'r' + ${iterStat.count}"/> -->
-<!-- 					    					<label class="form-check-label" th:for="'r' + ${iterStat.count+4}">Ótimo</label> -->
-<!-- 				    					</div> -->
-<!-- 									</div> -->
-
 									<div>
-				    					<input class="nota  form-check-input" th:id="'r' + ${iterStat.count}" type="radio" value="PÉSSIMO" th:name="'r' + ${iterStat.count}" 
+				    					<input class="nota" type="radio" value="PÉSSIMO" th:name="'r' + ${iterStat.count}" 
 				    						data-radiocharm-label="Péssimo" data-radiocharm-text-color="FFF"  data-radiocharm-background-color="CD0000"/>
-				    					<input class="nota form-check-input" th:id="'r' + ${iterStat.count+1}" type="radio" value="RUIM" th:name="'r' + ${iterStat.count}"
+				    					<input class="nota" type="radio" value="RUIM" th:name="'r' + ${iterStat.count}"
 				    						data-radiocharm-label="Ruim" data-radiocharm-text-color="FFF"  data-radiocharm-background-color="FF0000"/>
-				    					<input class="nota  form-check-input" th:id="'r' + ${iterStat.count+2}" type="radio" value="REGULAR" th:name="'r' + ${iterStat.count}"
+				    					<input class="nota" type="radio" value="REGULAR" th:name="'r' + ${iterStat.count}"
 				    						data-radiocharm-label="Regular" data-radiocharm-text-color="000"  data-radiocharm-background-color="EEEE00"/>
-				    					<input class="nota  form-check-input" th:id="'r' + ${iterStat.count+3}" type="radio" value="BOM" th:name="'r' + ${iterStat.count}" 
+				    					<input class="nota" type="radio" value="BOM" th:name="'r' + ${iterStat.count}" 
 				    					    data-radiocharm-label="Bom" data-radiocharm-text-color="000"  data-radiocharm-background-color="00FF00"/>
-				    					<input class="nota  form-check-input" th:id="'r' + ${iterStat.count+4}" type="radio" value="OTIMO" th:name="'r' + ${iterStat.count}" 
+				    					<input class="nota" type="radio" value="OTIMO" th:name="'r' + ${iterStat.count}" 
 				    						data-radiocharm-label="Ótimo" data-radiocharm-text-color="FFF"  data-radiocharm-background-color="008B00"/>
 									</div>
 								</div>					
 							</div>
 							<div class="row  botoes justify-content-end  align-items-center">
-								<div class="col-sm-5 form-group  text-right"  style="background-color: green;">
+								<div class="col-sm-5 form-group  text-right">
 									<a class="btn  btn-success  btn-lg active  css-a" th:id="'botao'+${iterStat.count}" th:unless="${iterStat.last}" th:href="'#questao' + ${iterStat.count+1}">Próximo</a>
 									<a class="btn  btn-success btn-incluir-questionario  btn-lg active css-a" th:if="${iterStat.last}" href="#cliente">Próximo -></a>
 								</div>
 							</div>							
-						</div>						
-							
-							
+						</div>				
+						
+						
+						
 						<div class = "questao  d-none" th:id="'questao' + ${iterStat.count}" th:if="${pergunta.questao.tipoSimNao}">
-							<div class="row  nomeQuestao">
-								<div class="form-group  col-sm-12">
-									<h1 class = "display-4  text-break  font-weight-bold  text-center" th:text="${pergunta.questao.nome}"></h1>
+							<div class="row  nomeQuestao justify-content-end  align-items-center">
+								<div class="form-group  col-sm-10">
+									<h1 class = "text-break  font-weight-bold  text-center" th:text="${pergunta.questao.nome}"></h1>
 								</div>
-							</div>						
-							<div class="row  questionario">
+							</div>
+							<div class="row  questionario justify-content-end  align-items-center">
 			 					<input class = "pergunta" type="hidden" th:value="${pergunta.questao.id}"/>
-								<div class="form-group  col-sm-12">
+								<div class="form-group  text-center col-sm-10">
 									<div>
-				  						<div class="radio  radio-inline">
-					    					<input class="nota" th:id="'r' + ${iterStat.count+50}" type="radio" value="SIM" th:name="'r' + ${iterStat.count}"/>
-					    					<label th:for="'r' + ${iterStat.count}" >Sim</label>
-				    					</div>
-				  						<div class="radio  radio-inline">
-					    					<input  class="nota" th:id="'r' + ${iterStat.count+1}" type="radio" value="NAO" th:name="'r' + ${iterStat.count}"/>
-					    					<label th:for="'r' + ${iterStat.count+51}">Não</label>
-				    					</div>
+				    					<input class="nota" type="radio" value="NAO" th:name="'r' + ${iterStat.count}" 
+				    						data-radiocharm-label="Não" data-radiocharm-text-color="FFF"  data-radiocharm-background-color="CD0000"/>
+				    					<input class="nota" type="radio" value="SIM" th:name="'r' + ${iterStat.count}" 
+				    						data-radiocharm-label="Sim" data-radiocharm-text-color="FFF"  data-radiocharm-background-color="008B00"/>
 									</div>
 								</div>					
 							</div>
-							<div class="row  botoes">
-								<div class="col-sm-3 form-group">
-									<a class="btn  btn-success" th:id="'botao'+${iterStat.count}" th:unless="${iterStat.last}" th:href="'#questao' + ${iterStat.count+1}">Próximo</a>
-									<a class="btn  btn-success btn-incluir-questionario" th:if="${iterStat.last}" href="#cliente">Próximo -></a>
+							<div class="row  botoes justify-content-end  align-items-center">
+								<div class="col-sm-5 form-group  text-right">
+									<a class="btn  btn-success  btn-lg active  css-a" th:id="'botao'+${iterStat.count}" th:unless="${iterStat.last}" th:href="'#questao' + ${iterStat.count+1}">Próximo</a>
+									<a class="btn  btn-success btn-incluir-questionario  btn-lg active css-a" th:if="${iterStat.last}" href="#cliente">Próximo -></a>
 								</div>
 							</div>							
-						</div>
+						</div>								
+							
+							
 						
 						<div class = "questao  d-none" th:id="'questao' + ${iterStat.count}" th:if="${pergunta.questao.tipoIndicacao}">
-							<div class="row  nomeQuestao">
-								<div class="form-group  col-sm-12">
-									<h1 class = "display-4  text-break  font-weight-bold  text-center" th:text="${pergunta.questao.nome}"></h1>
+							<div class="row  nomeQuestao justify-content-end  align-items-center">
+								<div class="form-group  col-sm-10">
+									<h1 class = "text-break  font-weight-bold  text-center" th:text="${pergunta.questao.nome}"></h1>
 								</div>
-							</div>						
-							<div class="row  questionario">
+							</div>
+							<div class="row  questionario justify-content-end  align-items-center">
 			 					<input class = "pergunta" type="hidden" th:value="${pergunta.questao.id}"/>
-								<div class="form-group  col-sm-12">
+								<div class="form-group  text-center col-sm-10">
 									<div>
-				  						<div class="radio  radio-inline">
-					    					<input class="nota" th:id="'r' + ${iterStat.count}" type="radio" value="MÉDICOS" th:name="'r' + ${iterStat.count}"/>
-					    					<label th:for="'r' + ${iterStat.count}" >Médicos</label>
-				    					</div>
-				  						<div class="radio  radio-inline">
-					    					<input  class="nota" th:id="'r' + ${iterStat.count+1}" type="radio" value="AMIGOS" th:name="'r' + ${iterStat.count}"/>
-					    					<label th:for="'r' + ${iterStat.count+1}">Amigos</label>
-				    					</div>
-				  						<div class="radio  radio-inline">
-					    					<input  class="nota" th:id="'r' + ${iterStat.count+2}" type="radio" value="PROPAGANDA" th:name="'r' + ${iterStat.count}"/>
-					    					<label th:for="'r' + ${iterStat.count+2}">Propaganda</label>
-				    					</div>
-				  						<div class="radio  radio-inline">
-					    					<input  class="nota" th:id="'r' + ${iterStat.count+3}" type="radio" value="OUTROS" th:name="'r' + ${iterStat.count}"/>
-					    					<label th:for="'r' + ${iterStat.count+3}">Outros</label>
-				    					</div>
+				    					<input class="nota" type="radio" value="MÉDICOS" th:name="'r' + ${iterStat.count}" 
+				    						data-radiocharm-label="Médicos" data-radiocharm-text-color="FFF"  data-radiocharm-background-color="008B00"/>
+				    					<input class="nota" type="radio" value="AMIGOS" th:name="'r' + ${iterStat.count}"
+				    						data-radiocharm-label="Amigos" data-radiocharm-text-color="FFF"  data-radiocharm-background-color="008B00"/>
+				    					<input class="nota" type="radio" value="PROPAGANDA" th:name="'r' + ${iterStat.count}"
+				    						data-radiocharm-label="Propaganda" data-radiocharm-text-color="FFF"  data-radiocharm-background-color="008B00"/>
+				    					<input class="nota" type="radio" value="OUTROS 1" th:name="'r' + ${iterStat.count}" 
+				    					    data-radiocharm-label="Outros 1" data-radiocharm-text-color="FFF"  data-radiocharm-background-color="008B00"/>
+				    					<input class="nota" type="radio" value="OUTROS 2" th:name="'r' + ${iterStat.count}" 
+				    						data-radiocharm-label="Outros 2" data-radiocharm-text-color="FFF"  data-radiocharm-background-color="008B00"/>
 									</div>
 								</div>					
 							</div>
-							<div class="row  botoes">
-								<div class="col-sm-3 form-group">
-									<a class="btn  btn-success" th:id="'botao'+${iterStat.count}" th:unless="${iterStat.last}" th:href="'#questao' + ${iterStat.count+1}">Próximo</a>
-									<a class="btn  btn-success btn-incluir-questionario" th:if="${iterStat.last}" href="#cliente">Próximo -></a>
+							<div class="row  botoes justify-content-end  align-items-center">
+								<div class="col-sm-5 form-group  text-right">
+									<a class="btn  btn-success  btn-lg active  css-a" th:id="'botao'+${iterStat.count}" th:unless="${iterStat.last}" th:href="'#questao' + ${iterStat.count+1}">Próximo</a>
+									<a class="btn  btn-success btn-incluir-questionario  btn-lg active css-a" th:if="${iterStat.last}" href="#cliente">Próximo -></a>
 								</div>
 							</div>							
-						</div>
-							
+						</div>							
 						
+							
+							
 						<div class = "questao  d-none" th:id="'questao' + ${iterStat.count}" th:if="${pergunta.questao.tipoServico}">
-							<div class="row  nomeQuestao">
-								<div class="form-group  col-sm-12">
-									<h1 class = "display-4  text-break  font-weight-bold  text-center" th:text="${pergunta.questao.nome}"></h1>
+							<div class="row  nomeQuestao justify-content-end  align-items-center">
+								<div class="form-group  col-sm-10">
+									<h1 class = "text-break  font-weight-bold  text-center" th:text="${pergunta.questao.nome}"></h1>
 								</div>
-							</div>						
-							<div class="row  questionario ">
+							</div>
+							<div class="row  questionario justify-content-end  align-items-center">
 			 					<input class = "pergunta" type="hidden" th:value="${pergunta.questao.id}"/>
-								<div class="form-group  col-sm-12">
+								<div class="form-group  text-center col-sm-10">
 									<div>
-				  						<div class="radio  radio-inline">
-					    					<input class="nota" th:id="'r' + ${iterStat.count}" type="radio" value="MÉDICOS" th:name="'r' + ${iterStat.count}"/>
-					    					<label th:for="'r' + ${iterStat.count}" >Exames</label>
-				    					</div>
-				  						<div class="radio  radio-inline">
-					    					<input  class="nota" th:id="'r' + ${iterStat.count+1}" type="radio" value="AMIGOS" th:name="'r' + ${iterStat.count}"/>
-					    					<label th:for="'r' + ${iterStat.count+1}">Autorização</label>
-				    					</div>
-				  						<div class="radio  radio-inline">
-					    					<input  class="nota" th:id="'r' + ${iterStat.count+2}" type="radio" value="PROPAGANDA" th:name="'r' + ${iterStat.count}"/>
-					    					<label th:for="'r' + ${iterStat.count+2}">Boletos</label>
-				    					</div>
-				  						<div class="radio  radio-inline">
-					    					<input  class="nota" th:id="'r' + ${iterStat.count+3}" type="radio" value="OUTROS" th:name="'r' + ${iterStat.count}"/>
-					    					<label th:for="'r' + ${iterStat.count+3}">Cancelamentos</label>
-				    					</div>
+				    					<input class="nota" type="radio" value="EXAMES" th:name="'r' + ${iterStat.count}" 
+				    						data-radiocharm-label="Exames" data-radiocharm-text-color="FFF"  data-radiocharm-background-color="008B00"/>
+				    					<input class="nota" type="radio" value="AUTORIZAÇÃO" th:name="'r' + ${iterStat.count}"
+				    						data-radiocharm-label="Autorização" data-radiocharm-text-color="FFF"  data-radiocharm-background-color="008B00"/>
+				    					<input class="nota" type="radio" value="BOLETOS" th:name="'r' + ${iterStat.count}"
+				    						data-radiocharm-label="Boletos" data-radiocharm-text-color="FFF"  data-radiocharm-background-color="008B00"/>
+				    					<input class="nota" type="radio" value="CANCELAMENTOS" th:name="'r' + ${iterStat.count}" 
+				    					    data-radiocharm-label="Cancelamento" data-radiocharm-text-color="FFF"  data-radiocharm-background-color="008B00"/>
+				    					<input class="nota" type="radio" value="RESULTADOS" th:name="'r' + ${iterStat.count}" 
+				    						data-radiocharm-label="Resultados" data-radiocharm-text-color="FFF"  data-radiocharm-background-color="008B00"/>
 									</div>
 								</div>					
 							</div>
-							<div class="row  botoes">
-								<div class="col-sm-3 form-group">
-									<a class="btn  btn-success" th:id="'botao'+${iterStat.count}" th:unless="${iterStat.last}" th:href="'#questao' + ${iterStat.count+1}">Próximo</a>
-									<a class="btn  btn-success btn-incluir-questionario" th:if="${iterStat.last}" href="#cliente">Próximo -></a>
+							<div class="row  botoes justify-content-end  align-items-center">
+								<div class="col-sm-5 form-group  text-right">
+									<a class="btn  btn-success  btn-lg active  css-a" th:id="'botao'+${iterStat.count}" th:unless="${iterStat.last}" th:href="'#questao' + ${iterStat.count+1}">Próximo</a>
+									<a class="btn  btn-success btn-incluir-questionario  btn-lg active css-a" th:if="${iterStat.last}" href="#cliente">Próximo -></a>
 								</div>
 							</div>							
-						</div>
+						</div>							
 					</th:block>
+					
+					
+					
+					<div class = "questao  d-none" id="sugestao">
+						<div class="row  nomeQuestao justify-content-end  align-items-center">
+							<div class="form-group  col-sm-10">
+								<h1 class = "text-break  font-weight-bold  text-center">Deixe sua critica ou sugestão</h1>
+							</div>
+						</div>
+						<div class="row  questionario justify-content-end  align-items-center">
+							<div class="form-group  text-center col-sm-10">
+								<textarea id="historico" class="form-control" rows="3" maxlength="200"
+									placeholder="Deixe em branco para o histórico ser igual ao plano de conta secundária."></textarea>								
+							</div>					
+						</div>
+						<div class="row  botoes justify-content-end  align-items-center">
+							<div class="col-sm-5 form-group  text-right">
+								<a class="btn  btn-success  btn-lg active  css-a">Próximo</a>
+							</div>
+						</div>							
+					</div>						
+					
 					
 					
 					<div class="row  d-none btnSalvar">
