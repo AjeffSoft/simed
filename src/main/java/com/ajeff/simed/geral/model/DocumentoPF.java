@@ -17,28 +17,15 @@ public class DocumentoPF implements Serializable{
 	@Column(name = "titulo_eleitor")
 	private String tituloEleitor;
 	
-	@Column(name = "zona_eleitor")
-	private String zonaEleitor;
-	
-	@Column(name = "sessao_eleitor")
-	private String sessaoEleitor;
-	
 	@Column(name = "data_eleitor")
 	private LocalDate dataEleitor;
 
 	private String ctps;
 	
-	@Column(name = "serie_ctps")
-	private String serieCtps;
-	
 	@Column(name = "data_ctps")
 	private LocalDate dataCtps;	
 	
-	@NotBlank(message = "O campo PIS/NIT é obrigatório.")
 	private String pis;
-	
-	@Column(name = "banco_pis")
-	private String bancoPis;
 	
 	@Column(name = "data_pis")
 	private LocalDate dataPis;	
@@ -54,16 +41,10 @@ public class DocumentoPF implements Serializable{
 
 	private String habilitacao;
 
-	@Column(name = "categoria_hab")
-	private String categoriaHab;
-
 	@Column(name = "data_habilitacao")
 	private LocalDate dataHabilitacao;
 
 	private String reservista;
-
-	@Column(name = "regiao_reservista")
-	private String regiaoReservista;
 
 	@Column(name = "data_reservista")
 	private LocalDate dataReservista;
@@ -76,28 +57,13 @@ public class DocumentoPF implements Serializable{
 	@Column(name = "data_certidao")
 	private LocalDate dataCertidao;
 
+	
 	public String getTituloEleitor() {
 		return tituloEleitor;
 	}
 
 	public void setTituloEleitor(String tituloEleitor) {
 		this.tituloEleitor = tituloEleitor;
-	}
-
-	public String getZonaEleitor() {
-		return zonaEleitor;
-	}
-
-	public void setZonaEleitor(String zonaEleitor) {
-		this.zonaEleitor = zonaEleitor;
-	}
-
-	public String getSessaoEleitor() {
-		return sessaoEleitor;
-	}
-
-	public void setSessaoEleitor(String sessaoEleitor) {
-		this.sessaoEleitor = sessaoEleitor;
 	}
 
 	public LocalDate getDataEleitor() {
@@ -116,14 +82,6 @@ public class DocumentoPF implements Serializable{
 		this.ctps = ctps;
 	}
 
-	public String getSerieCtps() {
-		return serieCtps;
-	}
-
-	public void setSerieCtps(String serieCtps) {
-		this.serieCtps = serieCtps;
-	}
-
 	public LocalDate getDataCtps() {
 		return dataCtps;
 	}
@@ -138,14 +96,6 @@ public class DocumentoPF implements Serializable{
 
 	public void setPis(String pis) {
 		this.pis = pis;
-	}
-
-	public String getBancoPis() {
-		return bancoPis;
-	}
-
-	public void setBancoPis(String bancoPis) {
-		this.bancoPis = bancoPis;
 	}
 
 	public LocalDate getDataPis() {
@@ -188,14 +138,6 @@ public class DocumentoPF implements Serializable{
 		this.habilitacao = habilitacao;
 	}
 
-	public String getCategoriaHab() {
-		return categoriaHab;
-	}
-
-	public void setCategoriaHab(String categoriaHab) {
-		this.categoriaHab = categoriaHab;
-	}
-
 	public LocalDate getDataHabilitacao() {
 		return dataHabilitacao;
 	}
@@ -210,14 +152,6 @@ public class DocumentoPF implements Serializable{
 
 	public void setReservista(String reservista) {
 		this.reservista = reservista;
-	}
-
-	public String getRegiaoReservista() {
-		return regiaoReservista;
-	}
-
-	public void setRegiaoReservista(String regiaoReservista) {
-		this.regiaoReservista = regiaoReservista;
 	}
 
 	public LocalDate getDataReservista() {
