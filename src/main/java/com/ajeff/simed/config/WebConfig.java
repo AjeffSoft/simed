@@ -41,6 +41,7 @@ import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
+import com.ajeff.simed.cooperado.controller.CooperadoController;
 import com.ajeff.simed.financeiro.controller.FornecedorController;
 import com.ajeff.simed.geral.controller.UsuarioController;
 import com.ajeff.simed.geral.controller.converter.CidadeConverter;
@@ -51,7 +52,10 @@ import com.github.mxab.thymeleaf.extras.dataattribute.dialect.DataAttributeDiale
 import nz.net.ultraq.thymeleaf.LayoutDialect;
 
 @Configuration
-@ComponentScan(basePackageClasses= {UsuarioController.class, FornecedorController.class, PesquisaSatisfacaoControler.class})
+@ComponentScan(basePackageClasses= {UsuarioController.class, 
+									FornecedorController.class, 
+									PesquisaSatisfacaoControler.class,
+									CooperadoController.class})
 @EnableWebMvc
 @EnableSpringDataWebSupport
 @EnableAsync

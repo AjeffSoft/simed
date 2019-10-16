@@ -36,6 +36,7 @@ public class Cooperado implements Serializable{
 	@NotBlank(message="Informe o nome")
 	private String nome;
 	
+	@NotBlank(message = "Informe o CRM")
 	private String crm;
 
 	@Valid
