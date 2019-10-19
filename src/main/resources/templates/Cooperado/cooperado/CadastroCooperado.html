@@ -241,33 +241,33 @@
 						<div class="row">
 							<div class="col-sm-6  form-group">
 								<label for="pai" class="control-label">Pai</label>
-								<input id="pai" type="text" class="form-control" th:field="*{pai}" maxlength="60">
+								<input id="pai" type="text" class="form-control" th:field="*{informacaoPessoal.pai}" maxlength="60">
 							</div>
 
 							<div class="col-sm-6  form-group">
 								<label for="mae" class="control-label">Mãe</label>
-								<input id="mae" type="text" class="form-control" th:field="*{mae}" maxlength="60">
+								<input id="mae" type="text" class="form-control" th:field="*{informacaoPessoal.mae}" maxlength="60">
 							</div>
 						</div>	
 						
 						<div class="row">
 							<div class="col-sm-2  form-group">
 								<label for="natural" class="control-label">Natural</label>
-								<input id="natural" type="text" class="form-control" th:field="*{cidadeNatal}" maxlength="40">
+								<input id="natural" type="text" class="form-control" th:field="*{informacaoPessoal.cidadeNatal}" maxlength="40">
 							</div>
 
 							<div class="col-sm-2  form-group">
 								<label for="nacionalidade" class="control-label">Nacionalidade</label>
-								<input id="nacionalidade" type="text" class="form-control" th:field="*{nacionalidade}" maxlength="40">
+								<input id="nacionalidade" type="text" class="form-control" th:field="*{informacaoPessoal.nacionalidade}" maxlength="40">
 							</div>
-							<div class="col-sm-2  form-group" simed:classforerror="dataNascimento">
+							<div class="col-sm-2  form-group" simed:classforerror="informacaoPessoal.dataNascimento">
 								<label for="dataNasc" class="control-label">Nascimento</label>
-								<input id="dataNasc" type="text" class="form-control  js-date" th:field = "*{dataNascimento}" autocomplete="off"/>
+								<input id="dataNasc" type="text" class="form-control  js-date" th:field = "*{informacaoPessoal.dataNascimento}" autocomplete="off"/>
 							</div>
 
 							<div class="col-sm-2  form-group">
 								<label for="sexo">Sexo</label>
-								<select id="sexo" class="form-control" th:field="*{sexo}">
+								<select id="sexo" class="form-control" th:field="*{informacaoPessoal.sexo}">
 									<option value="">Selecione...</option>
 									<option value="F">Feminino</option>
 									<option value="M">Masculino</option>
@@ -276,7 +276,7 @@
 							
 							<div class="col-sm-4  form-group">
 								<label for="estadoCivil">Estado Civil</label>
-								<select id="estadoCivil" class="form-control" th:field="*{estadoCivil}">
+								<select id="estadoCivil" class="form-control" th:field="*{informacaoPessoal.estadoCivil}">
 									<option value="">Selecione...</option>
 									<option value="SOLTEIRO">Solteiro(a)</option>
 									<option value="CASADO">Cadado(a)</option>

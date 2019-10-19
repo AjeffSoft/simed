@@ -22,6 +22,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import com.ajeff.simed.geral.model.Agencia;
 import com.ajeff.simed.geral.model.DocumentoPF;
 import com.ajeff.simed.geral.model.Endereco;
+import com.ajeff.simed.geral.model.InformacaoPessoal;
 
 @Entity
 @Table(name = "cooperado")
@@ -47,6 +48,9 @@ public class Cooperado implements Serializable{
 	@Embedded
 	private DocumentoPF documento;
 	
+	@Embedded
+	private InformacaoPessoal informacaoPessoal;
+	
 	private String telefone;
 	
 	private String celular;
@@ -58,24 +62,6 @@ public class Cooperado implements Serializable{
 	
 	private String conta;
 
-	private String pai;
-
-	private String mae;
-
-	private String sexo;
-
-	private String nacionalidade;
-	
-	@Column(name = "estado_civil")
-	private String estadoCivil;
-	
-	@Column(name = "cidade_natal")
-	private String cidadeNatal;
-
-	@Column(name = "data_nascimento")
-	private LocalDate dataNascimento;
-	
-	
 	@Column(name = "tipo_conta")
 	private String tipoConta;
 
@@ -197,61 +183,14 @@ public class Cooperado implements Serializable{
 		this.anotacao = anotacao;
 	}
 
-	public String getPai() {
-		return pai;
+	public InformacaoPessoal getInformacaoPessoal() {
+		return informacaoPessoal;
 	}
 
-	public void setPai(String pai) {
-		this.pai = pai;
+	public void setInformacaoPessoal(InformacaoPessoal informacaoPessoal) {
+		this.informacaoPessoal = informacaoPessoal;
 	}
 
-	public String getMae() {
-		return mae;
-	}
-
-	public void setMae(String mae) {
-		this.mae = mae;
-	}
-
-	public String getSexo() {
-		return sexo;
-	}
-
-	public void setSexo(String sexo) {
-		this.sexo = sexo;
-	}
-
-	public String getNacionalidade() {
-		return nacionalidade;
-	}
-
-	public void setNacionalidade(String nacionalidade) {
-		this.nacionalidade = nacionalidade;
-	}
-
-	public String getEstadoCivil() {
-		return estadoCivil;
-	}
-
-	public void setEstadoCivil(String estadoCivil) {
-		this.estadoCivil = estadoCivil;
-	}
-
-	public String getCidadeNatal() {
-		return cidadeNatal;
-	}
-
-	public void setCidadeNatal(String cidadeNatal) {
-		this.cidadeNatal = cidadeNatal;
-	}
-
-	public LocalDate getDataNascimento() {
-		return dataNascimento;
-	}
-
-	public void setDataNascimento(LocalDate dataNascimento) {
-		this.dataNascimento = dataNascimento;
-	}
 
 	@Override
 	public int hashCode() {
@@ -280,5 +219,9 @@ public class Cooperado implements Serializable{
 	
 	public boolean isNovo() {
 		return this.id == null;
+	}
+	
+	public boolean isAtivo() {
+		return this.ativo == true;
 	}
 }

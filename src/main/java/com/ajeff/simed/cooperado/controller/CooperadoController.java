@@ -1,9 +1,12 @@
 package com.ajeff.simed.cooperado.controller;
 
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,8 +16,11 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ajeff.simed.cooperado.model.Cooperado;
+import com.ajeff.simed.cooperado.repository.filter.CooperadoFilter;
 import com.ajeff.simed.cooperado.service.CooperadoService;
+import com.ajeff.simed.financeiro.model.Fornecedor;
 import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoException;
+import com.ajeff.simed.geral.controller.page.PageWrapper;
 import com.ajeff.simed.geral.service.AgenciaService;
 import com.ajeff.simed.geral.service.EstadoService;
 
@@ -65,15 +71,15 @@ public class CooperadoController {
 //	}
 
 
-//	@GetMapping("/pesquisar")
-//	public ModelAndView pesquisar(FornecedorFilter fornecedorFilter, BindingResult result, @PageableDefault(size=50) Pageable pageable,
-//										HttpServletRequest httpServletRequest) {
-//		ModelAndView mv = new ModelAndView("Financeiro/fornecedor/PesquisarFornecedores");
-//
-//		PageWrapper<Fornecedor> paginaWrapper = new PageWrapper<>(service.filtrar(fornecedorFilter, pageable), httpServletRequest);
-//		mv.addObject("pagina", paginaWrapper);
-//		return mv;
-//	}	
+	@GetMapping("/pesquisar")
+	public ModelAndView pesquisar(CooperadoFilter cooperadoFilter, BindingResult result, @PageableDefault(size=50) Pageable pageable,
+										HttpServletRequest httpServletRequest) {
+		ModelAndView mv = new ModelAndView("Cooperado/cooperado/PesquisarCooperados");
+
+		PageWrapper<Cooperado> paginaWrapper = new PageWrapper<>(service.filtrar(cooperadoFilter, pageable), httpServletRequest);
+		mv.addObject("pagina", paginaWrapper);
+		return mv;
+	}	
 
 
 //	@DeleteMapping("/excluir/{id}")
