@@ -7,22 +7,26 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ajeff.simed.cooperado.model.Cooperado;
 import com.ajeff.simed.cooperado.repository.filter.CooperadoFilter;
 import com.ajeff.simed.cooperado.service.CooperadoService;
-import com.ajeff.simed.financeiro.model.Fornecedor;
 import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoException;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
 import com.ajeff.simed.geral.service.AgenciaService;
 import com.ajeff.simed.geral.service.EstadoService;
+import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
 
 @Controller
 @RequestMapping("/cooperado/cooperado")
@@ -62,15 +66,6 @@ public class CooperadoController {
 	}
 	
 
-	//PESQUISA RAPIDA FILTRADO POR FORNECEDORES
-//	@RequestMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
-//	public @ResponseBody List<Fornecedor> pesquisarFornecedor(String nome){
-//		validarTamanhoNomePesquisa(nome);
-//		return service.findByNomeContainingIgnoreCase('%' + nome + '%');
-//		               
-//	}
-
-
 	@GetMapping("/pesquisar")
 	public ModelAndView pesquisar(CooperadoFilter cooperadoFilter, BindingResult result, @PageableDefault(size=50) Pageable pageable,
 										HttpServletRequest httpServletRequest) {
@@ -82,31 +77,25 @@ public class CooperadoController {
 	}	
 
 
-//	@DeleteMapping("/excluir/{id}")
-//	public @ResponseBody ResponseEntity<?> excluir (@PathVariable Long id){
-//		try {
-//			service.excluir(id);
-//		} catch (ImpossivelExcluirEntidade e) {
-//			return ResponseEntity.badRequest().body(e.getMessage());
-//		}
-//		return ResponseEntity.ok().build();
-//	}
+	@DeleteMapping("/excluir/{id}")
+	public @ResponseBody ResponseEntity<?> excluir (@PathVariable Long id){
+		try {
+			service.excluir(id);
+		} catch (ImpossivelExcluirEntidade e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+		return ResponseEntity.ok().build();
+	}
 	
-//	@GetMapping("/alterar/{id}")
-//	public ModelAndView alterar(@PathVariable Long id, Fornecedor fornecedor) {
-//		fornecedor = service.buscarComCidadeEstado(id);
-//		ModelAndView mv = novo(fornecedor);
-//		mv.addObject(fornecedor);
-//		return mv;
-//	}
+	@GetMapping("/alterar/{id}")
+	public ModelAndView alterar(@PathVariable Long id, Cooperado cooperado) {
+		cooperado = service.buscarComCidadeEstado(id);
+		ModelAndView mv = novo(cooperado);
+		mv.addObject(cooperado);
+		return mv;
+	}
 	
 	
-//	@ExceptionHandler(IllegalArgumentException.class)
-//	public ResponseEntity<Void> tratarIllegalArgumentException(IllegalArgumentException e) {
-//		return ResponseEntity.badRequest().build();
-//	}
-	
-
 //	@GetMapping("/historico/{id}")
 //	public ModelAndView imprimirHistorico(@PathVariable Long id) {
 //		Map<String, Object> map = new HashMap<>();

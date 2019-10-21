@@ -3,6 +3,8 @@ package com.ajeff.simed.cooperado.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.PersistenceException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import com.ajeff.simed.cooperado.model.Cooperado;
 import com.ajeff.simed.cooperado.repository.CooperadosRepository;
 import com.ajeff.simed.cooperado.repository.filter.CooperadoFilter;
 import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoException;
+import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
 
 @Service
 public class CooperadoService {
@@ -56,20 +59,19 @@ public class CooperadoService {
 		return repository.filtrar(cooperadoFilter, pageable);
 	}
 	
-//	@Transactional
-//	public void excluir(Long id) {
-//		String tipo = "o fornecedor";
-//
-//		try {
-//			repository.delete(id);
-//			repository.flush();
-//		} catch (PersistenceException e) {
-//			throw new ImpossivelExcluirEntidade("Não foi possivel excluir " + tipo +". Exclua primeiro o(s) relacionamento(s) com outra(s) tabela(s)!"); 
-//		}
-//		
-//	}
+	@Transactional
+	public void excluir(Long id) {
+		String tipo = "o(a) cooperado(a)";
 
-	
+		try {
+			repository.delete(id);
+			repository.flush();
+		} catch (PersistenceException e) {
+			throw new ImpossivelExcluirEntidade("Não foi possivel excluir " + tipo +". Exclua primeiro o(s) relacionamento(s) com outra(s) tabela(s)!"); 
+		}
+		
+	}
+
 
 	private void testeRegistroJaCadastrado(Cooperado cooperado) {
 		Optional<Cooperado> optional = repository.findByDocumentoCpf(cooperado.getDocumento().getCpf());
@@ -80,18 +82,8 @@ public class CooperadoService {
 	}
 
 
-//	public List<Fornecedor> findByNomeContainingIgnoreCase(String nome) {
-//		return repository.findByNomeContainingIgnoreCase(nome);
-//	}
-
-
-//	public Fornecedor buscarComCidadeEstado(Long id) {
-//		return repository.buscarComCidadeEstado(id);
-//	}
-
-
-//	public List<Fornecedor> listarTodosFornecedores() {
-//		return repository.listarTodosFornecedores();
-//	}
+	public Cooperado buscarComCidadeEstado(Long id) {
+		return repository.buscarComCidadeEstado(id);
+	}
 
 }

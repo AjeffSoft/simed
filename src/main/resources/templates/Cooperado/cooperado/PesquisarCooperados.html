@@ -2,7 +2,7 @@
 <html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{Financeiro/LayoutFinanceiro}"
+	layout:decorate="~{Cooperado/LayoutCooperado}"
 	xmlns:simed="http://simed.ajeffsoft.com"
 	xmlns:data="http://www.thymeleaf.org/extras/data"	
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
@@ -32,11 +32,11 @@
 		</div>
 
 		<div class="container-fluid">
-			<form method="GET" th:object="${CooperadoFilter}">
+			<form method="GET" th:object="${cooperadoFilter}">
 				<div class="row">
 					<div class="form-group  col-sm-8">
 						<label class="control-label" for="nome">Nome</label>
-						<input type="search" class="form-control" id="nome" autofocus="autofocus" maxlength="60"/>
+						<input type="search" class="form-control" id="nome" th:field="*{nome}" autofocus="autofocus" maxlength="60"/>
 					</div>
 
 
@@ -87,6 +87,7 @@
 					
 					<tbody>
 						<tr th:each="cooperado : ${pagina.conteudo}">
+							<td th:text="${cooperado.crm}"></td>
 							<td th:text="${cooperado.nome}"></td>
 							<td th:text="${cooperado.documento.cpf}"></td>
 							<td th:text="${cooperado.endereco.cidade.nome} +' /'+ ${cooperado.endereco.cidade.uf} "></td>
@@ -108,13 +109,12 @@
 									<i class="glyphicon glyphicon-eye-open"></i>
 								</a>							
 								
-								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar" sec:authorize-url="/financeiro/fornecedor/alterar/**"
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar"
 										th:href="@{/cooperado/cooperado/alterar/{id}(id=${cooperado.id})}"> 
 									<i class="glyphicon glyphicon-pencil"></i>
 								</a>
-								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir" href="#" sec:authorize-url="/financeiro/fornecedor/excluir/**"
-									data:url="@{/cooperado/cooperado/excluir/{id}(id=${cooperado.id})}"
-									data:objeto="${cooperado.nome}">
+								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir"
+									data:url="@{/cooperado/cooperado/excluir/{id}(id=${cooperado.id})}"	data:objeto="${cooperado.nome}">
 									<i class="glyphicon glyphicon-trash"></i>
 								</a>
 							</td>

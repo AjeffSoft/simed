@@ -19,7 +19,6 @@ import org.springframework.util.StringUtils;
 
 import com.ajeff.simed.cooperado.model.Cooperado;
 import com.ajeff.simed.cooperado.repository.filter.CooperadoFilter;
-import com.ajeff.simed.financeiro.model.Fornecedor;
 import com.ajeff.simed.geral.repository.paginacao.PaginacaoUtil;
 
 public class CooperadosRepositoryImpl implements CooperadosRepositoryQueries{
@@ -72,7 +71,7 @@ public class CooperadosRepositoryImpl implements CooperadosRepositoryQueries{
 	@Override
 	@Transactional(readOnly = true)
 	public Cooperado buscarComCidadeEstado(Long id) {
-		Criteria criteria = manager.unwrap(Session.class).createCriteria(Fornecedor.class);
+		Criteria criteria = manager.unwrap(Session.class).createCriteria(Cooperado.class);
 		criteria.createAlias("endereco.cidade", "c", JoinType.LEFT_OUTER_JOIN);
 		criteria.createAlias("c.estado", "e", JoinType.LEFT_OUTER_JOIN);
 		criteria.add(Restrictions.eq("id", id));
