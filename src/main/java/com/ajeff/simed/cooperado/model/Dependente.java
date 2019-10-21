@@ -14,18 +14,17 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
-import com.ajeff.simed.geral.model.Agencia;
 import com.ajeff.simed.geral.model.DocumentoPF;
-import com.ajeff.simed.geral.model.Endereco;
 import com.ajeff.simed.geral.model.InformacaoPessoal;
 
 @Entity
-@Table(name = "cooperado")
-public class Cooperado implements Serializable{
+@Table(name = "dependente_cooperado")
+public class Dependente implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
@@ -36,13 +35,6 @@ public class Cooperado implements Serializable{
 	@NotBlank(message="Informe o nome")
 	private String nome;
 	
-	@NotBlank(message = "Informe o CRM")
-	private String crm;
-
-	@Valid
-	@Embedded
-	private Endereco endereco;
-	
 	@Valid
 	@Embedded
 	private DocumentoPF documento;
@@ -50,26 +42,24 @@ public class Cooperado implements Serializable{
 	@Embedded
 	private InformacaoPessoal informacaoPessoal;
 	
-	private String telefone;
-	
 	private String celular;
 	
 	@Email
 	private String email;
+	
+	@NotNull(message = "Informe o grau de parentesco")
+	private String parentesco;
 
 	private Boolean ativo;
 	
-	private String conta;
-
-	@Column(name = "tipo_conta")
-	private String tipoConta;
-
-	@ManyToOne
-	@JoinColumn(name = "id_agencia")
-	private Agencia agencia;
-
-	private String anotacao;
+	@Column(name = "imposto_renda")
+	private Boolean impostoRenda;
 	
+	@NotNull(message = "Informe o cooperado")
+	@ManyToOne
+	@JoinColumn(name ="id_cooperado")
+	private Cooperado cooperado;
+
 	@PrePersist
 	@PreUpdate
 	public void prePersistUpdate() {
@@ -94,22 +84,6 @@ public class Cooperado implements Serializable{
 		this.nome = nome;
 	}
 
-	public Endereco getEndereco() {
-		return endereco;
-	}
-
-	public void setEndereco(Endereco endereco) {
-		this.endereco = endereco;
-	}
-
-	public String getTelefone() {
-		return telefone;
-	}
-
-	public void setTelefone(String telefone) {
-		this.telefone = telefone;
-	}
-
 	public String getCelular() {
 		return celular;
 	}
@@ -124,38 +98,6 @@ public class Cooperado implements Serializable{
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public String getConta() {
-		return conta;
-	}
-
-	public void setConta(String conta) {
-		this.conta = conta;
-	}
-
-	public Agencia getAgencia() {
-		return agencia;
-	}
-
-	public void setAgencia(Agencia agencia) {
-		this.agencia = agencia;
-	}
-
-	public String getTipoConta() {
-		return tipoConta;
-	}
-
-	public void setTipoConta(String tipoConta) {
-		this.tipoConta = tipoConta;
-	}
-
-	public String getCrm() {
-		return crm;
-	}
-
-	public void setCrm(String crm) {
-		this.crm = crm;
 	}
 
 	public DocumentoPF getDocumento() {
@@ -174,14 +116,6 @@ public class Cooperado implements Serializable{
 		this.ativo = ativo;
 	}
 
-	public String getAnotacao() {
-		return anotacao;
-	}
-
-	public void setAnotacao(String anotacao) {
-		this.anotacao = anotacao;
-	}
-
 	public InformacaoPessoal getInformacaoPessoal() {
 		return informacaoPessoal;
 	}
@@ -190,6 +124,29 @@ public class Cooperado implements Serializable{
 		this.informacaoPessoal = informacaoPessoal;
 	}
 
+	public Boolean getImpostoRenda() {
+		return impostoRenda;
+	}
+
+	public void setImpostoRenda(Boolean impostoRenda) {
+		this.impostoRenda = impostoRenda;
+	}
+
+	public String getParentesco() {
+		return parentesco;
+	}
+
+	public void setParentesco(String parentesco) {
+		this.parentesco = parentesco;
+	}
+
+	public Cooperado getCooperado() {
+		return cooperado;
+	}
+
+	public void setCooperado(Cooperado cooperado) {
+		this.cooperado = cooperado;
+	}
 
 	@Override
 	public int hashCode() {
@@ -207,7 +164,7 @@ public class Cooperado implements Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Cooperado other = (Cooperado) obj;
+		Dependente other = (Dependente) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

@@ -14,7 +14,7 @@ public interface CooperadosRepository extends JpaRepository<Cooperado, Long>, Co
 	Optional<Cooperado> findByDocumentoCpf(String cpf);
 
 	@Query("select c from Cooperado c order by c.nome asc")
-	List<Cooperado> ordenarNome();
+	List<Cooperado> listarCooperados();
 
 //	Optional<Cooperado> findByNomeOrSiglaIgnoreCase(String nome, String sigla);
 //

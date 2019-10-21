@@ -3,6 +3,7 @@ CREATE TABLE cooperado (
   nome VARCHAR(100),
   crm VARCHAR(15),
   telefone VARCHAR(20),
+  parentesco VARCHAR(20),
   celular VARCHAR(20),
   ativo BOOLEAN,
   email VARCHAR(100),
@@ -40,4 +41,37 @@ CREATE TABLE cooperado (
   id_agencia BIGINT(20),
   FOREIGN KEY (id_cidade) REFERENCES cidade(id),
   FOREIGN KEY (id_agencia) REFERENCES agencia(id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE dependente_cooperado (
+  id BIGINT(20) PRIMARY KEY AUTO_INCREMENT,
+  nome VARCHAR(100),
+  imposto_renda BOOLEAN,
+  celular VARCHAR(20),
+  ativo BOOLEAN,
+  email VARCHAR(100),
+  titulo_eleitor VARCHAR(20),
+  data_eleitor DATE,
+  ctps VARCHAR(20),
+  data_ctps DATE,
+  pis VARCHAR(20),
+  data_pis DATE,
+  cpf VARCHAR(20),
+  rg VARCHAR(40),
+  data_rg DATE,
+  habilitacao VARCHAR(20),
+  data_habilitacao DATE,
+  reservista VARCHAR(20),
+  data_reservista DATE,
+  certidao VARCHAR(20),
+  tipo_certidao VARCHAR(20),
+  data_certidao DATE,
+  estado_civil VARCHAR(20),
+  cidade_natal VARCHAR(30),
+  nacionalidade VARCHAR(20),
+  data_nascimento DATE,
+  sexo VARCHAR(1),
+  id_cooperado BIGINT(20),
+  FOREIGN KEY (id_cooperado) REFERENCES cooperado(id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;

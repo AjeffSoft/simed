@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Cooperado/LayoutCooperado}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+<head>
+	<title>Pesquisar Cooperados</title>
+</head>
+
+<body>
+	<section layout:fragment="conteudo">
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Pesquisar cooperados</h1>
+					</div>
+					
+					<div class="col-sm-2">
+						<div class="aw-page-header-controls">
+							<a class="btn  btn-warning" th:href="@{/cooperado/cooperado/novo}">
+								<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Cadastrar</span>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+			<form method="GET" th:object="${cooperadoFilter}">
+				<div class="row">
+					<div class="form-group  col-sm-8">
+						<label class="control-label" for="nome">Nome</label>
+						<input type="search" class="form-control" id="nome" th:field="*{nome}" autofocus="autofocus" maxlength="60"/>
+					</div>
+
+
+					<div class="form-group  col-sm-2">
+						<label class="control-label" for="cpf">CPF</label>
+						<input type="text" class="form-control" id="documento1" th:field="*{cpf}" maxlength="20"/>
+					</div>
+
+					<div class="form-group  col-sm-2">
+						<label class="control-label" for="cpf">CRM</label>
+						<input type="text" class="form-control" id="crm" th:field="*{crm}" maxlength="10"/>
+					</div>
+
+				</div>	
+			
+				<div class="form-group">
+					<button type="submit" class="btn  btn-primary">Pesquisar</button>
+				</div>			
+			</form>
+		
+			<br>
+			
+			<div class="table-responsive  bw-tabela-simples">
+				<table class="table  table-hover">
+					<thead>
+						<tr>
+							<th class="table-col-pequeno">
+								<simed:order page="${pagina}" field="crm" text="CRM"/>
+							</th>
+
+							<th class="table-col-grande">
+								<simed:order page="${pagina}" field="nome" text="Nome"/>
+							</th>
+
+							<th class="table-col-pequeno">
+								<simed:order page="${pagina}" field="documento.cpf" text="CPF"/>
+							</th>
+							<th class="table-col-grande">
+								<simed:order page="${pagina}" field="endereco.cidade" text="Cidade"/>
+							</th>
+							<th class="table-col-grande">Celular</th>
+
+							<th class="table-col-pequeno">Status</th>
+
+							<th class="table-agencia-col-acoes"></th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						<tr th:each="cooperado : ${pagina.conteudo}">
+							<td th:text="${cooperado.crm}"></td>
+							<td th:text="${cooperado.nome}"></td>
+							<td th:text="${cooperado.documento.cpf}"></td>
+							<td th:text="${cooperado.endereco.cidade.nome} +' /'+ ${cooperado.endereco.cidade.uf} "></td>
+							<td th:text="${cooperado.celular}"></td>
+							<td>
+								<th:block th:if="${cooperado.ativo}">
+									<span class="label  label-success">Ativo</span>
+								</th:block>
+
+								<th:block th:unless="${cooperado.ativo}">
+									<span class="label  label-danger">Inativo</span>
+								</th:block>
+
+							</td>							
+							<td class="text-center">
+								
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes"
+									th:href="@{/cooperado/cooperado/detalhe/{id}(id=${cooperado.id})}"> 
+									<i class="glyphicon glyphicon-eye-open"></i>
+								</a>							
+								
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar"
+										th:href="@{/cooperado/cooperado/alterar/{id}(id=${cooperado.id})}"> 
+									<i class="glyphicon glyphicon-pencil"></i>
+								</a>
+								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir"
+									data:url="@{/cooperado/cooperado/excluir/{id}(id=${cooperado.id})}"	data:objeto="${cooperado.nome}">
+									<i class="glyphicon glyphicon-trash"></i>
+								</a>
+							</td>
+						</tr>
+						
+						<tr th:if="${pagina.vazia}">
+							<td colspan="7"> Nenhum cooperado encontrado</td>
+						</tr>
+						
+						
+					</tbody>
+				</table>
+			</div>
+
+			<!-- COMPONENTE THYMELEAF PARA PAGINAÇÃO -->	
+			<simed:pagination page="${pagina}"/>						
+
+		</div>		
+	</section>
+</body>
+</html>

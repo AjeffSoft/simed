@@ -51,10 +51,6 @@ public class CooperadoService {
 		return repository.findOne(id);
 	}
 	
-	private List<Cooperado> ordenarNome() {
-		return repository.ordenarNome();
-	}	
-
 	public Page<Cooperado> filtrar(CooperadoFilter cooperadoFilter, Pageable pageable) {
 		return repository.filtrar(cooperadoFilter, pageable);
 	}
@@ -84,6 +80,10 @@ public class CooperadoService {
 
 	public Cooperado buscarComCidadeEstado(Long id) {
 		return repository.buscarComCidadeEstado(id);
+	}
+
+	public List<Cooperado> listarCooperados() {
+		return repository.listarCooperados();
 	}
 
 }
