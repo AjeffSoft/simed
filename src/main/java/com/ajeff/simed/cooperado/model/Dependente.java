@@ -13,7 +13,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Email;
@@ -35,7 +34,6 @@ public class Dependente implements Serializable{
 	@NotBlank(message="Informe o nome")
 	private String nome;
 	
-	@Valid
 	@Embedded
 	private DocumentoPF documento;
 	
@@ -177,7 +175,7 @@ public class Dependente implements Serializable{
 		return this.id == null;
 	}
 	
-	public boolean isAtivo() {
-		return this.ativo == true;
+	public boolean isDependenteIR() {
+		return this.impostoRenda == true;
 	}
 }

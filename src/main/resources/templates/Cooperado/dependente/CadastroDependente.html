@@ -38,6 +38,7 @@
 				<simed:message/>
 			
 				<input type="hidden" th:field="*{id}">
+				<input type="hidden" th:field="*{informacaoPessoal.mae}">
 				
 				<div class="row">
 					<div class="form-group  col-lg-12">
@@ -69,10 +70,9 @@
 						</div>
 						
 						<div class="row">
-							<div class="col-sm-4  form-group">
+							<div class="col-sm-4  form-group" simed:classforerror="parentesco">
 								<label for="parentesco">Parentesco*</label>
 								<select id="parentesco" class="form-control" th:field="*{parentesco}">
-									<option value="">Selecione...</option>
 									<option value="FILHO">Filho(a)</option>
 									<option value="CONJUGE">Conjuge</option>
 									<option value="PAIS">Pais</option>
@@ -98,7 +98,8 @@
 							<div class="col-sm-10  form-group"  simed:classforerror="cooperado">
 								<label for="cooperado" class="control-label">Cooperado*</label>
 								<select id="cooperado" class="form-control" th:field="*{cooperado}">
-									<option th:each="cooperado : ${cooperados}" th:value="${cooperado.nome}"></option>
+									<option value="">Selecione um cooperado</option>
+									<option th:each="cooperado : ${cooperados}" th:value="${cooperado.id}" th:text="${cooperado.nome}"></option>
 								</select>
 							</div>							
 						</div>						

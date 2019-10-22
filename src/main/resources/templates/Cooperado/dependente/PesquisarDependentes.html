@@ -8,7 +8,7 @@
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 	
 <head>
-	<title>Pesquisar Cooperados</title>
+	<title>Pesquisar Dependentes</title>
 </head>
 
 <body>
@@ -17,12 +17,12 @@
 			<div class="container-fluid">
 				<div class="row">
 					<div class="col-xs-10">
-						<h1>Pesquisar cooperados</h1>
+						<h1>Pesquisar dependentes</h1>
 					</div>
 					
 					<div class="col-sm-2">
 						<div class="aw-page-header-controls">
-							<a class="btn  btn-warning" th:href="@{/cooperado/cooperado/novo}">
+							<a class="btn  btn-warning" th:href="@{/cooperado/dependente/novo}">
 								<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Cadastrar</span>
 							</a>
 						</div>
@@ -32,24 +32,26 @@
 		</div>
 
 		<div class="container-fluid">
-			<form method="GET" th:object="${cooperadoFilter}">
+			<form method="GET" th:object="${dependenteFilter}">
 				<div class="row">
-					<div class="form-group  col-sm-8">
+					<div class="form-group  col-sm-5">
 						<label class="control-label" for="nome">Nome</label>
 						<input type="search" class="form-control" id="nome" th:field="*{nome}" autofocus="autofocus" maxlength="60"/>
 					</div>
 
 
+					<div class="col-sm-5 form-group">
+						<label for="cooperado" class="control-label">Cooperado*</label>
+						<select id="cooperado" class="form-control" th:field="*{cooperado}">
+							<option value="">Todos os cooperados</option>
+							<option th:each="cooperado : ${cooperados}" th:value="${cooperado.id}" th:text="${cooperado.nome}"></option>
+						</select>
+					</div>
+
 					<div class="form-group  col-sm-2">
 						<label class="control-label" for="cpf">CPF</label>
 						<input type="text" class="form-control" id="documento1" th:field="*{cpf}" maxlength="20"/>
 					</div>
-
-					<div class="form-group  col-sm-2">
-						<label class="control-label" for="cpf">CRM</label>
-						<input type="text" class="form-control" id="crm" th:field="*{crm}" maxlength="10"/>
-					</div>
-
 				</div>	
 			
 				<div class="form-group">
@@ -63,65 +65,61 @@
 				<table class="table  table-hover">
 					<thead>
 						<tr>
-							<th class="table-col-pequeno">
-								<simed:order page="${pagina}" field="crm" text="CRM"/>
+							<th class="table-col-grande">
+								<simed:order page="${pagina}" field="nome" text="Nome"/>
 							</th>
 
 							<th class="table-col-grande">
-								<simed:order page="${pagina}" field="nome" text="Nome"/>
+								<simed:order page="${pagina}" field="cooperado" text="Cooperado"/>
 							</th>
 
 							<th class="table-col-pequeno">
 								<simed:order page="${pagina}" field="documento.cpf" text="CPF"/>
 							</th>
-							<th class="table-col-grande">
-								<simed:order page="${pagina}" field="endereco.cidade" text="Cidade"/>
-							</th>
 							<th class="table-col-grande">Celular</th>
 
-							<th class="table-col-pequeno">Status</th>
+							<th class="table-col-pequeno">Imposto Renda</th>
 
 							<th class="table-agencia-col-acoes"></th>
 						</tr>
 					</thead>
 					
 					<tbody>
-						<tr th:each="cooperado : ${pagina.conteudo}">
-							<td th:text="${cooperado.crm}"></td>
-							<td th:text="${cooperado.nome}"></td>
-							<td th:text="${cooperado.documento.cpf}"></td>
-							<td th:text="${cooperado.endereco.cidade.nome} +' /'+ ${cooperado.endereco.cidade.uf} "></td>
-							<td th:text="${cooperado.celular}"></td>
+						<tr th:each="dependente : ${pagina.conteudo}">
+							<td th:text="${dependente.nome}"></td>
+							<td th:text="${dependente.cooperado.nome}"></td>
+							<td th:text="${dependente.documento.cpf}"></td>
+							<td th:text="${dependente.celular}"></td>
 							<td>
-								<th:block th:if="${cooperado.ativo}">
-									<span class="label  label-success">Ativo</span>
+								<th:block th:if="${dependente.dependenteIR}">
+									<span class="label  label-success">Sim</span>
 								</th:block>
 
-								<th:block th:unless="${cooperado.ativo}">
-									<span class="label  label-danger">Inativo</span>
+								<th:block th:unless="${dependente.dependenteIR}">
+									<span class="label  label-danger">Não</span>
 								</th:block>
 
 							</td>							
 							<td class="text-center">
 								
 								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes"
-									th:href="@{/cooperado/cooperado/detalhe/{id}(id=${cooperado.id})}"> 
+									th:href="@{/cooperado/dependente/detalhe/{id}(id=${dependente.id})}"> 
 									<i class="glyphicon glyphicon-eye-open"></i>
 								</a>							
 								
 								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar"
-										th:href="@{/cooperado/cooperado/alterar/{id}(id=${cooperado.id})}"> 
+										th:href="@{/cooperado/dependente/alterar/{id}(id=${dependente.id})}"> 
 									<i class="glyphicon glyphicon-pencil"></i>
 								</a>
 								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir"
-									data:url="@{/cooperado/cooperado/excluir/{id}(id=${cooperado.id})}"	data:objeto="${cooperado.nome}">
+									data:url="@{/cooperado/dependente/excluir/{id}(id=${dependente.id})}" data:objeto="${dependente.nome}">
 									<i class="glyphicon glyphicon-trash"></i>
 								</a>
 							</td>
 						</tr>
 						
 						<tr th:if="${pagina.vazia}">
-							<td colspan="7"> Nenhum cooperado encontrado</td>
+							<td colspan="6"> Nenhum dependente encontrado</td>
 						</tr>
 						
 						
