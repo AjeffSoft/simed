@@ -77,3 +77,15 @@ CREATE TABLE dependente_cooperado (
   id_cooperado BIGINT(20),
   FOREIGN KEY (id_cooperado) REFERENCES cooperado(id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE admissao_cooperado (
+  id BIGINT(20) PRIMARY KEY AUTO_INCREMENT,
+  registro VARCHAR(20),
+  codigo VARCHAR(20),
+  tipo_recebimento VARCHAR(20),
+  anotacao VARCHAR(200),
+  ativo BOOLEAN,
+  data DATE,
+  id_cooperado BIGINT(20),
+  FOREIGN KEY (id_cooperado) REFERENCES cooperado(id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;

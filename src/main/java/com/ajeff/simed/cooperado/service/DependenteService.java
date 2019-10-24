@@ -1,5 +1,6 @@
 package com.ajeff.simed.cooperado.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.PersistenceException;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ajeff.simed.cooperado.model.Cooperado;
 import com.ajeff.simed.cooperado.model.Dependente;
 import com.ajeff.simed.cooperado.repository.DependentesRepository;
 import com.ajeff.simed.cooperado.repository.filter.DependenteFilter;
@@ -31,7 +33,6 @@ public class DependenteService {
 	@Transactional
 	public void salvar(Dependente dependente) {
 		testeRegistroJaCadastrado(dependente);
-		
 		if(dependente.isNovo()) {
 			dependente.setAtivo(true);
 		}
@@ -42,7 +43,17 @@ public class DependenteService {
 
 	public Page<Dependente> filtrar(DependenteFilter dependenteFilter, Pageable pageable) {
 		return repository.filtrar(dependenteFilter, pageable);
+	}	
+	
+	public Integer qtdDependentes(Cooperado cooperado) {
+		List<Dependente> depends = repository.findByCooperado(cooperado);
+		Integer i = 0;
+		for (Dependente d : depends) {
+			i++;
+		}
+		return i;
 	}
+	
 	
 	@Transactional
 	public void excluir(Long id) {
