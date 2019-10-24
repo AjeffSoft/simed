@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -42,6 +43,7 @@ public class AdmissaoCooperado implements Serializable{
 	@Column(name = "tipo_recebimento")
 	private TipoRecebimentoProducao tipoRecebimento;
 	
+	@NotNull(message = "Informe o cooperado")
 	@ManyToOne
 	@JoinColumn(name = "cooperado")
 	private Cooperado cooperado;

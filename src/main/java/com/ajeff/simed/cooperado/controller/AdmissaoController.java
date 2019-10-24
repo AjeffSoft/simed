@@ -1,27 +1,35 @@
 package com.ajeff.simed.cooperado.controller;
 
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ajeff.simed.cooperado.model.AdmissaoCooperado;
+import com.ajeff.simed.cooperado.repository.filter.AdmissaoFilter;
+import com.ajeff.simed.cooperado.service.AdmissaoService;
 import com.ajeff.simed.cooperado.service.CooperadoService;
-import com.ajeff.simed.geral.service.AgenciaService;
-import com.ajeff.simed.geral.service.EstadoService;
+import com.ajeff.simed.geral.controller.page.PageWrapper;
+import com.ajeff.simed.geral.service.exception.RegistroJaCadastradoException;
 
 @Controller
 @RequestMapping("/cooperado/admissao")
 public class AdmissaoController {
 
 	@Autowired
+	private AdmissaoService service;
+	@Autowired
 	private CooperadoService serviceCooperado;
-	@Autowired
-	private AgenciaService agenciaService;
-	@Autowired
-	private EstadoService estadoService;
 
 	
 	@GetMapping("/novo")
@@ -31,35 +39,36 @@ public class AdmissaoController {
 		return mv;
 	}
 	
-//	
-//	@PostMapping(value = {"/novo", "{\\d}"})
-//	public ModelAndView salvar(@Valid Cooperado cooperado, BindingResult result, RedirectAttributes attributes) {
-//		if (result.hasErrors()) {
-//			return novo(cooperado);
-//		}
-//		
-//		try {
-//			service.salvar(cooperado);
-//		} catch (RegistroJaCadastradoException e) {
-//			result.rejectValue("nome", e.getMessage(), e.getMessage());
-//			return novo(cooperado);
-//		}
-//		attributes.addFlashAttribute("mensagem", "Cooperado " + cooperado.getNome() + " salvo com sucesso");
-//		return new ModelAndView("redirect:/cooperado/cooperado/novo");
-//	}
-//	
-//
-//	@GetMapping("/pesquisar")
-//	public ModelAndView pesquisar(CooperadoFilter cooperadoFilter, BindingResult result, @PageableDefault(size=50) Pageable pageable,
-//										HttpServletRequest httpServletRequest) {
-//		ModelAndView mv = new ModelAndView("Cooperado/cooperado/PesquisarCooperados");
-//
-//		PageWrapper<Cooperado> paginaWrapper = new PageWrapper<>(service.filtrar(cooperadoFilter, pageable), httpServletRequest);
-//		mv.addObject("pagina", paginaWrapper);
-//		return mv;
-//	}	
-//
-//
+	
+	@PostMapping(value = {"/novo", "{\\d}"})
+	public ModelAndView salvar(@Valid AdmissaoCooperado admissao, BindingResult result, RedirectAttributes attributes) {
+		if (result.hasErrors()) {
+			return novo(admissao);
+		}
+		
+		try {
+			service.salvar(admissao);
+		} catch (RegistroJaCadastradoException e) {
+			result.rejectValue("nome", e.getMessage(), e.getMessage());
+			return novo(admissao);
+		}
+		attributes.addFlashAttribute("mensagem", "Admissão n° " + admissao.getRegistro() + " salva com sucesso");
+		return new ModelAndView("redirect:/cooperado/admissao/novo");
+	}
+	
+
+	@GetMapping("/pesquisar")
+	public ModelAndView pesquisar(AdmissaoFilter admissaoFilter, BindingResult result, @PageableDefault(size=50) Pageable pageable,
+										HttpServletRequest httpServletRequest) {
+		ModelAndView mv = new ModelAndView("Cooperado/admissao/PesquisarAdmissoes");
+		mv.addObject("cooperados", serviceCooperado.listarCooperados());
+
+		PageWrapper<AdmissaoCooperado> paginaWrapper = new PageWrapper<>(service.filtrar(admissaoFilter, pageable), httpServletRequest);
+		mv.addObject("pagina", paginaWrapper);
+		return mv;
+	}	
+
+
 //	@DeleteMapping("/excluir/{id}")
 //	public @ResponseBody ResponseEntity<?> excluir (@PathVariable Long id){
 //		try {

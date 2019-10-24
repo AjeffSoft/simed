@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Financeiro/LayoutFinanceiro}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+<head>
+	<title>Pesquisar admissões</title>
+</head>
+
+<body>
+	<section layout:fragment="conteudo">
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Pesquisar admissões de cooperados</h1>
+					</div>
+
+					<div class="col-sm-2" >
+						<div class="aw-page-header-controls">
+							<a class="btn  btn-warning" th:href="@{/fcooperado/admissao/novo}">
+								<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Cadastrar</span>
+							</a>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+			<form method="GET" th:object="${admissaoFilter}">
+				<div class="row">
+				
+					<div class="form-group  col-sm-2">
+						<label class="control-label" for="registro">Registro</label>
+						<input type="text" class="form-control" id="registro"  autofocus="autofocus" th:field="*{registro}" maxlength="20"/>
+					</div>
+										
+					<div class="col-sm-4  form-group">
+						<label for="cooperado" class="control-label">Cooperado*</label>
+						<select id="cooperado" class="form-control" th:field="*{cooperado}">
+							<option value="">Selecione um cooperado</option>
+							<option th:each="cooperado : ${cooperados}" th:value="${cooperado.id}" th:text="${cooperado.nome}"></option>
+						</select>
+					</div>						
+
+					<div class="form-group  col-sm-4">
+						<label for="vencimentoInicio">Admissão</label>
+						<div class="form-inline">
+							<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="vencimentoInicio" 
+								th:field="*{dataInicio}" autocomplete="off" placeholder="Data Inicial"/>
+							<label for="vencimentoFim" class="aw-form-label-between">até</label>
+							<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="vencimentoFim" 
+								th:field="*{dataFim}" autocomplete="off" placeholder="Data Final"/>
+						</div>
+					</div>					
+				</div>
+				
+					
+
+				<div class="form-group">
+					<button class="btn  btn-primary" type="submit">Pesquisar</button>
+				</div>
+			</form>
+			
+			<div class="table-responsive  bw-tabela-simples">
+				<table class="table  table-hover" th:with="total=0">
+					<thead>
+						<tr>
+							<th class="table-col-minima">
+								<simed:order page="${pagina}" field="registro" text="Registro"/>
+							</th>
+
+							<th class="table-col-minima">
+								<simed:order page="${pagina}" field="codigo" text="Código"/>
+							</th>
+
+							<th class="table-col-minima">
+								<simed:order page="${pagina}" field="cooperado" text="Cooperado"/>
+							</th>
+
+							<th class="table-col-grande">
+								<simed:order page="${pagina}" field="data" text="data"/>
+							</th>
+	
+							<th class="table-col-grande">Status</th>
+
+							<th class="table-agencia-col-acoes"></th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						<tr th:each="admissao : ${pagina.conteudo}">
+							<td th:text="${admissao.registro}"></td>
+							<td th:text="${admissao.codigo}"></td>
+							<td th:text="${admissao.cooperado.nome}"></td>
+							<td th:text="${{admissao.data}}"></td>
+
+							<td>
+								<th:block th:if="${admissao.ativo}">
+									<span class="label  label-success">Ativo</span>
+								</th:block>
+
+								<th:block th:unless="${admissao.ativo}">
+									<span class="label  label-danger">Inativo</span>
+								</th:block>
+							</td>
+
+<!-- 							<td class="text-center"> -->
+<!-- 								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes" sec:authorize-url="/financeiro/contaPagar/detalheConta/**" -->
+<!-- 										th:href="@{/financeiro/contaPagar/detalheConta/{id}(id=${contaPagar.id})}">  -->
+<!-- 									<i class="glyphicon glyphicon-eye-open"></i> -->
+<!-- 								</a> -->
+
+<!-- 								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar" sec:authorize-url="/financeiro/contaPagar/alterar/**" -->
+<!-- 										th:href="@{/financeiro/contaPagar/alterar/{id}(id=${contaPagar.id})}" th:if="${contaPagar.aberto}">  -->
+<!-- 									<i class="glyphicon glyphicon-pencil"></i> -->
+<!-- 								</a> -->
+
+<!-- 								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir" href="#" th:if="${contaPagar.aberto}" -->
+<!-- 									data:url="@{/financeiro/contaPagar/excluir/{id}(id=${contaPagar.id})}" -->
+<!-- 									data:objeto="${contaPagar.documento}" sec:authorize-url="/financeiro/contaPagar/excluir/**"> -->
+<!-- 									<i class="glyphicon glyphicon-trash"></i> -->
+<!-- 								</a> -->
+<!-- 							</td> -->
+						</tr>
+						
+						<tr th:if="${pagina.vazia}">
+							<td colspan="6"> Nenhuma admissão encontrada</td>
+						</tr>
+
+					</tbody>
+				</table>
+			</div>
+
+			<!-- COMPONENTE THYMELEAF PARA PAGINAÇÃO -->	
+			<simed:pagination page="${pagina}"/>						
+
+		</div>		
+	</section>
+	
+<th:block layout:fragment="javascript-extra">
+</th:block>	
+</body>
+</html>

@@ -18,13 +18,13 @@
 
 				<li class="aw-menu__item">
           			<a href="#">
-            			<i class="fa  fa-fw  fa-university"></i><span>Cooperado</span>
+            			<i class="fa  fa-fw  fa-university"></i><span>Médicos</span>
             			<i class="aw-menu__navigation-icon  fa"></i>
           			</a>
       
           			<ul class="aw-menu__list  aw-menu__list--sublist">
 			            <li class="aw-menu__item  aw-menu__item--link" simed:menu="@{/cooperado}">
-			            	<a th:href="@{/cooperado/cooperado/pesquisar}">Cooperado</a>
+			            	<a th:href="@{/cooperado/cooperado/pesquisar}">Médico</a>
 			            </li>
           			</ul>
           			<ul class="aw-menu__list  aw-menu__list--sublist">
@@ -34,6 +34,20 @@
           			</ul>
 
           		</li>
+          		
+				<li class="aw-menu__item">
+          			<a href="#">
+            			<i class="fa  fa-fw  fa-university"></i><span>Cooperado</span>
+            			<i class="aw-menu__navigation-icon  fa"></i>
+          			</a>
+      
+          			<ul class="aw-menu__list  aw-menu__list--sublist">
+			            <li class="aw-menu__item  aw-menu__item--link" simed:menu="@{/admissao}">
+			            	<a th:href="@{/cooperado/admissao/pesquisar}">Admissão</a>
+			            </li>
+          			</ul>
+
+          		</li>          		
       		</ul>
     	</nav>
 	</div>
