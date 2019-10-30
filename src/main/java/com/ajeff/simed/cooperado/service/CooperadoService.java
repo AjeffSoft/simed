@@ -31,7 +31,8 @@ public class CooperadoService {
 	
 	@Transactional
 	public void salvar(Cooperado cooperado) {
-		testeRegistroJaCadastrado(cooperado);		
+		testeRegistroJaCadastrado(cooperado);
+		desativarCooperado(cooperado);
 		repository.save(cooperado);
 	}
 	

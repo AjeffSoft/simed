@@ -54,10 +54,10 @@ public class AdmissoesRepositoryImpl implements AdmissoesRepositoryQueries{
 			if (filtro.getDataInicio() != null || filtro.getDataFim() != null) {
 				criteria.add(Restrictions.between("data", filtro.getDataInicio(), filtro.getDataFim()));
 			}
-//			
-//			if (isCooperadoPresente(filtro)){
-//				criteria.add(Restrictions.eq("cooperado", filtro.getCooperado()));
-//			}
+			
+			if (isCooperadoPresente(filtro)){
+				criteria.add(Restrictions.eq("cooperado", filtro.getCooperado()));
+			}
 
 		}
 	}

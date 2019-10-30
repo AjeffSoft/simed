@@ -5,6 +5,8 @@ import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -41,11 +43,12 @@ public class AdmissaoCooperado implements Serializable{
 	private String anotacao;
 	
 	@Column(name = "tipo_recebimento")
+	@Enumerated(EnumType.STRING)
 	private TipoRecebimentoProducao tipoRecebimento;
 	
 	@NotNull(message = "Informe o cooperado")
 	@ManyToOne
-	@JoinColumn(name = "cooperado")
+	@JoinColumn(name = "id_cooperado")
 	private Cooperado cooperado;
 	
 	

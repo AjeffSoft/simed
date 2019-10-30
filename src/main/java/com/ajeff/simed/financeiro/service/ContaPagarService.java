@@ -47,13 +47,11 @@ public class ContaPagarService {
 	
 	@Transactional
 	public void salvar(ContaPagar contaPagar) {
-		
 		if (contaPagar.isNovo()) {
 			novoRegistro(contaPagar);
 		}else {
 			testeVencimentoMaiorEmissao(contaPagar);
 			repository.save(contaPagar);
-
 		}
 	}
 
@@ -86,7 +84,6 @@ public class ContaPagarService {
 		conta.setHistorico(cadastroHistoricoDaConta(contaPagar));
 		conta.setDocumento(numeroDocumento(contaPagar, parcela));
 		conta.setVencimento(cadastroVencimento(contaPagar, parcela));
-		testeRegistroJaCadastrado(contaPagar);
 		
 		if(contaPagar.existeRetencaoImpostos()) {
 			if(parcela == 1) {

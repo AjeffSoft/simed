@@ -26,10 +26,16 @@ public class AdmissaoService {
 	
 	@Autowired
 	private AdmissoesRepository repository;
+	@Autowired
+	private CooperadoService cooperadoService;
 	
 	
 	@Transactional
 	public void salvar(AdmissaoCooperado admissao) {
+		if (admissao.isNovo()) {
+			cooperadoService.ativarCooperado(admissao.getCooperado());
+		}
+		
 		testeRegistroJaCadastrado(admissao);		
 		repository.save(admissao);
 	}
@@ -46,7 +52,7 @@ public class AdmissaoService {
 		repository.save(admissao);
 	}
 
-	private AdmissaoCooperado findOne(Long id) {
+	public AdmissaoCooperado findOne(Long id) {
 		return repository.findOne(id);
 	}
 	
