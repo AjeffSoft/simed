@@ -18,6 +18,8 @@ public interface CooperadosRepository extends JpaRepository<Cooperado, Long>, Co
 
 	List<Cooperado> findByAtivoFalse();
 
+	List<Cooperado> findByAtivoTrue();
+
 //	Optional<Cooperado> findByNomeOrSiglaIgnoreCase(String nome, String sigla);
 //
 //	@Query("select f from Fornecedor f where lower(f.nome) like upper(?1) and f.clifor = true order by f.nome")

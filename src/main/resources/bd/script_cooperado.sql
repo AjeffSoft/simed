@@ -89,3 +89,12 @@ CREATE TABLE admissao_cooperado (
   id_cooperado BIGINT(20),
   FOREIGN KEY (id_cooperado) REFERENCES cooperado(id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE demissao_cooperado (
+  id BIGINT(20) PRIMARY KEY AUTO_INCREMENT,
+  tipo_demissao VARCHAR(20),
+  observacao VARCHAR(200),
+  data DATE,
+  id_admissao BIGINT(20),
+  FOREIGN KEY (id_admissao) REFERENCES admissao_cooperado(id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;

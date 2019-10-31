@@ -117,12 +117,12 @@
 <!-- 									<i class="glyphicon glyphicon-eye-open"></i> -->
 <!-- 								</a> -->
 
-								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar" th:href="@{/cooperado/admissao/alterar/{id}(id=${admissao.id})}" th:if="${admissao.ativo}"> 
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar" th:href="@{/cooperado/admissao/alterar/{id}(id=${admissao.id})}" th:if="${admissao.ativado}"> 
 									<i class="glyphicon glyphicon-pencil"></i>
 								</a>
 
 								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir"	data:url="@{/cooperado/admissao/excluir/{id}(id=${admissao.id})}"
-									data:objeto="${admissao.registro}" th:if="${admissao.ativo}">
+									data:objeto="${admissao.registro}" th:if="${admissao.ativado}">
 									<i class="glyphicon glyphicon-trash"></i>
 								</a>
 							</td>

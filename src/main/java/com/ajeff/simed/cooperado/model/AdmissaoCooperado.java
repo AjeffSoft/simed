@@ -35,7 +35,7 @@ public class AdmissaoCooperado implements Serializable{
 	@NotBlank(message = "Informe o código")
 	private String codigo;
 
-	@NotBlank(message = "Informe a data de admissão")
+	@NotNull(message = "Informe a data de admissão")
 	private LocalDate data;
 
 	private Boolean ativo;
@@ -145,7 +145,7 @@ public class AdmissaoCooperado implements Serializable{
 		return this.id == null;
 	}
 	
-	public boolean isAtivo() {
+	public boolean isAtivado() {
 		return this.ativo == true;
 	}
 }

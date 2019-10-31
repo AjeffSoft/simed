@@ -41,7 +41,12 @@ public class AdmissaoController {
 	@GetMapping("/novo")
 	public ModelAndView novo(AdmissaoCooperado admissao) {
 		ModelAndView mv = new ModelAndView("Cooperado/admissao/CadastroAdmissao");
-		mv.addObject("cooperados", serviceCooperado.findByCooperadoAtivoFalse());
+		
+		if(admissao.isNovo()) {
+			mv.addObject("cooperados", serviceCooperado.findByCooperadoAtivoFalse());
+		}else {
+			mv.addObject("cooperados", serviceCooperado.findByCooperadoAtivoTrue());
+		}
 		mv.addObject("tiposRecebimento", TipoRecebimentoProducao.values());
 		return mv;
 	}

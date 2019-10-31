@@ -91,4 +91,8 @@ public class CooperadoService {
 		return repository.findByAtivoFalse();
 	}
 
+	public List<Cooperado> findByCooperadoAtivoTrue() {
+		return repository.findByAtivoTrue();
+	}
+
 }

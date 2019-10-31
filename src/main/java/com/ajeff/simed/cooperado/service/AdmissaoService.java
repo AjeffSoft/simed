@@ -34,6 +34,7 @@ public class AdmissaoService {
 	public void salvar(AdmissaoCooperado admissao) {
 		if (admissao.isNovo()) {
 			cooperadoService.ativarCooperado(admissao.getCooperado());
+			admissao.setAtivo(true);
 		}
 		
 		testeRegistroJaCadastrado(admissao);		
@@ -62,13 +63,13 @@ public class AdmissaoService {
 	
 	@Transactional
 	public void excluir(Long id) {
-		String tipo = "a admissão";
-
+		AdmissaoCooperado admissao = repository.findOne(id);
 		try {
-			repository.delete(id);
+			cooperadoService.desativarCooperado(admissao.getCooperado());
+			repository.delete(admissao);
 			repository.flush();
 		} catch (PersistenceException e) {
-			throw new ImpossivelExcluirEntidade("Não foi possivel excluir " + tipo +". Exclua primeiro o(s) relacionamento(s) com outra(s) tabela(s)!"); 
+			throw new ImpossivelExcluirEntidade("Não foi possivel excluir a admissão. Exclua primeiro o(s) relacionamento(s) com outra(s) tabela(s)!"); 
 		}
 		
 	}
