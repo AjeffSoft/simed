@@ -1,5 +1,6 @@
 package com.ajeff.simed.cooperado.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.PersistenceException;
@@ -15,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ajeff.simed.cooperado.model.AdmissaoCooperado;
 import com.ajeff.simed.cooperado.repository.AdmissoesRepository;
 import com.ajeff.simed.cooperado.repository.filter.AdmissaoFilter;
-import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoException;
+import com.ajeff.simed.geral.service.exception.RegistroJaCadastradoException;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
 
 @Service
@@ -43,13 +44,15 @@ public class AdmissaoService {
 	
 	@Transactional
 	public void ativarAdmissao(AdmissaoCooperado admissao) {
-		admissao.setAtivo(true);		
+		admissao.setAtivo(true);
+		cooperadoService.ativarCooperado(admissao.getCooperado());
 		repository.save(admissao);
 	}
 	
 	@Transactional
 	public void desativarAdmissao(AdmissaoCooperado admissao) {
-		admissao.setAtivo(false);		
+		admissao.setAtivo(false);
+		cooperadoService.desativarCooperado(admissao.getCooperado());
 		repository.save(admissao);
 	}
 
@@ -74,13 +77,24 @@ public class AdmissaoService {
 		
 	}
 
-
 	private void testeRegistroJaCadastrado(AdmissaoCooperado admissao) {
-		Optional<AdmissaoCooperado> optional = repository.findByRegistro(admissao.getRegistro());
+		Optional<AdmissaoCooperado> optional = repository.findByRegistroIgnoreCase(admissao.getRegistro());
 		
 		if(optional.isPresent() && !optional.get().equals(admissao)) {
 			throw new RegistroJaCadastradoException("Registro de admissão já cadastrado!");
 		}
+	}
+	
+	public List<AdmissaoCooperado> findByAdmissaoCooperadoAtivoTrue() {
+		return repository.findByAdmissaoCooperadoAtivoTrue();
+	}
+
+	public List<AdmissaoCooperado> findByAdmissaoCooperadoAtivoFalse() {
+		return repository.findByAdmissaoCooperadoAtivoFalse();
+	}
+	
+	public List<AdmissaoCooperado> findByAdmissaoOrdenadoPorCooperado() {
+		return repository.findByAdmissaoOrdenadoPorCooperado();
 	}
 
 }

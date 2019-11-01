@@ -19,63 +19,57 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.ajeff.simed.cooperado.model.AdmissaoCooperado;
-import com.ajeff.simed.cooperado.model.enums.TipoRecebimentoProducao;
-import com.ajeff.simed.cooperado.repository.filter.AdmissaoFilter;
+import com.ajeff.simed.cooperado.model.DemissaoCooperado;
+import com.ajeff.simed.cooperado.model.enums.TipoDemissaoCooperado;
+import com.ajeff.simed.cooperado.repository.filter.DemissaoFilter;
 import com.ajeff.simed.cooperado.service.AdmissaoService;
-import com.ajeff.simed.cooperado.service.CooperadoService;
+import com.ajeff.simed.cooperado.service.DemissaoService;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
+import com.ajeff.simed.geral.service.exception.DataAtualPosteriorDataReferenciaException;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
-import com.ajeff.simed.geral.service.exception.RegistroJaCadastradoException;
 
 @Controller
-@RequestMapping("/cooperado/admissao")
-public class AdmissaoController {
+@RequestMapping("/cooperado/demissao")
+public class DemissaoController {
 
 	@Autowired
-	private AdmissaoService service;
+	private DemissaoService service;
 	@Autowired
-	private CooperadoService serviceCooperado;
+	private AdmissaoService admissaoService;
 
 	
 	@GetMapping("/novo")
-	public ModelAndView novo(AdmissaoCooperado admissao) {
-		ModelAndView mv = new ModelAndView("Cooperado/admissao/CadastroAdmissao");
-		
-		if(admissao.isNovo()) {
-			mv.addObject("cooperados", serviceCooperado.findByCooperadoAtivoFalse());
-		}else {
-			mv.addObject("cooperados", serviceCooperado.findByCooperadoAtivoTrue());
-		}
-		mv.addObject("tiposRecebimento", TipoRecebimentoProducao.values());
+	public ModelAndView novo(DemissaoCooperado demissao) {
+		ModelAndView mv = new ModelAndView("Cooperado/demissao/CadastroDemissao");
+		mv.addObject("admissoes", admissaoService.findByAdmissaoCooperadoAtivoTrue());
+		mv.addObject("tiposDemissao", TipoDemissaoCooperado.values());
 		return mv;
 	}
 	
 	
 	@PostMapping(value = {"/novo", "{\\d}"})
-	public ModelAndView salvar(@Valid AdmissaoCooperado admissao, BindingResult result, RedirectAttributes attributes) {
+	public ModelAndView salvar(@Valid DemissaoCooperado demissao, BindingResult result, RedirectAttributes attributes) {
 		if (result.hasErrors()) {
-			return novo(admissao);
+			return novo(demissao);
 		}
-		
 		try {
-			service.salvar(admissao);
-		} catch (RegistroJaCadastradoException e) {
-			result.rejectValue("registro", e.getMessage(), e.getMessage());
-			return novo(admissao);
+			service.salvar(demissao);
+		} catch (DataAtualPosteriorDataReferenciaException e) {
+			result.rejectValue("data", e.getMessage(), e.getMessage());
+			return novo(demissao);
 		}
-		attributes.addFlashAttribute("mensagem", "Admissão n° " + admissao.getRegistro() + " salva com sucesso");
-		return new ModelAndView("redirect:/cooperado/admissao/novo");
+		attributes.addFlashAttribute("mensagem", "Demissao de: " + demissao.getAdmissao().getCooperado().getNome() + " realizado com sucesso");
+		return new ModelAndView("redirect:/cooperado/demissao/novo");
 	}
 	
 
 	@GetMapping("/pesquisar")
-	public ModelAndView pesquisar(AdmissaoFilter admissaoFilter, BindingResult result, @PageableDefault(size=50) Pageable pageable,
+	public ModelAndView pesquisar(DemissaoFilter demissaoFilter, BindingResult result, @PageableDefault(size=50) Pageable pageable,
 										HttpServletRequest httpServletRequest) {
-		ModelAndView mv = new ModelAndView("Cooperado/admissao/PesquisarAdmissoes");
-		mv.addObject("cooperados", serviceCooperado.findByCooperadoAtivoTrue());
+		ModelAndView mv = new ModelAndView("Cooperado/demissao/PesquisarDemissoes");
+		mv.addObject("admissoes", admissaoService.findByAdmissaoCooperadoAtivoFalse());
 
-		PageWrapper<AdmissaoCooperado> paginaWrapper = new PageWrapper<>(service.filtrar(admissaoFilter, pageable), httpServletRequest);
+		PageWrapper<DemissaoCooperado> paginaWrapper = new PageWrapper<>(service.filtrar(demissaoFilter, pageable), httpServletRequest);
 		mv.addObject("pagina", paginaWrapper);
 		return mv;
 	}	
@@ -91,13 +85,13 @@ public class AdmissaoController {
 		return ResponseEntity.ok().build();
 	}
 	
-	@GetMapping("/alterar/{id}")
-	public ModelAndView alterar(@PathVariable Long id, AdmissaoCooperado admissao) {
-		admissao = service.findOne(id);
-		ModelAndView mv = novo(admissao);
-		mv.addObject(admissao);
-		return mv;
-	}
+//	@GetMapping("/alterar/{id}")
+//	public ModelAndView alterar(@PathVariable Long id, AdmissaoCooperado admissao) {
+//		admissao = service.findOne(id);
+//		ModelAndView mv = novo(admissao);
+//		mv.addObject(admissao);
+//		return mv;
+//	}
 	
 	
 //	@GetMapping("/historico/{id}")

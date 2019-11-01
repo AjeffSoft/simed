@@ -98,3 +98,15 @@ CREATE TABLE demissao_cooperado (
   id_admissao BIGINT(20),
   FOREIGN KEY (id_admissao) REFERENCES admissao_cooperado(id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE integralizacao (
+  id BIGINT(20) PRIMARY KEY AUTO_INCREMENT,
+  data DATE,
+  documento VARCHAR(20),
+  pago BOOLEAN,
+  parcela INTEGER,
+  total_parcela INTEGER,
+  valor DECIMAL(10,2),
+  id_admissao BIGINT(20),
+  FOREIGN KEY (id_admissao) REFERENCES admissao_cooperado(id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;

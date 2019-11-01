@@ -33,7 +33,7 @@ public class AdmissoesRepositoryImpl implements AdmissoesRepositoryQueries{
 		Criteria criteria = manager.unwrap(Session.class).createCriteria(AdmissaoCooperado.class);
 		paginacaoUtil.prepararPaginacao(criteria, pageable);		
 		adicionarFiltro(filtro, criteria);
-		criteria.addOrder(Order.asc("data"));
+		criteria.add(Restrictions.eq("ativo", true)).addOrder(Order.asc("data"));
 		return new PageImpl<>(criteria.list(), pageable, total(filtro));
 	}
 
