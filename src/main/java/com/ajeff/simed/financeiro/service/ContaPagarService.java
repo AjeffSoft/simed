@@ -31,6 +31,7 @@ import com.ajeff.simed.financeiro.service.exception.DocumentoEFornecedorJaCadast
 import com.ajeff.simed.financeiro.service.exception.IdPlanoContaSecundariaNuloException;
 import com.ajeff.simed.financeiro.service.exception.VencimentoMenorEmissaoException;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
+import com.ajeff.simed.util.CalculosImpostos;
 
 @Service
 public class ContaPagarService {
@@ -134,12 +135,6 @@ public class ContaPagarService {
 		return imposto;
 	}
 
-	private BigDecimal calculoImpostoISS(ContaPagar contaPagar) {
-		//2.000,00 * 5% = IMPOSTO 100,00 = LIQUIDO 1.900,00
-		return contaPagar.getValor()
-				.multiply(contaPagar.getIssPorcentagem())
-				.divide(new BigDecimal(100), MathContext.DECIMAL32);
-	}
 
 	private Imposto retencaoINSS(ContaPagar contaPagar, ContaPagar conta, String tipoImposto) {
 		Imposto imposto = impostoRegistroUnico(contaPagar, conta, tipoImposto);
@@ -148,19 +143,7 @@ public class ContaPagarService {
 		return imposto;
 	}
 
-	private BigDecimal calculoImpostoINSS(ContaPagar contaPagar) {
-		BigDecimal tetoRetencaoINSS = new BigDecimal(642.34);
-		BigDecimal totalINSS = new BigDecimal(0);
-		//2.000,00 * 11% = IMPOSTO 220,00 = LIQUIDO 1.780,00
-		totalINSS = totalINSS.add(contaPagar.getValor()
-				.multiply(new BigDecimal(11))
-				.divide(new BigDecimal(100), MathContext.DECIMAL32));
-		
-		if(totalINSS.compareTo(tetoRetencaoINSS) == 1) {
-			totalINSS = tetoRetencaoINSS;
-		}
-		return totalINSS;
-	}
+
 
 	private Imposto impostoPCCS(ContaPagar contaPagar, ContaPagar conta, String tipoImposto) {
 		Imposto imposto = impostoRegistroUnico(contaPagar, conta, tipoImposto);
@@ -169,12 +152,6 @@ public class ContaPagarService {
 		return imposto;
 	}
 
-	private BigDecimal calculoImpostoPCCS(ContaPagar contaPagar) {
-		//2.000,00 * 4,65% = IMPOSTO 93,00 = LIQUIDO 1.907,00
-		return contaPagar.getValor()
-				.multiply(new BigDecimal(4.65))
-				.divide(new BigDecimal(100), MathContext.DECIMAL32);
-	}
 
 	private Imposto calculoImpostoRenda(ContaPagar contaPagar, ContaPagar conta, String tipoImposto) {
 		Imposto imposto = impostoRegistroUnico(contaPagar, conta, tipoImposto);
@@ -210,17 +187,17 @@ public class ContaPagarService {
 			}
 			imposto.setVencimento(dataUtil(imposto.getApuracao(), 19));
 		}else if(tipoImposto.equals("PCCS")) {
-			imposto.setValor(calculoImpostoPCCS(contaPagar));
+			imposto.setValor(CalculosImpostos.calculoPCCS(contaPagar.getValor()));
 			imposto.setCodigo("5952");
 			imposto.setNome("PIS/COFINS/CSLL");
 			imposto.setVencimento(dataUtil(imposto.getApuracao(), 19));
 		}else if(tipoImposto.equals("INSS")) {
-			imposto.setValor(calculoImpostoINSS(contaPagar));
+			imposto.setValor(CalculosImpostos.calculoINSS(contaPagar.getValor()));
 			imposto.setCodigo("INSS");
 			imposto.setNome("INSS");
 			imposto.setVencimento(dataUtil(imposto.getApuracao(), 14));
 		}else {
-			imposto.setValor(calculoImpostoISS(contaPagar));
+			imposto.setValor(CalculosImpostos.calculoISS(contaPagar.getValor(), contaPagar.getIssPorcentagem()));
 			imposto.setCodigo("ISS");
 			imposto.setNome("ISS");
 			imposto.setVencimento(dataUtil(imposto.getApuracao(), 9));
@@ -258,7 +235,7 @@ public class ContaPagarService {
 			}
 		}
 		if(contaPagar.getReterINSS()) {
-			valorBruto = valorBruto.subtract(calculoImpostoINSS(contaPagar));
+			valorBruto = valorBruto.subtract(CalculosImpostos.calculoINSS(contaPagar.getValor()));
 		}
 		//FAIXA 1
 		if(valorBruto.compareTo(new BigDecimal(1903.99)) >= 1 && valorBruto.compareTo(new BigDecimal(2826.65)) <= -1){
@@ -441,6 +418,16 @@ public class ContaPagarService {
 	
 	public ContaPagar findOne(Long id) {
 		return repository.findOne(id);
+	}
+
+	public ContaPagar findOne1(Long id) {
+		ContaPagar cp = repository.findOne(id);
+		return cp;
+	}
+	
+	
+	public BigDecimal calculaTest(BigDecimal v, BigDecimal p) {
+		return v.multiply(p);
 	}
 
 	public ContaPagar buscarComPlanoConta(Long id) {

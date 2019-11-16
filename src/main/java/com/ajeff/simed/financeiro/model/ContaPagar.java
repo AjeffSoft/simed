@@ -144,6 +144,16 @@ public class ContaPagar implements Serializable{
 	
 	
 	
+	
+	
+	public ContaPagar(LocalDate dataEmissao, LocalDate vencimento, BigDecimal valor) {
+		this.dataEmissao = dataEmissao;
+		this.vencimento = vencimento;
+		this.valor = valor;
+	}
+	
+	public ContaPagar() {}
+
 	@PrePersist
 	@PreUpdate
 	private void prePersistUpdate() {
