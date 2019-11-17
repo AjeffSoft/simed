@@ -31,7 +31,7 @@ import com.ajeff.simed.financeiro.service.exception.DocumentoEFornecedorJaCadast
 import com.ajeff.simed.financeiro.service.exception.IdPlanoContaSecundariaNuloException;
 import com.ajeff.simed.financeiro.service.exception.VencimentoMenorEmissaoException;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
-import com.ajeff.simed.util.CalculosImpostos;
+import com.ajeff.simed.util.impostos.CalculosImpostos;
 
 @Service
 public class ContaPagarService {
@@ -177,11 +177,11 @@ public class ContaPagarService {
 		imposto.setContentType(contaPagar.getContentType());
 		if(tipoImposto.equals("IR")) {
 			if(contaPagar.getFornecedor().getTipo().equals("J")) {
-				imposto.setValor(calculoImpostoRendaPJ(contaPagar));
+				imposto.setValor(CalculosImpostos.calculoIRJuridico(contaPagar.getValor()));
 				imposto.setCodigo("1708");
 				imposto.setNome("IRRF");
 			}else {
-				imposto.setValor(calculoImpostoRendaPF(contaPagar));
+				imposto.setValor(CalculosImpostos.calculoIRFisica(contaPagar.getValor(), contaPagar.getFornecedor().getDependente(), contaPagar.getReterINSS()));
 				imposto.setCodigo("0588");
 				imposto.setNome("IRRF");
 			}
@@ -207,82 +207,77 @@ public class ContaPagarService {
 		return imposto;
 	}
 
-	private BigDecimal calculoImpostoRendaPJ(ContaPagar contaPagar) {
-		//2000 * 1,5% = 30,00
-		return contaPagar.getValor()
-				.multiply(new BigDecimal(1.5))
-				.divide(new BigDecimal(100), MathContext.DECIMAL32);
-	}
+
 	
-	private BigDecimal calculoImpostoRendaPF(ContaPagar contaPagar) {
-		BigDecimal deducaoPorDependente = new BigDecimal(0);
-		BigDecimal valorBruto = contaPagar.getValor();
-		BigDecimal totalIR = new BigDecimal(0);
-		// TODO : OPÇÃO DE CADASTRO DA TABELA DE IMPOSTO DE RENDA PELO BANCO DE DADOS
-		/* TABELA IR EM  13/04/2019
-		*FAIXA 1 = 1.903,99 A 2.826,65 ALIQUOTA 7,5 DEDUZIR 142,80
-		*FAIXA 2 = 2.826,66 A 3.751,05 ALIQUOTA 15 DEDUZIR 354,80
-		*FAIXA 3 = 3.751,06 A 4.664,68 ALIQUOTA 22,5 DEDUZIR 636,13
-		*FAIXA 4 = 4.664,69 A ........ ALIQUOTA 27,5 DEDUZIR 869,36
-		*DEDUÇÃO POR DEPENDENTE: 189,50
-		*/
-		//SUBTRAIR DO VALOR DA CONTA A PAGAR O VALÇOR DA RETENÇÃO DE DEPENDENTES
-		// VALOR ORIGINAL 2.000,00 - POSSUI 1 DEPENDENTE (-189,50) VALOR ATUAL: 1.810,50
-		if(contaPagar.getFornecedor().getDependente() != null && contaPagar.getFornecedor().getDependente().compareTo(BigDecimal.ZERO) ==1) {
-			if(contaPagar.getFornecedor().getDependente().compareTo(BigDecimal.ZERO) == 1) {
-				deducaoPorDependente = contaPagar.getFornecedor().getDependente().multiply(new BigDecimal(189.50));
-				valorBruto = valorBruto.subtract(deducaoPorDependente);
-			}
-		}
-		if(contaPagar.getReterINSS()) {
-			valorBruto = valorBruto.subtract(CalculosImpostos.calculoINSS(contaPagar.getValor()));
-		}
-		//FAIXA 1
-		if(valorBruto.compareTo(new BigDecimal(1903.99)) >= 1 && valorBruto.compareTo(new BigDecimal(2826.65)) <= -1){
-			totalIR = calculoIRPFFaixa1(valorBruto, totalIR);
-		}
-		//FAIXA 2
-		if(valorBruto.compareTo(new BigDecimal(2826.66)) >= 1 && valorBruto.compareTo(new BigDecimal(3751.05)) <= -1){
-			totalIR = calculoIRPFFaixa2(valorBruto, totalIR);
-		}
-		//FAIXA 3
-		if(valorBruto.compareTo(new BigDecimal(3751.06)) >= 1 && valorBruto.compareTo(new BigDecimal(4664.68)) <= -1){
-			totalIR = calculoIRPFFaixa3(valorBruto, totalIR);
-		}
-		//FAIXA 4
-		if(valorBruto.compareTo(new BigDecimal(4664.69)) >= 1){
-			totalIR = calculoIRPFFaixa4(valorBruto, totalIR);
-		}
-		return totalIR;
-	}
+//	private BigDecimal calculoImpostoRendaPF1(ContaPagar contaPagar) {
+//		BigDecimal deducaoPorDependente = new BigDecimal(0);
+//		BigDecimal valorBruto = contaPagar.getValor();
+//		BigDecimal totalIR = new BigDecimal(0);
+//		// TODO : OPÇÃO DE CADASTRO DA TABELA DE IMPOSTO DE RENDA PELO BANCO DE DADOS
+//		/* TABELA IR EM  13/04/2019
+//		*FAIXA 1 = 1.903,99 A 2.826,65 ALIQUOTA 7,5 DEDUZIR 142,80
+//		*FAIXA 2 = 2.826,66 A 3.751,05 ALIQUOTA 15 DEDUZIR 354,80
+//		*FAIXA 3 = 3.751,06 A 4.664,68 ALIQUOTA 22,5 DEDUZIR 636,13
+//		*FAIXA 4 = 4.664,69 A ........ ALIQUOTA 27,5 DEDUZIR 869,36
+//		*DEDUÇÃO POR DEPENDENTE: 189,50
+//		*/
+//		//SUBTRAIR DO VALOR DA CONTA A PAGAR O VALÇOR DA RETENÇÃO DE DEPENDENTES
+//		// VALOR ORIGINAL 2.000,00 - POSSUI 1 DEPENDENTE (-189,50) VALOR ATUAL: 1.810,50
+//		if(contaPagar.getFornecedor().getDependente() != null && contaPagar.getFornecedor().getDependente().compareTo(BigDecimal.ZERO) ==1) {
+//			if(contaPagar.getFornecedor().getDependente().compareTo(BigDecimal.ZERO) == 1) {
+//				deducaoPorDependente = contaPagar.getFornecedor().getDependente().multiply(new BigDecimal(189.50));
+//				valorBruto = valorBruto.subtract(deducaoPorDependente);
+//			}
+//		}
+//		if(contaPagar.getReterINSS()) {
+//			valorBruto = valorBruto.subtract(CalculosImpostos.calculoINSS(contaPagar.getValor()));
+//		}
+//		//FAIXA 1
+//		if(valorBruto.compareTo(new BigDecimal(1903.99)) >= 1 && valorBruto.compareTo(new BigDecimal(2826.65)) <= -1){
+//			totalIR = calculoIRPFFaixa1(valorBruto, totalIR);
+//		}
+//		//FAIXA 2
+//		if(valorBruto.compareTo(new BigDecimal(2826.66)) >= 1 && valorBruto.compareTo(new BigDecimal(3751.05)) <= -1){
+//			totalIR = calculoIRPFFaixa2(valorBruto, totalIR);
+//		}
+//		//FAIXA 3
+//		if(valorBruto.compareTo(new BigDecimal(3751.06)) >= 1 && valorBruto.compareTo(new BigDecimal(4664.68)) <= -1){
+//			totalIR = calculoIRPFFaixa3(valorBruto, totalIR);
+//		}
+//		//FAIXA 4
+//		if(valorBruto.compareTo(new BigDecimal(4664.69)) >= 1){
+//			totalIR = calculoIRPFFaixa4(valorBruto, totalIR);
+//		}
+//		return totalIR;
+//	}
 
-	private BigDecimal calculoIRPFFaixa1(BigDecimal valorBruto, BigDecimal totalIR) {
-		return totalIR = totalIR.add(valorBruto
-				.multiply(new BigDecimal(7.5))
-				.divide(new BigDecimal(100))
-				.subtract(new BigDecimal(142.80), MathContext.DECIMAL32));
-	}
-
-	private BigDecimal calculoIRPFFaixa2(BigDecimal valorBruto, BigDecimal totalIR) {
-		return totalIR = totalIR.add(valorBruto
-				.multiply(new BigDecimal(15))
-				.divide(new BigDecimal(100))
-				.subtract(new BigDecimal(354.80), MathContext.DECIMAL32));
-	}
-	
-	private BigDecimal calculoIRPFFaixa3(BigDecimal valorBruto, BigDecimal totalIR) {
-		return totalIR = totalIR.add(valorBruto
-				.multiply(new BigDecimal(22.5))
-				.divide(new BigDecimal(100))
-				.subtract(new BigDecimal(636.13), MathContext.DECIMAL32));
-	}
-
-	private BigDecimal calculoIRPFFaixa4(BigDecimal valorBruto, BigDecimal totalIR) {
-		return totalIR = totalIR.add(valorBruto
-				.multiply(new BigDecimal(27.5))
-				.divide(new BigDecimal(100))
-				.subtract(new BigDecimal(869.36), MathContext.DECIMAL32));
-	}
+//	private BigDecimal calculoIRPFFaixa1(BigDecimal valorBruto, BigDecimal totalIR) {
+//		return totalIR = totalIR.add(valorBruto
+//				.multiply(new BigDecimal(7.5))
+//				.divide(new BigDecimal(100))
+//				.subtract(new BigDecimal(142.80), MathContext.DECIMAL32));
+//	}
+//
+//	private BigDecimal calculoIRPFFaixa2(BigDecimal valorBruto, BigDecimal totalIR) {
+//		return totalIR = totalIR.add(valorBruto
+//				.multiply(new BigDecimal(15))
+//				.divide(new BigDecimal(100))
+//				.subtract(new BigDecimal(354.80), MathContext.DECIMAL32));
+//	}
+//	
+//	private BigDecimal calculoIRPFFaixa3(BigDecimal valorBruto, BigDecimal totalIR) {
+//		return totalIR = totalIR.add(valorBruto
+//				.multiply(new BigDecimal(22.5))
+//				.divide(new BigDecimal(100))
+//				.subtract(new BigDecimal(636.13), MathContext.DECIMAL32));
+//	}
+//
+//	private BigDecimal calculoIRPFFaixa4(BigDecimal valorBruto, BigDecimal totalIR) {
+//		return totalIR = totalIR.add(valorBruto
+//				.multiply(new BigDecimal(27.5))
+//				.divide(new BigDecimal(100))
+//				.subtract(new BigDecimal(869.36), MathContext.DECIMAL32));
+//	}
 
 /* ************************** FINAL ----- RETENÇÃO DE IMPOSTOS ***************/
 

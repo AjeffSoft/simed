@@ -1,7 +1,6 @@
 package com.ajeff.simed.financeiro.model;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -60,7 +59,7 @@ public class Fornecedor implements Serializable{
 	
 	private Boolean clifor;
 	
-	private BigDecimal dependente;
+	private Integer dependente;
 	
 	@NotBlank(message = "Informe o tipo")
 	private String tipo;
@@ -215,12 +214,12 @@ public class Fornecedor implements Serializable{
 		this.clifor = clifor;
 	}
 
-	public BigDecimal getDependente() {
+	public Integer getDependente() {
 		return dependente;
 	}
 
 
-	public void setDependente(BigDecimal dependente) {
+	public void setDependente(Integer dependente) {
 		this.dependente = dependente;
 	}
 
