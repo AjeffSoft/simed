@@ -114,7 +114,7 @@ public class CalculosImpostos {
 	}
 	
 	private static BigDecimal descontoDeRetencaoDependentes(BigDecimal valor, Integer dependente) {
-		if(dependente > 0) {
+		if(dependente > 0 || dependente != null) {
 			BigDecimal dep = new BigDecimal(dependente);
 			BigDecimal descontoDependente = DEDUCAO_IRPF_DEPENDENTE.multiply(dep);
 			valor = valor.subtract(descontoDependente);

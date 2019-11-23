@@ -1,6 +1,9 @@
 package com.ajeff.simed.financeiro.service;
 
 import java.math.BigDecimal;
+import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.PersistenceException;
 
@@ -21,6 +24,7 @@ import com.ajeff.simed.financeiro.repository.ImpostosRepository;
 import com.ajeff.simed.financeiro.repository.filter.ImpostoFilter;
 import com.ajeff.simed.financeiro.service.exception.PagamentoNaoEfetuadoException;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
+import com.ajeff.simed.util.impostos.CalculosImpostos;
 
 @Service
 public class ImpostoService {
@@ -34,6 +38,116 @@ public class ImpostoService {
 	@Autowired
 	private ContasPagarRepository contasPagarRepository;
 	
+
+	
+	public List<Imposto> retencaoImpostos(ContaPagar contaPagar, ContaPagar conta) {
+		String tipoImposto = new String();
+		List<Imposto> impostos = new ArrayList<>();
+		
+		if(contaPagar.getReterIR()) {
+			tipoImposto = "IR";
+			impostos.add(impostoRegistroUnico(contaPagar, conta, tipoImposto));
+		}	
+
+		if(contaPagar.getReterCOFINS() && contaPagar.getFornecedor().getTipo().equals("J")) {
+			tipoImposto = "PCCS";
+			impostos.add(impostoRegistroUnico(contaPagar, conta, tipoImposto));
+		}	
+		
+		if(contaPagar.getReterINSS() && contaPagar.getFornecedor().getTipo().equals("F")) {
+			tipoImposto = "INSS";
+			impostos.add(impostoRegistroUnico(contaPagar, conta, tipoImposto));
+		}	
+		
+		if(contaPagar.getReterISS()) {
+			tipoImposto = "ISS";
+			impostos.add(impostoISS(contaPagar, conta, tipoImposto));
+		}
+		return impostos;
+	}
+	
+	
+	private Imposto impostoRegistroUnico(ContaPagar contaPagar, ContaPagar conta, String tipoImposto) {
+		Imposto imposto = new Imposto();
+		imposto.setApuracao(contaPagar.getDataEmissao().minusMonths(0).with(TemporalAdjusters.lastDayOfMonth()));
+		imposto.setContaPagarOrigem(conta);
+		imposto.setJuros(BigDecimal.ZERO);
+		imposto.setMulta(BigDecimal.ZERO);
+		imposto.setValorNF(contaPagar.getValor());
+		imposto.setNumeroNF(contaPagar.getNotaFiscal());
+		imposto.setStatus("ABERTO");
+		imposto.setEmissaoNF(contaPagar.getDataEmissao());
+		imposto.setEmpresa(contaPagar.getEmpresa());
+		imposto.setUpload(contaPagar.getUpload());
+		imposto.setContentType(contaPagar.getContentType());
+				
+		if(tipoImposto.equals("IR")) {
+			calculoParaImpostoRenda(contaPagar, imposto);
+		}else if(tipoImposto.equals("PCCS") && contaPagar.getFornecedor().getTipo().equals("J")) {
+			calculoParaPCCS(contaPagar, imposto);
+		}else if(tipoImposto.equals("INSS")) {
+			calculoParaINSS(contaPagar, imposto);
+		}else {
+			calculoParaISS(contaPagar, imposto);
+		}
+		imposto.setHistorico(imposto.getNome() + " - " + conta.getFornecedor().getFantasia() + " - " + imposto.getNumeroNF());
+		imposto.setTotal(imposto.getValor());
+		return imposto;
+	}
+	
+	private void calculoParaISS(ContaPagar contaPagar, Imposto imposto) {
+		imposto.setValor(CalculosImpostos.calculoISS(contaPagar.getValor(), contaPagar.getIssPorcentagem()));
+		imposto.setCodigo("ISS");
+		imposto.setNome("ISS");
+		imposto.setVencimento(contaPagarService.dataUtil(imposto.getApuracao(), 10));
+	}
+	
+	private void calculoParaINSS(ContaPagar contaPagar, Imposto imposto) {
+		imposto.setValor(CalculosImpostos.calculoINSS(contaPagar.getValor()));
+		imposto.setCodigo("INSS");
+		imposto.setNome("INSS");
+		imposto.setVencimento(contaPagarService.dataUtil(imposto.getApuracao(), 15));
+	}
+	
+	private void calculoParaPCCS(ContaPagar contaPagar, Imposto imposto) {
+		imposto.setValor(CalculosImpostos.calculoPCCS(contaPagar.getValor()));
+		imposto.setCodigo("5952");
+		imposto.setNome("PIS/COFINS/CSLL");
+		imposto.setVencimento(contaPagarService.dataUtil(imposto.getApuracao(), 20));
+	}
+
+	private void calculoParaImpostoRenda(ContaPagar contaPagar, Imposto imposto) {
+		imposto.setVencimento(contaPagarService.dataUtil(imposto.getApuracao(), 20));
+		imposto.setNome("IRRF");
+		if(contaPagar.getFornecedor().getTipo().equals("J")) {
+			imposto.setValor(CalculosImpostos.calculoIRJuridico(contaPagar.getValor()));
+			imposto.setCodigo("1708");
+		}else {
+			imposto.setValor(CalculosImpostos.calculoIRFisica(contaPagar.getValor(), contaPagar.getFornecedor().getDependente(), contaPagar.getReterINSS()));
+			imposto.setCodigo("0588");
+		}
+	}
+	
+	private Imposto impostoISS(ContaPagar contaPagar, ContaPagar conta, String tipoImposto) {
+		Imposto imposto = impostoRegistroUnico(contaPagar, conta, tipoImposto);
+		conta.setValorIss(imposto.getValor());
+		conta.setReterISS(true);
+		return imposto;
+	}
+
+	private Imposto retencaoINSS(ContaPagar contaPagar, ContaPagar conta, String tipoImposto) {
+		Imposto imposto = impostoRegistroUnico(contaPagar, conta, tipoImposto);
+		conta.setValorInss(imposto.getValor());
+		conta.setReterINSS(true);
+		return imposto;
+	}
+
+	private Imposto impostoPCCS(ContaPagar contaPagar, ContaPagar conta, String tipoImposto) {
+		Imposto imposto = impostoRegistroUnico(contaPagar, conta, tipoImposto);
+		conta.setValorCofins(imposto.getValor());
+		conta.setReterCOFINS(true);
+		return imposto;
+	}	
 	
 	@Transactional
 	public void gerar(Imposto imposto) {
@@ -59,6 +173,10 @@ public class ImpostoService {
 	}
 	
 
+	
+	
+	
+	
 	private ContaPagar criarRegistroContaPagar(Imposto imposto) {
 		try {
 			ContaPagar contaOrigem = contaPagarService.findOne(imposto.getContaPagarOrigem().getId());
