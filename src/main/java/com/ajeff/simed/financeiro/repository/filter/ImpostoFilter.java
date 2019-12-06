@@ -17,7 +17,7 @@ public class ImpostoFilter {
 	private BigDecimal valorInicio;
 	private BigDecimal valorFim;
 	private ContaPagar contaPagar;
-	private Empresa empresa;
+	private String empresa;
 	
 	public String getFornecedor() {
 		return fornecedor;
@@ -73,10 +73,10 @@ public class ImpostoFilter {
 	public void setContaPagar(ContaPagar contaPagar) {
 		this.contaPagar = contaPagar;
 	}
-	public Empresa getEmpresa() {
+	public String getEmpresa() {
 		return empresa;
 	}
-	public void setEmpresa(Empresa empresa) {
+	public void setEmpresa(String empresa) {
 		this.empresa = empresa;
 	}
 }

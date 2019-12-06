@@ -23,16 +23,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ajeff.simed.financeiro.model.ContaPagar;
 import com.ajeff.simed.financeiro.model.Imposto;
-import com.ajeff.simed.financeiro.model.PlanoContaSecundaria;
 import com.ajeff.simed.financeiro.repository.ContasPagarRepository;
 import com.ajeff.simed.financeiro.repository.filter.ContaPagarFilter;
 import com.ajeff.simed.financeiro.service.event.ContaPagarSalvoEvent;
 import com.ajeff.simed.financeiro.service.exception.DocumentoEFornecedorJaCadastradoException;
-import com.ajeff.simed.financeiro.service.exception.IdPlanoContaSecundariaNuloException;
 import com.ajeff.simed.financeiro.service.exception.VencimentoMenorEmissaoException;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.util.CalculosComDatas;
-import com.ajeff.simed.util.impostos.CalculosImpostos;
 
 @Service
 public class ContaPagarService {
@@ -44,8 +41,8 @@ public class ContaPagarService {
 	private ContasPagarRepository repository;
 	@Autowired
 	private ApplicationEventPublisher publisher;
-	@Autowired
-	private PlanoContaSecundariaService contaSecundariaService;
+//	@Autowired
+//	private PlanoContaSecundariaService contaSecundariaService;
 	@Autowired
 	private ImpostoService impostoService;
 	
@@ -214,14 +211,6 @@ public class ContaPagarService {
 		return repository.total(contaPagarFilter);
 	}
 
-	public ContaPagar findByAnexo(String cod) {
-		return repository.findByAnexo(cod);
-	}
-
-	public ContaPagar findByImpostoGerado(Imposto imposto) {
-		return repository.findByImpostoGerado(imposto);
-	}
-	
 	@Transactional
 	public void autorizarPagamento(ContaPagar contaPagar) {
 		contaPagar.setStatus("AUTORIZADO");

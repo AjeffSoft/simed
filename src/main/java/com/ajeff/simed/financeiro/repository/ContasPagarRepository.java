@@ -23,10 +23,6 @@ public interface ContasPagarRepository extends JpaRepository<ContaPagar, Long>, 
 
 	List<ContaPagar> findByIdIn(List<Long> ids);
 
-	ContaPagar findByAnexo(String cod);
-
-	ContaPagar findByImpostoGerado(Imposto imposto);
-
 	@Query("select c from ContaPagar c where c.fornecedor = ?1 order by c.vencimento")
 	List<ContaPagar> findByContaPagarFornecedor(Fornecedor fornecedor);
 

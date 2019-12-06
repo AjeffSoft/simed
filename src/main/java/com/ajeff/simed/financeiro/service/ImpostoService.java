@@ -29,6 +29,7 @@ import com.ajeff.simed.util.impostos.CalculosImpostos;
 @Service
 public class ImpostoService {
 
+	@SuppressWarnings("unused")
 	private static final Logger LOG = LoggerFactory.getLogger(ImpostoService.class);	
 	
 	@Autowired
@@ -37,7 +38,6 @@ public class ImpostoService {
 	private ContaPagarService contaPagarService;
 	@Autowired
 	private ContasPagarRepository contasPagarRepository;
-	
 
 	
 	public List<Imposto> retencaoImpostos(ContaPagar contaPagar, ContaPagar conta) {
@@ -77,7 +77,7 @@ public class ImpostoService {
 		imposto.setNumeroNF(contaPagar.getNotaFiscal());
 		imposto.setStatus("ABERTO");
 		imposto.setEmissaoNF(contaPagar.getDataEmissao());
-		imposto.setEmpresa(contaPagar.getEmpresa());
+//		imposto.setEmpresa(contaPagar.getEmpresa());
 		imposto.setUpload(contaPagar.getUpload());
 		imposto.setContentType(contaPagar.getContentType());
 				
@@ -130,52 +130,29 @@ public class ImpostoService {
 	
 	private Imposto impostoISS(ContaPagar contaPagar, ContaPagar conta, String tipoImposto) {
 		Imposto imposto = impostoRegistroUnico(contaPagar, conta, tipoImposto);
-		conta.setValorIss(imposto.getValor());
+//		conta.setValorIss(imposto.getValor());
 		conta.setReterISS(true);
 		return imposto;
 	}
+	
 
-	private Imposto retencaoINSS(ContaPagar contaPagar, ContaPagar conta, String tipoImposto) {
-		Imposto imposto = impostoRegistroUnico(contaPagar, conta, tipoImposto);
-		conta.setValorInss(imposto.getValor());
-		conta.setReterINSS(true);
-		return imposto;
+
+	public Imposto findOne(Long id) {
+		return repository.findOne(id);
 	}
-
-	private Imposto impostoPCCS(ContaPagar contaPagar, ContaPagar conta, String tipoImposto) {
-		Imposto imposto = impostoRegistroUnico(contaPagar, conta, tipoImposto);
-		conta.setValorCofins(imposto.getValor());
-		conta.setReterCOFINS(true);
-		return imposto;
-	}	
 	
 	@Transactional
 	public void gerar(Imposto imposto) {
-		
-		imposto.setStatus("GERADO");
-		if(imposto.getMulta() == null) {
-			imposto.setMulta(BigDecimal.ZERO);
-		}
-		if(imposto.getJuros() == null) {
-			imposto.setJuros(BigDecimal.ZERO);
-		}
-
 		try {
+			imposto.setStatus("GERADO");
 			imposto.setTotal(imposto.getValor().add(imposto.getJuros().add(imposto.getMulta())));
-			if(imposto.getNome().equals("IRRF")  || imposto.getCodigo().equals("PIS/COFINS/CSLL")) {
-				imposto.setGerarDarf(true);
-			}
-			contasPagarRepository.save(criarRegistroContaPagar(imposto));
+			imposto.setContaPagarGerada(contasPagarRepository.save(criarRegistroContaPagar(imposto)));
 			repository.save(imposto);
 		} catch (Exception e) {
 			throw new PagamentoNaoEfetuadoException("Algo deu errado! Imposto não gerado!");
 		}
 	}
-	
 
-	
-	
-	
 	
 	private ContaPagar criarRegistroContaPagar(Imposto imposto) {
 		try {
@@ -183,107 +160,118 @@ public class ImpostoService {
 			ContaPagar conta = new ContaPagar();
 			conta.setDataEmissao(imposto.getApuracao());
 			conta.setDocumento(imposto.getCodigo() +"-" + contaOrigem.getFornecedor().getSigla()+ "-"+imposto.getId());
-			conta.setEmpresa(imposto.getEmpresa());
-			conta.setHistorico(imposto.getNome() +" RETIDO " + contaOrigem.getFornecedor().getFantasia()+ "- DOC nº: "+imposto.getNumeroNF());
-			conta.setNotaFiscal(imposto.getNumeroNF()+" :IMP");
+			conta.setEmpresa(contaOrigem.getEmpresa());
+			conta.setHistorico(imposto.getNome() +" RETIDO " + contaOrigem.getFornecedor().getNome()+ "- DOC nº: "+imposto.getNumeroNF());
+			conta.setNotaFiscal("IMP:"+imposto.getNumeroNF());
 			conta.setParcela(1);
 			conta.setStatus("ABERTO");
 			conta.setTotalParcela(1);
 			conta.setValor(imposto.getTotal());
 			conta.setVencimento(imposto.getVencimento());
-			conta.setFornecedor(inserindoFornecedor(imposto.getNome()));
-			conta.setPlanoContaSecundaria(inserindoPlanoContaSecundaria(imposto.getNome()));
+			conta.setFornecedor(inserirFornecedor(imposto.getNome()));
+			conta.setPlanoContaSecundaria(inserirPlanoContaSecundaria(imposto.getNome()));
 			conta.setPrazoParcelamento(0);
-			conta.setReterCOFINS(false);
-			conta.setReterINSS(false);
-			conta.setReterIR(false);
-			conta.setReterISS(false);
-			conta.setImpostoGerado(imposto);
 			return conta;
 		} catch (Exception e) {
-			LOG.error("Erro ao criar o registro conta a pagar!--" + e.getMessage());
-			return null;
+			throw new PagamentoNaoEfetuadoException("Não foi possível incluir a conta a pagar do imposto selecionado");
 		}
 	}
+		
+	private Fornecedor inserirFornecedor(String nome) {
+		Fornecedor forn = new Fornecedor();
+		if(nome.equals("IRRF") || nome.equals("PIS/COFINS/CSLL")) {
+			forn.setId(54L); //RECEITA FEDERAL
+		}else if(nome.equals("INSS")) {
+			forn.setId(55L); //PREVIDENCIA SOCIAL
+		}else {
+			forn.setId(4L); //PREFEITURA DE IGUATU
+		}
+		return forn;
+	}	
 
-
-	private PlanoContaSecundaria inserindoPlanoContaSecundaria(String nome) {
+	private PlanoContaSecundaria inserirPlanoContaSecundaria(String nome) {
 		PlanoContaSecundaria planoConta = new PlanoContaSecundaria();
-		try {
-			if(nome.equals("IRRF")) {
-				planoConta.setId(58L); //IRRF RETIDO NOTAS PJ
-			}else if(nome.equals("PIS/COFINS/CSLL")) {
-				planoConta.setId(59L); //COFINS RETIDO NOTAS PJ
-			}else if(nome.equals("INSS")) {
-				planoConta.setId(55L); //PREVIDENCIA SOCIAL
-			}else {
-				planoConta.setId(58L); //
-			}
-		} catch (Exception e) {
-			LOG.error("Erro ao setar o plano de conta para o imposto gerado");
+		if(nome.equals("IRRF")) {
+			planoConta.setId(58L); //IRRF RETIDO NOTAS PJ
+		}else if(nome.equals("PIS/COFINS/CSLL")) {
+			planoConta.setId(59L); //COFINS RETIDO NOTAS PJ
+		}else if(nome.equals("INSS")) {
+			planoConta.setId(55L); //PREVIDENCIA SOCIAL
+		}else {
+			planoConta.setId(58L); //
 		}
 		return planoConta;
 	}
-
-
-	private Fornecedor inserindoFornecedor(String nome) {
-		Fornecedor forn = new Fornecedor();
-		try {
-			if(nome.equals("IRRF") || nome.equals("PIS/COFINS/CSLL")) {
-				forn.setId(54L); //RECEITA FEDERAL
-			}else if(nome.equals("INSS")) {
-				forn.setId(55L); //PREVIDENCIA SOCIAL
-			}else {
-				forn.setId(4L); //PREFEITURA DE IGUATU
-			}
-		} catch (Exception e) {
-			LOG.error("Erro ao setar o fornecedor para o imposto gerado");
-		}
-		return forn;
-	}
-
-
+	
 	@Transactional
 	public void cancelarGerar(Imposto imposto) {
-		
-		ContaPagar conta = contaPagarService.findByImpostoGerado(imposto);
-		
-		//Imposto copiaImposto = copiaImposto(imposto);
-		
-		if(conta.getStatus().equals("ABERTO")) {
-			contasPagarRepository.delete(conta);
-			//repository.save(copiaImposto);
-			//repository.delete(imposto);
-			imposto.setJuros(BigDecimal.ZERO);
-			imposto.setMulta(BigDecimal.ZERO);
-			imposto.setTotal(imposto.getValor());
-			imposto.setStatus("ABERTO");
-			imposto.setGerarDarf(false);
-			repository.save(imposto);
-		}else {
-			LOG.error("Conta a Pagar Destino com Status diferente de ABERTO");
+		try {
+			ContaPagar conta = contaPagarService.findOne(imposto.getContaPagarGerada().getId());
+			if(conta.getStatus().equals("ABERTO")) {
+				imposto.setContaPagarGerada(null);
+				contasPagarRepository.delete(conta);
+				imposto.setJuros(BigDecimal.ZERO);
+				imposto.setMulta(BigDecimal.ZERO);
+				imposto.setTotal(imposto.getValor());
+				imposto.setStatus("ABERTO");
+				repository.save(imposto);
+			}
+		} catch (Exception e) {
+			throw new ImpossivelExcluirEntidade("Não foi possivel cancelar o imposto gerado!!!"); 
 		}
-	}
+	}	
 	
-
-	public Page<Imposto> filtrar(ImpostoFilter impostoFilter, Pageable pageable) {
-		return repository.filtrar(impostoFilter, pageable);
-	}
-
 	@Transactional
 	public void excluir(Long id) {
-		String tipo = "o imposto";
-
 		try {
 			repository.delete(id);
 			repository.flush();
 		} catch (PersistenceException e) {
-			throw new ImpossivelExcluirEntidade("Não foi possivel excluir " + tipo +". Exclua primeiro o(s) relacionamento(s) com outra(s) tabela(s)!"); 
+			throw new ImpossivelExcluirEntidade("Não foi possivel excluir o imposto. Exclua primeiro o(s) relacionamento(s) com outra(s) tabela(s)!"); 
 		}
 		
-	}
+	}	
+	
+	public Page<Imposto> filtrar(ImpostoFilter impostoFilter, Pageable pageable) {
+		return repository.filtrar(impostoFilter, pageable);
+	}	
 
-	public Imposto findOne(Long id) {
-		return repository.findOne(id);
-	}
+	
+//	private Imposto retencaoINSS(ContaPagar contaPagar, ContaPagar conta, String tipoImposto) {
+//		Imposto imposto = impostoRegistroUnico(contaPagar, conta, tipoImposto);
+////		conta.setValorInss(imposto.getValor());
+//		conta.setReterINSS(true);
+//		return imposto;
+//	}
+//
+//	private Imposto impostoPCCS(ContaPagar contaPagar, ContaPagar conta, String tipoImposto) {
+//		Imposto imposto = impostoRegistroUnico(contaPagar, conta, tipoImposto);
+////		conta.setValorCofins(imposto.getValor());
+//		conta.setReterCOFINS//	@Transactional
+//	public void gerar(Imposto imposto) {
+//	
+//	imposto.setStatus("GERADO");
+//	if(imposto.getMulta() == null) {
+//		imposto.setMulta(BigDecimal.ZERO);
+//	}
+//	if(imposto.getJuros() == null) {
+//		imposto.setJuros(BigDecimal.ZERO);
+//	}
+//
+//	try {
+//		imposto.setTotal(imposto.getValor().add(imposto.getJuros().add(imposto.getMulta())));
+//		if(imposto.getNome().equals("IRRF")  || imposto.getCodigo().equals("PIS/COFINS/CSLL")) {
+//			imposto.setGerarDarf(true);
+//		}
+//		contasPagarRepository.save(criarRegistroContaPagar(imposto));
+//		repository.save(imposto);
+//	} catch (Exception e) {
+//		throw new PagamentoNaoEfetuadoException("Algo deu errado! Imposto não gerado!");
+//	}
+//}
+//(true);
+//		return imposto;
+//	}	
+	
+
 }

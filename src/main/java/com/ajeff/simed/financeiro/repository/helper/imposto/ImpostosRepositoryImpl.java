@@ -1,8 +1,5 @@
 package com.ajeff.simed.financeiro.repository.helper.imposto;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -52,8 +49,8 @@ public class ImpostosRepositoryImpl implements ImpostosRepositoryQueries {
 	private void adicionarFiltro(ImpostoFilter filtro, Criteria criteria) {
 		criteria.createAlias("contaPagarOrigem", "c");
 		criteria.createAlias("c.fornecedor", "f");
-		criteria.add(Restrictions.eq("empresa", filtro.getEmpresa()))
-		.addOrder(Order.asc("vencimento"));
+		criteria.createAlias("c.empresa", "e");
+		criteria.addOrder(Order.asc("vencimento"));
 		
 		if (filtro != null) {
 			
@@ -61,6 +58,10 @@ public class ImpostosRepositoryImpl implements ImpostosRepositoryQueries {
 				criteria.add(Restrictions.ilike("f.nome", filtro.getFornecedor(), MatchMode.ANYWHERE));
 			}
 
+			if (!StringUtils.isEmpty(filtro.getEmpresa())) {
+				criteria.add(Restrictions.eq("e.fantasia", filtro.getEmpresa()));
+			}
+			
 			if (!StringUtils.isEmpty(filtro.getNumeroNF())) {
 				criteria.add(Restrictions.eq("numeroNF", filtro.getNumeroNF()));
 			}
@@ -75,32 +76,25 @@ public class ImpostosRepositoryImpl implements ImpostosRepositoryQueries {
 			
 			if (filtro.getApuracaoInicio() != null || filtro.getApuracaoFim() != null) {
 				criteria.add(Restrictions.between("apuracao", filtro.getApuracaoInicio(), filtro.getApuracaoFim()));
-			}else {
-				filtro.setApuracaoFim(LocalDate.MAX);
-				filtro.setApuracaoInicio(LocalDate.MIN);
 			}
 			
 			if(filtro.getValorInicio() != null) {
 				criteria.add(Restrictions.ge("total", filtro.getValorInicio()));
-			}else {
-				filtro.setValorInicio(BigDecimal.ZERO);
 			}
 			
 			if(filtro.getValorFim() != null) {
 				criteria.add(Restrictions.le("total", filtro.getValorFim()));
-			}else {
-				filtro.setValorFim(new BigDecimal(1000000));
 			}
 			
-			if(isEmpresaPresente(filtro)) {
-				criteria.add(Restrictions.eq("empresa", filtro.getEmpresa()));
-			}
+//			if(isEmpresaPresente(filtro)) {
+//				criteria.add(Restrictions.eq("empresa", filtro.getEmpresa()));
+//			}
 			
 		}
 	}
 	
-	private boolean isEmpresaPresente(ImpostoFilter filtro) {
-		return filtro.getEmpresa() != null && filtro.getEmpresa().getId() != null;
-	}
+//	private boolean isEmpresaPresente(ImpostoFilter filtro) {
+//		return filtro.getEmpresa() != null && filtro.getEmpresa().getId() != null;
+//	}
 	
 }

@@ -103,8 +103,7 @@ public class ContaPagarController {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 		return ResponseEntity.ok().build();
-	}
-	
+	}	
 	
 	
 	@GetMapping("/alterar/{id}")
@@ -117,39 +116,33 @@ public class ContaPagarController {
 	}
 
 	
-	@GetMapping("/detalheConta/{id}")
-	public ModelAndView detalhe(@PathVariable Long id, ContaPagar contaPagar) {
-		ModelAndView mv = new ModelAndView("Financeiro/contaPagar/DetalheContaPagar");
-		contaPagar = service.findOne(id);
-		mv.addObject("impostos", impostoRepository.findByContaPagarOrigem(contaPagar));
-		mv.addObject(contaPagar);
-		return mv;
-	}
-
-	
-
-	/*
-	 * Autorização da conta a pagar para pagamento
-	 */
 	@PutMapping("/autorizar")
 	@ResponseStatus(HttpStatus.OK)
 	public void autorizarPagamento(@RequestParam Long id) {
 		ContaPagar contaPagar = service.findOne(id);
 		service.autorizarPagamento(contaPagar);
 	}	
-	
-	
 
 	
-	/*
-	 * Cancelar a autorização da conta a pagar para pagamento
-	 */
 	@PutMapping("/cancelarAutorizar")
 	@ResponseStatus(HttpStatus.OK)
 	public void cancelarAutorizarPagamento(@RequestParam Long id) {
 		ContaPagar contaPagar = service.findOne(id);
 		service.cancelarAutorizarPagamento(contaPagar);
 	}	
+	
+	
+//	@GetMapping("/detalheConta/{id}")
+//	public ModelAndView detalhe(@PathVariable Long id, ContaPagar contaPagar) {
+//		ModelAndView mv = new ModelAndView("Financeiro/contaPagar/DetalheContaPagar");
+//		contaPagar = service.findOne(id);
+//		mv.addObject("impostos", impostoRepository.findByContaPagarOrigem(contaPagar));
+//		mv.addObject(contaPagar);
+//		return mv;
+//	}
+
+	
+
 
 	@GetMapping("/imprimirDetalhe/{id}")
 	public ModelAndView imprimirDetalhe(@PathVariable Long id) {

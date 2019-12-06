@@ -14,7 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -44,9 +43,6 @@ public class ContaPagar implements Serializable{
 	
 	private LocalDate vencimento;
 
-	@Column(name = "data_pago")
-	private LocalDate dataPago;
-	
 	@NotNull(message = "Informe o valor da conta")
 	private BigDecimal valor;
 	
@@ -57,8 +53,6 @@ public class ContaPagar implements Serializable{
 	@Column(name = "nota_fiscal")
 	private String notaFiscal;
 	
-	private String anexo;
-	
 	@Column(name= "prazo_parcelamento")
 	private Integer prazoParcelamento;
 
@@ -67,16 +61,10 @@ public class ContaPagar implements Serializable{
 	@Column(name = "content_type")
 	private String contentType;
 
-	@Column(name = "anotacao_pagamento")
-	private String anotacaoPagamento;
-	
 	private Integer parcela;
 	
 	@Column(name = "total_parcela")
 	private Integer totalParcela;
-
-	@Column(name = "tipo_documento")
-	private String tipoDocumento;
 
 	@Column(name = "tipo_pendencia")
 	private String tipoPendencia;
@@ -103,10 +91,10 @@ public class ContaPagar implements Serializable{
 	@OneToMany(mappedBy = "contaPagarOrigem", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private List<Imposto> impostos;
 
-	@JsonIgnore
-	@OneToOne
-	@JoinColumn(name = "id_imposto_gerado")
-	private Imposto impostoGerado;
+//	@JsonIgnore
+//	@OneToOne
+//	@JoinColumn(name = "id_imposto_gerado")
+//	private Imposto impostoGerado;
 
 	@ManyToOne
 	@JoinColumn(name = "id_pagamento")
@@ -118,41 +106,17 @@ public class ContaPagar implements Serializable{
 	@Transient
 	private Boolean reterISS;
 
-	@Column(name = "reter_ir")
+	@Transient
 	private Boolean reterIR;
 
-	@Column(name = "reter_inss")
+	@Transient
 	private Boolean reterINSS;
 
-	@Column(name = "reter_cofins")
+	@Transient
 	private Boolean reterCOFINS;
 
-	@Column(name = "iss_porcentagem")
+	@Transient
 	private BigDecimal issPorcentagem;
-
-	@Column(name = "valor_ir")
-	private BigDecimal valorIR;
-	
-	@Column(name = "valor_inss")
-	private BigDecimal valorInss;
-
-	@Column(name = "valor_cofins")
-	private BigDecimal valorCofins;
-
-	@Column(name = "valor_iss")
-	private BigDecimal valorIss;
-	
-	
-	
-	
-	
-	public ContaPagar(LocalDate dataEmissao, LocalDate vencimento, BigDecimal valor) {
-		this.dataEmissao = dataEmissao;
-		this.vencimento = vencimento;
-		this.valor = valor;
-	}
-	
-	public ContaPagar() {}
 
 	@PrePersist
 	@PreUpdate
@@ -161,9 +125,9 @@ public class ContaPagar implements Serializable{
 			historico = historico.toUpperCase();
 		}
 
-		if(this.documento != null ) {
-			documento = documento.toUpperCase();
-		}
+//		if(this.documento != null ) {
+//			documento = documento.toUpperCase();
+//		}
 		
 	}
 
@@ -231,14 +195,6 @@ public class ContaPagar implements Serializable{
 		this.status = status;
 	}
 
-	public String getTipoDocumento() {
-		return tipoDocumento;
-	}
-
-	public void setTipoDocumento(String tipoDocumento) {
-		this.tipoDocumento = tipoDocumento;
-	}
-
 	public Empresa getEmpresa() {
 		return empresa;
 	}
@@ -253,14 +209,6 @@ public class ContaPagar implements Serializable{
 
 	public void setFornecedor(Fornecedor fornecedor) {
 		this.fornecedor = fornecedor;
-	}
-
-	public Imposto getImpostoGerado() {
-		return impostoGerado;
-	}
-
-	public void setImpostoGerado(Imposto impostoGerado) {
-		this.impostoGerado = impostoGerado;
 	}
 
 	public Integer getParcela() {
@@ -285,14 +233,6 @@ public class ContaPagar implements Serializable{
 
 	public void setNotaFiscal(String notaFiscal) {
 		this.notaFiscal = notaFiscal;
-	}
-
-	public String getAnexo() {
-		return anexo;
-	}
-
-	public void setAnexo(String anexo) {
-		this.anexo = anexo;
 	}
 
 	public PlanoContaSecundaria getPlanoContaSecundaria() {
@@ -359,22 +299,6 @@ public class ContaPagar implements Serializable{
 		this.tipoPendencia = tipoPendencia;
 	}
 
-	public LocalDate getDataPago() {
-		return dataPago;
-	}
-
-	public void setDataPago(LocalDate dataPago) {
-		this.dataPago = dataPago;
-	}
-
-	public String getAnotacaoPagamento() {
-		return anotacaoPagamento;
-	}
-
-	public void setAnotacaoPagamento(String anotacaoPagamento) {
-		this.anotacaoPagamento = anotacaoPagamento;
-	}
-
 	public String getUpload() {
 		return upload;
 	}
@@ -408,38 +332,6 @@ public class ContaPagar implements Serializable{
 
 	public void setPlanoConta(PlanoConta planoConta) {
 		this.planoConta = planoConta;
-	}
-
-	public BigDecimal getValorIR() {
-		return valorIR;
-	}
-
-	public void setValorIR(BigDecimal valorIR) {
-		this.valorIR = valorIR;
-	}
-
-	public BigDecimal getValorInss() {
-		return valorInss;
-	}
-
-	public void setValorInss(BigDecimal valorInss) {
-		this.valorInss = valorInss;
-	}
-
-	public BigDecimal getValorCofins() {
-		return valorCofins;
-	}
-
-	public void setValorCofins(BigDecimal valorCofins) {
-		this.valorCofins = valorCofins;
-	}
-
-	public BigDecimal getValorIss() {
-		return valorIss;
-	}
-
-	public void setValorIss(BigDecimal valorIss) {
-		this.valorIss = valorIss;
 	}
 
 	public Pagamento getPagamento() {

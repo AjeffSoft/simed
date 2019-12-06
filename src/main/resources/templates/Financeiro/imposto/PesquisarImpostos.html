@@ -29,7 +29,10 @@
 					<div class="col-sm-4  form-group">
 						<label for="empresa" class="control-label">Empresa</label>
 						<select id="empresa" class="form-control" th:field="*{empresa}">
-							<option th:each="empresa : ${empresas}" th:value="${empresa.id}" th:text="${empresa.fantasia}"></option>
+							<option value="">Selecione uma empresa</option>
+							<option value="UNIMED">Unimed</option>
+							<option value="UNILAB">Unilab</option>
+							<option value="UNICLINICA">Uniclinica</option>
 						</select>
 					</div>
 
@@ -49,6 +52,11 @@
 	  						<div class="radio  radio-inline">
 		    					<input id="gerado" type="radio" value="GERADO" th:field="*{status}"/>
 		    					<label for="gerado">Gerado</label>
+	    					</div>
+
+	  						<div class="radio  radio-inline">
+		    					<input id="gerado" type="radio" value="PAGO" th:field="*{status}"/>
+		    					<label for="gerado">Pago</label>
 	    					</div>
 
 		  					<div class="radio  radio-inline">
@@ -106,17 +114,11 @@
 				<table class="table  table-hover">
 					<thead>
 						<tr>
-							<th class="table-col-minima">
-								<simed:order page="${pagina}" field="empresa" text="Emp"/>
-							</th>
+							<th class="table-col-minima">Emp</th>
 
-							<th class="table-col-minima">
-								<simed:order page="${pagina}" field="codigo" text="Código"/>
-							</th>
+							<th class="table-col-minima">Código</th>
 
-							<th class="table-col-minima">
-								<simed:order page="${pagina}" field="numeroNF" text="NF"/>
-							</th>
+							<th class="table-col-minima">Nota Fiscal</th>
 
 							<th class="table-col-grande">
 								<simed:order page="${pagina}" field="apuracao" text="Apuração"/>
@@ -144,7 +146,7 @@
 					
 					<tbody>
 						<tr th:each="imposto : ${pagina.conteudo}">
-							<td th:text="${imposto.empresa.sigla}"></td>
+							<td th:text="${imposto.contaPagarOrigem.empresa.sigla}"></td>
 							<td th:text="${imposto.codigo}"></td>
 							<td th:text="${imposto.numeroNF}"></td>
 							<td th:text="${{imposto.apuracao}}"></td>
@@ -158,16 +160,16 @@
 								</th:block>
 
 								<th:block th:if="${imposto.gerado}">
-									<span class="label  label-success">Gerado</span>
+									<span class="label  label-warning">Gerado</span>
 								</th:block>
+
+								<th:block th:if="${imposto.pago}">
+									<span class="label  label-success">Pago</span>
+								</th:block>
+
 							</td>
 
 							<td class="text-center">
-<!-- 								<a target="'_blank'" class="btn  btn-link  btn-xs  js-tooltip" title="Imprimir DARF" th:if = "${imposto.gerarDarf}" -->
-<!-- 										th:href="@{/financeiro/imposto/imprimir/darf/{id}(id=${imposto.id})}" sec:authorize-url="/financeiro/imposto/imprimir/darf/**">  -->
-<!-- 									<i class="glyphicon glyphicon-print"></i> -->
-<!-- 								</a> -->
-
 								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes"
 										th:href="@{/financeiro/imposto/detalhe/{id}(id=${imposto.id})}"> 
 									<i class="glyphicon glyphicon-eye-open"></i>
@@ -192,7 +194,7 @@
 						</tr>
 						
 						<tr th:if="${pagina.vazia}">
-							<td colspan="8"> Nenhum imposto encontrado</td>
+							<td colspan="9"> Nenhum imposto encontrado</td>
 						</tr>
 						
 						

@@ -39,22 +39,11 @@
 				<input type="hidden" th:field="*{id}">
 				<input type="hidden" th:field="*{status}">
 				<input type="hidden" th:field="*{parcela}">
-				<input type="hidden" th:field="*{dataPago}">
-				<input type="hidden" th:field="*{anexo}">
 				<input type="hidden" th:field="*{documento}">
-				<input type="hidden" th:field="*{valorIR}">
-				<input type="hidden" th:field="*{valorInss}">
-				<input type="hidden" th:field="*{valorIss}">
-				<input type="hidden" th:field="*{valorCofins}">
 				
 				<div th:unless="${contaPagar.novo}">
 					<input type="hidden" th:field="*{totalParcela}">
 					<input type="hidden" th:field="*{prazoParcelamento}">
-					<input type="hidden" th:field="*{reterIR}">
-					<input type="hidden" th:field="*{reterCOFINS}">
-					<input type="hidden" th:field="*{reterISS}">
-					<input type="hidden" th:field="*{reterINSS}">
-					<input type="hidden" th:field="*{issPorcentagem}">
 					<input type="hidden" th:field="*{upload}">
 					<input type="hidden" th:field="*{contentType}">
 				</div>
@@ -191,7 +180,7 @@
 								<label class="control-label">PCCS</label>
 								<div>	
 									<input id="cofins" type="checkbox" checked data-toggle="toggle" class="form-control"  data-size="small"
-									 data-on="Sim%" data-off="Não" data-onstyle="success" data-width="70" data-offstyle="default" th:field="*{reterCOFINS}"/>
+									 data-on="Sim" data-off="Não" data-onstyle="success" data-width="70" data-offstyle="default" th:field="*{reterCOFINS}"/>
 								</div>
 							</div>
 	

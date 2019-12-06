@@ -20,7 +20,6 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
 
-import com.ajeff.simed.geral.model.Empresa;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -74,13 +73,9 @@ public class Imposto implements Serializable {
 
 	private String status;
 	
-	@Column(name = "gerar_darf")
+	@Transient
 	private Boolean gerarDarf;
 
-	@Transient
-	private Boolean gerarContaPagar;
-
-	@NotBlank(message = "Informe um histórico para o imposto")
 	private String historico;
 	
 	@JsonIgnore
@@ -89,21 +84,21 @@ public class Imposto implements Serializable {
 	private ContaPagar contaPagarOrigem;
 
 	@JsonIgnore
-	@OneToOne(mappedBy="impostoGerado")
+	@OneToOne
+	@JoinColumn(name = "id_conta_pagar_gerada")
 	private ContaPagar contaPagarGerada;
 	
 	
-	@JsonIgnore
-	@ManyToOne
-	@JoinColumn(name = "id_empresa")
-	private Empresa empresa;
+//	@JsonIgnore
+//	@ManyToOne
+//	@JoinColumn(name = "id_empresa")
+//	private Empresa empresa;
 	
 	@PrePersist
 	@PreUpdate
 	public void prePersistUpdate() {
 		historico = historico.toUpperCase();		
-	}
-	
+	}	
 	
 	public Long getId() {
 		return id;
@@ -211,14 +206,6 @@ public class Imposto implements Serializable {
 		this.status = status;
 	}
 
-	public Boolean getGerarContaPagar() {
-		return gerarContaPagar;
-	}
-
-	public void setGerarContaPagar(Boolean gerarContaPagar) {
-		this.gerarContaPagar = gerarContaPagar;
-	}
-
 	public String getHistorico() {
 		return historico;
 	}
@@ -267,13 +254,13 @@ public class Imposto implements Serializable {
 		this.contaPagarOrigem = contaPagarOrigem;
 	}
 
-	public Empresa getEmpresa() {
-		return empresa;
-	}
-
-	public void setEmpresa(Empresa empresa) {
-		this.empresa = empresa;
-	}
+//	public Empresa getEmpresa() {
+//		return empresa;
+//	}
+//
+//	public void setEmpresa(Empresa empresa) {
+//		this.empresa = empresa;
+//	}
 
 	public String getUpload() {
 		return upload;
@@ -329,5 +316,8 @@ public class Imposto implements Serializable {
 		return this.status.equals("GERADO");
 	}
 	
+	public boolean isPago() {
+		return this.status.equals("PAGO");
+	}
 	
 }

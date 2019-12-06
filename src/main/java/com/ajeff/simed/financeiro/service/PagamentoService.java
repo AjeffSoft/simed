@@ -468,7 +468,6 @@ public class PagamentoService {
 		Boolean tipoCheque = verificarTipoPagtoCheque(pagamento);
 		
 		for (ContaPagar conta : itens) {
-			conta.setDataPago(null);
 			alterarDadosContaPagar("EMITIDO",conta, pagamento);
 		}
 		

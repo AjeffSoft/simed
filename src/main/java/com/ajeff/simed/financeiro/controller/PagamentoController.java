@@ -76,7 +76,7 @@ public class PagamentoController {
 		List<ContaPagar> itens = service.listaDeContasSelecionadasParaPagamento(ids);
 		
 		if(itens.isEmpty()) {
-			return new ModelAndView("404");		
+			return new ModelAndView("ListaVaziaErro");		
 		}else {
 			mv.addObject("contasSelecionadas", itens);
 			BigDecimal soma = itens.stream().map(c -> c.getValor()).reduce(BigDecimal.ZERO, BigDecimal::add);

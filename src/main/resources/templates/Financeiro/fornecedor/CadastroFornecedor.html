@@ -176,7 +176,7 @@
 						<label for="comboAgencia" class="control-label">Agencia/Banco</label>
 						<select id="comboAgencia" class="form-control" th:field="*{agencia}" disabled="disabled">
 							<option value="">Selecione uma agencia...</option>
-							<option th:each="agencia : ${agencias}" th:value="${agencia.id}" th:text="${agencia.agencia}+ ' - ' + ${agencia.banco.nome}"></option>
+							<option th:each="agencia : ${agencias}" th:value="${agencia.id}" th:text="${agencia.agencia}+ '-' + ${agencia.dv}+ '      ' + ${agencia.banco.nome}"></option>
 						</select>
 					</div>
 										

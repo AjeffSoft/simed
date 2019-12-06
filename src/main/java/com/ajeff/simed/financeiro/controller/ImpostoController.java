@@ -1,8 +1,5 @@
 package com.ajeff.simed.financeiro.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -32,7 +29,6 @@ import com.ajeff.simed.financeiro.model.Imposto;
 import com.ajeff.simed.financeiro.repository.ContasPagarRepository;
 import com.ajeff.simed.financeiro.repository.filter.ImpostoFilter;
 import com.ajeff.simed.financeiro.service.ImpostoService;
-import com.ajeff.simed.financeiro.service.PlanoContaService;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.financeiro.service.exception.PagamentoNaoEfetuadoException;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
@@ -51,25 +47,12 @@ public class ImpostoController {
 	@Autowired
 	private ImpostoService service;
 	@Autowired
-	private PlanoContaService planoContaService;
-	@Autowired
 	private UsuarioService usuarioService;
-	@Autowired
-	private EmpresaService empresaService;
+//	@Autowired
+//	private PlanoContaService planoContaService;
 	@Autowired
 	private ContasPagarRepository contaRepository;
 
-	
-
-	@GetMapping("/novo")
-	public ModelAndView nova(Imposto imposto, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
-		ModelAndView mv = new ModelAndView("Financeiro/imposto/CadastroImposto");
-		mv.addObject("planosConta", planoContaService.listarTodosPlanosContaDebito());
-		mv.addObject("empresas", usuarioService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
-		return mv;
-	}
-	
-	
 	
 	
 	@GetMapping("/abreGerar/{id}")
@@ -80,8 +63,6 @@ public class ImpostoController {
 		mv.addObject(imposto);
 		return mv;
 	}
-
-	
 	
 	@PutMapping("/cancelarGerar")
 	@ResponseStatus(HttpStatus.OK)
@@ -89,29 +70,25 @@ public class ImpostoController {
 		Imposto imposto = service.findOne(id);
 		service.cancelarGerar(imposto);
 	}	
+	
 
-	
-	
 	@PostMapping("/gerar/{id}")
-	public ModelAndView gerarImposto(@PathVariable Long id, @Valid Imposto imposto, @RequestParam("empresa") Long idEmpresa, 
+	public ModelAndView gerarImposto(@PathVariable Long id, @Valid Imposto imposto, 
 			@RequestParam("status") String status, @AuthenticationPrincipal UsuarioSistema usuarioSistema, BindingResult result, RedirectAttributes attributes) {
 		
-		Empresa empresa = empresaService.findOne(idEmpresa);
-
 		if (result.hasErrors()) {
 			return abreGerar(id, imposto, usuarioSistema);
 		}
-		
 		try {
 			service.gerar(imposto);
 		} catch (PagamentoNaoEfetuadoException e) {
 			result.rejectValue("valor", e.getMessage(), e.getMessage());
 			return abreGerar(id, imposto, usuarioSistema);
+		} catch (Exception e) {
+			result.rejectValue("valor", e.getMessage(), e.getMessage());
+			return abreGerar(id, imposto, usuarioSistema);
 		}
-		
-		
-		return new ModelAndView("redirect:/financeiro/imposto/pesquisar?empresa="+empresa.getId()+"&status="+status);
-
+		return new ModelAndView("redirect:/financeiro/imposto/pesquisar?status="+status);
 	}
 
 	
@@ -119,9 +96,7 @@ public class ImpostoController {
 	public ModelAndView pesquisar(ImpostoFilter impostoFilter, BindingResult result, @PageableDefault(size=50) Pageable pageable,
 										HttpServletRequest httpServletRequest, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
 		ModelAndView mv = new ModelAndView("Financeiro/imposto/PesquisarImpostos");
-		
 		mv.addObject("empresas", usuarioService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
-
 		PageWrapper<Imposto> paginaWrapper = new PageWrapper<>(service.filtrar(impostoFilter, pageable), httpServletRequest);
 		mv.addObject("pagina", paginaWrapper);
 		return mv;
@@ -138,15 +113,6 @@ public class ImpostoController {
 		return ResponseEntity.ok().build();
 	}
 	
-	
-	@GetMapping("/alterar/{id}")
-	public ModelAndView alterar (@PathVariable Long id, Imposto imposto, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
-		ModelAndView mv = nova(imposto, usuarioSistema);
-		imposto = service.findOne(id);
-		mv.addObject(imposto);
-		return mv;
-	}
-	
 
 	@GetMapping("/detalhe/{id}")
 	public ModelAndView detalhe(@PathVariable Long id, Imposto imposto) {
@@ -157,13 +123,22 @@ public class ImpostoController {
 		return mv;
 	}
 	
-	
-	@GetMapping("/imprimir/darf/{id}")
-	public ModelAndView imprimirDarf(@PathVariable("id") Long id){
-		Map<String, Object> map = new HashMap<>();
-		map.put("format", "pdf");
-		map.put("id_imposto", id);
-		return new ModelAndView("rel_Darf", map);
-	}
+//	
+//	@GetMapping("/imprimir/darf/{id}")
+//	public ModelAndView imprimirDarf(@PathVariable("id") Long id){
+//		Map<String, Object> map = new HashMap<>();
+//		map.put("format", "pdf");
+//		map.put("id_imposto", id);
+//		return new ModelAndView("rel_Darf", map);
+//	}
 	
 }
+//	@GetMapping("/novo")
+//	public ModelAndView nova(Imposto imposto, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
+//		ModelAndView mv = new ModelAndView("Financeiro/imposto/CadastroImposto");
+//		mv.addObject("planosConta", planoContaService.listarTodosPlanosContaDebito());
+//		mv.addObject("empresas", usuarioService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
+//		return mv;
+//	}
+//	
+//	

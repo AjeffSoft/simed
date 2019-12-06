@@ -46,13 +46,6 @@
 
 
 				<div class="row">
-					<div class="col-sm-2  form-group"  simed:classforerror="empresa">
-						<label for="empresa" class="control-label">Empresa</label>
-						<select id="empresa" class="form-control" th:field="*{empresa}">
-							<option th:each="empresa : ${empresas}" th:value="${empresa.id}" th:text="${empresa.fantasia}"></option>
-						</select>
-					</div>
-					
 					<div class="col-sm-2  form-group" simed:classforerror="vencimento">
 						<label for="vencimento" class="control-label">Vencimento*</label>
 						<input id="vencimento" type="text" class="form-control  js-date" th:field = "*{vencimento}" autocomplete="off"/>
