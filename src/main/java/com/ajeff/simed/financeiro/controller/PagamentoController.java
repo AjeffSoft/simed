@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletRequest;
 import javax.swing.ImageIcon;
 import javax.validation.Valid;
@@ -149,6 +150,8 @@ public class PagamentoController {
 		} catch (PeriodoMovimentacaoException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		} catch (ImpossivelExcluirEntidade e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		} catch (PagamentoNaoEfetuadoException e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 		return ResponseEntity.ok().build();

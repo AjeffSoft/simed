@@ -25,13 +25,21 @@ public class Endereco implements Serializable{
 	
 	@ManyToOne
 	@JoinColumn(name="id_cidade")
-	@NotNull(message = "Informe o estado e a cidade.")
+//	@NotNull(message = "Informe o estado e a cidade.")
 	@JsonIgnore
 	private Cidade cidade;
 	
 	@Transient
 	private Estado estado;
 	
+	
+	
+	public Endereco(Cidade cidade) {
+		this.cidade = cidade;
+	}
+	
+	public Endereco() {};
+
 	public String getLogradouro() {
 		return logradouro;
 	}

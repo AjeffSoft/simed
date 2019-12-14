@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ajeff.simed.financeiro.model.Pagamento;
 import com.ajeff.simed.geral.controller.EmpresaController;
 import com.ajeff.simed.geral.model.Empresa;
 import com.ajeff.simed.geral.repository.EmpresasRepository;
@@ -76,5 +77,15 @@ public class EmpresaService {
 	public Empresa buscarComCidadeEstado(Long id) {
 		return repository.buscarComCidadeEstado(id);
 	}
+	
+	public Long incrementarCodigoPagamento(Long empresa) {
+		Empresa emp = repository.findOne(empresa);
+		Long inc = emp.getCodigoPagamento() + 1;
+		emp.setCodigoPagamento(inc);
+		repository.save(emp);
+		return inc;
+	}	
+	
+
 
 }

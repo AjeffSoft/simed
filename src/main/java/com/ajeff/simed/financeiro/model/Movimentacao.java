@@ -24,7 +24,7 @@ import com.ajeff.simed.geral.model.Empresa;
 public class Movimentacao implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
@@ -67,6 +67,16 @@ public class Movimentacao implements Serializable {
 	
 	@OneToMany(mappedBy = "movimentacao", cascade = CascadeType.REMOVE)
 	private List<MovimentacaoBancaria> movimentacoesBancarias;
+	
+	
+	public Movimentacao(LocalDate dataInicio, LocalDate dataFinal, Boolean fechado, Empresa empresa) {
+		this.dataInicio = dataInicio;
+		this.dataFinal = dataFinal;
+		this.fechado = fechado;
+		this.empresa = empresa;
+	}
+	
+	public Movimentacao() {};
 
 	public Long getId() {
 		return id;

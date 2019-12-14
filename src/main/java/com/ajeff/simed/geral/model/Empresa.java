@@ -58,6 +58,17 @@ public class Empresa implements Serializable{
 	
 	
 	
+	public Empresa(Long id, String nome, String fantasia, String sigla, String cnpj, Endereco endereco) {
+		this.id = id;
+		this.nome = nome;
+		this.fantasia = fantasia;
+		this.sigla = sigla;
+		this.cnpj = cnpj;
+		this.endereco = endereco;
+	}
+	
+	public Empresa () {};
+
 	@PrePersist
 	@PreUpdate
 	private void prePersistUpdate() {

@@ -1,6 +1,7 @@
 package com.ajeff.simed.financeiro.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ajeff.simed.financeiro.model.ExtratoBancario;
 import com.ajeff.simed.financeiro.model.Movimentacao;
 import com.ajeff.simed.financeiro.model.MovimentacaoBancaria;
+import com.ajeff.simed.financeiro.model.Pagamento;
 import com.ajeff.simed.financeiro.repository.ExtratosRepository;
 import com.ajeff.simed.financeiro.repository.MovimentacoesBancariasRepository;
 import com.ajeff.simed.financeiro.repository.MovimentacoesRepository;
@@ -72,6 +74,34 @@ public class ExtratoService {
 //	}
 //
 //
+	public void excluirPagamentoDoExtrato(Pagamento pagamento) {
+		ExtratoBancario extrato = repository.findByPagamento(pagamento);
+		repository.delete(extrato);
+	}	
+	
+	
+	public void alterarStatusDoExtratoPorPagamento(Pagamento pagamento, String status) {
+		ExtratoBancario extrato = repository.findByPagamento(pagamento);
+		extrato.setStatus(status);
+		repository.save(extrato);
+	}	
+	
+	
+	public void criarMovimentoNoExtratoPorPagamento(Pagamento pagamento, String status, LocalDate data) {
+		ExtratoBancario extrato = new ExtratoBancario();
+		extrato.setData(data);
+		extrato.setContaBancaria(pagamento.getContaEmpresa());
+		extrato.setCredito(false);
+		extrato.setHistorico("Pagamento por " + pagamento.getTipo() +" - Documento nº: "+ pagamento.getDocumento());
+		extrato.setPagamento(pagamento);
+		extrato.setStatus(status);
+		extrato.setTipo("PAGAMENTO");
+		extrato.setMovimentacao(pagamento.getMovimentacao());
+		extrato.setValor(pagamento.getValor());
+		repository.save(extrato);
+}	
+	
+	
 //	@Transactional
 //	public void cancelarCompensar(ExtratoBancario extrato) {
 //

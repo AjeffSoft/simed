@@ -151,7 +151,7 @@
 						<tr th:each="pagamento : ${pagina.conteudo}">
 							<td th:text="${{pagamento.documento}}"></td>
 							<td th:text="${{pagamento.data}}"></td>
-							<td th:text="${pagamento.tipo.descricao}"></td>
+							<td th:text="${pagamento.tipo}"></td>
 							<td th:text="${pagamento.contaEmpresa.conta} +' - '+ ${pagamento.contaEmpresa.agencia.banco.nome}"></td>
 							<td th:text="${{pagamento.valor}}"></td>
 							<td>

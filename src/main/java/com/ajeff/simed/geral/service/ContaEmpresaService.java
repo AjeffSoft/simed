@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ajeff.simed.financeiro.model.Pagamento;
+import com.ajeff.simed.financeiro.service.exception.PagamentoNaoEfetuadoException;
 import com.ajeff.simed.geral.model.ContaEmpresa;
 import com.ajeff.simed.geral.model.Empresa;
 import com.ajeff.simed.geral.repository.ContaEmpresaRepository;
@@ -44,7 +46,19 @@ public class ContaEmpresaService {
 		}
 	}
 
+	public void creditarValorNoTotalPendencias(Long empresa, BigDecimal valor) {
+		ContaEmpresa conta = repository.findOne(empresa);
+		conta.setValorPendente(conta.getValorPendente().add(valor));
+		repository.save(conta);
+	}
 
+	public void debitarValorNoTotalPendencias(Long empresa, BigDecimal valor) {
+		ContaEmpresa conta = repository.findOne(empresa);
+		conta.setValorPendente(conta.getValorPendente().subtract(valor));
+		repository.save(conta);
+	}
+	
+	
 	public ContaEmpresa findOne(Long id) {
 		return repository.findOne(id);
 	}
@@ -75,17 +89,11 @@ public class ContaEmpresaService {
 		return repository.findByEmpresa(empresa);
 	}
 
-//	public List<ContaEmpresa> findByEmpresaIdETipoCaixinha(Long id) {
-//		return repository.findByEmpresaIdETipoCaixinha(id);
-//	}
 
 	public List<ContaEmpresa> findByEmpresaId(Long id) {
 		return repository.findByEmpresaId(id);
 	}
 
-//	public List<ContaEmpresa> buscarTodasContasBancarias() {
-//		return repository.buscarTodasContasBancarias();
-//	}
 
 	public List<ContaEmpresa> listarTodosOrdenadoPorNome() {
 		return repository.listarTodosOrdenadoPorNome();

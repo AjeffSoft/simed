@@ -33,6 +33,7 @@ public class Banco implements Serializable {
 	@JsonIgnore
 	private boolean situacao;
 	
+	
 	@PrePersist
 	@PreUpdate
 	public void prePersistUpdate() {

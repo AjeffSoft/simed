@@ -36,6 +36,16 @@ public class Cidade implements Serializable{
 	@JsonIgnore
 	private Estado estado;	
 	
+	
+	
+	public Cidade() {}
+	
+	public Cidade(String nome) {
+		this.nome = nome;
+	}
+
+
+
 	public boolean isNovo(){
 		return id == null;
 	}

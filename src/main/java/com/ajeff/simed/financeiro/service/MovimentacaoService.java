@@ -32,6 +32,7 @@ import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoException;
 import com.ajeff.simed.financeiro.service.exception.RegistroNaoCadastradoException;
 import com.ajeff.simed.geral.model.ContaEmpresa;
+import com.ajeff.simed.geral.model.Empresa;
 import com.ajeff.simed.geral.repository.ContaEmpresaRepository;
 
 @Service
@@ -78,16 +79,11 @@ public class MovimentacaoService {
 	
 
 	private void criarRegistroMovimentacaoBancaria(Movimentacao movimentacao) {
-		//Movimentacao mov = repository.findOne(movimentacao.getId());
-		
-		//Lista todas as empresas com a movimetação de parametro
 		List<ContaEmpresa> contasBancarias = contaRepository.findByEmpresa(movimentacao.getEmpresa());
 		
 		for(ContaEmpresa c : contasBancarias) {
-			//Salva a movimentação bancária e já cria a movimentação no extrato
 			criarMovimentoAberturaNoExtrato(unicoRegistroDeMovimentacaoBancaria(movimentacao, c));
 		}
-		//Pega os saldos das contas da empresa para salvar em total abertura em movimentação
 		movimentacao.setTotalAbertura(contasBancarias.stream().map(m-> m.getSaldo()).reduce(BigDecimal.ZERO, BigDecimal::add));
 	}
 
@@ -345,6 +341,34 @@ public class MovimentacaoService {
 	public Page<Movimentacao> filtrar(MovimentacaoFilter movimentacaoFilter, Pageable pageable) {
 		return repository.filtrar(movimentacaoFilter, pageable);
 	}	
+
+//	
+//	public Boolean verificarSeTemMovimentacaoBancariaAberta(Empresa empresa) {
+//		List<Movimentacao> mov = repository.findByEmpresaAndStatusAberto(empresa);	
+//		return mov.size() >= 1 ? true : false;	
+//	}	
+//	
+//	public Boolean verificarSeDataPagamentoEstaDentroPeriodoAberto(Movimentacao movimentacao, LocalDate data) {
+//		return data.isBefore(movimentacao.getDataInicio()) || data.isAfter(movimentacao.getDataFinal());
+//	}	
 	
+	public Boolean verificarSeMovimentacaoEstaAberto(Pagamento pagamento) {
+		Optional<Movimentacao> mov = repository.findByEmpresaAndStatusAberto(pagamento.getContaEmpresa().getEmpresa());	
+		return mov.isPresent();
+	}	
+
+	
+	public Boolean verificarSeDataPagamentoEstaForaPeriodoAberto(Pagamento pagamento, LocalDate data) {
+		Optional<Movimentacao> mov = repository.findByEmpresaAndStatusAberto(pagamento.getContaEmpresa().getEmpresa());	
+		return data.isBefore(mov.get().getDataInicio()) || data.isAfter(mov.get().getDataFinal());
+	}
+
+	public Boolean isAberto(Movimentacao movimentacao) {
+		return movimentacao.getFechado();
+	}
+
+	public Movimentacao findByEmpresaAndStatus(Empresa empresa) {
+		return repository.findByEmpresaAndStatus(empresa);
+	}	
 	
 }
