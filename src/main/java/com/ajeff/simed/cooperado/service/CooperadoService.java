@@ -48,9 +48,9 @@ public class CooperadoService {
 		repository.save(cooperado);
 	}
 
-	private Cooperado findOne(Long id) {
-		return repository.findOne(id);
-	}
+//	private Cooperado findOne(Long id) {
+//		return repository.findOne(id);
+//	}
 	
 	public Page<Cooperado> filtrar(CooperadoFilter cooperadoFilter, Pageable pageable) {
 		return repository.filtrar(cooperadoFilter, pageable);

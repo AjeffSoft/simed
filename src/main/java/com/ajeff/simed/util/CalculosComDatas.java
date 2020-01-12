@@ -4,8 +4,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 import com.ajeff.simed.exceptions.DataNaoInformadaException;
-import com.ajeff.simed.financeiro.model.ContaPagar;
-import com.ajeff.simed.financeiro.service.exception.VencimentoMenorEmissaoException;
 
 public class CalculosComDatas {
 	

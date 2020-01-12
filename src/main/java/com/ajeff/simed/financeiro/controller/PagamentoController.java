@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletRequest;
 import javax.swing.ImageIcon;
 import javax.validation.Valid;
@@ -208,7 +207,6 @@ public class PagamentoController {
 
 	@GetMapping("/comprovante")
 	public ModelAndView comprovanteIndividual() {
-		//TODO: Exibir a lista dos pagamentos individuais
 		return new ModelAndView("Financeiro/pagamento/ComprovantePagamento");
 	}
 	

@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ajeff.simed.financeiro.model.Pagamento;
 import com.ajeff.simed.geral.controller.EmpresaController;
 import com.ajeff.simed.geral.model.Empresa;
 import com.ajeff.simed.geral.repository.EmpresasRepository;

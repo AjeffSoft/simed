@@ -2,8 +2,6 @@ package com.ajeff.simed.financeiro.service;
 
 import java.math.BigDecimal;
 
-import javax.persistence.PersistenceException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,15 +9,13 @@ import org.springframework.stereotype.Service;
 
 import com.ajeff.simed.financeiro.model.Movimentacao;
 import com.ajeff.simed.financeiro.model.MovimentacaoBancaria;
-import com.ajeff.simed.financeiro.model.Pagamento;
 import com.ajeff.simed.financeiro.repository.MovimentacoesBancariasRepository;
-import com.ajeff.simed.financeiro.repository.MovimentacoesRepository;
-import com.ajeff.simed.financeiro.service.exception.PagamentoNaoEfetuadoException;
 import com.ajeff.simed.geral.model.ContaEmpresa;
 
 @Service
 public class MovimentacaoBancariaService {
 
+	@SuppressWarnings("unused")
 	private static final Logger LOG = LoggerFactory.getLogger(MovimentacaoBancariaService.class);	
 	
 	@Autowired

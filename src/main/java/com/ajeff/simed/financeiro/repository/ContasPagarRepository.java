@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.ajeff.simed.financeiro.model.ContaPagar;
 import com.ajeff.simed.financeiro.model.Fornecedor;
-import com.ajeff.simed.financeiro.model.Imposto;
 import com.ajeff.simed.financeiro.repository.helper.contaPagar.ContasPagarRepositoryQueries;
 
 public interface ContasPagarRepository extends JpaRepository<ContaPagar, Long>, ContasPagarRepositoryQueries{

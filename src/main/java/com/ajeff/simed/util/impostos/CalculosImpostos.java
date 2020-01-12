@@ -5,7 +5,6 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 
 import com.ajeff.simed.exceptions.ValorInformadoNegativoException;
-import com.ajeff.simed.financeiro.model.ContaPagar;
 
 public class CalculosImpostos {
 	

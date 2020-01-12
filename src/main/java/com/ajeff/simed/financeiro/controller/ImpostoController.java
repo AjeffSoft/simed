@@ -32,9 +32,7 @@ import com.ajeff.simed.financeiro.service.ImpostoService;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.financeiro.service.exception.PagamentoNaoEfetuadoException;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
-import com.ajeff.simed.geral.model.Empresa;
 import com.ajeff.simed.geral.security.UsuarioSistema;
-import com.ajeff.simed.geral.service.EmpresaService;
 import com.ajeff.simed.geral.service.UsuarioService;
 
 @Controller

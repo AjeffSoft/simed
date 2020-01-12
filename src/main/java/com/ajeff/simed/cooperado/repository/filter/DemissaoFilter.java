@@ -2,8 +2,6 @@ package com.ajeff.simed.cooperado.repository.filter;
 
 import java.time.LocalDate;
 
-import com.ajeff.simed.cooperado.model.Cooperado;
-
 public class DemissaoFilter {
 
 	private String cooperado;

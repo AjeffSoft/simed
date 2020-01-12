@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.persistence.PersistenceException;
 
@@ -22,11 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ajeff.simed.financeiro.model.ContaPagar;
-import com.ajeff.simed.financeiro.model.Imposto;
 import com.ajeff.simed.financeiro.repository.ContasPagarRepository;
 import com.ajeff.simed.financeiro.repository.filter.ContaPagarFilter;
 import com.ajeff.simed.financeiro.service.event.ContaPagarSalvoEvent;
-import com.ajeff.simed.financeiro.service.exception.DocumentoEFornecedorJaCadastradoException;
 import com.ajeff.simed.financeiro.service.exception.VencimentoMenorEmissaoException;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.util.CalculosComDatas;
@@ -143,13 +140,13 @@ public class ContaPagarService {
 	}	
 	
 	
-	private void testeRegistroJaCadastrado(ContaPagar contaPagar) {
-		Optional<ContaPagar> optional = repository.findByDocumentoAndFornecedor(contaPagar.getDocumento(), contaPagar.getFornecedor());
-		if (optional.isPresent() && !optional.get().equals(contaPagar)) {
-			throw new DocumentoEFornecedorJaCadastradoException(
-					"Já existe uma conta com este documento e fornecedor cadastrado!");
-		}
-	}
+//	private void testeRegistroJaCadastrado(ContaPagar contaPagar) {
+//		Optional<ContaPagar> optional = repository.findByDocumentoAndFornecedor(contaPagar.getDocumento(), contaPagar.getFornecedor());
+//		if (optional.isPresent() && !optional.get().equals(contaPagar)) {
+//			throw new DocumentoEFornecedorJaCadastradoException(
+//					"Já existe uma conta com este documento e fornecedor cadastrado!");
+//		}
+//	}
 
 	@Transactional
 	public void excluir(Long id) {
@@ -167,7 +164,6 @@ public class ContaPagarService {
 		LocalDate primeiroDiaMesSeguinte = dataApuracao.plusMonths(1).with(TemporalAdjusters.firstDayOfMonth());
 		LocalDate vencimento = primeiroDiaMesSeguinte.plusDays(n);
 		DayOfWeek diaSemana = vencimento.getDayOfWeek();
-		//TODO: Tratar quando o dia do vencimento for um feriado
 		if(diaSemana.getValue() == 0) {
 			vencimento = vencimento.minusDays(2);
 		}else if (diaSemana.getValue() == 6) {

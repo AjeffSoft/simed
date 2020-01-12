@@ -22,13 +22,13 @@ import com.ajeff.simed.financeiro.repository.PagamentosRepository;
 import com.ajeff.simed.financeiro.repository.filter.PagamentoFilter;
 import com.ajeff.simed.financeiro.service.exception.PagamentoNaoEfetuadoException;
 import com.ajeff.simed.financeiro.service.exception.PeriodoMovimentacaoException;
-import com.ajeff.simed.geral.model.Empresa;
 import com.ajeff.simed.geral.service.ContaEmpresaService;
 import com.ajeff.simed.geral.service.EmpresaService;
 
 @Service
 public class PagamentoService {
 
+	@SuppressWarnings("unused")
 	private static final Logger LOG = LoggerFactory.getLogger(PagamentoService.class);	
 	
 	@Autowired
@@ -196,14 +196,14 @@ public class PagamentoService {
 	
 	
 
-	private void creditarPagamentoNoDebitoDoMovimento(Pagamento pagamento) {
-		try {
-			movBancariaService.creditarValorNosDebitosDoMovimento(pagamento.getMovimentacao().getId(), pagamento.getValor());
-		} catch (PersistenceException e) {
-			e.getStackTrace();
-			throw new PagamentoNaoEfetuadoException("Algo deu errado!! Erro ao incluir o debito no movimento bancário");
-		}
-	}
+//	private void creditarPagamentoNoDebitoDoMovimento(Pagamento pagamento) {
+//		try {
+//			movBancariaService.creditarValorNosDebitosDoMovimento(pagamento.getMovimentacao().getId(), pagamento.getValor());
+//		} catch (PersistenceException e) {
+//			e.getStackTrace();
+//			throw new PagamentoNaoEfetuadoException("Algo deu errado!! Erro ao incluir o debito no movimento bancário");
+//		}
+//	}
 	
 	
 	private void criarMovimentoNoExtrato(Pagamento pagamento, String status, LocalDate data) {
@@ -333,23 +333,23 @@ public class PagamentoService {
 	}
 
 
-	private void confirmarPagamentoCheques(Pagamento pagamento) {
-		Movimentacao mov = movimentacaoService.findByEmpresaAndStatus(pagamento.getContaEmpresa().getEmpresa());	
-		MovimentacaoBancaria movBancario = movBancariaService.findByMovimentacaoAndContaEmpresa(mov, pagamento.getContaEmpresa());
-		pagamento.setMovimentacao(movBancario);
-		cancelarLancamentoChequePendenteEmContaEmpresa(pagamento);
-		criarPagamentoNoExtrato(pagamento);
-		creditarPagamentoNoDebitoDoMovimento(pagamento);
-		verificarSeDataPagoMenorDataEmissao(pagamento);
-	}
+//	private void confirmarPagamentoCheques(Pagamento pagamento) {
+//		Movimentacao mov = movimentacaoService.findByEmpresaAndStatus(pagamento.getContaEmpresa().getEmpresa());	
+//		MovimentacaoBancaria movBancario = movBancariaService.findByMovimentacaoAndContaEmpresa(mov, pagamento.getContaEmpresa());
+//		pagamento.setMovimentacao(movBancario);
+//		cancelarLancamentoChequePendenteEmContaEmpresa(pagamento);
+//		criarPagamentoNoExtrato(pagamento);
+//		creditarPagamentoNoDebitoDoMovimento(pagamento);
+//		verificarSeDataPagoMenorDataEmissao(pagamento);
+//	}
 
 	
-	private void verificarSeDataPagoMenorDataEmissao(Pagamento pagamento) {
-		if(pagamento.getDataPago().isBefore(pagamento.getData())) {
-			LOG.error("Algo deu errado!! A data de pagamento não pode ser menor que a data de emissão");
-			throw new PagamentoNaoEfetuadoException("Algo deu errado!! Fechamento não efetuado");
-		}
-	}
+//	private void verificarSeDataPagoMenorDataEmissao(Pagamento pagamento) {
+//		if(pagamento.getDataPago().isBefore(pagamento.getData())) {
+//			LOG.error("Algo deu errado!! A data de pagamento não pode ser menor que a data de emissão");
+//			throw new PagamentoNaoEfetuadoException("Algo deu errado!! Fechamento não efetuado");
+//		}
+//	}
 	
 	
 	@Transactional
@@ -688,7 +688,6 @@ public class PagamentoService {
 
 //	@Transactional
 //	public void cancelarOuPagar(Pagamento pagamento) {
-//		//TODO: Implementar modal para informar a data do pagamento
 //		
 //		if(pagamento.isPago()) {
 //			pagamento.setStatus("EMITIDO");

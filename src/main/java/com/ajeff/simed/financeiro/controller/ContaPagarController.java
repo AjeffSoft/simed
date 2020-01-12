@@ -29,7 +29,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ajeff.simed.financeiro.model.ContaPagar;
-import com.ajeff.simed.financeiro.repository.ImpostosRepository;
 import com.ajeff.simed.financeiro.repository.filter.ContaPagarFilter;
 import com.ajeff.simed.financeiro.service.ContaPagarService;
 import com.ajeff.simed.financeiro.service.PlanoContaService;
@@ -49,8 +48,8 @@ public class ContaPagarController {
 	private ContaPagarService service;
 	@Autowired
 	private PlanoContaService planoContaService;
-	@Autowired
-	private ImpostosRepository impostoRepository;
+//	@Autowired
+//	private ImpostosRepository impostoRepository;
 	@Autowired
 	private UsuarioService usuarioService;
 	

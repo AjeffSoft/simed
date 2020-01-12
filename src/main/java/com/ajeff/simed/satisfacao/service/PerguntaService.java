@@ -10,11 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ajeff.simed.geral.model.Empresa;
-import com.ajeff.simed.geral.security.UsuarioSistema;
-import com.ajeff.simed.satisfacao.model.Questao;
-import com.ajeff.simed.satisfacao.model.Pesquisa;
 import com.ajeff.simed.satisfacao.model.Pergunta;
-import com.ajeff.simed.satisfacao.repository.QuestoesRepository;
+import com.ajeff.simed.satisfacao.model.Questao;
 import com.ajeff.simed.satisfacao.repository.PerguntasRepository;
 
 @Service
