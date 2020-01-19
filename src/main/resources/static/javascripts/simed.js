@@ -1,6 +1,6 @@
-var Sinte = Sinte || {};
+var Simed = Simed || {};
 
-Sinte.MaskMoney = (function() {
+Simed.MaskMoney = (function() {
 	function MaskMoney() {
 		this.decimal = $('.js-decimal');
 		this.plain = $('.js-plain');
@@ -13,13 +13,13 @@ Sinte.MaskMoney = (function() {
 }());
 
 
-Sinte.MaskPhoneNumber = (function() {
+Simed.MaskPhoneNumber = (function() {
 	function MaskPhoneNumber() {
 		this.inputPhoneNumber = $('.js-phone');
 	}
 	MaskPhoneNumber.prototype.enable = function() {
 		var maskBehavior = function (val) {
-		  return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-0000';
+		  return val.replace(/\D/g, '').length === 11 ? '(00)90000-0000' : '(00)0000-0000';
 		}
 		var options = {
 		  onKeyPress: function(val, e, field, options) {
@@ -31,8 +31,26 @@ Sinte.MaskPhoneNumber = (function() {
 	return MaskPhoneNumber;
 }());
 
+Simed.MaskPhoneNumberCel = (function() {
+	function MaskPhoneNumberCel() {
+		this.inputPhoneNumberCel = $('.js-celular');
+	}
+	MaskPhoneNumberCel.prototype.enable = function() {
+		var maskBehavior = function (val) {
+		  return val.replace(/\D/g, '').length === 11 ? '(00)90000-0000' : '(00)90000-0000';
+		}
+		var options = {
+		  onKeyPress: function(val, e, field, options) {
+		      field.mask(maskBehavior.apply({}, arguments), options);
+		    }
+		};
+		this.inputPhoneNumberCel.mask(maskBehavior, options);
+	}
+	return MaskPhoneNumberCel;
+}());
 
-Sinte.MaskCep = (function() {
+
+Simed.MaskCep = (function() {
 	function MaskCep() {
 		this.inputCep = $('.js-cep');
 	}
@@ -43,7 +61,7 @@ Sinte.MaskCep = (function() {
 }());
 
 
-Sinte.MaskCpfOuCnpj = (function() {
+Simed.MaskCpfOuCnpj = (function() {
 	function MaskCpfOuCnpj() {
 		this.input = $('.js-cpfoucnpj');
 	}
@@ -62,7 +80,7 @@ Sinte.MaskCpfOuCnpj = (function() {
 }());
 
 
-Sinte.MaskCNPJ = (function(){
+Simed.MaskCNPJ = (function(){
 	function MaskCNPJ() {
 		this.inputCnpj = $('.js-cnpj');
 	}
@@ -73,7 +91,7 @@ Sinte.MaskCNPJ = (function(){
 }());
 
 
-Sinte.MaskCPF = (function(){
+Simed.MaskCPF = (function(){
 	function MaskCPF() {
 		this.inputCpf = $('.js-cpf');
 	}
@@ -84,7 +102,7 @@ Sinte.MaskCPF = (function(){
 }());
 
 
-Sinte.MaskDate = (function() {
+Simed.MaskDate = (function() {
 	function MaskDate() {
 		this.inputDate = $('.js-date');
 	}
@@ -100,7 +118,7 @@ Sinte.MaskDate = (function() {
 }());	
 
 
-Sinte.MaskDateSimples = (function() {
+Simed.MaskDateSimples = (function() {
 	function MaskDateSimples() {
 		this.inputDate = $('.js-dateSimples');
 	}
@@ -111,7 +129,7 @@ Sinte.MaskDateSimples = (function() {
 }());	
 
 
-//Sinte.Security = (function() {
+//Simed.Security = (function() {
 //	
 //	function Security() {
 //		this.token = $('input[name=_csrf]').val();
@@ -129,7 +147,7 @@ Sinte.MaskDateSimples = (function() {
 //}());
 
 
-Sinte.MaskCBO = (function(){
+Simed.MaskCBO = (function(){
 	function MaskCBO() {
 		this.inputCbo = $('.js-cbo');
 	}
@@ -139,7 +157,7 @@ Sinte.MaskCBO = (function(){
 	return MaskCBO;
 }());
 
-Sinte.MaskHora = (function(){
+Simed.MaskHora = (function(){
 	function MaskHora() {
 		this.inputHora = $('.js-hora');
 	}
@@ -150,7 +168,7 @@ Sinte.MaskHora = (function(){
 }());
 
 
-Sinte.MaskRefFerias = (function(){
+Simed.MaskRefFerias = (function(){
 	function MaskRefFerias() {
 		this.inputFerias = $('.js-ferias');
 	}
@@ -161,39 +179,42 @@ Sinte.MaskRefFerias = (function(){
 }());
 
 $(function() {
-	var maskMoney = new Sinte.MaskMoney();
+	var maskMoney = new Simed.MaskMoney();
 	maskMoney.enable();
 	
-	var maskPhoneNumber = new Sinte.MaskPhoneNumber();
+	var maskPhoneNumber = new Simed.MaskPhoneNumber();
 	maskPhoneNumber.enable();
+
+	var maskPhoneNumberCel = new Simed.MaskPhoneNumberCel();
+	maskPhoneNumberCel.enable();
 	
-	var maskCep = new Sinte.MaskCep();
+	var maskCep = new Simed.MaskCep();
 	maskCep.enable();	
 
-	var maskDate = new Sinte.MaskDate();
+	var maskDate = new Simed.MaskDate();
 	maskDate.enable();	
 
-	var maskDateSimples = new Sinte.MaskDateSimples();
+	var maskDateSimples = new Simed.MaskDateSimples();
 	maskDateSimples.enable();	
 	
-//	var security = new Sinte.Security();
+//	var security = new Simed.Security();
 //	security.enable();	
 
-	var maskCnpj = new Sinte.MaskCNPJ();
+	var maskCnpj = new Simed.MaskCNPJ();
 	maskCnpj.enable();	
 
-	var maskCbo = new Sinte.MaskCBO();
+	var maskCbo = new Simed.MaskCBO();
 	maskCbo.enable();	
 
-	var maskHora = new Sinte.MaskHora();
+	var maskHora = new Simed.MaskHora();
 	maskHora.enable();	
 
-	var maskRefFerias = new Sinte.MaskRefFerias();
+	var maskRefFerias = new Simed.MaskRefFerias();
 	maskRefFerias.enable();	
 	
-	var maskCpf = new Sinte.MaskCPF();
+	var maskCpf = new Simed.MaskCPF();
 	maskCpf.enable();
 	
-	var maskCpfOuCnpj = new Sinte.MaskCpfOuCnpj();
+	var maskCpfOuCnpj = new Simed.MaskCpfOuCnpj();
 	maskCpfOuCnpj.enable();	
 });

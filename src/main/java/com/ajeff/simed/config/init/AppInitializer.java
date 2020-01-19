@@ -4,7 +4,7 @@ import javax.servlet.Filter;
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.ServletRegistration.Dynamic;
 
-import org.springframework.web.filter.HttpPutFormContentFilter;
+import org.springframework.web.filter.FormContentFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import com.ajeff.simed.config.JPAConfig;
@@ -33,7 +33,7 @@ public class AppInitializer extends AbstractAnnotationConfigDispatcherServletIni
 	 * */
 	@Override
 	protected Filter[] getServletFilters() {
-		HttpPutFormContentFilter httpPutFormContentFilter = new HttpPutFormContentFilter();
+		FormContentFilter  httpPutFormContentFilter = new FormContentFilter ();
 		return new Filter[] { httpPutFormContentFilter };
 	}	
 	

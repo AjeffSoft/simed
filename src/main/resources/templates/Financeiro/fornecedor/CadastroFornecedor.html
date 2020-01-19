@@ -61,16 +61,16 @@
 				
 				<div class="row">
 					<div class="form-group  col-sm-4" simed:classforerror="tipo">
-						<label class = "control-label">Tipo pessoa</label> 
+						<label class = "control-label">Tipo pessoa*</label> 
 						<div>
 							<div class="radio  radio-inline">
 								<input type="radio" id="id_FISICA" class="js-radio-tipo" 
-									data-documento="CPF" data-mascara="000.000.000-00" th:value="F" th:field="*{tipo}"> 
+									data-documento="CPF" data-mascara="00000000000" th:value="F" th:field="*{tipo}"> 
 								<label class="control-label" for="id_FISICA">Física</label>
 							</div>
 							<div class="radio  radio-inline">
 								<input type="radio" id="id_JURIDICA" class="js-radio-tipo" 
-									data-documento="CNPJ" data-mascara="00.000.000/0000-00" th:value="J" th:field="*{tipo}"> 
+									data-documento="CNPJ" data-mascara="00000000000000" th:value="J" th:field="*{tipo}"> 
 								<label class="control-label" for="id_JURIDICA">Juridica</label>
 							</div>
 						</div>
@@ -81,14 +81,9 @@
 						<input type="text" class="form-control" id="cpfOuCnpj" disabled th:field="*{documento1}"/>
 					</div>
 
-					<div class="form-group  col-sm-3" >
+					<div class="form-group  col-sm-4" >
 						<label for="pisOuIE">PIS/IE</label>
 						<input type="text" class="form-control cpf_cnpj" id="pisOuIE" disabled th:field="*{documento2}"/>
-					</div>
-
-					<div class="form-group  col-sm-1" >
-						<label for="dep">Dependente</label>
-						<input type="text" class="form-control" id="dep" disabled th:field="*{dependente}"/>
 					</div>
 
 				</div>				
@@ -99,7 +94,7 @@
 						<input id="logradouro" type="text" class="form-control" th:field="*{endereco.logradouro}" maxlength="60"/>
 					</div>
 
-					<div class="col-sm-4  form-group  bw-required">
+					<div class="col-sm-4  form-group">
 						<label for="estado" class="control-label">Estado</label>
 						<select id="estado" class="form-control" th:field = "*{endereco.estado}">
 							<option value="">Selecione um estado</option>
@@ -107,7 +102,7 @@
 						</select>
 					</div>
 
- 					<div class="col-sm-4  form-group  bw-required"  th:classappend="${#fields.hasErrors('endereco.cidade')} ? has-error">
+ 					<div class="col-sm-4  form-group  bw-required"  simed:classforerror='endereco.cidade'>
 						<label for="cidade" class="control-label">Cidade</label>
 						<div class="bw-field-action">
 							<input type = "hidden" id="inputHiddenCidadeSelecionada" th:value = "*{endereco.cidade} !=null ? *{endereco.cidade.id}">
@@ -134,12 +129,12 @@
 
 					<div class="col-sm-2  form-group">
 						<label for="telefone" class="control-label">Telefone</label>
-						<input id="tel" type="text" class="form-control  js-phone" placeholder="(99)9999-9999" th:field="*{telefone}"/>
+						<input id="telefone" type="text" class="form-control  js-phone" th:field="*{telefone}"/>
 					</div>
 
 					<div class="col-sm-2  form-group">
 						<label for="cel1" class="control-label">Celular</label>
-						<input id="cel1" type="text" class="form-control  js-phone" placeholder="(99)9999-9999" th:field="*{celular}"/>
+						<input id="cel1" type="text" class="form-control  js-celular" th:field="*{celular}"/>
 					</div>
 
 					<div class="col-sm-4  form-group" simed:classforerror="email">
@@ -153,7 +148,7 @@
 						<label class="control-label">Dados bancários</label>
 						<div>
 							<input id="dadosBanco" type="checkbox" checked data-toggle="toggle" class="form-control"  data-size="small"
-							 data-on="Possui" data-off="Não possui" data-onstyle="success" data-offstyle="warning" th:field="*{dadosBancarios}"/>
+							 data-on="Possui" data-off="Não possui" data-onstyle="primary" data-offstyle="default" th:field="*{dadosBancarios}"/>
 						</div>
 					</div>
 				
@@ -166,9 +161,8 @@
 						<label for="tipo">Tipo</label>
 						<select id="tipo" class="form-control" th:field="*{tipoConta}" disabled="disabled">
 							<option value="">Selecione uma opção</option>
-							<option value="CORRENTE">Conta Corrente</option>
-							<option value="POUPANÇA">Conta Poupança</option>
-							<option value="OUTRA">Outras Contas</option>
+							<option th:each="tipoConta : ${tiposConta}" th:value="${tipoConta}" th:text="${tipoConta.descricao}"></option>
+
 						</select>
 					</div>					
 					
@@ -176,7 +170,7 @@
 						<label for="comboAgencia" class="control-label">Agencia/Banco</label>
 						<select id="comboAgencia" class="form-control" th:field="*{agencia}" disabled="disabled">
 							<option value="">Selecione uma agencia...</option>
-							<option th:each="agencia : ${agencias}" th:value="${agencia.id}" th:text="${agencia.agencia}+ '-' + ${agencia.dv}+ '      ' + ${agencia.banco.nome}"></option>
+							<option th:each="agencia : ${agencias}" th:value="${agencia.id}" th:text="${agencia.agencia}+ '-' + ${agencia.dv}+ ' ---- ' + ${agencia.banco.nome}"></option>
 						</select>
 					</div>
 										
@@ -185,8 +179,8 @@
 				<br>
 
 				<div class="form-group">
-						<button class="btn  btn-primary" type="submit">Salvar</button>
-						<a class="btn  btn-default" sec:authorize-url="/financeiro/fornecedor/pesquisar" th:href="@{/financeiro/fornecedor/pesquisar}"> Cancelar e/ou voltar	</a>
+						<button class="btn  btn-success" type="submit">Salvar</button>
+						<a class="btn  btn-danger" sec:authorize-url="/financeiro/fornecedor/pesquisar" th:href="@{/financeiro/fornecedor/pesquisar}"> Cancelar	</a>
 				</div>
 			</form>
 		</div>

@@ -1,9 +1,7 @@
 package com.ajeff.simed.financeiro.controller;
 
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -27,8 +25,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ajeff.simed.financeiro.model.Fornecedor;
+import com.ajeff.simed.financeiro.model.enums.TipoConta;
 import com.ajeff.simed.financeiro.repository.filter.FornecedorFilter;
 import com.ajeff.simed.financeiro.service.FornecedorService;
+import com.ajeff.simed.financeiro.service.exception.CpfCnpjInvalidoException;
 import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoException;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
 import com.ajeff.simed.geral.service.AgenciaService;
@@ -46,10 +46,6 @@ public class FornecedorController {
 	
 	@Autowired
 	private EstadoService estadoService;
-//	@Autowired
-//	private ContasPagarRepository contasPagarRepository;
-//	@Autowired
-//	private ImpostosRepository impostosRepository;
 
 	
 	@GetMapping("/novo")
@@ -57,6 +53,7 @@ public class FornecedorController {
 		ModelAndView mv = new ModelAndView("Financeiro/fornecedor/CadastroFornecedor");
 		mv.addObject("estados", estadoService.findTodosOrderByNome());
 		mv.addObject("agencias", agenciaService.findAllOrderByAgencia());
+		mv.addObject("tiposConta", TipoConta.values());
 		return mv;
 	}
 	
@@ -72,13 +69,14 @@ public class FornecedorController {
 		} catch (RegistroJaCadastradoException e) {
 			result.rejectValue("nome", e.getMessage(), e.getMessage());
 			return novo(fornecedor);
-		}
-		attributes.addFlashAttribute("mensagem", "Fornecedor " + fornecedor.getNome() + " salvo com sucesso");
+		} catch (CpfCnpjInvalidoException e) {
+			result.rejectValue("documento1", e.getMessage(), e.getMessage());
+			return novo(fornecedor);
+		}		attributes.addFlashAttribute("mensagem", "Fornecedor " + fornecedor.getNome() + " salvo com sucesso");
 		return new ModelAndView("redirect:/financeiro/fornecedor/novo");
 	}
 	
 
-	//PESQUISA RAPIDA FILTRADO POR FORNECEDORES
 	@RequestMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
 	public @ResponseBody List<Fornecedor> pesquisarFornecedor(String nome){
 		validarTamanhoNomePesquisa(nome);
@@ -88,7 +86,7 @@ public class FornecedorController {
 
 
 	@GetMapping("/pesquisar")
-	public ModelAndView pesquisar(FornecedorFilter fornecedorFilter, BindingResult result, @PageableDefault(size=50) Pageable pageable,
+	public ModelAndView pesquisar(FornecedorFilter fornecedorFilter, BindingResult result, @PageableDefault(size=100) Pageable pageable,
 										HttpServletRequest httpServletRequest) {
 		ModelAndView mv = new ModelAndView("Financeiro/fornecedor/PesquisarFornecedores");
 
@@ -127,25 +125,6 @@ public class FornecedorController {
 	public ResponseEntity<Void> tratarIllegalArgumentException(IllegalArgumentException e) {
 		return ResponseEntity.badRequest().build();
 	}
-	
-
-	@GetMapping("/historico/{id}")
-	public ModelAndView imprimirHistorico(@PathVariable Long id) {
-		Map<String, Object> map = new HashMap<>();
-		map.put("format", "pdf");
-		map.put("id_fornecedor", id);
-		return new ModelAndView("rel_FORNECEDOR_Historico", map);
-	}
-	
-//	@GetMapping("/detalhe/{id}")
-//	public ModelAndView detalhe(@PathVariable Long id, Fornecedor fornecedor) {
-//		ModelAndView mv = new ModelAndView("Financeiro/fornecedor/DetalheFornecedor");
-//		fornecedor = service.findOne(id);
-//		mv.addObject("contasPagar", contasPagarRepository.findByContaPagarFornecedor(fornecedor));
-//		mv.addObject("impostos", impostosRepository.findByContaPagarOrigemFornecedorOrderByVencimento(fornecedor));
-//		mv.addObject(fornecedor);
-//		return mv;
-//	}
 	
 	
 }

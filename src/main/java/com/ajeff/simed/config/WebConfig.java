@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -29,10 +27,8 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.FixedLocaleResolver;
-import org.springframework.web.servlet.view.jasperreports.JasperReportsMultiFormatView;
-import org.springframework.web.servlet.view.jasperreports.JasperReportsViewResolver;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
 import org.thymeleaf.spring4.SpringTemplateEngine;
@@ -59,7 +55,7 @@ import nz.net.ultraq.thymeleaf.LayoutDialect;
 @EnableWebMvc
 @EnableSpringDataWebSupport
 @EnableAsync
-public class WebConfig extends WebMvcConfigurerAdapter implements ApplicationContextAware {
+public class WebConfig implements ApplicationContextAware, WebMvcConfigurer {
 
 	private ApplicationContext applicationContext;
 
@@ -75,20 +71,7 @@ public class WebConfig extends WebMvcConfigurerAdapter implements ApplicationCon
     }	
 	
 	
-	@Bean
-	public ViewResolver jasperReportsViewResolver(DataSource dataSource){
-		JasperReportsViewResolver resolver = new JasperReportsViewResolver();
-		resolver.setPrefix("classpath:/relatorios/");
-		resolver.setSuffix(".jasper");
-		resolver.setViewNames("rel_*");
-		resolver.setViewClass(JasperReportsMultiFormatView.class);
-		resolver.setJdbcDataSource(dataSource); //To connect database
-		resolver.setAttributesMap(jasperParams());
-		resolver.setOrder(0);
-		return resolver;
-	}
-	
-	
+
 	public Map<String, Object> jasperParams(){
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("sub_report_dir", "./relatorios/");

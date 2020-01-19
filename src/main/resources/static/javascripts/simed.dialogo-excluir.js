@@ -1,6 +1,6 @@
-Sinte = Sinte || {};
+Simed = Simed || {};
 
-Sinte.DialogoExcluir = (function (){
+Simed.DialogoExcluir = (function (){
 	
 	function DialogoExluir (){
 		this.excluirBtn = $('.js-excluir-btn');
@@ -56,6 +56,6 @@ Sinte.DialogoExcluir = (function (){
 }());
 
 $(function(){
-	var dialogoExcluir = new Sinte.DialogoExcluir();
+	var dialogoExcluir = new Simed.DialogoExcluir();
 	dialogoExcluir.iniciar();
 }); 

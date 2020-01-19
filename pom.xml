@@ -1,15 +1,21 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.ajeffsoft</groupId>
-  <artifactId>simed</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>war</packaging>
-  <name>Simed</name>
-  <description>	</description>
-  
-  <properties>
-  
-	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.ajeffsoft</groupId>
+	<artifactId>simed</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+	<name>Simed</name>
+	<description>	</description>
+
+	<properties>
+
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<failOnMissingWebXml>false</failOnMissingWebXml>
@@ -20,64 +26,71 @@
 		<mysql-connector-java.version>8.0.17</mysql-connector-java.version>
 
 		<!-- Spring MVC -->
-		<spring-framework.version>4.3.0.RELEASE</spring-framework.version>
+		<spring-framework.version>5.2.2.RELEASE</spring-framework.version>
 
 		<!-- Servlet API -->
 		<servlet.version>3.1.0</servlet.version>
-		
+
 		<!-- Thymeleaf -->
-		<thymeleaf.version>3.0.0.RELEASE</thymeleaf.version>
-		
+		<thymeleaf.version>3.0.11.RELEASE</thymeleaf.version>
+
 		<!-- Bean Validation / Hibernate Validator -->
 		<hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
-		
+
 		<!-- Thymeleaf - Layout Dialect -->
 		<thymeleaf-layout-dialect.version>2.0.0</thymeleaf-layout-dialect.version>
-		
+
 		<!-- Logging -->
-		<log4j.version>2.6</log4j.version>
+		<log4j.version>2.10.0</log4j.version>
 		<jcl-over-slf4j.version>1.7.21</jcl-over-slf4j.version>
-		
+
 		<!-- JPA / Hibernate -->
 		<hibernate.version>5.1.0.Final</hibernate.version>
-		
+
 		<!-- Spring Data JPA -->
 		<spring-data-jpa.version>1.10.2.RELEASE</spring-data-jpa.version>
-		
+
 		<!-- Jackson - JSON -->
-		<jackson-core.version>2.7.5</jackson-core.version>
-		
+		<jackson-core.version>2.9.2</jackson-core.version>
+
 		<!-- Thymeleaf extras data attribute -->
 		<thymeleaf-extras-data-attribute.version>2.0.1</thymeleaf-extras-data-attribute.version>
-		
+
 		<!-- Apache Bean Utils -->
 		<commons-beanutils.version>1.9.2</commons-beanutils.version>
-		
+
 		<!-- Spring Security -->
 		<spring-security.version>4.1.1.RELEASE</spring-security.version>
-		
+
 		<!-- Thymeleaf - Extras Spring Security -->
 		<thymeleaf-extras-springsecurity.version>3.0.0.RELEASE</thymeleaf-extras-springsecurity.version>
-		
+
 		<!-- JUnit -->
-		<junit.version>4.12</junit.version>
-		
- 		<!-- Apache Commons DBCP --> 
+		<junit.version>5.5.2</junit.version>
+
+		<!-- Apache Commons DBCP -->
 		<commons-dbcp2.version>2.1.1</commons-dbcp2.version>
-		
+
 		<!-- JasperReports -->
 		<jasperreports.version>6.3.0</jasperreports.version>
-		
+
 		<!-- JasperReports Fonts -->
 		<jasperreports-fonts.version>6.0.0</jasperreports-fonts.version>
-		
+
 		<!-- Java mail -->
 		<java.mail.version>1.5.6</java.mail.version>
+
+		<!-- JavaDoc -->
+		<javadoc.version>3.0.1</javadoc.version>
+
+		<!-- Mockito -->
+		<mockito.version>3.2.4</mockito.version>
+
 	</properties>
 
 	<build>
 		<finalName>${project.artifactId}</finalName>
-		
+
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -87,7 +100,7 @@
 					<target>${java.version}</target>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.flywaydb</groupId>
 				<artifactId>flyway-maven-plugin</artifactId>
@@ -96,45 +109,47 @@
 					<driver>com.mysql.jdbc.Driver</driver>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
-	            <groupId>org.apache.maven.plugins</groupId>
-	            <artifactId>maven-dependency-plugin</artifactId>
-	            <version>2.3</version><!--$NO-MVN-MAN-VER$-->
-	            <executions>
-	                <execution>
-	                    <phase>package</phase>
-	                    <goals><goal>copy</goal></goals>
-	                    <configuration>
-	                        <artifactItems>
-	                            <artifactItem>
-	                                <groupId>com.github.jsimone</groupId>
-	                                <artifactId>webapp-runner</artifactId>
-	                                <version>8.0.30.2</version>
-	                                <destFileName>webapp-runner.jar</destFileName>
-	                            </artifactItem>
-	                        </artifactItems>
-	                    </configuration>
-	                </execution>
-	            </executions>
-	        </plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.3</version><!--$NO-MVN-MAN-VER$ -->
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>com.github.jsimone</groupId>
+									<artifactId>webapp-runner</artifactId>
+									<version>8.0.30.2</version>
+									<destFileName>webapp-runner.jar</destFileName>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
-	
+
 	<profiles>
 		<profile>
 			<id>local</id>
 		</profile>
-		
+
 		<profile>
 			<id>prod</id>
-			
+
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
-			
+
 			<dependencies>
-<!-- 				MySQL Driver -->
+				<!-- MySQL Driver -->
 				<dependency>
 					<groupId>mysql</groupId>
 					<artifactId>mysql-connector-java</artifactId>
@@ -143,7 +158,7 @@
 				</dependency>
 			</dependencies>
 		</profile>
-		
+
 	</profiles>
 
 	<dependencyManagement>
@@ -157,7 +172,7 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
+
 	<dependencies>
 		<!-- Spring MVC -->
 		<dependency>
@@ -171,7 +186,14 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
+		<!-- Spring Test -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 		<!-- Servlet API -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -194,22 +216,32 @@
 			<version>${thymeleaf.version}</version>
 			<scope>compile</scope>
 		</dependency>
-		
+
 		<!-- Bean Validation / Hibernate Validator -->
-  		<dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>${hibernate-validator.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        
-        <!-- Thymeleaf - Layout Dialect -->
 		<dependency>
-    		<groupId>nz.net.ultraq.thymeleaf</groupId>
-    		<artifactId>thymeleaf-layout-dialect</artifactId>
-    		<version>${thymeleaf-layout-dialect.version}</version>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>${hibernate-validator.version}</version>
+			<scope>compile</scope>
 		</dependency>
-		
+
+
+
+		<!-- Thymeleaf - Layout Dialect -->
+		<dependency>
+			<groupId>nz.net.ultraq.thymeleaf</groupId>
+			<artifactId>thymeleaf-layout-dialect</artifactId>
+			<version>${thymeleaf-layout-dialect.version}</version>
+		</dependency>
+
+		<!-- JavaDoc -->
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-javadoc-plugin</artifactId>
+			<version>${javadoc.version}</version>
+		</dependency>
+
+
 		<!-- Logging -->
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
@@ -231,7 +263,7 @@
 			<artifactId>jcl-over-slf4j</artifactId>
 			<version>${jcl-over-slf4j.version}</version>
 		</dependency>
-		
+
 		<!-- JPA / Hibernate -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -241,52 +273,52 @@
 		</dependency>
 
 		<!-- Hibernate - Java 8 support -->
-        <dependency>
-    		<groupId>org.hibernate</groupId>
-    		<artifactId>hibernate-java8</artifactId>
-    		<version>${hibernate.version}</version>
-    		<scope>compile</scope>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-java8</artifactId>
+			<version>${hibernate.version}</version>
+			<scope>compile</scope>
 		</dependency>
-				
+
 		<!-- Spring Data JPA -->
 		<dependency>
-		    <groupId>org.springframework.data</groupId>
-		    <artifactId>spring-data-jpa</artifactId>
-		    <version>${spring-data-jpa.version}</version>
-		    <scope>compile</scope>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-jpa</artifactId>
+			<version>${spring-data-jpa.version}</version>
+			<scope>compile</scope>
 		</dependency>
-		
+
 		<!-- Jackson - JSON -->
 		<dependency>
-		    <groupId>com.fasterxml.jackson.core</groupId>
-		    <artifactId>jackson-databind</artifactId>
-		    <version>${jackson-core.version}</version>
-		    <scope>compile</scope>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson-core.version}</version>
+			<scope>compile</scope>
 		</dependency>
-		
+
 		<!-- Thymeleaf extras data attribute -->
 		<dependency>
-    		<groupId>com.github.mxab.thymeleaf.extras</groupId>
-    		<artifactId>thymeleaf-extras-data-attribute</artifactId>
-    		<version>${thymeleaf-extras-data-attribute.version}</version>
-    		<scope>compile</scope>
+			<groupId>com.github.mxab.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-data-attribute</artifactId>
+			<version>${thymeleaf-extras-data-attribute.version}</version>
+			<scope>compile</scope>
 		</dependency>
-		
+
 		<!-- Spring Context Support -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
 			<scope>compile</scope>
 		</dependency>
-		
+
 		<!-- Apache Bean Utils -->
 		<dependency>
-    		<groupId>commons-beanutils</groupId>
-    		<artifactId>commons-beanutils</artifactId>
-    		<version>${commons-beanutils.version}</version>
-    		<scope>compile</scope>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>${commons-beanutils.version}</version>
+			<scope>compile</scope>
 		</dependency>
-		
+
 		<!-- Spring Security -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
@@ -300,23 +332,37 @@
 			<version>${spring-security.version}</version>
 			<scope>compile</scope>
 		</dependency>
-		
+
 		<!-- Thymeleaf - Extras Spring Security -->
 		<dependency>
-		    <groupId>org.thymeleaf.extras</groupId>
-		    <artifactId>thymeleaf-extras-springsecurity4</artifactId>
-		    <version>${thymeleaf-extras-springsecurity.version}</version>
-		    <scope>compile</scope>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-springsecurity4</artifactId>
+			<version>${thymeleaf-extras-springsecurity.version}</version>
+			<scope>compile</scope>
 		</dependency>
-		
+
 		<!-- JUnit -->
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
 			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>${junit.version}</version>
+		</dependency>
+
+		<!-- Mockito -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
+
 		<!-- Apache Commons DBCP -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -324,7 +370,7 @@
 			<version>${commons-dbcp2.version}</version>
 			<scope>compile</scope>
 		</dependency>
-		
+
 		<!-- JasperReports -->
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
@@ -333,13 +379,13 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-		    <groupId>net.sf.jasperreports</groupId>
-		    <artifactId>jasperreports-fonts</artifactId>
-		    <version>${jasperreports-fonts.version}</version>
-		    <scope>compile</scope>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports-fonts</artifactId>
+			<version>${jasperreports-fonts.version}</version>
+			<scope>compile</scope>
 		</dependency>
-		
-		<!-- Apache Commons File Upload-->
+
+		<!-- Apache Commons File Upload -->
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
@@ -352,32 +398,32 @@
 			<version>2.4</version>
 		</dependency>
 
-		<!-- Java mail-->
+		<!-- Java mail -->
 		<dependency>
 			<groupId>com.sun.mail</groupId>
 			<artifactId>javax.mail</artifactId>
 			<version>${java.mail.version}</version>
 			<scope>compile</scope>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/org.springframework/spring-aspects -->
 		<dependency>
-		    <groupId>org.springframework</groupId>
-		    <artifactId>spring-aspects</artifactId>
-		    <version>4.3.0.RELEASE</version><!--$NO-MVN-MAN-VER$-->
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aspects</artifactId>
+			<version>4.3.0.RELEASE</version><!--$NO-MVN-MAN-VER$ -->
 		</dependency>
-		
+
 	</dependencies>
-	
+
 	<repositories>
 		<repository>
 			<id>sonatype-nexus-snapshots</id>
-    		<name>Sonatype Nexus Snapshots</name>
-    		<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    		<snapshots>
-      			<enabled>true</enabled>
-    		</snapshots>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
 		</repository>
 	</repositories>
-		
+
 </project>

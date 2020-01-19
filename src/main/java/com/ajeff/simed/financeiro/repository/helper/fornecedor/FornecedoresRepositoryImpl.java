@@ -35,7 +35,6 @@ public class FornecedoresRepositoryImpl implements FornecedoresRepositoryQueries
 		Criteria criteria = manager.unwrap(Session.class).createCriteria(Fornecedor.class);
 		paginacaoUtil.prepararPaginacao(criteria, pageable);		
 		adicionarFiltro(filtro, criteria);
-		criteria.add(Restrictions.eq("clifor", true)).addOrder(Order.asc("nome"));
 		return new PageImpl<>(criteria.list(), pageable, total(filtro));
 	}
 
@@ -48,6 +47,8 @@ public class FornecedoresRepositoryImpl implements FornecedoresRepositoryQueries
 	}	
 	
 	private void adicionarFiltro(FornecedorFilter filtro, Criteria criteria) {
+		criteria.add(Restrictions.eq("clifor", true)).addOrder(Order.asc("nome"));
+
 		if (filtro !=null){
 			if(!StringUtils.isEmpty(filtro.getNome())){
 				criteria.add(Restrictions.ilike("nome", filtro.getNome(), MatchMode.ANYWHERE));

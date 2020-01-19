@@ -6,6 +6,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -24,7 +25,7 @@ public class Endereco implements Serializable{
 	
 	@ManyToOne
 	@JoinColumn(name="id_cidade")
-//	@NotNull(message = "Informe o estado e a cidade.")
+	@NotNull(message = "Informe o estado e a cidade.")
 	@JsonIgnore
 	private Cidade cidade;
 	

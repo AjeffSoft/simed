@@ -5,6 +5,8 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,6 +20,7 @@ import javax.validation.Valid;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
+import com.ajeff.simed.financeiro.model.enums.TipoConta;
 import com.ajeff.simed.geral.model.Agencia;
 import com.ajeff.simed.geral.model.Endereco;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -59,18 +62,19 @@ public class Fornecedor implements Serializable{
 	
 	private Boolean clifor;
 	
-	private Integer dependente;
-	
 	@NotBlank(message = "Informe o tipo")
 	private String tipo;
 	
 	private String conta;
 	
+	private Integer dependente;
+	
 	@Column(name = "dados_bancarios")
 	private Boolean dadosBancarios;
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name = "tipo_conta")
-	private String tipoConta;
+	private TipoConta tipoConta;
 
 	@ManyToOne
 	@JoinColumn(name = "id_agencia")
@@ -158,14 +162,6 @@ public class Fornecedor implements Serializable{
 		this.agencia = agencia;
 	}
 
-	public String getTipoConta() {
-		return tipoConta;
-	}
-
-	public void setTipoConta(String tipoConta) {
-		this.tipoConta = tipoConta;
-	}
-
 	public String getFantasia() {
 		return fantasia;
 	}
@@ -213,6 +209,15 @@ public class Fornecedor implements Serializable{
 	public void setClifor(Boolean clifor) {
 		this.clifor = clifor;
 	}
+
+	public TipoConta getTipoConta() {
+		return tipoConta;
+	}
+
+	public void setTipoConta(TipoConta tipoConta) {
+		this.tipoConta = tipoConta;
+	}
+
 
 	public Integer getDependente() {
 		return dependente;

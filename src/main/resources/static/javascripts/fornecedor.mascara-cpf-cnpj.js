@@ -6,7 +6,6 @@ Sinte.MascaraCpfCnpj = (function(){
 		this.radioTipo = $('.js-radio-tipo');
 		this.labelCpfCnpj = $('[for=cpfOuCnpj]');
 		this.inputCpfCnpj = $('#cpfOuCnpj');
-		this.inputPisIe = $('#pisOuIE');
 	}
 	
 	MascaraCpfCnpj.prototype.iniciar = function(){

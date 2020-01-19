@@ -39,12 +39,12 @@
 						<input type="search" class="form-control" id="nome" th:field="*{nome}" autofocus="autofocus" maxlength="60"/>
 					</div>
 
-					<div class="form-group  col-sm-5">
+					<div class="form-group  col-sm-4">
 						<label class="control-label" for="fantasia">Fantasia</label>
 						<input type="text" class="form-control" id="fantasia" th:field="*{fantasia}" maxlength="60"/>
 					</div>
 	
-					<div class="form-group  col-sm-2">
+					<div class="form-group  col-sm-3">
 						<label class="control-label" for="documento1">CPF/CNPJ</label>
 						<input type="text" class="form-control" id="documento1" th:field="*{documento1}" placeholder="Informe com a pontuação" maxlength="20"/>
 					</div>
@@ -52,7 +52,9 @@
 			
 				<div class="form-group">
 					<button type="submit" class="btn  btn-primary">Pesquisar</button>
-					<a class="btn  btn-info" th:href="@{/financeiro/contaPagar/pesquisar}" sec:authorize-url="/financeiro/contaPagar/pesquisar">Conta a Pagar</a>
+					<a class="btn  btn-info" th:href="@{/financeiro/contaPagar/nova}" sec:authorize-url="/financeiro/contaPagar/nova">
+						<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Conta Pagar</span>
+					</a>
 				</div>			
 			</form>
 		
@@ -62,7 +64,7 @@
 				<table class="table  table-hover">
 					<thead>
 						<tr>
-							<th class="table-col-grande">
+							<th class="table-col-gigante">
 								<simed:order page="${pagina}" field="nome" text="Nome"/>
 							</th>
 
@@ -70,13 +72,10 @@
 								<simed:order page="${pagina}" field="fantasia" text="Fantasia"/>
 							</th>
 
-							<th class="table-col-pequeno">
-								<simed:order page="${pagina}" field="documento1" text="Documento"/>
-							</th>
-							<th class="table-col-grande">
+							<th class="table-col-media">
 								<simed:order page="${pagina}" field="endereco.cidade" text="Cidade"/>
 							</th>
-							<th class="table-col-grande">Telefone</th>
+							<th class="table-col-media">Telefone</th>
 							<th class="table-agencia-col-acoes"></th>
 						</tr>
 					</thead>
@@ -85,13 +84,12 @@
 						<tr th:each="fornecedor : ${pagina.conteudo}">
 							<td th:text="${fornecedor.nome}"></td>
 							<td th:text="${fornecedor.fantasia}"></td>
-							<td th:text="${fornecedor.documento1}"></td>
 							<td th:text="${fornecedor.endereco.cidade.nome} +' /'+ ${fornecedor.endereco.cidade.uf} "></td>
 							<td th:text="${fornecedor.telefone}"></td>
 							<td class="text-center">
 								
-								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes" sec:authorize-url="/financeiro/fornecedor/detalhe/**"
-									th:href="@{/financeiro/fornecedor/detalhe/{id}(id=${fornecedor.id})}"> 
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes" sec:authorize-url="/relatorios/financeiro/fornecedor/detalhe/**"
+									th:href="@{/relatorios/financeiro/fornecedor/detalhe/{id}(id=${fornecedor.id})}"> 
 									<i class="glyphicon glyphicon-eye-open"></i>
 								</a>							
 								

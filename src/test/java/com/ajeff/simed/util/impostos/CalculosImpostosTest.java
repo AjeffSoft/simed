@@ -1,20 +1,21 @@
 package com.ajeff.simed.util.impostos;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.ajeff.simed.exceptions.ValorInformadoNegativoException;
-import com.ajeff.simed.util.impostos.CalculosImpostos;
 
 public class CalculosImpostosTest {
 	
-	@Before
+	@BeforeEach
 	public void setUp() {
 	}
 

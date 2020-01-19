@@ -13,10 +13,13 @@ public interface FornecedoresRepository extends JpaRepository<Fornecedor, Long>,
 
 	Optional<Fornecedor> findByNomeOrSiglaIgnoreCase(String nome, String sigla);
 
+	Optional<Fornecedor> findByDocumento1(String documento1);
+
 	@Query("select f from Fornecedor f where lower(f.nome) like upper(?1) and f.clifor = true order by f.nome")
 	List<Fornecedor> findByNomeContainingIgnoreCase(String nome);
 
 	@Query("select f from Fornecedor f where f.clifor = true order by nome asc")
 	List<Fornecedor> listarTodosFornecedores();
+
 
 }

@@ -3,6 +3,7 @@ package com.ajeff.simed.financeiro.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceException;
 
 import org.slf4j.Logger;
@@ -16,8 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ajeff.simed.financeiro.model.Fornecedor;
 import com.ajeff.simed.financeiro.repository.FornecedoresRepository;
 import com.ajeff.simed.financeiro.repository.filter.FornecedorFilter;
+import com.ajeff.simed.financeiro.service.exception.CpfCnpjInvalidoException;
 import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoException;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
+import com.ajeff.simed.util.CpfCnpjUtils;
 
 @Service
 public class FornecedorService {
@@ -31,17 +34,26 @@ public class FornecedorService {
 	
 	@Transactional
 	public Fornecedor salvar(Fornecedor fornecedor) {
-		testeRegistroJaCadastrado(fornecedor);
+		try {
+			fornecedor.setClifor(true);
+			testeRegistroJaCadastrado(fornecedor);
+			
+			if(!fornecedor.getDocumento1().equals("")) {
+				testeValidarCpfCnpj(fornecedor.getDocumento1());
+			}
+			
+			return repository.save(fornecedor);
+		} catch (NonUniqueResultException e) {
+			throw new RegistroJaCadastradoException("Já existe um registro com esse nome/sigla!");
+		}
 		
-		registroNovo(fornecedor);
-		
-		return repository.save(fornecedor);
 	}
 
 
-	private void registroNovo(Fornecedor fornecedor) {
-		if(fornecedor.isNovo()) {
-			fornecedor.setClifor(true);
+	private void testeValidarCpfCnpj(String documento1) {
+		Boolean valido = CpfCnpjUtils.isValid(documento1);
+		if(!valido) {
+			throw new CpfCnpjInvalidoException("CNPJ/CPF inválido, favor verifique!");
 		}
 	}
 
@@ -52,13 +64,12 @@ public class FornecedorService {
 	
 	@Transactional
 	public void excluir(Long id) {
-		String tipo = "o fornecedor";
-
+		
 		try {
 			repository.delete(id);
 			repository.flush();
 		} catch (PersistenceException e) {
-			throw new ImpossivelExcluirEntidade("Não foi possivel excluir " + tipo +". Exclua primeiro o(s) relacionamento(s) com outra(s) tabela(s)!"); 
+			throw new ImpossivelExcluirEntidade("Não foi possivel excluir o fornecedor. Exclua primeiro o(s) relacionamento(s) com outra(s) tabela(s)!"); 
 		}
 		
 	}
@@ -70,9 +81,16 @@ public class FornecedorService {
 
 	private void testeRegistroJaCadastrado(Fornecedor fornecedor) {
 		Optional<Fornecedor> optional = repository.findByNomeOrSiglaIgnoreCase(fornecedor.getNome(), fornecedor.getSigla());
+		Optional<Fornecedor> documento = repository.findByDocumento1(fornecedor.getDocumento1());
 		
 		if(optional.isPresent() && !optional.get().equals(fornecedor)) {
 			throw new RegistroJaCadastradoException("Nome e/ou sigla já cadastrado!");
+		}
+		
+		if(!documento.get().getDocumento1().equals("")) {
+			if(documento.isPresent() && !documento.get().equals(fornecedor)) {
+				throw new RegistroJaCadastradoException("CPF/CNPJ já cadastrado!");
+			}			
 		}
 	}
 
