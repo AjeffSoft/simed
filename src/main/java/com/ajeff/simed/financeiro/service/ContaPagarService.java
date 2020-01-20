@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ajeff.simed.financeiro.model.ContaPagar;
+import com.ajeff.simed.financeiro.model.Fornecedor;
 import com.ajeff.simed.financeiro.repository.ContasPagarRepository;
 import com.ajeff.simed.financeiro.repository.filter.ContaPagarFilter;
 import com.ajeff.simed.financeiro.service.event.ContaPagarSalvoEvent;
@@ -230,6 +231,10 @@ public class ContaPagarService {
 
 	public List<ContaPagar> findByPagamentoId(Long id) {
 		return repository.findByPagamentoId(id);
+	}
+
+	public List<ContaPagar> findByContaPagarFornecedor(Fornecedor fornecedor) {
+		return repository.findByContaPagarFornecedor(fornecedor);
 	}
 
 }

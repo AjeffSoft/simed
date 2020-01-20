@@ -9,11 +9,6 @@
 
 <head>
 	<title>Detalhe do Fornecedor</title> 
-	
-	<style>
-		.pdfobject-container { height: 500px;}
-		.pdfobject { border: 1px solid #666; }
-	</style>	
 </head>
 
 	<section layout:fragment="conteudo">
@@ -39,7 +34,7 @@
 					<div class="form-group  col-lg-12">
 						<ul class="nav nav-tabs  js-abas">
 						  <li role="presentation" class="active"><a href="#dados">Cadastro</a></li>
-						  <li role="presentation" ><a href="#contas">Contas do Fornecedor</a></li>
+						  <li role="presentation" ><a href="#contas">Contas a Pagar</a></li>
 						  <li role="presentation" ><a href="#impostos">Impostos Retidos</a></li>
 						</ul>
 					</div>
@@ -100,12 +95,12 @@
 						</div>				
 
 						<div class="row">
-							<div class="col-sm-2  form-group">
+							<div class="col-sm-7  form-group">
 								<label for="doc" class="label label-default">CPF/CNPJ</label>
 								<h3 id="doc" th:text="${fornecedor.documento1}"></h3>
 							</div>
 
-							<div class="col-sm-2  form-group">
+							<div class="col-sm-5  form-group">
 								<label for="doc1" class="label label-default">PIS/IE</label>
 								<h3 id="doc1" th:text="${fornecedor.documento2}"></h3>
 							</div>
@@ -125,9 +120,7 @@
 										<th class="table-col-grande">Histórico</th>
 										<th class="table-col-minima">Valor</th>
 										<th class="table-col-minima">Parcelas</th>
-										<th class="table-col-minima">Data Pago</th>
 										<th class="table-col-minima">Status</th>
-										<th class="table-col-minima"></th>
 									</tr>
 								</thead>
 								
@@ -140,15 +133,7 @@
 										<td th:text="${conta.historico}"></td>
 										<td th:text="${{conta.valor}}"></td>
 										<td th:text="${conta.parcela}+'/'+${conta.totalParcela}"></td>
-										<td th:text="${{conta.dataPago}}"></td>
 										<td th:text="${conta.status}"></td>
-										<td class="text-center">
-											<a class="btn  btn-link  btn-xs  js-tooltip view-pdf" th:if="${conta.temUpload}" title="Anexos" data-toggle="modal" data-target="#myModal" 
-												data:objeto="${conta.upload}"> 
-												<i class="glyphicon glyphicon-upload"></i>
-											</a>							
-										</td>
-
 									</tr>
 									<tr th:if="${#lists.isEmpty(contasPagar)}">
 										<td colspan="10">Nenhuma conta a pagar cadastrada</td>
@@ -181,7 +166,7 @@
 								
 								<tbody>
 									<tr th:each="imposto : ${impostos}">
-										<td th:text="${imposto.empresa.sigla}"></td>
+										<td th:text="${imposto.contaPagarOrigem.empresa.sigla}"></td>
 										<td th:text="${imposto.nome}"></td>
 										<td th:text="${imposto.codigo}"></td>
 										<td th:text="${imposto.numeroNF}"></td>
@@ -211,21 +196,6 @@
 					<a class="btn  btn-default" href="javascript:history.back(1);">Voltar</a>
 				</div>
 			</form>
-			
-<!--  			Modal  -->
-			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-			  <div class="modal-dialog" role="document">
-			    <div class="modal-content">
-			      <div class="modal-body">
-						<div id="pdf" class="pdfobject-container  pdfobject"></div>
-			      </div>
-			      <div class="modal-footer">
-			        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-			      </div>
-			    </div>
-			  </div>
-			</div>			
-			
 		</div>
 	</section>
 
@@ -239,15 +209,5 @@
 			});
 		});
 	</script>
-	
-	<script type="text/javascript"> 
-	 	$(function(){     
-	 	    $('.view-pdf').on('click',function(){ 
-	 			var botaoClicado = $(event.currentTarget); 
-	 	        var objeto = botaoClicado.data('objeto');
-	 	        $('#pdf').html("<object data='/simed/financeiro/uploadContaPagar/upload/" + objeto + "'" + " type='application/pdf' width='100%' height='100%'></object>")
-	 	    });     
-	 	}) 
- 	</script>	
 	</th:block>	
 </html>

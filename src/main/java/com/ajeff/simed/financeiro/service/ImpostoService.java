@@ -234,6 +234,11 @@ public class ImpostoService {
 	
 	public Page<Imposto> filtrar(ImpostoFilter impostoFilter, Pageable pageable) {
 		return repository.filtrar(impostoFilter, pageable);
+	}
+
+
+	public List<Imposto> findByContaPagarOrigemFornecedorOrderByVencimento(Fornecedor fornecedor) {
+		return repository.findByContaPagarOrigemFornecedorOrderByVencimento(fornecedor);
 	}	
 
 	
