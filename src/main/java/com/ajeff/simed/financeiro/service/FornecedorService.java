@@ -39,22 +39,15 @@ public class FornecedorService {
 			testeRegistroJaCadastrado(fornecedor);
 			
 			if(!fornecedor.getDocumento1().equals("")) {
-				testeValidarCpfCnpj(fornecedor.getDocumento1());
+				String docSemMascara = removerMascaraDocumento(fornecedor.getDocumento1());
+				testeValidarCpfCnpj(docSemMascara);
 			}
 			
 			return repository.save(fornecedor);
 		} catch (NonUniqueResultException e) {
-			throw new RegistroJaCadastradoException("Já existe um registro com esse nome/sigla!");
+			throw new RegistroJaCadastradoException("Mais de um registro com o mesmo documento para validação!");
 		}
 		
-	}
-
-
-	private void testeValidarCpfCnpj(String documento1) {
-		Boolean valido = CpfCnpjUtils.isValid(documento1);
-		if(!valido) {
-			throw new CpfCnpjInvalidoException("CNPJ/CPF inválido, favor verifique!");
-		}
 	}
 
 
@@ -87,11 +80,9 @@ public class FornecedorService {
 			throw new RegistroJaCadastradoException("Nome e/ou sigla já cadastrado!");
 		}
 		
-		if(!documento.get().getDocumento1().equals("")) {
-			if(documento.isPresent() && !documento.get().equals(fornecedor)) {
-				throw new RegistroJaCadastradoException("CPF/CNPJ já cadastrado!");
-			}			
-		}
+		if(documento.isPresent() && !documento.get().equals(fornecedor) && !documento.get().getDocumento1().equals("")) {
+			throw new RegistroJaCadastradoException("CPF/CNPJ já cadastrado!");
+		}			
 	}
 
 
@@ -108,5 +99,17 @@ public class FornecedorService {
 	public List<Fornecedor> listarTodosFornecedores() {
 		return repository.listarTodosFornecedores();
 	}
+	
+	private String removerMascaraDocumento(String documento1) {
+		return documento1.replaceAll("\\D", "");
+	}
+
+
+	private void testeValidarCpfCnpj(String documento1) {
+		Boolean valido = CpfCnpjUtils.isValid(documento1);
+		if(!valido) {
+			throw new CpfCnpjInvalidoException("CNPJ/CPF inválido, favor verifique!");
+		}
+	}	
 
 }

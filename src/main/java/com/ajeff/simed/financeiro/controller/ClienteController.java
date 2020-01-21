@@ -26,6 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.ajeff.simed.financeiro.model.Fornecedor;
 import com.ajeff.simed.financeiro.repository.filter.FornecedorFilter;
 import com.ajeff.simed.financeiro.service.ClienteService;
+import com.ajeff.simed.financeiro.service.exception.CpfCnpjInvalidoException;
 import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoException;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
 import com.ajeff.simed.geral.service.EstadoService;
@@ -62,7 +63,11 @@ public class ClienteController {
 		} catch (RegistroJaCadastradoException e) {
 			result.rejectValue("nome", e.getMessage(), e.getMessage());
 			return novo(cliente);
+		} catch (CpfCnpjInvalidoException e) {
+			result.rejectValue("documento1", e.getMessage(), e.getMessage());
+			return novo(cliente);
 		}
+		
 		attributes.addFlashAttribute("mensagem", "Cliente " + cliente.getNome() + " salvo com sucesso");
 		return new ModelAndView("redirect:/financeiro/cliente/novo");
 	}

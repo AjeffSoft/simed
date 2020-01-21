@@ -61,11 +61,6 @@ public class FornecedoresRepositoryImpl implements FornecedoresRepositoryQueries
 			if(!StringUtils.isEmpty(filtro.getDocumento1())){
 				criteria.add(Restrictions.eq("documento1", filtro.getDocumento1()));
 			}
-			
-			if (isCidadePresente(filtro)){
-				criteria.add(Restrictions.eq("endereco.cidade", filtro.getCidade()));
-			}
-
 		}
 	}
 	
@@ -78,12 +73,5 @@ public class FornecedoresRepositoryImpl implements FornecedoresRepositoryQueries
 		criteria.add(Restrictions.eq("id", id));
 		return (Fornecedor) criteria.uniqueResult();
 	}
-	
-	
-	
-	private boolean isCidadePresente(FornecedorFilter filtro) {
-		return filtro.getCidade() != null && filtro.getCidade().getId() != null;
-	}
-	
 
 }

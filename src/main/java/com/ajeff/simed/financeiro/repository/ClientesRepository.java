@@ -11,6 +11,11 @@ import com.ajeff.simed.financeiro.repository.helper.cliente.ClientesRepositoryQu
 
 public interface ClientesRepository extends JpaRepository<Fornecedor, Long>, ClientesRepositoryQueries{
 
+	
+	Optional<Fornecedor> findByNomeOrSiglaIgnoreCase(String nome, String sigla);
+
+	Optional<Fornecedor> findByDocumento1(String documento1);
+	
 	@Query("select f from Fornecedor f where f.nome like ?1 and f.clifor = false")
 	Optional<Fornecedor> findByNomeAndFornecedorTrueIgnoreCase(String nome);
 

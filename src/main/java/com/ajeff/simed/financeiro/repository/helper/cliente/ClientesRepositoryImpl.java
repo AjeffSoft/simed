@@ -48,19 +48,22 @@ public class ClientesRepositoryImpl implements ClientesRepositoryQueries{
 	}	
 	
 	private void adicionarFiltro(FornecedorFilter filtro, Criteria criteria) {
+		criteria.add(Restrictions.eq("clifor", false)).addOrder(Order.asc("nome"));
+		
 		if (filtro !=null){
 			if(!StringUtils.isEmpty(filtro.getNome())){
 				criteria.add(Restrictions.ilike("nome", filtro.getNome(), MatchMode.ANYWHERE));
 			}
 
+			if(!StringUtils.isEmpty(filtro.getFantasia())){
+				criteria.add(Restrictions.ilike("fantasia", filtro.getFantasia(), MatchMode.ANYWHERE));
+			}
+			
+			
 			if(!StringUtils.isEmpty(filtro.getDocumento1())){
 				criteria.add(Restrictions.eq("documento1", filtro.getDocumento1()));
 			}
 			
-			if (isCidadePresente(filtro)){
-				criteria.add(Restrictions.eq("endereco.cidade", filtro.getCidade()));
-			}
-
 		}
 	}
 	
@@ -72,12 +75,6 @@ public class ClientesRepositoryImpl implements ClientesRepositoryQueries{
 		criteria.createAlias("c.estado", "e", JoinType.LEFT_OUTER_JOIN);
 		criteria.add(Restrictions.eq("id", id));
 		return (Fornecedor) criteria.uniqueResult();
-	}
-	
-	
-	
-	private boolean isCidadePresente(FornecedorFilter filtro) {
-		return filtro.getCidade() != null && filtro.getCidade().getId() != null;
 	}
 
 

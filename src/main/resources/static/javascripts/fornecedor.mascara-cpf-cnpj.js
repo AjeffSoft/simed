@@ -1,11 +1,13 @@
-var Sinte = Sinte || {};
+var Simed = Simed || {};
 
-Sinte.MascaraCpfCnpj = (function(){
+Simed.MascaraCpfCnpj = (function(){
 	
 	function MascaraCpfCnpj(){
 		this.radioTipo = $('.js-radio-tipo');
 		this.labelCpfCnpj = $('[for=cpfOuCnpj]');
 		this.inputCpfCnpj = $('#cpfOuCnpj');
+		this.labelPisOuIE = $('[for=pisOuIE]');
+		this.inputPisOuIE = $('#pisOuIE');
 	}
 	
 	MascaraCpfCnpj.prototype.iniciar = function(){
@@ -27,13 +29,13 @@ Sinte.MascaraCpfCnpj = (function(){
 		this.labelCpfCnpj.text(tipoSelecionado.data('documento'));
 		this.inputCpfCnpj.mask(tipoSelecionado.data('mascara'));
 		this.inputCpfCnpj.removeAttr('disabled');
-		this.inputPisIe.removeAttr('disabled');
+		this.inputPisOuIE.removeAttr('disabled');
 	}
 	
 	return MascaraCpfCnpj;
 }());
 
 $(function(){
-	var mascaraCpfCnpj = new Sinte.MascaraCpfCnpj();
+	var mascaraCpfCnpj = new Simed.MascaraCpfCnpj();
 	mascaraCpfCnpj.iniciar();
 });

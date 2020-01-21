@@ -77,7 +77,8 @@ public class FornecedorController {
 		} catch (CpfCnpjInvalidoException e) {
 			result.rejectValue("documento1", e.getMessage(), e.getMessage());
 			return novo(fornecedor);
-		}		attributes.addFlashAttribute("mensagem", "Fornecedor " + fornecedor.getNome() + " salvo com sucesso");
+		}
+		attributes.addFlashAttribute("mensagem", "Fornecedor " + fornecedor.getNome() + " salvo com sucesso");
 		return new ModelAndView("redirect:/financeiro/fornecedor/novo");
 	}
 	
