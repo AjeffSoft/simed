@@ -65,7 +65,6 @@ public class BancoController {
 	}
 
 	
-	//CADASTRO DE BANCO MODAL
 	@PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE })
 	public @ResponseBody ResponseEntity<?> salvarModal(@RequestBody @Valid Banco banco, BindingResult result){
 		if (result.hasErrors()){
@@ -81,7 +80,7 @@ public class BancoController {
 
 	
 	@GetMapping("/pesquisar")
-	public ModelAndView pesquisar(BancoFilter bancoFilter, BindingResult result, @PageableDefault(size=20) Pageable pageable,
+	public ModelAndView pesquisar(BancoFilter bancoFilter, BindingResult result, @PageableDefault(size=100) Pageable pageable,
 										HttpServletRequest httpServletRequest) {
 		ModelAndView mv = new ModelAndView("Financeiro/banco/PesquisarBancos");
 		PageWrapper<Banco> paginaWrapper = new PageWrapper<>(service.filtrar(bancoFilter, pageable), httpServletRequest);

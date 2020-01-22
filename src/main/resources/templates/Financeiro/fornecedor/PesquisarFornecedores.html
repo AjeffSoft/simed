@@ -88,8 +88,8 @@
 							<td th:text="${fornecedor.telefone}"></td>
 							<td class="text-center">
 								
-								<a class="btn  btn-link  btn-xs  js-tooltip" title="Histórico" sec:authorize-url="/financeiro/fornecedor/historico/**"
-									th:href="@{/financeiro/fornecedor/historico/{id}(id=${fornecedor.id})}"> 
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Histórico" sec:authorize-url="/financeiro/fornecedor/detalhe/**"
+									th:href="@{/financeiro/fornecedor/detalhe/{id}(id=${fornecedor.id})}"> 
 									<i class="glyphicon glyphicon-eye-open"></i>
 								</a>							
 								

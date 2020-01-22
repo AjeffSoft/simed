@@ -13,7 +13,7 @@ public interface ContasReceberRepository extends JpaRepository<ContaReceber, Lon
 
 	Optional<ContaReceber> findByDocumentoAndFornecedor(String documento, Fornecedor fornecedor);
 
-	List<ContaReceber> findByFornecedor(Fornecedor fornecedor);
+	List<ContaReceber> findByFornecedorOrderByVencimento(Fornecedor fornecedor);
 
 
 }

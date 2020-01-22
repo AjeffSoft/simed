@@ -9,11 +9,7 @@
 
 <head>
 	<title>Detalhe do Cliente</title> 
-	
-	<style>
-		.pdfobject-container { height: 500px;}
-		.pdfobject { border: 1px solid #666; }
-	</style>	
+
 </head>
 
 	<section layout:fragment="conteudo">
@@ -99,12 +95,12 @@
 						</div>				
 
 						<div class="row">
-							<div class="col-sm-2  form-group">
+							<div class="col-sm-7  form-group">
 								<label for="doc" class="label label-default">CPF/CNPJ</label>
 								<h3 id="doc" th:text="${fornecedor.documento1}"></h3>
 							</div>
 
-							<div class="col-sm-2  form-group">
+							<div class="col-sm-5  form-group">
 								<label for="doc1" class="label label-default">PIS/IE</label>
 								<h3 id="doc1" th:text="${fornecedor.documento2}"></h3>
 							</div>
@@ -155,7 +151,7 @@
 				<br>
 														
 				<div class="form-group">
-					<a target="'_blank'" class="btn  btn-info" th:href="@{/financeiro/cliente/historico/{id}(id=${fornecedor.id})}">Imprimir</a>
+<!-- 					<a target="'_blank'" class="btn  btn-info" th:href="@{/financeiro/cliente/historico/{id}(id=${fornecedor.id})}">Imprimir</a> -->
 					<a class="btn  btn-default" href="javascript:history.back(1);">Voltar</a>
 				</div>
 			</form>

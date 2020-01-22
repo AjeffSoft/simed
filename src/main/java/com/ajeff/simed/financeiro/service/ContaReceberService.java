@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ajeff.simed.financeiro.model.ContaReceber;
+import com.ajeff.simed.financeiro.model.Fornecedor;
 import com.ajeff.simed.financeiro.model.PlanoContaSecundaria;
 import com.ajeff.simed.financeiro.repository.ContasReceberRepository;
 import com.ajeff.simed.financeiro.repository.PlanosContaSecundariaRepository;
@@ -201,6 +202,12 @@ public class ContaReceberService {
 
 	public BigDecimal totalGeral(ContaReceberFilter contaReceberFilter) {
 		return repository.totalGeral(contaReceberFilter);
+	}
+
+
+
+	public List<ContaReceber> findByFornecedor(Fornecedor cliente) {
+		return repository.findByFornecedorOrderByVencimento(cliente);
 	}
 
 }

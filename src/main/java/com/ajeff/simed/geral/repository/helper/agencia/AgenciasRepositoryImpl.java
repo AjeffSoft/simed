@@ -55,9 +55,10 @@ public class AgenciasRepositoryImpl implements AgenciasRepositoryQueries{
 				criteria.add(Restrictions.ilike("agencia", filtro.getAgencia(), MatchMode.ANYWHERE));
 			}
 			
-			if (isCidadePresente(filtro)){
-				criteria.add(Restrictions.eq("endereco.cidade", filtro.getCidade()));
+			if(!StringUtils.isEmpty(filtro.getSituacao())){
+				criteria.add(Restrictions.eq("situacao", filtro.getSituacao()));
 			}
+		
 			
 			if (isBancoPresente(filtro)){
 				criteria.add(Restrictions.eq("banco", filtro.getBanco()));
@@ -65,10 +66,6 @@ public class AgenciasRepositoryImpl implements AgenciasRepositoryQueries{
 		}
 	}
 	
-	private boolean isCidadePresente(AgenciaFilter filtro) {
-		return filtro.getCidade() != null && filtro.getCidade().getId() != null;
-	}
-
 	private boolean isBancoPresente(AgenciaFilter filtro) {
 		return filtro.getBanco() != null && filtro.getBanco().getId() != null;
 	}

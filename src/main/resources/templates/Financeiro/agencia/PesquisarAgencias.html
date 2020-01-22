@@ -39,13 +39,23 @@
 						<input type="text" class="form-control" id="agencia" th:field="*{agencia}" autofocus="autofocus" maxlength="10"/>
 					</div>
 					
-					<div class="form-group  col-sm-8">
+					<div class="form-group  col-sm-4">
 						<label class="control-label" for="banco">Banco</label>
 						<select id="banco" class="form-control" th:field="*{banco}">
 		                    <option value="">Todos os bancos</option>
 		                    <option th:each="banco : ${bancos}" th:text="${banco.nome} + ' - Código: ' +${banco.codigo}" th:value="${banco.id}"></option>
 		                </select>
 					</div>
+
+					<div class="form-group  col-sm-4">
+						<label class="control-label" for="situacao">Situação</label>
+						<select id="situacao" class="form-control" th:field="*{situacao}">
+		                    <option value="">Todas as situações</option>
+		                    <option value="true">Somente os ativos</option>
+		                    <option value="false">Somente os inativos</option>
+		                </select>
+					</div>
+
 				</div>	
 				
 				<button type="submit" class="btn  btn-primary">Pesquisar</button>

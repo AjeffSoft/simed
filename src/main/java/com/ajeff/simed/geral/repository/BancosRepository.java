@@ -13,7 +13,7 @@ public interface BancosRepository extends JpaRepository<Banco, Long>, BancosRepo
 
 	Optional<Banco> findByCodigoOrNomeIgnoreCase(String codigo, String nome);
 
-	@Query("select b from Banco b order by b.nome asc")
+	@Query("select b from Banco b where b.situacao =true order by b.nome asc")
 	List<Banco> findByNomeOrderByNomeAsc();
 
 }

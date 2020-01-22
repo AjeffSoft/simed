@@ -132,7 +132,7 @@ public class FornecedorController {
 		return ResponseEntity.badRequest().build();
 	}
 	
-	@GetMapping("/historico/{id}")
+	@GetMapping("/detalhe/{id}")
 	public ModelAndView historico(@PathVariable Long id, Fornecedor fornecedor) {
 		ModelAndView mv = new ModelAndView("Financeiro/fornecedor/DetalheFornecedor");
 		fornecedor = service.findOne(id);

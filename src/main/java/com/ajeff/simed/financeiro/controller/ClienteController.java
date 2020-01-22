@@ -26,6 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.ajeff.simed.financeiro.model.Fornecedor;
 import com.ajeff.simed.financeiro.repository.filter.FornecedorFilter;
 import com.ajeff.simed.financeiro.service.ClienteService;
+import com.ajeff.simed.financeiro.service.ContaReceberService;
 import com.ajeff.simed.financeiro.service.exception.CpfCnpjInvalidoException;
 import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoException;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
@@ -40,8 +41,8 @@ public class ClienteController {
 	private ClienteService service;
 	@Autowired
 	private EstadoService estadoService;
-//	@Autowired
-//	private ContasReceberRepository contasReceberRepository;
+	@Autowired
+	private ContaReceberService contasReceberService;
 	
 	
 	@GetMapping("/novo")
@@ -82,7 +83,7 @@ public class ClienteController {
 	
 
 	@GetMapping("/pesquisar")
-	public ModelAndView pesquisarClientes(FornecedorFilter fornecedorFilter, BindingResult result, @PageableDefault(size=50) Pageable pageable,
+	public ModelAndView pesquisarClientes(FornecedorFilter fornecedorFilter, BindingResult result, @PageableDefault(size=100) Pageable pageable,
 										HttpServletRequest httpServletRequest) {
 		ModelAndView mv = new ModelAndView("Financeiro/cliente/PesquisarClientes");
 
@@ -121,21 +122,14 @@ public class ClienteController {
 		return ResponseEntity.badRequest().build();
 	}
 	
-//	@GetMapping("/detalhe/{id}")
-//	public ModelAndView detalhe(@PathVariable Long id, Fornecedor fornecedor) {
-//		ModelAndView mv = new ModelAndView("Financeiro/cliente/DetalheCliente");
-//		fornecedor = service.findOne(id);
-//		mv.addObject("contasReceber", contasReceberRepository.findByFornecedor(fornecedor));
-//		mv.addObject(fornecedor);
-//		return mv;
-//	}	
+	@GetMapping("/detalhe/{id}")
+	public ModelAndView detalhe(@PathVariable Long id, Fornecedor cliente) {
+		ModelAndView mv = new ModelAndView("Financeiro/cliente/DetalheCliente");
+		cliente = service.findOne(id);
+		mv.addObject("contasReceber", contasReceberService.findByFornecedor(cliente));
+		mv.addObject(cliente);
+		return mv;
+	}	
 	
-//	@GetMapping("/historico/{id}")
-//	public ModelAndView imprimirHistorico(@PathVariable Long id) {
-//		Map<String, Object> map = new HashMap<>();
-//		map.put("format", "pdf");
-//		map.put("id_fornecedor", id);
-//		return new ModelAndView("rel_CLIENTE_Historico", map);
-//	}	
 	
 }

@@ -1,13 +1,12 @@
 package com.ajeff.simed.geral.repository.filter;
 
 import com.ajeff.simed.geral.model.Banco;
-import com.ajeff.simed.geral.model.Cidade;
 
 public class AgenciaFilter {
 
 	private String agencia;
 	private Banco banco;
-	private Cidade cidade;
+	private String situacao;
 	
 	public String getAgencia() {
 		return agencia;
@@ -21,10 +20,11 @@ public class AgenciaFilter {
 	public void setBanco(Banco banco) {
 		this.banco = banco;
 	}
-	public Cidade getCidade() {
-		return cidade;
+	public String getSituacao() {
+		return situacao;
 	}
-	public void setCidade(Cidade cidade) {
-		this.cidade = cidade;
+	public void setSituacao(String situacao) {
+		this.situacao = situacao;
 	}
+
 }
