@@ -31,6 +31,6 @@ Sinte.Autorizar = (function (){
 }());
 
 $(function(){
-	var autorizar = new Sinte.Autorizar();
+	var autorizar = new Simed.Autorizar();
 	autorizar.iniciar();
 }); 

@@ -43,9 +43,14 @@
 				<div class="tab-content">
 					<div class="tab-pane active" id="dados">
 						<div class="row">
-							<div class="col-sm-12  form-group">
+							<div class="col-sm-8  form-group">
 								<label for="nome" class="label label-default">Nome</label>
 								<h3 id="nome" th:text="${planoConta.nome}"></h3>
+							</div>
+							
+							<div class="col-sm-4  form-group">
+								<label for="tipo" class="label label-default">Tipo</label>
+								<h3 id="tipo" th:text="${planoConta.tipo}"></h3>
 							</div>
 						</div>
 					</div>
@@ -74,8 +79,8 @@
 				<br>
 														
 				<div class="form-group">
-					<a target="'_blank'" class="btn  btn-info" th:href="@{/financeiro/planoConta/historico/{id}(id=${planoConta.id})}">Imprimir</a>
-					<a class="btn  btn-default" href="javascript:history.back(1);">Cancelar e/ou voltar</a>
+<!-- 					<a target="'_blank'" class="btn  btn-info" th:href="@{/financeiro/planoConta/historico/{id}(id=${planoConta.id})}">Imprimir</a> -->
+					<a class="btn  btn-default" href="javascript:history.back(1);">Voltar</a>
 				</div>
 			</form>
 		</div>

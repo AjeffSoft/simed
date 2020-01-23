@@ -60,7 +60,7 @@ public class AgenciaController {
 	}
 	
 	@GetMapping("/pesquisar")
-	public ModelAndView pesquisar(AgenciaFilter agenciaFilter, BindingResult result, @PageableDefault(size=20) Pageable pageable,
+	public ModelAndView pesquisar(AgenciaFilter agenciaFilter, BindingResult result, @PageableDefault(size=100) Pageable pageable,
 										HttpServletRequest httpServletRequest) {
 		ModelAndView mv = new ModelAndView("Financeiro/agencia/PesquisarAgencias");
 

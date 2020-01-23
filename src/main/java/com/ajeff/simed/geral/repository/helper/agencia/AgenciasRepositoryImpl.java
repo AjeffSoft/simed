@@ -54,11 +54,7 @@ public class AgenciasRepositoryImpl implements AgenciasRepositoryQueries{
 			if(!StringUtils.isEmpty(filtro.getAgencia())){
 				criteria.add(Restrictions.ilike("agencia", filtro.getAgencia(), MatchMode.ANYWHERE));
 			}
-			
-			if(!StringUtils.isEmpty(filtro.getSituacao())){
-				criteria.add(Restrictions.eq("situacao", filtro.getSituacao()));
-			}
-		
+	
 			
 			if (isBancoPresente(filtro)){
 				criteria.add(Restrictions.eq("banco", filtro.getBanco()));

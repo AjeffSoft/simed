@@ -39,11 +39,11 @@
 
 				<div class="row">
 					<div class="col-sm-2  form-group"  simed:classforerror="agencia">
-						<label for="agencia" class="control-label">Agencia*</label>
-						<input id="agencia" type="text" class="form-control" th:field="*{agencia}" autofocus="autofocus" maxlength="10">
+						<label for="sonumero" class="control-label">Agencia*</label>
+						<input id="sonumero" type="text" class="form-control  somente-numero" th:field="*{agencia}" autofocus="autofocus" maxlength="10">
 					</div>
 
-					<div class="col-sm-1  form-group" simed:classforerror="dv">
+					<div class="col-sm-1  form-group">
 						<label for="dv" class="control-label">DV</label>
 						<input id="dv" type="text" class="form-control" th:field="*{dv}" maxlength="2"/>
 					</div>
@@ -74,7 +74,7 @@
 
 				<div class="form-group">
 						<button class="btn  btn-success" type="submit">Salvar</button>
-						<a class="btn  btn-danger" sec:authorize-url="/financeiro/agencia/pesquisar">Voltar</a>
+					<a class="btn  btn-danger" sec:authorize-url="/financeiro/agencia/pesquisar" th:href="@{/financeiro/agencia/pesquisar}">Voltar</a>
 				</div>
 			</form>
 		</div>
@@ -88,6 +88,25 @@
 		
 		<script>
 			$('#situacao').bootstrapToggle();	
+		</script>
+		
+		
+		<script>
+			jQuery(function($) {
+				  $(document).on('keypress', 'input.somente-numero', function(e) {
+				  var square = document.getElementById("sonumero");
+				    var key = (window.event)?event.keyCode:e.which;
+					if((key > 47 && key < 58)) {
+				    	sonumero.style.backgroundColor = "#ffffff";
+				    	return true;
+				    	
+				  	} else {
+				  	  	sonumero.style.backgroundColor = "#FF6347";
+				 		return (key == 8 || key == 0)?true:false;
+				 		
+				 	}
+				  });
+				});
 		</script>
 
 	</th:block>	

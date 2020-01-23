@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -32,6 +33,7 @@ public class Agencia implements Serializable{
 	private boolean situacao;
 	
 	@ManyToOne
+	@NotNull(message = "Informe o banco")
 	@JoinColumn(name = "id_banco")
 	private Banco banco;
 	

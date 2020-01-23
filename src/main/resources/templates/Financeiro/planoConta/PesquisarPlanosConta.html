@@ -61,7 +61,6 @@
 				</div>	
 				
 				<button type="submit" class="btn  btn-primary">Pesquisar</button>
-				<a class="btn  btn-info" th:href="@{/financeiro/pagamento/relatorio}" sec:authorize-url="/financeiro/pagamento/relatorio">Relatório</a>
 			</form>
 		
 			<br>
@@ -91,16 +90,16 @@
 								</th:block>
 
 								<th:block th:unless="${planoConta.situacao}">
-									<span class="label  label-dander">Inativo</span>
+									<span class="label  label-danger">Inativo</span>
 								</th:block>
 							</td>							
 							<td class="text-center">
-								<a class="btn  btn-link  btn-xs  js-tooltip" title="Contas Secundárias"
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Contas Secundárias" sec:authorize-url="/financeiro/planoContaSecundaria/nova"
 										th:href="@{/financeiro/planoContaSecundaria/nova/{idPlanoConta}(idPlanoConta=${planoConta.id})}"> 
 									<i class="glyphicon glyphicon-plus"></i>
 								</a>
 
-								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes"
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes" sec:authorize-url="/financeiro/planoConta/detalhe/**"
 										th:href="@{/financeiro/planoConta/detalhe/{id}(id=${planoConta.id})}"> 
 									<i class="glyphicon glyphicon-eye-open"></i>
 								</a>
@@ -126,7 +125,6 @@
 				</table>
 			</div>
 
-			<!-- COMPONENTE THYMELEAF PARA PAGINAÇÃO -->	
 			<simed:pagination page="${pagina}"/>						
 
 		</div>		

@@ -3,7 +3,7 @@
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{Financeiro/LayoutFinanceiro}"
-	xmlns:sinte="http://sintecoop.ajeffsoft.com"
+	xmlns:simed="http://simed.ajeffsoft.com"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 
 <head>
@@ -29,18 +29,18 @@
 			<form id="form" method="POST" th:object="${planoConta}" class="form-vertical  js-form-loading"
 				th:action="${planoConta.novo} ? @{/financeiro/planoConta/novo} : @{/financeiro/planoConta/{id}(id=${planoConta.id})}">
 
-				<sinte:message/>
+				<simed:message/>
 		
 				<input type="hidden" th:field="*{id}">
 				
 				<div class="row">
 				
-					<div class="col-sm-8  form-group" sinte:classforerror="nome">
+					<div class="col-sm-8  form-group" simed:classforerror="nome">
 						<label for="nome" class="control-label">Nome*</label>
 						<input id="nome" type="text" class="form-control" th:field="*{nome}" maxlength="50"/>
 					</div>
 					
-					<div class="col-lg-2 col-sm-2  form-group">
+					<div class="col-lg-2 col-sm-2  form-group" simed:classforerror="tipo">
 						<label for="tipo" class="control-label">Tipo*</label>
 						<div>
 							<div class = "radio  radio-inline">
@@ -65,8 +65,8 @@
 				</div>
 				
 				<div class="form-group">
-						<button class="btn  btn-primary" type="submit">Salvar</button>
-						<a class="btn  btn-default" sec:authorize-url="/financeiro/planoConta/pesquisar" th:href="@{/financeiro/planoConta/pesquisar}"> Cancelar e/ou voltar	</a>
+						<button class="btn  btn-success" type="submit">Salvar</button>
+						<a class="btn  btn-danger" sec:authorize-url="/financeiro/planoConta/pesquisar" th:href="@{/financeiro/planoConta/pesquisar}">Voltar</a>
 				</div>
 		
 			</form>

@@ -14,7 +14,7 @@ public interface AgenciasRepository extends JpaRepository<Agencia, Long>, Agenci
 
 	Optional<Agencia> findByAgenciaAndBanco(String agencia, Banco banco);
 
-	@Query("select a from Agencia a order by a.agencia asc")
+	@Query("select a from Agencia a where a.situacao = true order by a.agencia asc")
 	List<Agencia> findAllOrderByAgencia();
 
 }

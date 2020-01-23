@@ -86,7 +86,7 @@ public class PlanoContaController {
 
 	
 	@GetMapping("/pesquisar")
-	public ModelAndView pesquisar(PlanoContaFilter planoContaFilter, BindingResult result, @PageableDefault(size=20) Pageable pageable,
+	public ModelAndView pesquisar(PlanoContaFilter planoContaFilter, BindingResult result, @PageableDefault(size=100) Pageable pageable,
 										HttpServletRequest httpServletRequest) {
 		ModelAndView mv = new ModelAndView("Financeiro/planoConta/PesquisarPlanosConta");
 		PageWrapper<PlanoConta> paginaWrapper = new PageWrapper<>(service.filtrar(planoContaFilter, pageable), httpServletRequest);
