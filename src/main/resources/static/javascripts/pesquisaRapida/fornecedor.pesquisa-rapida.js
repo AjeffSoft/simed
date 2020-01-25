@@ -1,6 +1,6 @@
-Sinte = Sinte || {};
+Simed = Simed || {};
 
-Sinte.PesquisaRapidaFornecedor = (function(){
+Simed.PesquisaRapidaFornecedor = (function(){
 	
 	function PesquisaRapidaFornecedor(){
 		this.pesquisaRapidaFornecedorModal = $('#pesquisaRapidaFornecedor');
@@ -41,7 +41,7 @@ Sinte.PesquisaRapidaFornecedor = (function(){
 		var html = this.template(result);
 		this.containerTabelaPesquisa.html(html);
 
-		var tabelaFornecedorPesquisaRapida = new Sinte.TabelaFornecedorPesquisaRapida(this.pesquisaRapidaFornecedorModal);
+		var tabelaFornecedorPesquisaRapida = new Simed.TabelaFornecedorPesquisaRapida(this.pesquisaRapidaFornecedorModal);
 		tabelaFornecedorPesquisaRapida.iniciar();
 	}
 	
@@ -55,7 +55,7 @@ Sinte.PesquisaRapidaFornecedor = (function(){
 
 
 
-Sinte.TabelaFornecedorPesquisaRapida = (function (){
+Simed.TabelaFornecedorPesquisaRapida = (function (){
 	
 	function TabelaFornecedorPesquisaRapida(modal){
 		this.modalFornecedor = modal;
@@ -81,6 +81,6 @@ Sinte.TabelaFornecedorPesquisaRapida = (function (){
 
 
 $(function(){
-	var pesquisaRapidaFornecedor = new Sinte.PesquisaRapidaFornecedor();
+	var pesquisaRapidaFornecedor = new Simed.PesquisaRapidaFornecedor();
 	pesquisaRapidaFornecedor.iniciar();
 });

@@ -19,14 +19,14 @@ public class DashboardGeralController {
 	@GetMapping("/")
 	public ModelAndView index(@AuthenticationPrincipal UsuarioSistema usuarioSistema) {	
 		ModelAndView mv = new ModelAndView("Index");
-		mv.addObject("empresas", usuarioService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
+//		mv.addObject("empresas", usuarioService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
 		return mv;
 	}
 	
 	@GetMapping("/geral")
 	public ModelAndView geral(@AuthenticationPrincipal UsuarioSistema usuarioSistema) {	
 		ModelAndView mv = new ModelAndView("Geral/DashboardGeral");
-		mv.addObject("empresas", usuarioService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
+//		mv.addObject("empresas", usuarioService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
 		return mv;
 	}
 	

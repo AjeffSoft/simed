@@ -35,6 +35,7 @@ import com.ajeff.simed.financeiro.service.PlanoContaService;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
 import com.ajeff.simed.geral.security.UsuarioSistema;
+import com.ajeff.simed.geral.service.EmpresaService;
 import com.ajeff.simed.geral.service.UsuarioService;
 
 @Controller
@@ -52,13 +53,15 @@ public class ContaPagarController {
 //	private ImpostosRepository impostoRepository;
 	@Autowired
 	private UsuarioService usuarioService;
+	@Autowired
+	private EmpresaService empresaService;
 	
 	
 
 	@GetMapping("/nova")
 	public ModelAndView nova(ContaPagar contaPagar, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
 		ModelAndView mv = new ModelAndView("Financeiro/contaPagar/CadastroContaPagar");
-		mv.addObject("empresas", usuarioService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
+		mv.addObject("empresas", empresaService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
 		mv.addObject("planosConta", planoContaService.listarTodosPlanosContaDebito());
 		return mv;
 	}
@@ -85,7 +88,7 @@ public class ContaPagarController {
 	public ModelAndView pesquisar(ContaPagarFilter contaPagarFilter, BindingResult result, @PageableDefault(size=50) Pageable pageable,
 										HttpServletRequest httpServletRequest, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
 		ModelAndView mv = new ModelAndView("Financeiro/contaPagar/PesquisarContasPagar");
-		mv.addObject("empresas", usuarioService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
+		mv.addObject("empresas", empresaService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
 		mv.addObject("total", service.total(contaPagarFilter));
 		
 		PageWrapper<ContaPagar> paginaWrapper = new PageWrapper<>(service.filtrar(contaPagarFilter, pageable), httpServletRequest);

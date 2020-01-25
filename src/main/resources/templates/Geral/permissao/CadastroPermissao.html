@@ -3,6 +3,7 @@
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{Geral/LayoutGeral}"
+	xmlns:simed="http://simed.ajeffsoft.com"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 
 
@@ -16,8 +17,8 @@
 			<div class="container-fluid">
 				<div class="row">
 					<div class="col-xs-10">
-						<h1 th:if="${permissao.novo}">Cadastro de Permissão</h1>
-						<h1 th:unless="${permissao.novo}">Editando a Permissão - [[${permissao.nome}]]</h1>
+						<h1 th:if="${permissao.novo}">Cadastro de permissão</h1>
+						<h1 th:unless="${permissao.novo}">Alterar a permissão - [[${permissao.nome}]]</h1>
 					</div>
 				</div>
 			</div>
@@ -25,26 +26,25 @@
 
 		<div class="container-fluid">
 
-			<th:block th:include="fragments/MensagemSucesso"></th:block>
 
 			<!-- FORMULÁRIO DE CADASTRO -->
 			<form method="POST" th:object="${permissao}" class="form-vertical  js-form-loading"  
 						th:action="${permissao.novo} ? @{/permissao/novo} : @{/permissao/{id}(id=${permissao.id})}">
 			
-			<th:block th:include="fragments/MensagensErroValidacao"></th:block>
+			<simed:message/>
 			
 			<input type="hidden" th:field="*{id}"/>
 
 				<div class="row">
-					<div class="col-sm-10  form-group  bw-required" th:classappend="${#fields.hasErrors('nome')} ? has-error">
+					<div class="col-sm-10  form-group  bw-required" simed:classforerror="nome">
 						<label for="nome" class="control-label">Nome</label>
 						<input id="nome" type="text" class="form-control" th:field="*{nome}" maxlength="60"/>
 					</div>
 				</div>
 				
 				<div class="form-group">
-					<button class="btn  btn-primary" type="submit">Salvar</button>
-					<a class="btn  btn-default" th:href="@{/permissao/pesquisar}" sec:authorize-url="/permissao/pesquisar">Voltar	</a>
+					<button class="btn  btn-success" type="submit">Salvar</button>
+					<a class="btn  btn-danger" th:href="@{/permissao/pesquisar}" sec:authorize-url="/permissao/pesquisar">Voltar</a>
 					
 				</div>
 			</form>

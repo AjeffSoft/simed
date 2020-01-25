@@ -1,5 +1,6 @@
 package com.ajeff.simed.geral.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ajeff.simed.geral.controller.EmpresaController;
 import com.ajeff.simed.geral.model.Empresa;
+import com.ajeff.simed.geral.model.Usuario;
 import com.ajeff.simed.geral.repository.EmpresasRepository;
+import com.ajeff.simed.geral.repository.UsuariosRepository;
 import com.ajeff.simed.geral.repository.filter.EmpresaFilter;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.geral.service.exception.RegistroJaCadastradoException;
@@ -28,6 +31,9 @@ public class EmpresaService {
 
 	@Autowired
 	private EmpresasRepository repository;
+	@Autowired
+	private UsuariosRepository usuariosRepository;
+	
 
 	@Transactional
 	public Empresa salvar(Empresa empresa) {
@@ -51,13 +57,11 @@ public class EmpresaService {
 	
 	@Transactional
 	public void excluir(Long id) {
-		String tipo = "a empresa";
-
 		try {
 			repository.delete(id);
 			repository.flush();
 		} catch (PersistenceException e) {
-			throw new ImpossivelExcluirEntidade("Não foi possivel excluir " + tipo +". Exclua primeiro o(s) relacionamento(s) com outra(s) tabela(s)!"); 
+			throw new ImpossivelExcluirEntidade("Não foi possivel excluir a empresa. Exclua primeiro o(s) relacionamento(s) com outra(s) tabela(s)!"); 
 		}
 		
 	}	
@@ -65,7 +69,7 @@ public class EmpresaService {
 	private void testeRegistroJaCadastrado(Empresa empresa) {
 		Optional<Empresa> optional = repository.findByNomeAndFantasiaOrCnpjOrSiglaIgnoreCase(empresa.getNome(), empresa.getFantasia(), empresa.getCnpj(), empresa.getSigla());
 		if(optional.isPresent() && !optional.get().equals(empresa)) {
-			throw new RegistroJaCadastradoException("Já existe uma empresa com esse nome e fantasia ou CNPJ ou sigla cadastrada!");
+			throw new RegistroJaCadastradoException("Já existe uma empresa com esse nome/fantasia/sigla ou CNPJ cadastrada!");
 		}
 	}
 
@@ -84,6 +88,15 @@ public class EmpresaService {
 		repository.save(emp);
 		return inc;
 	}	
+	
+	public List<Empresa> buscarEmpresaPorUsuario(Long id) {
+		Usuario user = usuariosRepository.buscarEmpresaPorUsuario(id);
+		List<Empresa> emps = new ArrayList<Empresa>();
+		for (Empresa e: user.getEmpresas()) {
+			emps.add(e);
+		}
+		return emps;
+	}		
 	
 
 

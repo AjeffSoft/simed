@@ -22,4 +22,4 @@ CREATE TABLE fornecedor (
   dependente bigint(2),
   FOREIGN KEY (id_agencia) REFERENCES agencia (id),
   FOREIGN KEY (id_cidade) REFERENCES cidade (id)
-) ENGINE=InnoDB AUTO_INCREMENT=321 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8

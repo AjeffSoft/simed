@@ -5,4 +5,4 @@ CREATE TABLE agencia (
   situacao boolean,
   id_banco bigint(20) NOT NULL,
   FOREIGN KEY (id_banco) REFERENCES banco (id)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8

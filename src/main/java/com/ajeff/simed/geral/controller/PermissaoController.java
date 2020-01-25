@@ -65,7 +65,7 @@ public class PermissaoController {
 
 	
 	@GetMapping("/pesquisar")
-	public ModelAndView pesquisar(PermissaoFilter permissaoFilter, BindingResult result, @PageableDefault(size=30) Pageable pageable,
+	public ModelAndView pesquisar(PermissaoFilter permissaoFilter, BindingResult result, @PageableDefault(size=100) Pageable pageable,
 										HttpServletRequest httpServletRequest) {
 		ModelAndView mv = new ModelAndView("Geral/permissao/PesquisarPermissoes");
 		PageWrapper<Permissao> paginaWrapper = new PageWrapper<>(service.filtrar(permissaoFilter, pageable), httpServletRequest);

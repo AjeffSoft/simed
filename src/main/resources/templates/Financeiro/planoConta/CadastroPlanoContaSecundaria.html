@@ -19,7 +19,7 @@
 			<div class="container-fluid">
 				<div class="row">
 					<div class="col-xs-10">
-						<h1 th:if = "${planoContaSecundaria.novo}">Cadastro de conta secundária para: [[${planoConta.nome}]]</h1>
+						<h1 th:if = "${planoContaSecundaria.novo}">Plano de conta secundária de: [[${planoConta.nome}]]</h1>
 						<h1 th:unless = "${planoContaSecundaria.novo}">Alterar a conta: [[${planoContaSecundaria.nome}]]</h1>
 					</div>
 				</div>
@@ -30,7 +30,6 @@
 			<form id="form" method="POST" th:object="${planoContaSecundaria}" class="form-vertical  js-form-loading" 
 					th:action="${planoContaSecundaria.novo} ? @{/financeiro/planoContaSecundaria/nova} : @{/financeiro/planoContaSecundaria/{id}(id=${planoContaSecundaria.id})}">
 			
-			<!-- COMPONENTE THYMELEAF PARA MENSAGENS DE ERRO E SUCESSO -->	
 			<simed:message/>
 
 			<input type="hidden" th:value="${idPlanoConta}" name="idPlanoConta"/>
@@ -67,8 +66,8 @@
 				</div>
 				
 				<div class="form-group">
-					<button class="btn  btn-primary" type="submit">Salvar</button>
-					<a class="btn  btn-default" th:href="@{/financeiro/planoConta/pesquisar}"> Cancelar e/ou voltar</a>
+					<button class="btn  btn-success" type="submit">Salvar</button>
+					<a class="btn  btn-danger" th:href="@{/financeiro/planoConta/pesquisar}">Voltar</a>
 					
 				</div>
 			</form>

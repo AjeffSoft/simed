@@ -69,19 +69,31 @@ public class UsuariosRepositoryImpl implements UsuariosRepositoryQueries {
 		criteria.add(Restrictions.eq("id", id));
 		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return (Usuario) criteria.uniqueResult();
-	}	
-
+	}
 	
-	@SuppressWarnings("unchecked")
+	@Transactional(readOnly = true)
 	@Override
-	public List<Empresa> buscarEmpresaPorUsuario(Long id) {
+	public Usuario buscarEmpresaPorUsuario(Long id) {
 		Criteria criteria = manager.unwrap(Session.class).createCriteria(Usuario.class);
 		criteria.createAlias("empresas", "e", JoinType.LEFT_OUTER_JOIN);
 		criteria.add(Restrictions.eq("id", id));
+		criteria.add(Restrictions.eq("e.situacao", true));
 		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-		return (List<Empresa>) criteria.list();
-	}
+		return (Usuario) criteria.uniqueResult();
+	}		
 	
+	
+//	@Transactional(readOnly = true)
+//	@SuppressWarnings("unchecked")
+//	@Override
+//	public List<Empresa> buscarEmpresaPorUsuario(Long id) {
+//		Criteria criteria = manager.unwrap(Session.class).createCriteria(Usuario.class);
+//		criteria.createAlias("empresas", "e", JoinType.LEFT_OUTER_JOIN);
+//		criteria.add(Restrictions.eq("id", id));
+//		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+//		return (List<Empresa>) criteria.list();
+//	}		
+
 	
 	private Long total(UsuarioFilter filtro) {
 		Criteria criteria = manager.unwrap(Session.class).createCriteria(Usuario.class);

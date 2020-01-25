@@ -3,4 +3,4 @@ CREATE TABLE plano_conta (
   nome varchar(60) NOT NULL,
   tipo varchar(20) NOT NULL,
   situacao boolean
-) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8

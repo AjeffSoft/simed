@@ -38,7 +38,7 @@ public class EmpresasRepositoryImpl implements EmpresasRepositoryQueries{
 
 		adicionarFiltro(filtro, criteria);
 
-		criteria.add(Restrictions.eq("situacao", true)).addOrder(Order.asc("nome"));
+		criteria.addOrder(Order.asc("nome"));
 
 		return new PageImpl<>(criteria.list(), pageable, total(filtro));
 	}
@@ -71,18 +71,6 @@ public class EmpresasRepositoryImpl implements EmpresasRepositoryQueries{
 		criteria.createAlias("c.estado", "e", JoinType.LEFT_OUTER_JOIN);
 		criteria.add(Restrictions.eq("id", id));
 		return (Empresa) criteria.uniqueResult();
-	}
-
-		
-//		return manager.createQuery(
-//				"select distinct e.nome from Usuario u inner join u.empresas e where u.id = :usuario", Empresa.class)
-//				.setParameter("usuario", id)
-//				.getResultList();
-
-//	return manager.createQuery(
-//			    "select distinct p.nome from Usuario u inner join u.grupos g inner join g.permissoes p where u = :usuario", String.class)
-//			.setParameter("usuario", usuario)
-//			.getResultList();
-	
+	}	
 	
 }

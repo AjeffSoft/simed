@@ -44,10 +44,10 @@ public class PlanoContaSecundariaController {
 				
 	@GetMapping(value = "/nova/{idPlanoConta}")
 	public ModelAndView nova(@PathVariable("idPlanoConta") Long idPlanoConta, @ModelAttribute("planoContaSecundaria") PlanoContaSecundaria planoContaSecundaria){
-		ModelAndView mv = new ModelAndView("/Financeiro/planoConta/CadastroContaSecundaria");
+		ModelAndView mv = new ModelAndView("/Financeiro/planoConta/CadastroPlanoContaSecundaria");
 		mv.addObject("idPlanoConta", idPlanoConta);
 		mv.addObject("planoConta", planoContaService.findOne(idPlanoConta));
-		mv.addObject("contasSecundarias", service.findByPlanoContaId(idPlanoConta));
+		mv.addObject("contasSecundarias", service.findAllForIdPlanoConta(idPlanoConta));
 		return mv;
 	}
 	
@@ -93,7 +93,6 @@ public class PlanoContaSecundariaController {
 	
 	
 	
-	//simed/financeiro/planoContaSecundaria?planoConta=1
 	@RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody List<PlanoContaSecundaria> pesquisarPorCodigoPlanoConta(@RequestParam(name = "planoConta", defaultValue = "-1") Long idPlanoConta){
 		return service.findByPlanoContaId(idPlanoConta);

@@ -88,16 +88,4 @@ public class UsuarioService {
 	public Usuario buscarUsuarioComGrupos(Long id) {
 		return repository.buscarUsuarioComGrupos(id);
 	}
-
-	public List<Empresa> buscarEmpresaPorUsuario(Long id) {
-		Usuario user = repository.findOne(id);
-		
-		List<Empresa> emps = new ArrayList<>();
-		
-		for (Empresa e: user.getEmpresas()) {
-			emps.add(e);
-		}
-		
-		return emps;
-	}	
 }

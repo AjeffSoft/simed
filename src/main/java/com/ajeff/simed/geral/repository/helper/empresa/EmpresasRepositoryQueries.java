@@ -11,5 +11,6 @@ public interface EmpresasRepositoryQueries {
 	public Page<Empresa> filtrar(EmpresaFilter filtro, Pageable pageable);
 	
 	public Empresa buscarComCidadeEstado(Long id);
+	
 
 }

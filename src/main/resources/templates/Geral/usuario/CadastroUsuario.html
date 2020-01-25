@@ -18,18 +18,10 @@
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-xs-10">
-					<h1 th:if="${usuario.novo}">Cadastro de Usuário</h1>
-					<h1 th:unless="${usuario.novo}">Alterando o usuário(a) - [[${usuario.nome}]]</h1>
+					<h1 th:if="${usuario.novo}">Cadastro de usuário</h1>
+					<h1 th:unless="${usuario.novo}">Alterar o usuário(a) - [[${usuario.nome}]]</h1>
 
 				</div>
-					
-			 		<div class="col-sm-2" sec:authorize-url="/usuario">
-						<div class="aw-page-header-controls">
-							<a class="btn  btn-warning" th:href="@{/usuario}">
-								<i class="glyphicon  glyphicon-search"></i> <span class="hidden-xs  hidden-sm">Pesquisar Usuário</span>
-							</a>
-						</div>
-					</div>
 			</div>
 		</div>
 	</div>
@@ -115,9 +107,9 @@
 			</div>			
 
 			<div class="form-group">
-				<button type="submit" class="btn  btn-primary">Salvar</button>
-				<a class="btn  btn-default" th:href="@{/usuario/pesquisar}" sec:authorize-url="/usuario">Voltar</a>
-			</div>		
+					<button class="btn  btn-success" type="submit">Salvar</button>
+					<a class="btn  btn-danger" th:href="@{/usuario/pesquisar}" sec:authorize-url="/usuario/pesquisar">Voltar	</a>
+				</div>		
 		</form>
 	</div>
 </section>

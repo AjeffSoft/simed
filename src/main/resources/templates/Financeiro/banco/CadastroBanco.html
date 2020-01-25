@@ -30,7 +30,6 @@
 			<form id="form" method="POST" th:object="${banco}" class="form-vertical  js-form-loading"
 				th:action="${banco.novo} ? @{/financeiro/banco/novo} : @{/financeiro/banco/{id}(id=${banco.id})}">
 
-				<!-- COMPONENTE THYMELEAF PARA MENSAGENS DE ERRO E SUCESSO -->	
 				<simed:message/>
 		
 				

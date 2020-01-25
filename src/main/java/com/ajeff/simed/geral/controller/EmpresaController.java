@@ -37,7 +37,7 @@ public class EmpresaController {
 	
 	@GetMapping("/nova")
 	public ModelAndView nova(Empresa empresa){
-		ModelAndView mv = new ModelAndView("empresa/CadastroEmpresa");
+		ModelAndView mv = new ModelAndView("Geral/empresa/CadastroEmpresa");
 		mv.addObject("estados", estadoService.findTodosOrderByNome());
 		return mv;
 	}
@@ -59,8 +59,8 @@ public class EmpresaController {
 	
 	@GetMapping("/pesquisar")
 	public ModelAndView pesquisar(EmpresaFilter empresaFilter, BindingResult result, 
-			@PageableDefault(size=10) Pageable pageable, HttpServletRequest httpServletRequest){
-		ModelAndView mv = new ModelAndView("empresa/PesquisarEmpresas");
+			@PageableDefault(size=100) Pageable pageable, HttpServletRequest httpServletRequest){
+		ModelAndView mv = new ModelAndView("Geral/empresa/PesquisarEmpresas");
 
 		PageWrapper<Empresa> paginaWrapper = new PageWrapper<>(service.filtrar(empresaFilter, pageable),httpServletRequest);		
 		mv.addObject("pagina", paginaWrapper);

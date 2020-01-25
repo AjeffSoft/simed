@@ -2,8 +2,8 @@
 <html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layout/LayoutPadrao}"
-	xmlns:sinte="http://sintecoop.ajeffsoft.com"
+	layout:decorate="~{Geral/LayoutGeral}"
+	xmlns:Simed="http://Simed.ajeffsoft.com"
 	xmlns:data="http://www.thymeleaf.org/extras/data"		
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 
@@ -21,14 +21,6 @@
 						<h1 th:if="${empresa.novo}">Cadastro de empresa</h1>
 						<h1 th:unless="${empresa.novo}">Alterar a empresa - [[${empresa.nome}]]</h1>
 					</div>
-					
-					<div class="col-sm-2" sec:authorize-url="/empresa/pesquisar">
-						<div class="aw-page-header-controls">
-							<a class="btn  btn-default" th:href="@{/empresa/pesquisar}">
-								<i class="glyphicon  glyphicon-search"></i> <span class="hidden-xs  hidden-sm">Pesquisar</span>
-							</a>
-						</div>
-					</div>
 				</div>
 			</div>
 		</div>
@@ -38,23 +30,22 @@
 			<form id="form" method="POST" th:object="${empresa}" class="form-vertical  js-form-loading"
 				th:action="${empresa.novo} ? @{/empresa/nova} : @{/empresa/{id}(id=${empresa.id})}">
 
-				<!-- COMPONENTE THYMELEAF PARA MENSAGENS DE ERRO E SUCESSO -->	
-				<sinte:message/>
+				<Simed:message/>
 		
 				<input type="hidden" th:field="*{id}">
 
 				<div class="row">
-					<div class="col-sm-8  form-group"  sinte:classforerror="nome">
+					<div class="col-sm-8  form-group"  Simed:classforerror="nome">
 						<label for="nome" class="control-label">Nome*</label>
 						<input id="nome" type="text" class="form-control" th:field="*{nome}" autofocus="autofocus" maxlength="60">
 					</div>
 
-					<div class="col-sm-3  form-group"  sinte:classforerror="fantasia">
+					<div class="col-sm-3  form-group"  Simed:classforerror="fantasia">
 						<label for="fantasia" class="control-label">Fantasia*</label>
 						<input id="fantasia" type="text" class="form-control" th:field="*{fantasia}" maxlength="60">
 					</div>
 
-					<div class="col-sm-1  form-group"  sinte:classforerror="sigla">
+					<div class="col-sm-1  form-group"  Simed:classforerror="sigla">
 						<label for="sigla" class="control-label">Sigla*</label>
 						<input id="sigla" type="text" class="form-control" th:field="*{sigla}" maxlength="3">
 					</div>
@@ -109,7 +100,7 @@
 						<input id="telefone" type="text" class="form-control  js-phone" placeholder="(99)9999-9999" th:field="*{telefone}"/>
 					</div>
 
-					<div class="col-sm-4  form-group" sinte:classforerror="email">
+					<div class="col-sm-4  form-group" Simed:classforerror="email">
 						<label for="email" class="control-label" >E-mail</label>
 						<input id="email" type="text" class="form-control" th:field="*{email}" maxlength="100"/>
 					</div>
@@ -117,7 +108,7 @@
 		
 
 				<div class="row">
-					<div class="col-sm-4  form-group  bw-required" sinte:classforerror="cnpj">
+					<div class="col-sm-4  form-group  bw-required" Simed:classforerror="cnpj">
 						<label for="cnpj" class="control-label">CNPJ nº</label>
 						<input id="cnpj" type="text" class="form-control  js-cnpj" th:field="*{cnpj}"/>
 					</div>
@@ -145,15 +136,15 @@
 				</div>				
 				
 				<div class="form-group">
-						<button class="btn  btn-primary" type="submit">Salvar</button>
-						<a class="btn  btn-danger" sec:authorize-url="/empresa/pesquisar" th:href="@{/empresa/pesquisar}"> Cancelar e/ou voltar	</a>
+						<button class="btn  btn-success" type="submit">Salvar</button>
+						<a class="btn  btn-danger" sec:authorize-url="/empresa/pesquisar" th:href="@{/empresa/pesquisar}">Voltar</a>
 				</div>
 			</form>
 		</div>
 	</section>
 
 	<th:block layout:fragment="javascript-extra">
-		<script th:src="@{/javascripts/sinte.combo-estado-cidade.js}"></script>	
+		<script th:src="@{/javascripts/simed.combo-estado-cidade.js}"></script>	
 		<script th:src="@{/javascripts/vendors/bootstrap-toggle.min.js}"></script>
 		
 		<script>
