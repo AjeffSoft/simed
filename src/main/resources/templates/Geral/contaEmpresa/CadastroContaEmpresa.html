@@ -2,14 +2,14 @@
 <html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layout/LayoutPadrao}"
-	xmlns:sinte="http://sintecoop.ajeffsoft.com"
+	layout:decorate="~{Geral/LayoutGeral}"
+	xmlns:Simed="http://Simed.ajeffsoft.com"
 	xmlns:data="http://www.thymeleaf.org/extras/data"	
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 
 <head>
-	<link rel="stylesheet" type="text/css" th:href="@{/stylesheets/vendors/bootstrap-toggle.min.css}"/>
-	<title>Conta de Empresa</title> 
+	
+	<title>Contas de Empresa</title> 
 </head>
 
 
@@ -19,18 +19,10 @@
 			<div class="container-fluid">
 				<div class="row">
 					<div class="col-xs-10">
-						<h1 th:if = "${contaEmpresa.novo}">Cadastro de contas bancárias: [[${empresa.nome}]]</h1>
-						<h1 th:unless = "${contaEmpresa.novo}">Alterar as contas bancárias: [[${contaEmpresa.empresa.nome}]]</h1>
+						<h1 th:if = "${contaEmpresa.novo}">Contas bancárias: [[${empresa.nome}]]</h1>
+						<h1 th:unless = "${contaEmpresa.novo}">Alterar conta bancária: [[${contaEmpresa.empresa.fantasia}]]</h1>
 					</div>
-
-					<div class="col-xs-2" sec:authorize-url="/empresa/pesquisar">
-						<div class="aw-page-header-controls" >
-							<a class="btn  btn-default" th:href="@{/empresa/pesquisar}">
-								<i class="glyphicon  glyphicon-search"></i> <span class="hidden-xs  hidden-sm">Pesquisar Empresas</span>
-							</a>
-						</div>
-					</div>
-					
+									
 				</div>
 			</div>
 		</div>
@@ -39,13 +31,12 @@
 			<form id="form" method="POST" th:object="${contaEmpresa}" class="form-vertical  js-form-loading" sec:authorize-url="/empresa/nova"
 				th:action="${contaEmpresa.novo} ? @{/contaEmpresa/nova} : @{/contaEmpresa/{id}(id=${contaEmpresa.id})}">
 			
-			<!-- COMPONENTE THYMELEAF PARA MENSAGENS DE ERRO E SUCESSO -->	
-			<sinte:message/>
+			<Simed:message/>
 
 			<input type="hidden" th:value="${idEmpresa}" name="idEmpresa"/>
 			<input type="hidden" th:field="*{id}">
-			<input type="hidden" th:field="*{saldo}">
-			<input type="hidden" th:field="*{valorPendente}">
+<!-- 			<input type="hidden" th:field="*{saldo}"> -->
+<!-- 			<input type="hidden" th:field="*{valorPendente}"> -->
 
 				<div class="row">
 					<div class="col-sm-2  form-group">
@@ -79,8 +70,8 @@
 				</div>
 				
 				<div class="form-group">
-					<button class="btn  btn-primary" type="submit">Salvar</button>
-					<a class="btn  btn-danger" th:href="@{/empresa/pesquisar}" sec:authorize-url="/empresa/pesquisar"> Cancelar e/ou voltar</a>
+					<button class="btn  btn-success" type="submit">Salvar</button>
+					<a class="btn  btn-danger" th:href="@{/empresa/pesquisar}" sec:authorize-url="/empresa/pesquisar">Voltar</a>
 					
 				</div>
 			</form>
@@ -94,7 +85,7 @@
 							<th class="table-col-pequena"> Conta</th>
  							<th class="table-col-pequena"> Tipo Conta</th>
 							<th class="table-col-pequena"> Agencia/ Banco</th>
-							<th class="table-col-pequena"> Saldo R$</th>
+<!-- 							<th class="table-col-pequena"> Saldo R$</th> -->
 							<th class="table-col-grande">Situação</th>
 							<th class="table-agencia-col-acoes"></th>
 						</tr>
@@ -105,7 +96,7 @@
 							<td th:text="${conta.conta}"></td>
 							<td th:text="${conta.tipo}"></td>
 							<td th:text="${conta.agencia.agencia} + ' / ' + ${conta.agencia.banco.nome}"></td>
-							<td th:text="${{conta.saldo}}"></td>
+<!-- 							<td th:text="${{conta.saldo}}"></td> -->
 							<td>
 								<th:block th:if="${conta.situacao}">
 									<span class="label  label-success">Ativo</span>

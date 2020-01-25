@@ -88,13 +88,17 @@ public class ContaEmpresaService {
 	}
 
 
-	public List<ContaEmpresa> findByEmpresaId(Long id) {
-		return repository.findByEmpresaId(id);
+	public List<ContaEmpresa> findByEmpresaIdAtivo(Long id) {
+		return repository.findByEmpresaIdAtivo(id);
 	}
 
 
 	public List<ContaEmpresa> listarTodosOrdenadoPorNome() {
 		return repository.listarTodosOrdenadoPorNome();
+	}
+
+	public Object findByEmpresaId(Long idEmpresa) {
+		return repository.findByEmpresaId(idEmpresa);
 	}
 
 

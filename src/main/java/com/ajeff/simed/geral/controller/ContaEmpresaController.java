@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.ajeff.simed.financeiro.model.enums.TipoConta;
 import com.ajeff.simed.geral.model.ContaEmpresa;
 import com.ajeff.simed.geral.model.Empresa;
 import com.ajeff.simed.geral.service.AgenciaService;
@@ -42,10 +43,11 @@ public class ContaEmpresaController {
 	
 	@GetMapping(value = "/nova/{idEmpresa}")
 	public ModelAndView nova(@PathVariable("idEmpresa") Long idEmpresa, @ModelAttribute("contaEmpresa") ContaEmpresa contaEmpresa){
-		ModelAndView mv = new ModelAndView("contaEmpresa/CadastroContaEmpresa");
+		ModelAndView mv = new ModelAndView("Geral/contaEmpresa/CadastroContaEmpresa");
 		mv.addObject("agencias", agenciaService.findAllOrderByAgencia());
 		mv.addObject("idEmpresa", idEmpresa);
 		mv.addObject("empresa", empresaService.findOne(idEmpresa));
+		mv.addObject("tipos", TipoConta.values());
 		mv.addObject("contas", service.findByEmpresaId(idEmpresa));
 		return mv;
 	}
@@ -93,7 +95,7 @@ public class ContaEmpresaController {
 
 	@RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody List<ContaEmpresa> pesquisarPorCodigoEmpresa(@RequestParam(name = "empresa", defaultValue = "-1") Long codigoEmpresa){
-		return service.findByEmpresaId(codigoEmpresa);
+		return service.findByEmpresaIdAtivo(codigoEmpresa);
 	}
 	
 }
