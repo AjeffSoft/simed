@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -56,7 +56,7 @@ public class Usuario implements Serializable {
 				inverseJoinColumns = @JoinColumn(name = "id_empresa"))
 	private List<Empresa> empresas;
 
-	@ManyToOne
+	@OneToOne
 	@JoinColumn(name = "id_empresa_atendente")
 	private Empresa empresa;
 	

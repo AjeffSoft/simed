@@ -1,6 +1,5 @@
 package com.ajeff.simed.geral.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,7 +12,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import com.ajeff.simed.geral.model.Empresa;
 import com.ajeff.simed.geral.model.Usuario;
 import com.ajeff.simed.geral.repository.UsuariosRepository;
 import com.ajeff.simed.geral.service.exception.CPFUsuarioExistenteException;
@@ -88,4 +86,9 @@ public class UsuarioService {
 	public Usuario buscarUsuarioComGrupos(Long id) {
 		return repository.buscarUsuarioComGrupos(id);
 	}
+
+	public Usuario buscarEmpresaPorUsuario(Long id) {
+		return repository.buscarEmpresaPorUsuario(id);
+	}
+	
 }

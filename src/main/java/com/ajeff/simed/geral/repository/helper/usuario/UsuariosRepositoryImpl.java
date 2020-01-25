@@ -20,7 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import com.ajeff.simed.geral.model.Empresa;
 import com.ajeff.simed.geral.model.Usuario;
 import com.ajeff.simed.geral.repository.filter.UsuarioFilter;
 import com.ajeff.simed.geral.repository.paginacao.PaginacaoUtil;
@@ -80,7 +79,8 @@ public class UsuariosRepositoryImpl implements UsuariosRepositoryQueries {
 		criteria.add(Restrictions.eq("e.situacao", true));
 		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return (Usuario) criteria.uniqueResult();
-	}		
+	}	
+	
 	
 	
 //	@Transactional(readOnly = true)

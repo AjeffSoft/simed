@@ -20,6 +20,5 @@ public interface UsuariosRepositoryQueries {
 	public Usuario buscarUsuarioComGrupos(Long id);
 	
 	public Usuario buscarEmpresaPorUsuario(Long id);
-
 	
 }

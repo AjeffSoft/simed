@@ -1,7 +1,5 @@
 package com.ajeff.simed.geral.controller;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -22,7 +20,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ajeff.simed.geral.controller.page.PageWrapper;
-import com.ajeff.simed.geral.model.Empresa;
 import com.ajeff.simed.geral.model.Usuario;
 import com.ajeff.simed.geral.repository.UsuariosRepository;
 import com.ajeff.simed.geral.repository.filter.UsuarioFilter;
@@ -89,7 +86,7 @@ public class UsuarioController {
 	
 	@GetMapping("/pesquisar")
 	public ModelAndView pesquisar(UsuarioFilter usuarioFilter 
-			, @PageableDefault(size = 10) Pageable pageable, HttpServletRequest httpServletRequest) {
+			, @PageableDefault(size = 100) Pageable pageable, HttpServletRequest httpServletRequest) {
 		ModelAndView mv = new ModelAndView("Geral/usuario/PesquisarUsuarios");
 		mv.addObject("grupos", grupoService.findAll());
 		
@@ -101,13 +98,15 @@ public class UsuarioController {
 	
 	@GetMapping("/alterar/{id}")
 	public ModelAndView alterar(@PathVariable("id") Long id){
-		Usuario user = usuarioService.findById(id);
-		List<Empresa> empresas = usuarioService.buscarEmpresaPorUsuario(id);
-		user.setEmpresas(empresas);
-//		Usuario usuario = usuarioService.buscarUsuarioComGrupos(id);
+//		Usuario user = empresaService.buscarEmpresaPorUsuario(id);
+//		List<Empresa> empresas = usuarioService.buscarEmpresaPorUsuario(id);
+//		user.setEmpresas(empresas);
+		Usuario usuario = usuarioService.buscarUsuarioComGrupos(id);
+		Usuario user = usuarioService.buscarEmpresaPorUsuario(id);
+		usuario.setEmpresas(empresaService.buscarEmpresaPorUsuario(id));
 //		usuario.setEmpresas(empresas);
-		ModelAndView mv = novo(user);
-		mv.addObject(user);
+		ModelAndView mv = novo(usuario);
+		mv.addObject(usuario);
 		return mv;
 	}
 	
