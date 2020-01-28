@@ -3,7 +3,6 @@ package com.ajeff.simed.financeiro.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,12 +14,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
 
-import com.ajeff.simed.geral.model.ContaEmpresa;
 import com.ajeff.simed.geral.model.Empresa;
 
 @Entity
@@ -41,12 +38,6 @@ public class ContaReceber implements Serializable{
 	
 	@NotNull(message = "Informe o vencimento")
 	private LocalDate vencimento;
-
-	@Column(name = "data_recebido")
-	private LocalDate dataRecebido;
-	
-	@Transient
-	private LocalDateTime time;
 	
 	@NotNull(message = "Informe o valor da conta")
 	private BigDecimal valor;
@@ -59,15 +50,11 @@ public class ContaReceber implements Serializable{
 	
 	private String status;
 	
-	private String anexo;
-	
 	private Integer parcela;
 	
 	@Column(name = "total_parcela")
 	private Integer totalParcela;
 
-	@Column(name = "tipo_documento")
-	private String tipoDocumento;
 	
 	@ManyToOne
 	@JoinColumn(name = "id_conta_secundaria")
@@ -84,15 +71,7 @@ public class ContaReceber implements Serializable{
 	@JoinColumn(name = "id_fornecedor")
 	private Fornecedor fornecedor;
 
-	@ManyToOne
-	@JoinColumn(name = "id_conta_empresa")
-	private ContaEmpresa contaEmpresa;
-	
-	@ManyToOne
-	@JoinColumn(name = "id_movimentacao")
-	private Movimentacao movimentacao;
-	
-	
+
 	@PrePersist
 	@PreUpdate
 	private void prePersistUpdate() {
@@ -139,14 +118,6 @@ public class ContaReceber implements Serializable{
 		this.vencimento = vencimento;
 	}
 
-	public LocalDate getDataRecebido() {
-		return dataRecebido;
-	}
-
-	public void setDataRecebido(LocalDate dataRecebido) {
-		this.dataRecebido = dataRecebido;
-	}
-
 	public BigDecimal getValor() {
 		return valor;
 	}
@@ -179,14 +150,6 @@ public class ContaReceber implements Serializable{
 		this.status = status;
 	}
 
-	public String getAnexo() {
-		return anexo;
-	}
-
-	public void setAnexo(String anexo) {
-		this.anexo = anexo;
-	}
-
 	public Integer getParcela() {
 		return parcela;
 	}
@@ -201,14 +164,6 @@ public class ContaReceber implements Serializable{
 
 	public void setTotalParcela(Integer totalParcela) {
 		this.totalParcela = totalParcela;
-	}
-
-	public String getTipoDocumento() {
-		return tipoDocumento;
-	}
-
-	public void setTipoDocumento(String tipoDocumento) {
-		this.tipoDocumento = tipoDocumento;
 	}
 
 	public PlanoContaSecundaria getPlanoContaSecundaria() {
@@ -234,32 +189,6 @@ public class ContaReceber implements Serializable{
 	public void setFornecedor(Fornecedor fornecedor) {
 		this.fornecedor = fornecedor;
 	}
-
-	public ContaEmpresa getContaEmpresa() {
-		return contaEmpresa;
-	}
-
-	public void setContaEmpresa(ContaEmpresa contaEmpresa) {
-		this.contaEmpresa = contaEmpresa;
-	}
-
-	public Movimentacao getMovimentacao() {
-		return movimentacao;
-	}
-
-	public void setMovimentacao(Movimentacao movimentacao) {
-		this.movimentacao = movimentacao;
-	}
-
-	public LocalDateTime getTime() {
-		return time;
-	}
-
-
-	public void setTime(LocalDateTime time) {
-		this.time = time;
-	}
-
 
 	@Override
 	public int hashCode() {
@@ -294,10 +223,6 @@ public class ContaReceber implements Serializable{
 		return this.vencimento.isEqual(this.dataEmissao) || this.vencimento.isAfter(this.dataEmissao);
 	}
 
-	public boolean isRecebimentoMaiorEmissao() {
-		return this.dataRecebido.isEqual(this.dataEmissao) || this.dataRecebido.isAfter(this.dataEmissao);
-	}
-	
 	public boolean isAberto() {
 		return this.status.equals("ABERTO");
 	}

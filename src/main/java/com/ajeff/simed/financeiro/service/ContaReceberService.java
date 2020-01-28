@@ -2,13 +2,9 @@ package com.ajeff.simed.financeiro.service;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.time.Clock;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 import javax.persistence.PersistenceException;
 
@@ -77,7 +73,6 @@ public class ContaReceberService {
 				cr.setEmpresa(contaReceber.getEmpresa());
 				cr.setStatus("ABERTO");
 				cr.setDocumento(contaReceber.getFornecedor().getSigla() + contaReceber.getDocumento() +"-"+i);
-				cr.setAnexo(contaReceber.getAnexo());
 				cr.setParcela(i);
 				cr.setValorRecebido(BigDecimal.ZERO);
 				cr.setTotalParcela(contaReceber.getTotalParcela());

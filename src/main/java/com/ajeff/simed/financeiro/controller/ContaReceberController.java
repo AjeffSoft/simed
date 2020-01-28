@@ -63,7 +63,7 @@ public class ContaReceberController {
 	
 	
 	
-	@GetMapping("/detalheConta/{id}")
+	@GetMapping("/detalhe/{id}")
 	public ModelAndView detalhe(@PathVariable Long id, ContaReceber contaReceber) {
 		ModelAndView mv = new ModelAndView("Financeiro/contaReceber/DetalheContaReceber");
 		mv.addObject("recebimentos", recebimentoService.findByContaReceber(contaReceber));
@@ -102,7 +102,7 @@ public class ContaReceberController {
 	
 	
 	@GetMapping("/pesquisar")
-	public ModelAndView listaCadastrar(ContaReceberFilter contaReceberFilter, BindingResult result, @PageableDefault(size=20) Pageable pageable,
+	public ModelAndView listaCadastrar(ContaReceberFilter contaReceberFilter, BindingResult result, @PageableDefault(size=100) Pageable pageable,
 										HttpServletRequest httpServletRequest, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
 		ModelAndView mv = new ModelAndView("Financeiro/contaReceber/PesquisarContasReceber");
 		mv.addObject("empresas", empresaService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));

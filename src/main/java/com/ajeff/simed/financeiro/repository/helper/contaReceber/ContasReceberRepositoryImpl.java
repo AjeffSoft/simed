@@ -95,9 +95,14 @@ public class ContasReceberRepositoryImpl implements ContasReceberRepositoryQueri
 				criteria.add(Restrictions.eq("status", filtro.getStatus()));
 			}
 			
-			if (filtro.getVencimentoInicio() != null || filtro.getVencimentoFim() != null) {
-				criteria.add(Restrictions.between("vencimento", filtro.getVencimentoInicio(), filtro.getVencimentoFim()));
+			if(filtro.getVencimentoInicio() != null) {
+				criteria.add(Restrictions.ge("vencimento", filtro.getVencimentoInicio()));
 			}
+			
+			if(filtro.getVencimentoFim() != null) {
+				criteria.add(Restrictions.le("vencimento", filtro.getVencimentoFim()));
+			}			
+			
 			
 			if(filtro.getValorInicio() != null) {
 				criteria.add(Restrictions.ge("valor", filtro.getValorInicio()));

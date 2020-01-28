@@ -308,7 +308,7 @@ public class RecebimentoService {
 
 
 	public List<Recebimento> findByContaReceber(ContaReceber contaReceber) {
-		return repository.findByContaReceber(contaReceber);
+		return repository.findByContaReceberOrderByData(contaReceber);
 	}	
 
 }

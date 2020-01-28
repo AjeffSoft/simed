@@ -11,11 +11,6 @@
 
 <title>Detalhe da Conta</title> 
 
-<style>
-	.pdfobject-container { height: 500px;}
-	.pdfobject { border: 1px solid #666; }
-</style>
-
 </head>
 
 
@@ -49,7 +44,7 @@
 					<div class="form-group  col-lg-12">
 						<ul class="nav nav-tabs  js-abas">
 						  <li role="presentation" class="active"><a href="#dados">Cadastro</a></li>
-						  <li role="presentation" ><a href="#recebimento">Recebimento</a></li>
+						  <li role="presentation" ><a href="#recebimento">Recebimentos</a></li>
 						</ul>
 					</div>
 				</div>			
@@ -107,7 +102,7 @@
 							</div>
 
 							<div class="col-sm-2  form-group">
-								<label for="documento" class="label label-default">Documento</label>
+								<label for="documento" class="label label-default">CPF/CNPJ</label>
 								<h3 id="documento" th:text="${contaReceber.fornecedor.documento1}"></h3>
 							</div>
 						</div>				
@@ -140,7 +135,7 @@
 										<th class="table-col-minima">Data</th>
 										<th class="table-col-minima">Valor</th>
 										<th class="table-col-minima">Conta bancária</th>
-										<th class="table-col-minima">Situação</th>
+										<th class="table-col-minima">Movimentação</th>
 										<th class="table-col-minima"></th>
 
 									</tr>
@@ -164,15 +159,15 @@
 
 										<td class="text-center">
 											<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir" href="#" th:unless="${recebimento.fechado}"
-												data:url="@{/financeiro/recebimento/excluir/{id}(id=${recebimento.id})}" data:objeto="${{recebimento.valor}}">
-												<i class="glyphicon glyphicon-trash"></i>
+												data:url="@{/financeiro/recebimento/excluir/{id}(id=${recebimento.id})}" data:objeto="${{recebimento.valor}}" sec:authorize-url="/financeiro/recebimento/excluir/**">
+												<i class="glyphicon glyphicon-remove"></i>
 											</a>
 										</td>
 
 
 									</tr>
 									<tr th:if="${#lists.isEmpty(recebimentos)}">
-										<td colspan="4">Nenhum recebimento cadastrado</td>
+										<td colspan="5">Nenhum recebimento cadastrado</td>
 									</tr>									
 								</tbody>
 							</table>
@@ -185,8 +180,7 @@
 				<br>
 														
 				<div class="form-group">
-					<a target="'_blank'" class="btn  btn-info" th:href="@{/financeiro/contaReceber/imprimirDetalhe/{id}(id=${contaReceber.id})}">Imprimir</a>
-					<a class="btn  btn-default" href="javascript:history.back(1);">Cancelar e/ou voltar</a>
+					<a class="btn  btn-default" href="javascript:history.back(1);">Voltar</a>
 				</div>
 			</form>
 

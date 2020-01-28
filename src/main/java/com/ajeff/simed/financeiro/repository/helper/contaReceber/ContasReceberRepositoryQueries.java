@@ -16,13 +16,4 @@ public interface ContasReceberRepositoryQueries {
 	
 	public BigDecimal totalGeral(ContaReceberFilter filtro);
 	
-	
-//	public List<RecebimentoPagoAberto> totalRecebimentoAbertoPendente(Usuario usuario);
-//
-//	public List<RecebimentoPagoAberto> totalRecebimentoAbertoPendenteAno(Usuario usuario);
-//	
-//	public List<RecebimentoSemestre> totalRecebimentoSemestre(Usuario usuario);
-
-//	public List<ContaReceberTrimestre> totalRecebimentoTrimestre(Usuario usuario);
-	
 }

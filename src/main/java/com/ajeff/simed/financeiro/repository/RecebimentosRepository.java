@@ -10,6 +10,6 @@ import com.ajeff.simed.financeiro.repository.helper.recebimento.RecebimentosRepo
 
 public interface RecebimentosRepository extends JpaRepository<Recebimento, Long>, RecebimentosRepositoryQueries{
 
-	List<Recebimento> findByContaReceber(ContaReceber contaReceber);
+	List<Recebimento> findByContaReceberOrderByData(ContaReceber contaReceber);
 
 }
