@@ -4,7 +4,7 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{Financeiro/LayoutFinanceiro}"
 	xmlns:data="http://www.thymeleaf.org/extras/data"	
-	xmlns:sinte="http://sintecoop.ajeffsoft.com"
+	xmlns:simed="http://simedcoop.ajeffsoft.com"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 
 <head><title>Cadastro de conta a receber</title></head>
@@ -30,11 +30,12 @@
 			<form method="POST" th:object="${contaReceber}" class="form-vertical  js-form-loading" 
 				th:action="${contaReceber.novo} ? @{/financeiro/contaReceber/nova} : @{/financeiro/contaReceber/{id}(id=${contaReceber.id})}">
 			
-				<sinte:message/>
+				<simed:message/>
 			
 				<input type="hidden" th:field="*{id}">
 				<input type="hidden" th:field="*{status}">
 				<input type="hidden" th:field="*{parcela}">
+				<input type="hidden" th:field="*{totalParcela}" th:unless="${contaReceber.novo}">
 				<input type="hidden" th:field="*{dataRecebido}">
 				<input type="hidden" th:field="*{valorRecebido}">
 				<input type="hidden" th:field="*{anexo}">
@@ -42,14 +43,15 @@
 
 				<div class="row">
 				
-					<div class="col-sm-3  form-group"  sinte:classforerror="empresa">
-						<label for="empresa" class="control-label">Empresa</label>
+					<div class="col-sm-3  form-group"  simed:classforerror="empresa">
+						<label for="empresa" class="control-label">Empresa*</label>
 						<select id="empresa" class="form-control" th:field="*{empresa}">
+							<option value="">Selecione uma empresa</option>
 							<option th:each="empresa : ${empresas}" th:value="${empresa.id}" th:text="${empresa.fantasia}"></option>
 						</select>
 					</div>
 				
-					<div class="form-group  col-sm-7" sinte:classforerror="fornecedor" >
+					<div class="form-group  col-sm-7" simed:classforerror="fornecedor" >
 						<label class="control-label" for="nomeFornecedor">Cliente*</label>
 						<div class="input-group">
 					      <input id="nomeFornecedor" type="text" readonly="readonly" class="form-control" th:field="*{fornecedor.nome}"
@@ -71,14 +73,14 @@
 				</div>
 				
 				<div class="row">	
-					<div class="col-sm-3  form-group"  sinte:classforerror="planoContaSecundaria.planoConta">
+					<div class="col-sm-3  form-group">
 						<label for="planoConta" class="control-label">Conta Primária</label>
 						<select id="planoConta" class="form-control" th:field="*{planoContaSecundaria.planoConta}">
 								<option th:each="planoConta : ${planosConta}" th:value="${planoConta.id}" th:text="${planoConta.nome}"></option>
 						</select>
 					</div>
 
- 					<div class="col-sm-9  form-group" sinte:classforerror="planoContaSecundaria">
+ 					<div class="col-sm-9  form-group" simed:classforerror="planoContaSecundaria">
 						<label for="subPlanoConta" class="control-label">Conta Secundária*</label>
 						<div class="bw-field-action">
 							<input type = "hidden" id="inputHiddenSubPlanoContaSelecionado" th:value="*{planoContaSecundaria} != null ? *{planoContaSecundaria.id}">
@@ -97,7 +99,7 @@
 						<div class="col-sm-12  form-group">
 							<label for="historico" class="control-label">Histórico*</label>
 							<textarea id="historico" class="form-control" th:field = "*{historico}" rows="3" maxlength="200"
-								placeholder="Deixe em branco para descrição do histórico igual ao plano de conta secundária."></textarea>
+								placeholder="Deixe esse campo em branco o histórico igual ao plano de conta secundária."></textarea>
 						</div>
 					</div>				
 				</div>				
@@ -116,22 +118,22 @@
 				<div class="tab-content">
 					<div class="tab-pane active" id="dados">
 						<div class="row">
-							<div class="col-sm-2  form-group" sinte:classforerror="documento">
-								<label for="nota" class="control-label">Documento</label>
-								<input id="nota" type="text" class="form-control" maxlength="17" th:field = "*{documento}" placeholder="Em branco para automático">
+							<div class="col-sm-4  form-group" simed:classforerror="documento">
+								<label for="nota" class="control-label">Documento*</label>
+								<input id="nota" type="text" class="form-control" maxlength="17" th:field = "*{documento}">
 							</div>	
 
-							<div class="col-sm-2  form-group" sinte:classforerror="dataEmissao">
-								<label for="emissao" class="control-label">Emissão</label>
+							<div class="col-sm-2  form-group" simed:classforerror="dataEmissao">
+								<label for="emissao" class="control-label">Emissão*</label>
 								<input id="emissao" type="text" class="form-control  js-date" th:field = "*{dataEmissao}" autocomplete="off"/>
 							</div>
 		
-							<div class="col-sm-2  form-group" sinte:classforerror="vencimento">
+							<div class="col-sm-2  form-group" simed:classforerror="vencimento">
 								<label for="vencimento" class="control-label">Vencimento*</label>
 								<input id="vencimento" type="text" class="form-control  js-date" th:field = "*{vencimento}" autocomplete="off"/>
 							</div>
 							
-							<div class="col-sm-2  form-group" sinte:classforerror="valor">
+							<div class="col-sm-2  form-group" simed:classforerror="valor">
 								<label for="valor" class="control-label">Valor *</label>
 								<div class="input-group">
 									<input id="valor" type="text" class="form-control  js-decimal" th:field = "*{valor}"/>
@@ -139,24 +141,17 @@
 								</div>
 							</div>
 							
-							<div class="col-sm-2  form-group" sinte:classforerror="tipoDocumento">
-								<label for="tipoDocumento" class="control-label">Tipo Documento*</label>
-								<select id="tipoDocumento" class="form-control" th:field="*{tipoDocumento}">
-									<option th:each="tipoDocumento : ${tiposDocumentos}" th:value="${tipoDocumento}" th:text="${tipoDocumento.descricao}"></option>
-								</select>
-							</div>							
-
-							<div class="col-sm-2  form-group">
+							<div class="col-sm-2  form-group" th:if="${contaReceber.novo}">
 								<label for="parcelaNum" class="control-label">Parcelas nº</label>
-								<input id="parcelaNum" type="text" class="form-control" maxlength="3" th:field = "*{totalParcela}">
+								<input id="parcelaNum" type="number" class="form-control" th:field = "*{totalParcela}">
 							</div>
 						</div>
 					</div>
 				</div>
 
 				<div class="form-group">
-					<button class="btn  btn-primary" type="submit">Salvar</button>
-					<a class="btn  btn-default" sec:authorize-url="/financeiro/contaReceber/pesquisar" th:href="@{/financeiro/contaReceber/pesquisar}"> Cancelar e/ou voltar	</a>
+					<button class="btn  btn-success" type="submit">Salvar</button>
+					<a class="btn  btn-danger" sec:authorize-url="/financeiro/contaReceber/pesquisar" th:href="@{/financeiro/contaReceber/pesquisar}">Voltar</a>
 				</div>
 		</form>
 	</div>
@@ -169,7 +164,7 @@
 	<script th:src="@{/javascripts/vendors/handlebars.min.js}"></script>
 	
 	<script th:src="@{/javascripts/pesquisaRapida/fornecedor.pesquisa-rapida.js}"></script>
-	<script th:src="@{/javascripts/pagar.combo-planoConta.js}"></script>
+	<script th:src="@{/javascripts/contaPagar.combo-planoConta.js}"></script>
 
 	<script>
 	$(function() {

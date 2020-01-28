@@ -3,6 +3,7 @@ package com.ajeff.simed.financeiro.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,7 +15,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotBlank;
 
 import com.ajeff.simed.geral.model.ContaEmpresa;
 import com.ajeff.simed.geral.model.Empresa;
@@ -41,12 +45,16 @@ public class ContaReceber implements Serializable{
 	@Column(name = "data_recebido")
 	private LocalDate dataRecebido;
 	
+	@Transient
+	private LocalDateTime time;
+	
 	@NotNull(message = "Informe o valor da conta")
 	private BigDecimal valor;
 
 	@Column(name = "valor_recebido")
 	private BigDecimal valorRecebido;
 	
+	@NotBlank(message = "Informe o documento")
 	private String documento;
 	
 	private String status;
@@ -243,6 +251,16 @@ public class ContaReceber implements Serializable{
 		this.movimentacao = movimentacao;
 	}
 
+	public LocalDateTime getTime() {
+		return time;
+	}
+
+
+	public void setTime(LocalDateTime time) {
+		this.time = time;
+	}
+
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -278,10 +296,6 @@ public class ContaReceber implements Serializable{
 
 	public boolean isRecebimentoMaiorEmissao() {
 		return this.dataRecebido.isEqual(this.dataEmissao) || this.dataRecebido.isAfter(this.dataEmissao);
-	}
-	
-	public boolean isValorNegativo() {
-		return (this.valor.compareTo(BigDecimal.ZERO) <=0);
 	}
 	
 	public boolean isAberto() {

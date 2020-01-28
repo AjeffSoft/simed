@@ -3,6 +3,7 @@ package com.ajeff.simed.financeiro.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.hibernate.TransientObjectException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ import com.ajeff.simed.financeiro.service.exception.RegistroNaoCadastradoExcepti
 import com.ajeff.simed.financeiro.service.exception.VencimentoMenorEmissaoException;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
 import com.ajeff.simed.geral.security.UsuarioSistema;
+import com.ajeff.simed.geral.service.EmpresaService;
 import com.ajeff.simed.geral.service.UsuarioService;
 
 @Controller
@@ -48,13 +50,13 @@ public class ContaReceberController {
 	@Autowired
 	private RecebimentoService recebimentoService;
 	@Autowired
-	private UsuarioService usuarioService;
+	private EmpresaService empresaService;	
 	
 
 	@GetMapping("/nova")
 	public ModelAndView nova(ContaReceber contaReceber, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
 		ModelAndView mv = new ModelAndView("Financeiro/contaReceber/CadastroContaReceber");
-		mv.addObject("empresas", usuarioService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
+		mv.addObject("empresas", empresaService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
 		mv.addObject("planosConta", planoContaService.listarTodosPlanosContaCredito());
 		return mv;
 	}
@@ -79,6 +81,9 @@ public class ContaReceberController {
 		}
 		try {
 			service.salvar(contaReceber);
+		} catch (TransientObjectException e) {
+			result.rejectValue("fornecedor", e.getMessage(), e.getMessage());
+			return nova(contaReceber, usuarioSistema);
 		} catch (DocumentoEFornecedorJaCadastradoException e) {
 			result.rejectValue("documento", e.getMessage(), e.getMessage());
 			return nova(contaReceber, usuarioSistema);
@@ -96,12 +101,11 @@ public class ContaReceberController {
 	
 	
 	
-	//LISTA AS CONTAS QUE FORAM CADASTRADAS
 	@GetMapping("/pesquisar")
 	public ModelAndView listaCadastrar(ContaReceberFilter contaReceberFilter, BindingResult result, @PageableDefault(size=20) Pageable pageable,
 										HttpServletRequest httpServletRequest, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
 		ModelAndView mv = new ModelAndView("Financeiro/contaReceber/PesquisarContasReceber");
-		mv.addObject("empresas", usuarioService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
+		mv.addObject("empresas", empresaService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
 		
 		mv.addObject("total", service.totalGeral(contaReceberFilter));
 				

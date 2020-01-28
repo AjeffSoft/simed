@@ -2,6 +2,9 @@ package com.ajeff.simed.financeiro.service;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.time.Clock;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +12,7 @@ import java.util.Random;
 
 import javax.persistence.PersistenceException;
 
+import org.hibernate.TransientObjectException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,61 +35,77 @@ import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
 @Service
 public class ContaReceberService {
 
+	@SuppressWarnings("unused")
 	private static final Logger LOG = LoggerFactory.getLogger(ContaReceberService.class);
 	
 	@Autowired
 	private ContasReceberRepository repository;
 	@Autowired
 	private PlanosContaSecundariaRepository planoContarepository;
-//	@Autowired
-//	private ExtratosRepository extratoRepository;
 	
 	
 	@Transactional
 	public void salvar(ContaReceber contaReceber) {
-
 		try {
 			if (contaReceber.isNovo()) {
-				if(contaReceber.getTotalParcela() == null || contaReceber.getTotalParcela() <= 1) {
-					testeVencimentoMaiorEmissao(contaReceber);
-					semParcelamento	(contaReceber);
-					
-				}else {
-					testeVencimentoMaiorEmissao(contaReceber);
-					parcelamento(contaReceber);
-				}
+				List<ContaReceber> contas = gerarContasReceber(contaReceber);
+				repository.save(contas);
 			}else {
-				testeRegistroJaCadastrado(contaReceber);
 				testeVencimentoMaiorEmissao(contaReceber);
+				testeRegistroJaCadastrado(contaReceber);
 				repository.save(contaReceber);
 			}
 		} catch (RegistroNaoCadastradoException e) {
-			LOG.error("Erro ao cadastrar uma conta a receber - " + e.getMessage());
 			throw new RegistroNaoCadastradoException("Algo deu errado! Conta não cadastrada.");
 		}
 	}
 
 
-	
-	private void semParcelamento(ContaReceber contaReceber) {
-		try {
-			if(contaReceber.getHistorico().isEmpty()) {
-				historicoVazioIgualContaSecundaria(contaReceber);
-			}
-			cadastrarDocumento(contaReceber);
-			contaReceber.setStatus("ABERTO");
-			contaReceber.setValorRecebido(BigDecimal.ZERO);
+	private List<ContaReceber> gerarContasReceber(ContaReceber contaReceber) {
+		List<ContaReceber> contas = new ArrayList<>();
+		
+		if (contaReceber.getTotalParcela() == null || contaReceber.getTotalParcela() <=0) {
 			contaReceber.setTotalParcela(1);
-			contaReceber.setParcela(1);
-			testeRegistroJaCadastrado(contaReceber);
-			repository.save(contaReceber);
+		}
+		
+		try {
+			for(int i = 1; i <= contaReceber.getTotalParcela(); i++) {
+		
+				ContaReceber cr = new ContaReceber();
+				cr.setDataEmissao(contaReceber.getDataEmissao());
+				cr.setVencimento(contaReceber.getVencimento().plusMonths(i).minusMonths(1));
+				cr.setEmpresa(contaReceber.getEmpresa());
+				cr.setStatus("ABERTO");
+				cr.setDocumento(contaReceber.getFornecedor().getSigla() + contaReceber.getDocumento() +"-"+i);
+				cr.setAnexo(contaReceber.getAnexo());
+				cr.setParcela(i);
+				cr.setValorRecebido(BigDecimal.ZERO);
+				cr.setTotalParcela(contaReceber.getTotalParcela());
+				cr.setPlanoContaSecundaria(contaReceber.getPlanoContaSecundaria());
+				cr.setFornecedor(contaReceber.getFornecedor());
+				cr.setValor(contaReceber.getValor().divide(new BigDecimal(contaReceber.getTotalParcela()),
+						MathContext.DECIMAL32));		
+				setarHistoricoDaContaReceber(contaReceber, cr);
+				testeVencimentoMaiorEmissao(cr);
+				testeRegistroJaCadastrado(cr);
+				contas.add(cr);
+			}
 		} catch (RegistroNaoCadastradoException e) {
-			LOG.error("Erro ao salvar a conta a receber sem parcelamento - ", e.getMessage());
 			throw new RegistroNaoCadastradoException("Algo deu errado! Conta não cadastrada.");
 		}
-	}	
+		
+		return contas;
+	}
 
-	
+
+	private void setarHistoricoDaContaReceber(ContaReceber contaReceber, ContaReceber cp) {
+		if(contaReceber.getHistorico().isEmpty() && contaReceber.getPlanoContaSecundaria().getId() != null) {
+			historicoVazioIgualContaSecundaria(cp);
+		}else {
+			cp.setHistorico(contaReceber.getHistorico());
+		}
+	}
+
 	
 	private void historicoVazioIgualContaSecundaria(ContaReceber contaReceber) {
 		PlanoContaSecundaria planoConta = planoContarepository.findOne(contaReceber.getPlanoContaSecundaria().getId());
@@ -94,69 +114,6 @@ public class ContaReceberService {
 
 	
 	
-	private void cadastrarDocumento(ContaReceber contaReceber) {
-		if (contaReceber.getDocumento().isEmpty()) {
-			Random r = new Random();
-			int aleatorio = r.nextInt(10000);
-			contaReceber.setDocumento(contaReceber.getFornecedor().getSigla() + "-" + aleatorio);
-		}
-	}
-
-	
-
-	private void parcelamento(ContaReceber contaReceber) {
-		
-		List<ContaReceber> contasParaParcelamento = new ArrayList<>();
-
-		try {
-			for(int i = 1; i <= contaReceber.getTotalParcela(); i++) {
-				ContaReceber cp = new ContaReceber();
-				cp.setDataEmissao(contaReceber.getDataEmissao());
-				cp.setVencimento(contaReceber.getVencimento().plusMonths(i).minusMonths(1));
-				cp.setEmpresa(contaReceber.getEmpresa());
-				cp.setStatus("ABERTO");
-				cp.setAnexo(contaReceber.getAnexo());
-				cp.setParcela(i);
-				cp.setTotalParcela(contaReceber.getTotalParcela());
-				cp.setTipoDocumento(contaReceber.getTipoDocumento());
-				cp.setPlanoContaSecundaria(contaReceber.getPlanoContaSecundaria());
-				cp.setFornecedor(contaReceber.getFornecedor());
-				cp.setValor(contaReceber.getValor().divide(new BigDecimal(contaReceber.getTotalParcela()),
-						MathContext.DECIMAL32));
-				cp.setValorRecebido(BigDecimal.ZERO);
-				
-				//Caso o historico esteja nulo 
-				if(contaReceber.getHistorico().isEmpty() && contaReceber.getPlanoContaSecundaria().getId() != null) {
-					historicoVazioIgualContaSecundaria(cp);
-				}else {
-					cp.setHistorico(contaReceber.getHistorico());
-				}
-				
-				
-				//Caso o documento esteja nulo	
-				if (contaReceber.getDocumento().isEmpty()) {
-					cp.setDocumento(contaReceber.getFornecedor().getSigla() + "." + contaReceber.getVencimento().plusMonths(i).minusMonths(1).getMonthValue()+ "/"+
-							contaReceber.getVencimento().getYear() + "-" + i);
-					}else {
-						cp.setDocumento(contaReceber.getDocumento()+ "-" + i);
-					}
-				
-				contasParaParcelamento.add(cp);
-			}
-		} catch (RegistroNaoCadastradoException e) {
-			LOG.error("Erro ao salvar a conta a receber parcelada - ", e.getMessage());
-			throw new RegistroNaoCadastradoException("Algo deu errado! Conta não cadastrada.");
-		}
-
-		for(ContaReceber p : contasParaParcelamento ) {
-			testeRegistroJaCadastrado(p);
-		}
-		repository.save(contasParaParcelamento);
-	}	
-	
-	
-	
-	//BUSCAS DE CONTAS A RECEBER
 	public Page<ContaReceber> filtrar(ContaReceberFilter contaReceberFilter, Pageable pageable) {
 		return repository.filtrar(contaReceberFilter, pageable);
 	}
@@ -168,21 +125,17 @@ public class ContaReceberService {
 	}
 	
 	
-	
 	@Transactional
 	public void excluir(Long id) {
-		String tipo = "a conta";
 		try {
 			repository.delete(id);
 			repository.flush();
 		} catch (PersistenceException e) {
-			throw new ImpossivelExcluirEntidade("Não foi possivel excluir " + tipo +". Exclua primeiro o(s) relacionamento(s) com outra(s) tabela(s)!"); 
+			throw new ImpossivelExcluirEntidade("Não foi possivel excluir a conta. Exclua primeiro o(s) relacionamento(s) com outra(s) tabela(s)!"); 
 		}
 	}		
 
-	
 
-	//REGRA PARA EVITAR DATA EMISSÃO MAIOR QUE VENCIMENTO
 	private void testeVencimentoMaiorEmissao(ContaReceber contaReceber) {
 		if(contaReceber.getDataEmissao() != null) {
 			if(!contaReceber.isVencimentoMaiorEmissao()) {
@@ -191,11 +144,16 @@ public class ContaReceberService {
 		}
 	}
 	
-	//TESTE DE REGISTRO JÁ CADASTRADO
+	
 	private void testeRegistroJaCadastrado(ContaReceber contaReceber) {
-		Optional<ContaReceber> optional = repository.findByDocumentoAndFornecedor(contaReceber.getDocumento(), contaReceber.getFornecedor());
-		if (optional.isPresent() && !optional.get().equals(contaReceber)) {
-			throw new DocumentoEFornecedorJaCadastradoException("Já existe uma conta com este documento e cliente cadastrado!");
+		if(contaReceber.getFornecedor().getId() == null) {
+			throw new TransientObjectException ("O cliente não foi selecionado");
+		}else {
+			
+			Optional<ContaReceber> optional = repository.findByDocumentoAndFornecedor(contaReceber.getDocumento(), contaReceber.getFornecedor());
+			if (optional.isPresent() && !optional.get().equals(contaReceber)) {
+				throw new DocumentoEFornecedorJaCadastradoException("Já existe uma conta com este documento e cliente cadastrado!");
+			}
 		}
 	}
 
@@ -203,7 +161,6 @@ public class ContaReceberService {
 	public BigDecimal totalGeral(ContaReceberFilter contaReceberFilter) {
 		return repository.totalGeral(contaReceberFilter);
 	}
-
 
 
 	public List<ContaReceber> findByFornecedor(Fornecedor cliente) {

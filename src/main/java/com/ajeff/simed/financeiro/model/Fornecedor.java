@@ -1,7 +1,6 @@
 package com.ajeff.simed.financeiro.model;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -13,7 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -74,16 +72,16 @@ public class Fornecedor implements Serializable{
 	@Column(name = "dados_bancarios")
 	private Boolean dadosBancarios;
 	
+	@JsonIgnore
 	@Enumerated(EnumType.STRING)
 	@Column(name = "tipo_conta")
 	private TipoConta tipoConta;
 
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "id_agencia")
 	private Agencia agencia;
 	
-	@OneToMany(mappedBy = "fornecedor")
-	private List<ContaPagar> contasPagar;
 	
 	@PrePersist
 	@PreUpdate
@@ -231,16 +229,6 @@ public class Fornecedor implements Serializable{
 
 	public void setDependente(Integer dependente) {
 		this.dependente = dependente;
-	}
-
-
-	public List<ContaPagar> getContasPagar() {
-		return contasPagar;
-	}
-
-
-	public void setContasPagar(List<ContaPagar> contasPagar) {
-		this.contasPagar = contasPagar;
 	}
 
 
