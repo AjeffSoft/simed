@@ -16,6 +16,7 @@ import com.ajeff.simed.financeiro.model.ExtratoBancario;
 import com.ajeff.simed.financeiro.model.Movimentacao;
 import com.ajeff.simed.financeiro.model.MovimentacaoBancaria;
 import com.ajeff.simed.financeiro.model.Pagamento;
+import com.ajeff.simed.financeiro.model.Recebimento;
 import com.ajeff.simed.financeiro.repository.ExtratosRepository;
 import com.ajeff.simed.financeiro.repository.MovimentacoesBancariasRepository;
 import com.ajeff.simed.financeiro.repository.MovimentacoesRepository;
@@ -99,7 +100,22 @@ public class ExtratoService {
 		extrato.setMovimentacao(pagamento.getMovimentacao());
 		extrato.setValor(pagamento.getValor());
 		repository.save(extrato);
-}	
+	}	
+	
+	
+	public void criarRecebimentoNoExtrato(Recebimento recebimento, String status) {
+		ExtratoBancario extrato = new ExtratoBancario();
+		extrato.setData(recebimento.getData());
+		extrato.setContaBancaria(recebimento.getContaEmpresa());
+		extrato.setCredito(true);
+		extrato.setHistorico("Recebimento de: " + recebimento.getContaReceber().getFornecedor().getFantasia() +" - Documento nº: "+ recebimento.getContaReceber().getDocumento());
+		extrato.setRecebimento(recebimento);
+		extrato.setStatus(status);
+		extrato.setTipo("RECEBIMENTO");
+		extrato.setMovimentacao(recebimento.getMovimentacao());
+		extrato.setValor(recebimento.getValor());
+		repository.save(extrato);
+	}	
 	
 	
 //	@Transactional
@@ -235,6 +251,16 @@ public class ExtratoService {
 ////			
 ////		}
 //		
+	}
+
+
+	public ExtratoBancario findByRecebimento(Recebimento recebimento) {
+		return repository.findByRecebimento(recebimento);
+	}
+
+
+	public void excluir(ExtratoBancario extrato) {
+		repository.delete(extrato);
 	}
 
 	

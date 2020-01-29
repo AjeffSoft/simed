@@ -17,7 +17,7 @@ public interface ContaEmpresaRepository extends JpaRepository<ContaEmpresa, Long
 	@Query("select c from ContaEmpresa c where tipo like 'CORRENTE' order by c.nome, c.empresa.fantasia, c.agencia.banco.nome, c.conta")
 	public List<ContaEmpresa> findByEmpresaIdOrderByConta();
 
-	@Query("select c from ContaEmpresa c order by c.nome, c.empresa.fantasia, c.agencia.banco.nome, c.conta")
+	@Query("select c from ContaEmpresa c where c.situacao = true order by c.nome, c.empresa.fantasia, c.agencia.banco.nome, c.conta")
 	public List<ContaEmpresa> listarTodosOrdenadoPorNome();
 
 	public List<ContaEmpresa> findByEmpresa(Empresa empresa);

@@ -32,7 +32,7 @@ import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoExceptio
 import com.ajeff.simed.financeiro.service.exception.RegistroNaoCadastradoException;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
 import com.ajeff.simed.geral.security.UsuarioSistema;
-import com.ajeff.simed.geral.service.UsuarioService;
+import com.ajeff.simed.geral.service.EmpresaService;
 
 @Controller
 @RequestMapping("/financeiro/movimentacao")
@@ -41,15 +41,14 @@ public class MovimentacaoController {
 	@Autowired
 	private MovimentacaoService service;
 	@Autowired
-	private UsuarioService usuarioService;
-	@Autowired
 	private MovimentacoesBancariasRepository movBancarioRepository;
-
+	@Autowired
+	private EmpresaService empresaService;
 	
 	@GetMapping("/novo")
 	public ModelAndView novo(Movimentacao movimentacao, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
 		ModelAndView mv = new ModelAndView("Financeiro/movimentacao/CadastroMovimentacao");
-		mv.addObject("empresas", usuarioService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
+		mv.addObject("empresas", empresaService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
 		return mv;
 	}
 	
@@ -58,7 +57,7 @@ public class MovimentacaoController {
 	public ModelAndView pesquisar(MovimentacaoFilter movimentacaoFilter, BindingResult result, @PageableDefault(size=50) Pageable pageable,
 										HttpServletRequest httpServletRequest, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
 		ModelAndView mv = new ModelAndView("Financeiro/movimentacao/PesquisarMovimentacoes");
-		mv.addObject("empresas", usuarioService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
+		mv.addObject("empresas", empresaService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
 		PageWrapper<Movimentacao> paginaWrapper = new PageWrapper<>(service.filtrar(movimentacaoFilter, pageable), httpServletRequest);
 		mv.addObject("pagina", paginaWrapper);
 		return mv;

@@ -20,6 +20,7 @@ import com.ajeff.simed.financeiro.model.Recebimento;
 import com.ajeff.simed.financeiro.service.ContaReceberService;
 import com.ajeff.simed.financeiro.service.RecebimentoService;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
+import com.ajeff.simed.financeiro.service.exception.MovimentacaoFechadaException;
 import com.ajeff.simed.financeiro.service.exception.PeriodoMovimentacaoException;
 import com.ajeff.simed.financeiro.service.exception.RecebimentoNaoEfetuadoException;
 import com.ajeff.simed.financeiro.service.exception.ValorInformadoInvalidoException;
@@ -56,12 +57,11 @@ public class RecebimentoController {
 			return novo(id, recebimento);
 		}
 		try {
-			recebimento.setContaReceber(contaReceber);
 			service.salvar(recebimento, contaReceber);
 		} catch (ValorInformadoInvalidoException e) {
 			result.rejectValue("valor", e.getMessage(), e.getMessage());
 			return novo(id, recebimento);
-		} catch (PeriodoMovimentacaoException e) {
+		} catch (MovimentacaoFechadaException e) {
 			result.rejectValue("data", e.getMessage(), e.getMessage());
 			return novo(id, recebimento);
 		} catch (RecebimentoNaoEfetuadoException e) {

@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ajeff.simed.financeiro.model.ContaReceber;
 import com.ajeff.simed.financeiro.model.Fornecedor;
 import com.ajeff.simed.financeiro.model.PlanoContaSecundaria;
+import com.ajeff.simed.financeiro.model.Recebimento;
 import com.ajeff.simed.financeiro.repository.ContasReceberRepository;
 import com.ajeff.simed.financeiro.repository.PlanosContaSecundariaRepository;
 import com.ajeff.simed.financeiro.repository.filter.ContaReceberFilter;
@@ -162,4 +163,12 @@ public class ContaReceberService {
 		return repository.findByFornecedorOrderByVencimento(cliente);
 	}
 
+
+	public void alterarStatusESubtrairValorConta(Long id, String status, BigDecimal valor) {
+		ContaReceber contaReceber = repository.findOne(id);
+		contaReceber.setStatus(status);
+		contaReceber.setValorRecebido(contaReceber.getValorRecebido().subtract(valor));
+		repository.save(contaReceber);
+	}
+	
 }

@@ -1,7 +1,9 @@
 package com.ajeff.simed.financeiro.service;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,11 +31,14 @@ import com.ajeff.simed.financeiro.repository.TransferenciasContasRepository;
 import com.ajeff.simed.financeiro.repository.filter.MovimentacaoFilter;
 import com.ajeff.simed.financeiro.service.exception.ErroAoFecharMovimentacaoException;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
+import com.ajeff.simed.financeiro.service.exception.MovimentacaoFechadaException;
 import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoException;
 import com.ajeff.simed.financeiro.service.exception.RegistroNaoCadastradoException;
 import com.ajeff.simed.geral.model.ContaEmpresa;
 import com.ajeff.simed.geral.model.Empresa;
 import com.ajeff.simed.geral.repository.ContaEmpresaRepository;
+
+import net.sf.jasperreports.renderers.SimpleDataRenderer;
 
 @Service
 public class MovimentacaoService {
@@ -54,10 +59,24 @@ public class MovimentacaoService {
 	private TransferenciasContasRepository transferenciaRepository;
 
 	
-	
-//	@Autowired
-//	private EmpresasRepository empresaRepository;
 
+	public void verificarSeMovimentacaoEstaFechado(Empresa empresa, LocalDate data) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		
+		Optional<Movimentacao> mov = repository.findByEmpresaAndStatusAberto(empresa);	
+		if(!mov.isPresent()) {
+			throw new MovimentacaoFechadaException("Não existe movimentação em aberto para a empresa: " + empresa.getFantasia());
+		}
+			
+		if (data.isBefore(mov.get().getDataInicio()) || data.isAfter(mov.get().getDataFinal())){
+			throw new MovimentacaoFechadaException("A data informada esta fora do limite do movimento em aberto: " + mov.get().getDataInicio().format(formatter) + " à "+ mov.get().getDataFinal().format(formatter));
+		}
+	}	
+	
+	
+	
+	
+	
 	
 	
 	@Transactional
