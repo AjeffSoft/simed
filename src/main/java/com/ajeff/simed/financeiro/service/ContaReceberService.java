@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ajeff.simed.financeiro.model.ContaReceber;
 import com.ajeff.simed.financeiro.model.Fornecedor;
 import com.ajeff.simed.financeiro.model.PlanoContaSecundaria;
-import com.ajeff.simed.financeiro.model.Recebimento;
 import com.ajeff.simed.financeiro.repository.ContasReceberRepository;
 import com.ajeff.simed.financeiro.repository.PlanosContaSecundariaRepository;
 import com.ajeff.simed.financeiro.repository.filter.ContaReceberFilter;

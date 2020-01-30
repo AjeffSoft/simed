@@ -9,8 +9,6 @@
 
 <head>
 	<title>Cadastro de conta a pagar</title>
-	<link rel="stylesheet" th:href="@{/stylesheets/vendors/upload.min.css}"/>
-	
 </head>
 
 
@@ -44,8 +42,6 @@
 				<div th:unless="${contaPagar.novo}">
 					<input type="hidden" th:field="*{totalParcela}">
 					<input type="hidden" th:field="*{prazoParcelamento}">
-					<input type="hidden" th:field="*{upload}">
-					<input type="hidden" th:field="*{contentType}">
 				</div>
 
 				<div class="row">
@@ -53,6 +49,7 @@
 					<div class="col-sm-3  form-group"  simed:classforerror="empresa">
 						<label for="empresa" class="control-label">Empresa</label>
 						<select id="empresa" class="form-control" th:field="*{empresa}">
+							<option value="">Selecione uma empresa</option>
 							<option th:each="empresa : ${empresas}" th:value="${empresa.id}" th:text="${empresa.fantasia}"></option>
 						</select>
 					</div>
@@ -124,7 +121,7 @@
 				<div class="tab-content">
 					<div class="tab-pane active" id="dados">
 						<div class="row">
-							<div class="col-sm-2  form-group">
+							<div class="col-sm-2  form-group" simed:classforerror="notaFiscal">
 								<label for="notaNum" class="control-label">Nº NF</label>
 								<input id="notaNum" type="text" class="form-control" maxlength="12" th:field = "*{notaFiscal}">
 							</div>
@@ -142,88 +139,76 @@
 								</div>
 							</div>
 							
-							<div class="col-sm-2  form-group" th:if="${contaPagar.novo}">
-								<label for="parcelaNum" class="control-label">Parcelas nº</label>
-								<input id="parcelaNum" type="text" class="form-control" maxlength="3" th:field = "*{totalParcela}">
-							</div>
-							
-							<div class="col-sm-2  form-group" th:if="${contaPagar.novo}">
-								<label for="tipoDocumento" class="control-label">Prazo Parcela</label>
-								<select id="tipoDocumento" class="form-control" th:field="*{prazoParcelamento}">
-									<option value="0">Vencimento</option>
-									<option value="5">Emissão + 5 e 5 dias</option>
-									<option value="10">Emissão + 10 e 10 dias</option>
-									<option value="15">Emissão + 15 e 15 dias</option>
-									<option value="20">Emissão + 20 e 20 dias</option>
-									<option value="30">Emissão + 30 e 30 dias</option>
-									<option value="45">Emissão + 45 e 45 dias</option>
-									<option value="60">Emissão + 60 e 60 dias</option>
-								</select>
-							</div>							
-
 							<div class="col-sm-2  form-group" simed:classforerror="vencimento">
 								<label for="vencimento" class="control-label">Vencimento</label>
 								<input id="vencimento" type="text" class="form-control  js-date" th:field = "*{vencimento}" autocomplete="off"/>
 							</div>
+
+							<div class="col-sm-2  form-group" th:if="${contaPagar.novo}">
+								<label for="parcelaNum" class="control-label">Parcelas nº</label>
+								<input id="parcelaNum" type="number" class="form-control" th:field = "*{totalParcela}">
+							</div>
+							
+							<div class="col-sm-2  form-group" th:if="${contaPagar.novo}">
+								<label for="proxVencimento" class="control-label">Próximo Venc.</label>
+								<input id="proxVencimento" type="text" class="form-control  js-date" th:field = "*{proxVencimento}" autocomplete="off"
+									placeholder="Só nos parcelamentos"/>
+							</div>
 						</div>
 						
 						<div class="row" th:if="${contaPagar.novo}">
-							<div class="form-group  col-sm-1">
+							<div class="form-group  col-sm-2">
 								<label class="control-label">IRRF</label>
 								<div>
 									<input id="impRenda" type="checkbox" checked data-toggle="toggle" class="form-control"  data-size="small"
-									 data-on="Sim" data-off="Não" data-onstyle="success" data-width="70" data-offstyle="default" th:field="*{reterIR}"/>
+									 data-on="Retido" data-off="Sem Retenção" data-onstyle="primary" data-offstyle="default" th:field="*{reterIR}"/>
 								</div>
 							</div>
 	
-							<div class="form-group  col-sm-1">
+							<div class="form-group  col-sm-2">
 								<label class="control-label">PCCS</label>
 								<div>	
 									<input id="cofins" type="checkbox" checked data-toggle="toggle" class="form-control"  data-size="small"
-									 data-on="Sim" data-off="Não" data-onstyle="success" data-width="70" data-offstyle="default" th:field="*{reterCOFINS}"/>
+									 data-on="Retido" data-off="Sem Retenção" data-onstyle="primary" data-offstyle="default" th:field="*{reterCOFINS}"/>
 								</div>
 							</div>
 	
-							<div class="form-group  col-sm-1">
+							<div class="form-group  col-sm-2">
 								<label class="control-label">INSS</label>
 								<div>	
-									<input id="impRenda" type="checkbox" checked data-toggle="toggle" class="form-control"  data-size="small"
-									 data-on="Sim%" data-off="Não" data-onstyle="success" data-width="70" data-offstyle="default" th:field="*{reterINSS}"/>
+									<input id="impInss" type="checkbox" checked data-toggle="toggle" class="form-control"  data-size="small"
+									 data-on="Retido" data-off="Sem Retenção" data-onstyle="primary" data-offstyle="default" th:field="*{reterINSS}"/>
 								</div>
-							</div>
-	
-	
-							<div class="form-group  col-sm-1">
-								<label class="control-label">ISS</label>
-								<div>	
-									<input id="iss" type="checkbox" checked data-toggle="toggle" class="form-control"  data-size="small"
-									 data-on="Sim" data-off="Não" data-onstyle="success" data-width="70" data-offstyle="default" th:field="*{reterISS}"/>
-								</div>
-							</div>
-							<div class="col-sm-2  form-group" simed:classforerror="issPorcentagem">
-								<label for="issPorcentagem" class="control-label">% ISS</label>
-								<input id="issPorcentagem" type="text" class="form-control" maxlength="20" th:field="*{issPorcentagem}" disabled="disabled">
 							</div>
 							
-							<div class="form-group  col-sm-6">
-								<input type="hidden" th:field="*{upload}">
-								<input type="hidden" th:field="*{contentType}">
-								<label class="control-label">Anexar NF</label>
-								<div id="upload-drop" class="bw-upload">
-									<i class="glyphicon  glyphicon-cloud-upload"></i>
-									<span>Arraste o PDF aqui ou </span>
-									<a class="bw-upload-form-file">selecione <input id="upload-select" type="file" accept=".pdf"/></a>
-								</div>
+							<div class="col-sm-2  form-group">
+								<label for="issPorcentagem" class="control-label">ISS %</label>
+								<input id="issPorcentagem" type="text" class="form-control" maxlength="20" th:field="*{issPorcentagem}">
 							</div>
-															
+
+							<div class="form-group  col-sm-4">
+							<label class="control-label">Pendencias</label> 
+							<div>
+		  						<div class="checkbox  checkbox-inline"> 
+			    					<input type="checkbox" id="cNota" th:field="*{temNota}"/>
+			    					<label for="cNota">Com Nota Fiscal</label>
+		    					</div>
+		  						<div class="checkbox  checkbox-inline"> 
+			    					<input type="checkbox" id="cRecibo" th:field="*{recibo}"/>
+			    					<label for="cRecibo">Com Recibo</label>
+		    					</div>
+
+							</div>
+							</div>
+
 						</div>
 						
 					</div>
 				</div>
 
 				<div class="form-group">
-					<button class="btn  btn-primary" type="submit">Salvar</button>
-					<a class="btn  btn-default" sec:authorize-url="/financeiro/contaPagar/pesquisar" th:href="@{/financeiro/contaPagar/pesquisar}"> Cancelar e/ou voltar	</a>
+					<button class="btn  btn-success" type="submit">Salvar</button>
+					<a class="btn  btn-danger" sec:authorize-url="/financeiro/contaPagar/pesquisar" th:href="@{/financeiro/contaPagar/pesquisar}">Voltar</a>
 				</div>
 		</form>
 	</div>
@@ -238,55 +223,17 @@
 	<script th:src="@{/javascripts/pesquisaRapida/fornecedor.pesquisa-rapida.js}"></script>
 	<script th:src="@{/javascripts/contaPagar.combo-planoConta.js}"></script>
 	<script th:src="@{/javascripts/vendors/bootstrap-toggle.min.js}"></script>
-	
-	<script th:src="@{/javascripts/vendors/uikit.min.js}"></script>
-	<script th:src="@{/javascripts/vendors/upload.min.js}"></script>
 
 
 	<script>
-	$(function() {
-		var settings = {
-				type: 'json',
-				filelimit: 1,
-				allow: '*.(pdf)',
-				action: '/simed/financeiro/uploadContaPagar',
-				
-				complete: function(resposta){
-					$('input[name=upload]').val(resposta.nome);
-					$('input[name=contentType]').val(resposta.contentType);
-	
-					alert('Upload completado com sucesso!');
-				}
-		};
-		
-		UIkit.uploadSelect($('#upload-select'), settings);
-		UIkit.uploadDrop($('#upload-drop'), settings);
-	});
-	</script>
-
-	
-		<script>
-			$('#situacao').bootstrapToggle();	
-		</script>
-
-	<script>
-	$(function() {
-		$('.js-abas a').click(function (e) {
-			e.preventDefault();
-			$(this).tab('show');
+		$(function() {
+			$('.js-abas a').click(function (e) {
+				e.preventDefault();
+				$(this).tab('show');
+			});
 		});
-	});
 	</script>
 	
-	 <script>
-	 	$('#iss').change(function(){
-	 		if($(this).prop('checked')){
-	 			$('#issPorcentagem').removeAttr('disabled')
-	 		}else{
-				$('#issPorcentagem').attr('disabled', 'disabled')	 			
-	 		}
-	 	})
-	 </script>
 </th:block>
 
 </html>

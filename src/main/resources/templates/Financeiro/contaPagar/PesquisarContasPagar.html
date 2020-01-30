@@ -104,8 +104,6 @@
 
 				<div class="form-group">
 					<button class="btn  btn-primary" type="submit">Pesquisar</button>
-<!-- 					<a class="btn  btn-info" th:href="@{/financeiro/pagamento/pesquisar}" sec:authorize-url="/financeiro/pagamento/pesquisar">Pagamento</a> -->
-					<a class="btn  btn-info" th:href="@{/financeiro/contaPagar/relatorio}" sec:authorize-url="/financeiro/contaPagar/relatorio">Relatórios</a>
 				</div>
 			</form>
 			
@@ -169,8 +167,8 @@
 							</td>
 
 							<td class="text-center">
-								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes" sec:authorize-url="/financeiro/contaPagar/detalheConta/**"
-										th:href="@{/financeiro/contaPagar/detalheConta/{id}(id=${contaPagar.id})}"> 
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes" sec:authorize-url="/financeiro/contaPagar/detalhe/**"
+										th:href="@{/financeiro/contaPagar/detalhe/{id}(id=${contaPagar.id})}"> 
 									<i class="glyphicon glyphicon-eye-open"></i>
 								</a>
 
@@ -188,7 +186,7 @@
 						</tr>
 						
 						<tr th:if="${pagina.vazia}">
-							<td colspan="7"> Nenhuma conta a pagar encontrada</td>
+							<td colspan="8"> Nenhuma conta a pagar encontrada</td>
 						</tr>
 
 					</tbody>
@@ -198,7 +196,6 @@
 				
 			</div>
 
-			<!-- COMPONENTE THYMELEAF PARA PAGINAÇÃO -->	
 			<simed:pagination page="${pagina}"/>						
 
 		</div>		

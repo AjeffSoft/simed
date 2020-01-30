@@ -5,12 +5,15 @@ import java.math.MathContext;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.PersistenceException;
 
+import org.hibernate.TransientObjectException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +24,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ajeff.simed.financeiro.model.ContaPagar;
+import com.ajeff.simed.financeiro.model.ContaReceber;
 import com.ajeff.simed.financeiro.model.Fornecedor;
+import com.ajeff.simed.financeiro.model.PlanoContaSecundaria;
 import com.ajeff.simed.financeiro.repository.ContasPagarRepository;
 import com.ajeff.simed.financeiro.repository.filter.ContaPagarFilter;
 import com.ajeff.simed.financeiro.service.event.ContaPagarSalvoEvent;
+import com.ajeff.simed.financeiro.service.exception.DocumentoEFornecedorJaCadastradoException;
+import com.ajeff.simed.financeiro.service.exception.RegistroNaoCadastradoException;
 import com.ajeff.simed.financeiro.service.exception.VencimentoMenorEmissaoException;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.util.CalculosComDatas;
@@ -39,20 +46,115 @@ public class ContaPagarService {
 	private ContasPagarRepository repository;
 	@Autowired
 	private ApplicationEventPublisher publisher;
-//	@Autowired
-//	private PlanoContaSecundariaService contaSecundariaService;
+	@Autowired
+	private PlanoContaSecundariaService contaSecundariaService;
 	@Autowired
 	private ImpostoService impostoService;
 	
+	
 	@Transactional
 	public void salvar(ContaPagar contaPagar) {
-		if (contaPagar.isNovo()) {
-			novoRegistro(contaPagar);
-		}else {
-			testeEmissaoMaiorVencimento(contaPagar);
-			repository.save(contaPagar);
+		try {
+			if (contaPagar.isNovo()) {
+				List<ContaPagar> contas = gerarContasPagar(contaPagar);
+				repository.save(contas);
+			}else {
+				testeVencimentoMaiorEmissao(contaPagar);
+				testeRegistroJaCadastrado(contaPagar);
+				repository.save(contaPagar);
+			}
+		} catch (RegistroNaoCadastradoException e) {
+			throw new RegistroNaoCadastradoException("Algo deu errado! Conta não cadastrada.");
 		}
 	}
+	
+
+	private List<ContaPagar> gerarContasPagar(ContaPagar contaPagar) {
+		List<ContaPagar> contas = new ArrayList<>();
+		
+		if (contaPagar.getTotalParcela() == null || contaPagar.getTotalParcela() <=0) {
+			contaPagar.setTotalParcela(1);
+		}
+		
+		calculoDeDiasDoVencimentoParaProximoVencimento(contaPagar);
+		
+		try {
+			for(int i = 1; i <= contaPagar.getTotalParcela(); i++) {
+		
+				ContaPagar cp = new ContaPagar();
+				cp.setDataEmissao(contaPagar.getDataEmissao());
+//				cp.setVencimento(contaPagar.getVencimento().plusMonths(i).minusMonths(1));
+				cp.setVencimento(contaPagar.getVencimento());
+				cp.setEmpresa(contaPagar.getEmpresa());
+				cp.setStatus("ABERTO");
+				cp.setDocumento(contaPagar.getFornecedor().getSigla() + contaPagar.getNotaFiscal() +"-"+i);
+				cp.setParcela(i);
+				cp.setRecibo(contaPagar.getRecibo());
+				cp.setTemNota(contaPagar.getTemNota());
+				cp.setNotaFiscal(contaPagar.getNotaFiscal());
+				cp.setTotalParcela(contaPagar.getTotalParcela());
+				cp.setPlanoContaSecundaria(contaPagar.getPlanoContaSecundaria());
+				cp.setFornecedor(contaPagar.getFornecedor());
+				cp.setValor(contaPagar.getValor().divide(new BigDecimal(contaPagar.getTotalParcela()),
+						MathContext.DECIMAL32));		
+				setarHistoricoDaContaPagar(contaPagar, cp);
+				testeVencimentoMaiorEmissao(cp);
+				testeRegistroJaCadastrado(cp);
+				contas.add(cp);
+			}
+		} catch (RegistroNaoCadastradoException e) {
+			throw new RegistroNaoCadastradoException("Algo deu errado! Conta não cadastrada.");
+		}
+		
+		return contas;
+	}
+	
+	private void calculoDeDiasDoVencimentoParaProximoVencimento(ContaPagar contaPagar) {
+		if (contaPagar.getProxVencimento() != null) {
+			contaPagar.setPrazoParcelamento(Period.between(contaPagar.getVencimento(), contaPagar.getProxVencimento()).getDays());
+		}
+	}
+
+
+	private void setarHistoricoDaContaPagar(ContaPagar contaPagar, ContaPagar cp) {
+		if(contaPagar.getHistorico().isEmpty() && contaPagar.getPlanoContaSecundaria().getId() != null) {
+			historicoVazioIgualContaSecundaria(cp);
+		}else {
+			cp.setHistorico(contaPagar.getHistorico());
+		}
+	}	
+
+	private void historicoVazioIgualContaSecundaria(ContaPagar contaPagar) {
+		PlanoContaSecundaria planoConta = contaSecundariaService.findOne(contaPagar.getPlanoContaSecundaria().getId());
+		contaPagar.setHistorico(planoConta.getNome());
+	}	
+
+
+	private void testeVencimentoMaiorEmissao(ContaPagar contaPagar) {
+		if(contaPagar.getDataEmissao() != null) {
+			if(!contaPagar.isVencimentoMaiorEmissao()) {
+				throw new VencimentoMenorEmissaoException("A data de vencimento não pode ser menor que a emissão");
+			}
+		}
+	}
+		
+
+	
+	private void testeRegistroJaCadastrado(ContaPagar contaPagar) {
+		if(contaPagar.getFornecedor().getId() == null) {
+			throw new TransientObjectException ("O fornecedor não foi selecionado");
+		}else {
+			
+			Optional<ContaPagar> optional = repository.findByDocumentoAndFornecedorAndEmpresa(contaPagar.getDocumento(), contaPagar.getFornecedor(), contaPagar.getEmpresa());
+			if (optional.isPresent() && !optional.get().equals(contaPagar)) {
+				throw new DocumentoEFornecedorJaCadastradoException("Já existe uma conta cadastrada com esta nota fiscal para esse fornecedor!");
+			}
+		}
+	}	
+	
+	
+//////////////////////////////////////////////////////////////////	
+	
 
 	private void novoRegistro(ContaPagar contaPagar) {
 		List<ContaPagar> novosRegistros = new ArrayList<>();

@@ -41,6 +41,7 @@ public class ContaPagar implements Serializable{
 	@Column(name = "data_emissao")
 	private LocalDate dataEmissao;
 	
+	@NotNull(message = "Informe a data de vencimento")	
 	private LocalDate vencimento;
 
 	@NotNull(message = "Informe o valor da conta")
@@ -49,6 +50,11 @@ public class ContaPagar implements Serializable{
 	private String documento;
 	
 	private String status;
+	
+	private Boolean recibo;
+	
+	@Column(name = "tem_nota")
+	private Boolean temNota;
 	
 	@Column(name = "nota_fiscal")
 	private String notaFiscal;
@@ -99,6 +105,9 @@ public class ContaPagar implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "id_pagamento")
 	private Pagamento pagamento;
+	
+	@Transient
+	private LocalDate proxVencimento;
 	
 	@Transient
 	private PlanoConta planoConta;
@@ -346,6 +355,30 @@ public class ContaPagar implements Serializable{
 		return serialVersionUID;
 	}
 
+	public Boolean getRecibo() {
+		return recibo;
+	}
+
+	public void setRecibo(Boolean recibo) {
+		this.recibo = recibo;
+	}
+
+	public Boolean getTemNota() {
+		return temNota;
+	}
+
+	public void setTemNota(Boolean temNota) {
+		this.temNota = temNota;
+	}
+
+	public LocalDate getProxVencimento() {
+		return proxVencimento;
+	}
+
+	public void setProxVencimento(LocalDate proxVencimento) {
+		this.proxVencimento = proxVencimento;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -415,5 +448,9 @@ public class ContaPagar implements Serializable{
 	
 	public boolean isNovoOuPrimeiraParcela() {
 		return isNovo() || this.parcela == 1;
+	}
+	
+	public boolean isPendencia () {
+		return this.recibo.equals(false) || this.temNota.equals(false);
 	}
 }

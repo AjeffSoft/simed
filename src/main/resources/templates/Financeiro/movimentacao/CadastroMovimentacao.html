@@ -14,7 +14,6 @@
 
 	<section layout:fragment="conteudo">
 
-		<!-- CABEÇALHO DO CADASTRO -->
 		<div class="page-header">
 			<div class="container-fluid">
 				<div class="row">
@@ -35,12 +34,12 @@
 			
 				<input type="hidden" th:field="*{id}">
 				<input type="hidden" th:field="*{dataFechamento}">
-				<input type="hidden" th:field="*{totalAbertura}">
+				<input type="hidden" th:field="*{saldoInicial}">
 				<input type="hidden" th:field="*{totalCreditos}">
 				<input type="hidden" th:field="*{totalDebitos}">
-				<input type="hidden" th:field="*{totalPeriodo}">
-				<input type="hidden" th:field="*{totalGeral}">
-				<input type="hidden" th:field="*{totalPendente}">
+				<input type="hidden" th:field="*{saldoFinal}">
+				<input type="hidden" th:field="*{saldoGeral}">
+				<input type="hidden" th:field="*{chequeCompensar}">
 				<input type="hidden" th:field="*{fechado}">
 				
 				<div class="row">

@@ -1,9 +1,7 @@
 package com.ajeff.simed.financeiro.service;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 import javax.persistence.PersistenceException;
 
@@ -15,24 +13,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ajeff.simed.financeiro.model.ContaReceber;
 import com.ajeff.simed.financeiro.model.ExtratoBancario;
-import com.ajeff.simed.financeiro.model.Movimentacao;
-import com.ajeff.simed.financeiro.model.MovimentacaoBancaria;
-import com.ajeff.simed.financeiro.model.Pagamento;
 import com.ajeff.simed.financeiro.model.Recebimento;
-import com.ajeff.simed.financeiro.repository.ContasReceberRepository;
-import com.ajeff.simed.financeiro.repository.ExtratosRepository;
-import com.ajeff.simed.financeiro.repository.MovimentacoesBancariasRepository;
-import com.ajeff.simed.financeiro.repository.MovimentacoesRepository;
 import com.ajeff.simed.financeiro.repository.RecebimentosRepository;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
-import com.ajeff.simed.financeiro.service.exception.PeriodoMovimentacaoException;
 import com.ajeff.simed.financeiro.service.exception.RecebimentoNaoEfetuadoException;
 import com.ajeff.simed.financeiro.service.exception.ValorInformadoInvalidoException;
-import com.ajeff.simed.geral.model.ContaEmpresa;
 
 @Service
 public class RecebimentoService {
 
+	@SuppressWarnings("unused")
 	private static final Logger LOG = LoggerFactory.getLogger(RecebimentoService.class);	
 	
 	@Autowired
@@ -45,8 +35,6 @@ public class RecebimentoService {
 	private MovimentacaoService movimentacaoService;
 	@Autowired
 	private ExtratoService extratoService;
-	@Autowired
-	private MovimentacoesBancariasRepository movBancariaRepository;
 	
 	
 	@Transactional

@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.hibernate.TransientObjectException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +33,13 @@ import com.ajeff.simed.financeiro.model.ContaPagar;
 import com.ajeff.simed.financeiro.repository.filter.ContaPagarFilter;
 import com.ajeff.simed.financeiro.service.ContaPagarService;
 import com.ajeff.simed.financeiro.service.PlanoContaService;
+import com.ajeff.simed.financeiro.service.exception.DocumentoEFornecedorJaCadastradoException;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
+import com.ajeff.simed.financeiro.service.exception.RegistroNaoCadastradoException;
+import com.ajeff.simed.financeiro.service.exception.VencimentoMenorEmissaoException;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
 import com.ajeff.simed.geral.security.UsuarioSistema;
 import com.ajeff.simed.geral.service.EmpresaService;
-import com.ajeff.simed.geral.service.UsuarioService;
 
 @Controller
 @RequestMapping("/financeiro/contaPagar")
@@ -49,10 +52,6 @@ public class ContaPagarController {
 	private ContaPagarService service;
 	@Autowired
 	private PlanoContaService planoContaService;
-//	@Autowired
-//	private ImpostosRepository impostoRepository;
-	@Autowired
-	private UsuarioService usuarioService;
 	@Autowired
 	private EmpresaService empresaService;
 	
@@ -74,8 +73,17 @@ public class ContaPagarController {
 		}
 		try {
 			service.salvar(contaPagar);
-		} catch (Exception e) {
-			result.rejectValue("documento", e.getMessage(), e.getMessage());
+		} catch (TransientObjectException e) {
+			result.rejectValue("fornecedor", e.getMessage(), e.getMessage());
+			return nova(contaPagar, usuarioSistema);
+		} catch (DocumentoEFornecedorJaCadastradoException e) {
+			result.rejectValue("notaFiscal", e.getMessage(), e.getMessage());
+			return nova(contaPagar, usuarioSistema);
+		} catch (VencimentoMenorEmissaoException e) {
+			result.rejectValue("vencimento", e.getMessage(), e.getMessage());
+			return nova(contaPagar, usuarioSistema);
+		} catch (RegistroNaoCadastradoException e) {
+			result.rejectValue("vencimento", e.getMessage(), e.getMessage());
 			return nova(contaPagar, usuarioSistema);
 		}
 		

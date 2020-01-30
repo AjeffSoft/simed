@@ -1,7 +1,6 @@
 package com.ajeff.simed.financeiro.service;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -37,8 +36,6 @@ import com.ajeff.simed.financeiro.service.exception.RegistroNaoCadastradoExcepti
 import com.ajeff.simed.geral.model.ContaEmpresa;
 import com.ajeff.simed.geral.model.Empresa;
 import com.ajeff.simed.geral.repository.ContaEmpresaRepository;
-
-import net.sf.jasperreports.renderers.SimpleDataRenderer;
 
 @Service
 public class MovimentacaoService {
