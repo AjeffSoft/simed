@@ -14,7 +14,6 @@
 
 	<section layout:fragment="conteudo">
 
-		<!-- CABEÇALHO DO CADASTRO -->
 		<div class="page-header">
 			<div class="container-fluid">
 				<div class="row">
@@ -41,13 +40,12 @@
 				
 				<div th:unless="${contaPagar.novo}">
 					<input type="hidden" th:field="*{totalParcela}">
-					<input type="hidden" th:field="*{prazoParcelamento}">
 				</div>
 
 				<div class="row">
 				
 					<div class="col-sm-3  form-group"  simed:classforerror="empresa">
-						<label for="empresa" class="control-label">Empresa</label>
+						<label for="empresa" class="control-label">Empresa*</label>
 						<select id="empresa" class="form-control" th:field="*{empresa}">
 							<option value="">Selecione uma empresa</option>
 							<option th:each="empresa : ${empresas}" th:value="${empresa.id}" th:text="${empresa.fantasia}"></option>
@@ -131,6 +129,11 @@
 								<input id="emissao" type="text" class="form-control  js-date" th:field = "*{dataEmissao}" autocomplete="off"/>
 							</div>
 		
+							<div class="col-sm-2  form-group" simed:classforerror="vencimento">
+								<label for="vencimento" class="control-label">Vencimento*</label>
+								<input id="vencimento" type="text" class="form-control  js-date" th:field = "*{vencimento}" autocomplete="off"/>
+							</div>
+
 							<div class="col-sm-2  form-group" simed:classforerror="valor">
 								<label for="valor" class="control-label">Valor *</label>
 								<div class="input-group">
@@ -138,22 +141,12 @@
 									<div class="input-group-addon">R$</div>
 								</div>
 							</div>
-							
-							<div class="col-sm-2  form-group" simed:classforerror="vencimento">
-								<label for="vencimento" class="control-label">Vencimento</label>
-								<input id="vencimento" type="text" class="form-control  js-date" th:field = "*{vencimento}" autocomplete="off"/>
-							</div>
 
-							<div class="col-sm-2  form-group" th:if="${contaPagar.novo}">
+							<div class="col-sm-4  form-group" th:if="${contaPagar.novo}">
 								<label for="parcelaNum" class="control-label">Parcelas nº</label>
 								<input id="parcelaNum" type="number" class="form-control" th:field = "*{totalParcela}">
 							</div>
-							
-							<div class="col-sm-2  form-group" th:if="${contaPagar.novo}">
-								<label for="proxVencimento" class="control-label">Próximo Venc.</label>
-								<input id="proxVencimento" type="text" class="form-control  js-date" th:field = "*{proxVencimento}" autocomplete="off"
-									placeholder="Só nos parcelamentos"/>
-							</div>
+
 						</div>
 						
 						<div class="row" th:if="${contaPagar.novo}">
@@ -183,11 +176,11 @@
 							
 							<div class="col-sm-2  form-group">
 								<label for="issPorcentagem" class="control-label">ISS %</label>
-								<input id="issPorcentagem" type="text" class="form-control" maxlength="20" th:field="*{issPorcentagem}">
+								<input id="issPorcentagem" type="text" class="form-control  js-decimal" maxlength="20" th:field="*{issPorcentagem}">
 							</div>
 
 							<div class="form-group  col-sm-4">
-							<label class="control-label">Pendencias</label> 
+							<label class="control-label">Auditoria</label> 
 							<div>
 		  						<div class="checkbox  checkbox-inline"> 
 			    					<input type="checkbox" id="cNota" th:field="*{temNota}"/>

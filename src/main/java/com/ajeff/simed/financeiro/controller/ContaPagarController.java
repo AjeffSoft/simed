@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -21,11 +20,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -93,7 +89,7 @@ public class ContaPagarController {
 	
 	
 	@GetMapping("/pesquisar")
-	public ModelAndView pesquisar(ContaPagarFilter contaPagarFilter, BindingResult result, @PageableDefault(size=50) Pageable pageable,
+	public ModelAndView pesquisar(ContaPagarFilter contaPagarFilter, BindingResult result, @PageableDefault(size=100) Pageable pageable,
 										HttpServletRequest httpServletRequest, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
 		ModelAndView mv = new ModelAndView("Financeiro/contaPagar/PesquisarContasPagar");
 		mv.addObject("empresas", empresaService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
@@ -120,36 +116,43 @@ public class ContaPagarController {
 	public ModelAndView alterar (@PathVariable Long id, ContaPagar contaPagar, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
 		contaPagar = service.buscarComPlanoConta(id);
 		ModelAndView mv = nova(contaPagar, usuarioSistema);
-		contaPagar = service.findOne(id);
 		mv.addObject(contaPagar);
 		return mv;
 	}
-
 	
-	@PutMapping("/autorizar")
-	@ResponseStatus(HttpStatus.OK)
-	public void autorizarPagamento(@RequestParam Long id) {
-		ContaPagar contaPagar = service.findOne(id);
-		service.autorizarPagamento(contaPagar);
+	@GetMapping("/pendencia/{id}")
+	public ModelAndView alterar (@PathVariable Long id, ContaPagar contaPagar) {
+		contaPagar = service.findOne(id);
+		ModelAndView mv = new ModelAndView("Financeiro/contaPagar/AlterarPendenciaContaPagar");
+		mv.addObject(contaPagar);
+		return mv;
 	}	
 
 	
-	@PutMapping("/cancelarAutorizar")
-	@ResponseStatus(HttpStatus.OK)
-	public void cancelarAutorizarPagamento(@RequestParam Long id) {
-		ContaPagar contaPagar = service.findOne(id);
-		service.cancelarAutorizarPagamento(contaPagar);
-	}	
+//	@PutMapping("/autorizar")
+//	@ResponseStatus(HttpStatus.OK)
+//	public void autorizarPagamento(@RequestParam Long id) {
+//		ContaPagar contaPagar = service.findOne(id);
+//		service.autorizarPagamento(contaPagar);
+//	}	
+
+//	
+//	@PutMapping("/cancelarAutorizar")
+//	@ResponseStatus(HttpStatus.OK)
+//	public void cancelarAutorizarPagamento(@RequestParam Long id) {
+//		ContaPagar contaPagar = service.findOne(id);
+//		service.cancelarAutorizarPagamento(contaPagar);
+//	}	
 	
 	
-//	@GetMapping("/detalheConta/{id}")
-//	public ModelAndView detalhe(@PathVariable Long id, ContaPagar contaPagar) {
-//		ModelAndView mv = new ModelAndView("Financeiro/contaPagar/DetalheContaPagar");
-//		contaPagar = service.findOne(id);
+	@GetMapping("/detalhe/{id}")
+	public ModelAndView detalhe(@PathVariable Long id, ContaPagar contaPagar) {
+		ModelAndView mv = new ModelAndView("Financeiro/contaPagar/DetalheContaPagar");
+		contaPagar = service.findOne(id);
 //		mv.addObject("impostos", impostoRepository.findByContaPagarOrigem(contaPagar));
-//		mv.addObject(contaPagar);
-//		return mv;
-//	}
+		mv.addObject(contaPagar);
+		return mv;
+	}
 
 	
 

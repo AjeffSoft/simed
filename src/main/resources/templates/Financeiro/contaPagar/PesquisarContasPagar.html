@@ -182,6 +182,12 @@
 									data:objeto="${contaPagar.documento}" sec:authorize-url="/financeiro/contaPagar/excluir/**">
 									<i class="glyphicon glyphicon-trash"></i>
 								</a>
+								
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Pendencia" sec:authorize-url="/financeiro/contaPagar/pendencia/**"
+										th:href="@{/financeiro/contaPagar/pendencia/{id}(id=${contaPagar.id})}" th:if="${contaPagar.pendencia}"> 
+									<i class="glyphicon glyphicon-exclamation-sign"></i>
+								</a>
+								
 							</td>
 						</tr>
 						

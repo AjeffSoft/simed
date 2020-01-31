@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Financeiro/LayoutFinanceiro}"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+	<title>Alterar Pendencias</title>
+</head>
+
+
+	<section layout:fragment="conteudo">
+
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1 th:unless="${contaPagar.novo}">Alterar pendencias: [[${contaPagar.documento}]]</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+
+
+			<form method="POST" th:object="${contaPagar}" class="form-vertical  js-form-loading" enctype="multipart/form-data"
+				th:action="${contaPagar.novo} ? @{/financeiro/contaPagar/nova} : @{/financeiro/contaPagar/{id}(id=${contaPagar.id})}">
+			
+				<simed:message/>
+			
+				<input type="hidden" th:field="*{id}">
+				<input type="hidden" th:field="*{status}">
+				<input type="hidden" th:field="*{parcela}">
+				<input type="hidden" th:field="*{documento}">
+				<input type="hidden" th:field="*{totalParcela}">
+				<input type="hidden" th:field="*{empresa}">
+				<input type="hidden" th:field="*{fornecedor}">
+				<input type="hidden" th:field="*{planoContaSecundaria}">
+				<input type="hidden" th:field="*{historico}">
+				<input type="hidden" th:field="*{notaFiscal}">
+				<input type="hidden" th:field="*{dataEmissao}">
+				<input type="hidden" th:field="*{vencimento}">
+				<input type="hidden" th:field="*{valor}">
+				<input type="hidden" th:field="*{totalParcela}">
+				<input type="hidden" th:field="*{totalParcela}">
+				<input type="hidden" th:field="*{totalParcela}">
+						
+				<div class="row">
+					<div class="form-group  col-sm-4">
+					<label class="control-label">Pendencias</label> 
+					<div>
+  						<div class="checkbox  checkbox-inline"> 
+	    					<input type="checkbox" id="cNota" th:field="*{temNota}"/>
+	    					<label for="cNota">Com Nota Fiscal</label>
+    					</div>
+  						<div class="checkbox  checkbox-inline"> 
+	    					<input type="checkbox" id="cRecibo" th:field="*{recibo}"/>
+	    					<label for="cRecibo">Com Recibo</label>
+    					</div>
+					</div>
+					</div>
+
+				</div>
+				
+				<div class="form-group">
+					<button class="btn  btn-success" type="submit">Salvar</button>
+					<a class="btn  btn-danger" th:href="@{/financeiro/contaPagar/pesquisar}">Voltar</a>
+				</div>
+		</form>
+	</div>
+	
+</section>
+
+<th:block layout:fragment="javascript-extra">
+	
+
+	<script>
+		$(function() {
+			$('.js-abas a').click(function (e) {
+				e.preventDefault();
+				$(this).tab('show');
+			});
+		});
+	</script>
+	
+</th:block>
+
+</html>

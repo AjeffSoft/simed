@@ -3,9 +3,7 @@ package com.ajeff.simed.financeiro.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,14 +11,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
-import org.springframework.util.StringUtils;
+import org.hibernate.validator.constraints.NotBlank;
 
 import com.ajeff.simed.geral.model.Empresa;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -56,27 +53,16 @@ public class ContaPagar implements Serializable{
 	@Column(name = "tem_nota")
 	private Boolean temNota;
 	
+	@NotBlank(message = "Informe a nota fiscal")
 	@Column(name = "nota_fiscal")
 	private String notaFiscal;
 	
-	@Column(name= "prazo_parcelamento")
-	private Integer prazoParcelamento;
-
-	private String upload;
-
-	@Column(name = "content_type")
-	private String contentType;
-
 	private Integer parcela;
 	
 	@Column(name = "total_parcela")
 	private Integer totalParcela;
 
-	@Column(name = "tipo_pendencia")
-	private String tipoPendencia;
-	
-	private Boolean pendente;
-	
+
 	@JsonIgnore
 	@NotNull(message = "Informe p plano de contas")
 	@ManyToOne
@@ -94,26 +80,14 @@ public class ContaPagar implements Serializable{
 	@JoinColumn(name = "id_fornecedor")
 	private Fornecedor fornecedor;
 	
-	@OneToMany(mappedBy = "contaPagarOrigem", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	private List<Imposto> impostos;
-
-//	@JsonIgnore
-//	@OneToOne
-//	@JoinColumn(name = "id_imposto_gerado")
-//	private Imposto impostoGerado;
 
 	@ManyToOne
 	@JoinColumn(name = "id_pagamento")
 	private Pagamento pagamento;
-	
-	@Transient
-	private LocalDate proxVencimento;
+
 	
 	@Transient
 	private PlanoConta planoConta;
-	
-	@Transient
-	private Boolean reterISS;
 
 	@Transient
 	private Boolean reterIR;
@@ -133,11 +107,7 @@ public class ContaPagar implements Serializable{
 		if(this.historico != null ) {
 			historico = historico.toUpperCase();
 		}
-
-//		if(this.documento != null ) {
-//			documento = documento.toUpperCase();
-//		}
-		
+	
 	}
 
 	public Long getId() {
@@ -166,14 +136,6 @@ public class ContaPagar implements Serializable{
 
 	public LocalDate getVencimento() {
 		return vencimento;
-	}
-
-	public Integer getPrazoParcelamento() {
-		return prazoParcelamento;
-	}
-
-	public void setPrazoParcelamento(Integer prazoParcelamento) {
-		this.prazoParcelamento = prazoParcelamento;
 	}
 
 	public void setVencimento(LocalDate vencimento) {
@@ -276,60 +238,12 @@ public class ContaPagar implements Serializable{
 		this.reterCOFINS = reterCOFINS;
 	}
 
-	public Boolean getReterISS() {
-		return reterISS;
-	}
-
-	public void setReterISS(Boolean reterISS) {
-		this.reterISS = reterISS;
-	}
-
 	public BigDecimal getIssPorcentagem() {
 		return issPorcentagem;
 	}
 
 	public void setIssPorcentagem(BigDecimal issPorcentagem) {
 		this.issPorcentagem = issPorcentagem;
-	}
-
-	public Boolean getPendente() {
-		return pendente;
-	}
-
-	public void setPendente(Boolean pendente) {
-		this.pendente = pendente;
-	}
-
-	public String getTipoPendencia() {
-		return tipoPendencia;
-	}
-
-	public void setTipoPendencia(String tipoPendencia) {
-		this.tipoPendencia = tipoPendencia;
-	}
-
-	public String getUpload() {
-		return upload;
-	}
-
-	public void setUpload(String upload) {
-		this.upload = upload;
-	}
-
-	public String getContentType() {
-		return contentType;
-	}
-
-	public List<Imposto> getImpostos() {
-		return impostos;
-	}
-
-	public void setImpostos(List<Imposto> impostos) {
-		this.impostos = impostos;
-	}
-
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
 	}
 
 	public PlanoConta getPlanoConta() {
@@ -371,13 +285,7 @@ public class ContaPagar implements Serializable{
 		this.temNota = temNota;
 	}
 
-	public LocalDate getProxVencimento() {
-		return proxVencimento;
-	}
-
-	public void setProxVencimento(LocalDate proxVencimento) {
-		this.proxVencimento = proxVencimento;
-	}
+	
 
 	@Override
 	public int hashCode() {
@@ -408,17 +316,8 @@ public class ContaPagar implements Serializable{
 		return this.id == null;
 	}
 	
-	
-	public boolean existeRetencaoImpostos() {
-		return this.reterCOFINS || this.reterINSS || this.reterIR || this.reterISS;
-	}
-	
 	public boolean isVencimentoMaiorEmissao() {
 		return this.vencimento.isEqual(this.dataEmissao) || this.vencimento.isAfter(this.dataEmissao);
-	}
-	
-	public boolean isValorNegativo() {
-		return (this.valor.compareTo(BigDecimal.ZERO) <=0);
 	}
 	
 	public boolean isAberto() {
@@ -437,17 +336,8 @@ public class ContaPagar implements Serializable{
 		return this.status.equals("PAGO") || this.status.equals("EMITIDO");
 	}
 	
-	
 	public boolean isPago() {
 		return this.status.equals("PAGO");
-	}
-	
-	public boolean isTemUpload() {
-		return !StringUtils.isEmpty(upload); 
-	}
-	
-	public boolean isNovoOuPrimeiraParcela() {
-		return isNovo() || this.parcela == 1;
 	}
 	
 	public boolean isPendencia () {

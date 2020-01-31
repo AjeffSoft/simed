@@ -162,8 +162,12 @@ public class ContasPagarRepositoryImpl implements ContasPagarRepositoryQueries {
 				criteria.add(Restrictions.eq("status", filtro.getStatus()));
 			}
 			
-			if (filtro.getVencimentoInicio() != null || filtro.getVencimentoFim() != null) {
-				criteria.add(Restrictions.between("vencimento", filtro.getVencimentoInicio(), filtro.getVencimentoFim()));
+			if(filtro.getVencimentoInicio() != null) {
+				criteria.add(Restrictions.ge("vencimento", filtro.getVencimentoInicio()));
+			}
+			
+			if(filtro.getVencimentoFim() != null) {
+				criteria.add(Restrictions.le("vencimento", filtro.getVencimentoFim()));
 			}
 			
 			if(filtro.getValorInicio() != null) {
@@ -177,10 +181,7 @@ public class ContasPagarRepositoryImpl implements ContasPagarRepositoryQueries {
 			if(isEmpresaPresente(filtro)) {
 				criteria.add(Restrictions.eq("empresa", filtro.getEmpresa()));
 			}
-			
-			if(!StringUtils.isEmpty(filtro.getPendente())) {
-				criteria.add(Restrictions.eq("pendente", filtro.getPendente()));
-			}
+
 		
 		}
 	}
@@ -188,47 +189,5 @@ public class ContasPagarRepositoryImpl implements ContasPagarRepositoryQueries {
 	private boolean isEmpresaPresente(ContaPagarFilter filtro) {
 		return filtro.getEmpresa() != null && filtro.getEmpresa().getId() != null;
 	}
-
-//	@Override
-//	public BigDecimal totalGeral() {
-//		Optional<BigDecimal> optional = Optional.ofNullable(manager.createQuery("select sum(valor) from ContaPagar", BigDecimal.class).getSingleResult());
-//		return optional.orElse(BigDecimal.ZERO);
-//	}
-
-	
-//	@SuppressWarnings("unchecked")
-//	@Override
-//	public List<ContaPagarTrimestre> totalContaPagarTrimestre(Usuario usuario) {
-//		return manager.createNamedQuery("Pagamento.trimestre")
-//				.setParameter("emp", usuario.getEmpresa().getId())
-//				.getResultList();
-//	}
-
-//	@SuppressWarnings("unchecked")
-//	@Override
-//	public List<ReceberXpagar> listarReceberEpagarMes(Usuario usuario) {
-//		return manager.createNamedQuery("Saldo.receberXpagarMes")
-//				.setParameter("emp", usuario.getEmpresa().getId())
-//				.setParameter("mes", MonthDay.now().getMonthValue())
-//				.getResultList();
-//	}
-//
-//	@SuppressWarnings("unchecked")
-//	@Override
-//	public List<ReceberXpagar> listarReceberEpagarAno(Usuario usuario) {
-//		return manager.createNamedQuery("Saldo.receberXpagarAno")
-//				.setParameter("emp", usuario.getEmpresa().getId())
-//				.setParameter("ano", YearMonth.now().getYear())
-//				.getResultList();
-//	}
-//
-//	@SuppressWarnings("unchecked")
-//	@Override
-//	public List<PagarXsaldoContas> listarPagarEsaldoContas(Usuario usuario) {
-//		return manager.createNamedQuery("Saldo.contasPagarESaldoConta")
-//				.setParameter("emp", usuario.getEmpresa().getId())
-//				.setParameter("mes", MonthDay.now().getMonthValue())
-//				.getResultList();
-//	}
 
 }
