@@ -11,6 +11,6 @@ import com.ajeff.simed.financeiro.repository.helper.imposto.ImpostosRepositoryQu
 public interface ImpostosRepository extends JpaRepository<Imposto, Long>, ImpostosRepositoryQueries{
 
 
-	List<Imposto> findByContaPagarOrigemFornecedorOrderByVencimento(Fornecedor fornecedor);
+	List<Imposto> findByContaPagarFornecedorOrderByVencimento(Fornecedor fornecedor);
 
 }

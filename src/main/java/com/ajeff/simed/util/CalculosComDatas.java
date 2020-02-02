@@ -1,18 +1,14 @@
 package com.ajeff.simed.util;
 
-import java.awt.Adjustable;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 
 import com.ajeff.simed.exceptions.DataNaoInformadaException;
 
 public class CalculosComDatas {
 	
-//	private List<LocalDate> feriadosAno = 
-//	
-			
+	
 	
 	public static Boolean dataFinalSemana(LocalDate data) {
 		DayOfWeek day = data.getDayOfWeek();

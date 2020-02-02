@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,9 +17,6 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-
-import org.hibernate.validator.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -32,28 +30,12 @@ public class Imposto implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotNull(message = "Informe o a data de apuração")
 	private LocalDate apuracao;
-	
-	private String documento;
-
-	@NotBlank(message = "Informe o código do imposto")
-	private String codigo;
 	
 	private String nome;
 	
-	private String upload;
-
-	@Column(name = "content_type")
-	private String contentType;
-	
-	@NotNull(message = "Informe o vencimento do imposto")
 	private LocalDate vencimento;
 
-	@Column(name = "data_pago")
-	private LocalDate dataPago;
-	
-	@NotNull(message = "Informe o valor do imposto")
 	private BigDecimal valor;
 	
 	private BigDecimal multa;
@@ -80,19 +62,13 @@ public class Imposto implements Serializable {
 	
 	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name = "id_conta_pagar_origem")
-	private ContaPagar contaPagarOrigem;
+	@JoinColumn(name = "id_conta_pagar")
+	private ContaPagar contaPagar;
 
 	@JsonIgnore
 	@OneToOne
 	@JoinColumn(name = "id_conta_pagar_gerada")
 	private ContaPagar contaPagarGerada;
-	
-	
-//	@JsonIgnore
-//	@ManyToOne
-//	@JoinColumn(name = "id_empresa")
-//	private Empresa empresa;
 	
 	@PrePersist
 	@PreUpdate
@@ -114,14 +90,6 @@ public class Imposto implements Serializable {
 
 	public void setApuracao(LocalDate apuracao) {
 		this.apuracao = apuracao;
-	}
-
-	public String getDocumento() {
-		return documento;
-	}
-
-	public void setDocumento(String documento) {
-		this.documento = documento;
 	}
 
 	public ContaPagar getContaPagarGerada() {
@@ -222,14 +190,6 @@ public class Imposto implements Serializable {
 		this.gerarDarf = gerarDarf;
 	}
 
-	public String getCodigo() {
-		return codigo;
-	}
-
-	public void setCodigo(String codigo) {
-		this.codigo = codigo;
-	}
-
 	public String getNome() {
 		return nome;
 	}
@@ -238,44 +198,12 @@ public class Imposto implements Serializable {
 		this.nome = nome;
 	}
 
-	public LocalDate getDataPago() {
-		return dataPago;
+	public ContaPagar getContaPagar() {
+		return contaPagar;
 	}
 
-	public void setDataPago(LocalDate dataPago) {
-		this.dataPago = dataPago;
-	}
-
-	public ContaPagar getContaPagarOrigem() {
-		return contaPagarOrigem;
-	}
-
-	public void setContaPagarOrigem(ContaPagar contaPagarOrigem) {
-		this.contaPagarOrigem = contaPagarOrigem;
-	}
-
-//	public Empresa getEmpresa() {
-//		return empresa;
-//	}
-//
-//	public void setEmpresa(Empresa empresa) {
-//		this.empresa = empresa;
-//	}
-
-	public String getUpload() {
-		return upload;
-	}
-
-	public void setUpload(String upload) {
-		this.upload = upload;
-	}
-
-	public String getContentType() {
-		return contentType;
-	}
-
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
+	public void setContaPagar(ContaPagar contaPagar) {
+		this.contaPagar = contaPagar;
 	}
 
 	@Override

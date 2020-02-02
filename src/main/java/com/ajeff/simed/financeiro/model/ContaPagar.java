@@ -3,7 +3,9 @@ package com.ajeff.simed.financeiro.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -62,9 +65,8 @@ public class ContaPagar implements Serializable{
 	@Column(name = "total_parcela")
 	private Integer totalParcela;
 
-
 	@JsonIgnore
-	@NotNull(message = "Informe p plano de contas")
+	@NotNull(message = "Informe o plano de contas")
 	@ManyToOne
 	@JoinColumn(name = "id_conta_secundaria")
 	private PlanoContaSecundaria planoContaSecundaria;
@@ -80,11 +82,12 @@ public class ContaPagar implements Serializable{
 	@JoinColumn(name = "id_fornecedor")
 	private Fornecedor fornecedor;
 	
-
 	@ManyToOne
 	@JoinColumn(name = "id_pagamento")
 	private Pagamento pagamento;
 
+	@OneToMany(mappedBy = "contaPagar", cascade = CascadeType.ALL)
+	private List<Imposto> impostos;
 	
 	@Transient
 	private PlanoConta planoConta;
@@ -283,9 +286,15 @@ public class ContaPagar implements Serializable{
 
 	public void setTemNota(Boolean temNota) {
 		this.temNota = temNota;
+	}	
+
+	public List<Imposto> getImpostos() {
+		return impostos;
 	}
 
-	
+	public void setImpostos(List<Imposto> impostos) {
+		this.impostos = impostos;
+	}
 
 	@Override
 	public int hashCode() {

@@ -68,13 +68,11 @@ public class ContaPagarService {
 		}
 		
 		Long days = calculoDiasDataEmissaoParaVencimento(contaPagar);
-
-		BigDecimal impostos = impostoService.retencaoImpostos(contaPagar);
-		contaPagar.setValor(contaPagar.getValor().subtract(impostos));
-		
+	
 		try {
 			for(int i = 1; i <= contaPagar.getTotalParcela(); i++) {
 		
+
 				ContaPagar cp = new ContaPagar();
 				cp.setDataEmissao(contaPagar.getDataEmissao());
 				cp.setVencimento(contaPagar.getDataEmissao().plusDays(days * i));
@@ -88,6 +86,7 @@ public class ContaPagarService {
 				cp.setTotalParcela(contaPagar.getTotalParcela());
 				cp.setPlanoContaSecundaria(contaPagar.getPlanoContaSecundaria());
 				cp.setFornecedor(contaPagar.getFornecedor());
+				retencaoDeImpostos(contaPagar, cp);
 				cp.setValor(contaPagar.getValor().divide(new BigDecimal(contaPagar.getTotalParcela()),
 						MathContext.DECIMAL32));		
 				setarHistoricoDaContaPagar(contaPagar, cp);
@@ -103,6 +102,18 @@ public class ContaPagarService {
 	}
 	
 	
+	/*
+	 * Salvar os impostos somente na primeira parcela
+	 */
+	private void retencaoDeImpostos(ContaPagar contaPagar, ContaPagar cp) {
+		if(cp.getParcela() ==1) {
+			cp.setImpostos(impostoService.retencaoImpostos(contaPagar, cp));
+			BigDecimal impostos = cp.getImpostos().stream().map(i -> i.getValor()).reduce(BigDecimal.ZERO, BigDecimal::add);
+			contaPagar.setValor(contaPagar.getValor().subtract(impostos));		
+		}
+	}
+
+
 	private Long calculoDiasDataEmissaoParaVencimento(ContaPagar contaPagar) {
 		return ChronoUnit.DAYS.between(contaPagar.getDataEmissao(), contaPagar.getVencimento());
 	}
