@@ -39,7 +39,8 @@ public class ContaPagarService {
 	private ContasPagarRepository repository;
 	@Autowired
 	private PlanoContaSecundariaService contaSecundariaService;
-
+	@Autowired
+	private ImpostoService impostoService;
 	
 	
 	@Transactional
@@ -67,6 +68,9 @@ public class ContaPagarService {
 		}
 		
 		Long days = calculoDiasDataEmissaoParaVencimento(contaPagar);
+
+		BigDecimal impostos = impostoService.retencaoImpostos(contaPagar);
+		contaPagar.setValor(contaPagar.getValor().subtract(impostos));
 		
 		try {
 			for(int i = 1; i <= contaPagar.getTotalParcela(); i++) {

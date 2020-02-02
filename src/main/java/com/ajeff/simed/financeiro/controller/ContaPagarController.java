@@ -82,7 +82,6 @@ public class ContaPagarController {
 			result.rejectValue("vencimento", e.getMessage(), e.getMessage());
 			return nova(contaPagar, usuarioSistema);
 		}
-		
 		attributes.addFlashAttribute("mensagem", "Conta a pagar "+ contaPagar.getDocumento()+" salva com sucesso");
 		return new ModelAndView("redirect:/financeiro/contaPagar/nova");
 	}

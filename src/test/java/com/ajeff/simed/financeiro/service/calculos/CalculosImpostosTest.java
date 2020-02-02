@@ -1,4 +1,4 @@
-package com.ajeff.simed.util.impostos;
+package com.ajeff.simed.financeiro.service.calculos;
 
 
 
@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.ajeff.simed.exceptions.ValorInformadoNegativoException;
+import com.ajeff.simed.financeiro.service.calculos.CalculosImpostos;
 
 public class CalculosImpostosTest {
 	

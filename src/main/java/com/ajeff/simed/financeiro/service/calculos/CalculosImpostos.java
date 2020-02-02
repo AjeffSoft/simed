@@ -1,4 +1,4 @@
-package com.ajeff.simed.util.impostos;
+package com.ajeff.simed.financeiro.service.calculos;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -112,14 +112,7 @@ public class CalculosImpostos {
 		return valor;
 	}
 	
-	private static BigDecimal descontoDeRetencaoDependentes(BigDecimal valor, Integer dependente) {
-		if(dependente > 0 || dependente != null) {
-			BigDecimal dep = new BigDecimal(dependente);
-			BigDecimal descontoDependente = DEDUCAO_IRPF_DEPENDENTE.multiply(dep);
-			valor = valor.subtract(descontoDependente);
-		}
-		return valor;
-	}	
+	
 
 
 }

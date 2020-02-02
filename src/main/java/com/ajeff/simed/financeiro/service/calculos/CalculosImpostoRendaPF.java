@@ -1,4 +1,4 @@
-package com.ajeff.simed.util.impostos;
+package com.ajeff.simed.financeiro.service.calculos;
 
 import java.math.BigDecimal;
 

@@ -16,15 +16,15 @@ public class CalculoComDatasTest {
 	@Test
 	public void dataDomingo() {
 		LocalDate data = LocalDate.of(2019, 11, 24);
-		int dia = CalculosComDatas.numeroDiaSemana(data);
-		assertEquals(7, dia);
+		boolean dia = CalculosComDatas.dataDomingo(data);
+		assertTrue(dia);
 	}
 	
 	@Test
 	public void dataSabado() {
 		LocalDate data = LocalDate.of(2019, 11, 23);
-		int dia = CalculosComDatas.numeroDiaSemana(data);
-		assertEquals(6, dia);
+		boolean dia = CalculosComDatas.dataSabado(data);
+		assertTrue(dia);
 	}
 	
 	@Test
