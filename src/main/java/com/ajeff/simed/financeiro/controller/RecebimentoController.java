@@ -21,7 +21,6 @@ import com.ajeff.simed.financeiro.service.ContaReceberService;
 import com.ajeff.simed.financeiro.service.RecebimentoService;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.financeiro.service.exception.MovimentacaoFechadaException;
-import com.ajeff.simed.financeiro.service.exception.PeriodoMovimentacaoException;
 import com.ajeff.simed.financeiro.service.exception.RecebimentoNaoEfetuadoException;
 import com.ajeff.simed.financeiro.service.exception.ValorInformadoInvalidoException;
 import com.ajeff.simed.geral.service.ContaEmpresaService;

@@ -34,7 +34,6 @@ import com.ajeff.simed.financeiro.service.exception.VencimentoMenorEmissaoExcept
 import com.ajeff.simed.geral.controller.page.PageWrapper;
 import com.ajeff.simed.geral.security.UsuarioSistema;
 import com.ajeff.simed.geral.service.EmpresaService;
-import com.ajeff.simed.geral.service.UsuarioService;
 
 @Controller
 @RequestMapping("/financeiro/contaReceber")

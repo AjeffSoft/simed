@@ -102,7 +102,7 @@ public class UsuarioController {
 //		List<Empresa> empresas = usuarioService.buscarEmpresaPorUsuario(id);
 //		user.setEmpresas(empresas);
 		Usuario usuario = usuarioService.buscarUsuarioComGrupos(id);
-		Usuario user = usuarioService.buscarEmpresaPorUsuario(id);
+//		Usuario user = usuarioService.buscarEmpresaPorUsuario(id);
 		usuario.setEmpresas(empresaService.buscarEmpresaPorUsuario(id));
 //		usuario.setEmpresas(empresas);
 		ModelAndView mv = novo(usuario);

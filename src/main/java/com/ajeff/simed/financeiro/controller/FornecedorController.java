@@ -29,7 +29,6 @@ import com.ajeff.simed.financeiro.model.enums.TipoConta;
 import com.ajeff.simed.financeiro.repository.filter.FornecedorFilter;
 import com.ajeff.simed.financeiro.service.ContaPagarService;
 import com.ajeff.simed.financeiro.service.FornecedorService;
-import com.ajeff.simed.financeiro.service.ImpostoService;
 import com.ajeff.simed.financeiro.service.exception.CpfCnpjInvalidoException;
 import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoException;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
@@ -49,8 +48,7 @@ public class FornecedorController {
 	private EstadoService estadoService;
 	@Autowired
 	private ContaPagarService contaPagarService;
-	@Autowired
-	private ImpostoService impostoService;
+
 
 	
 	@GetMapping("/novo")
@@ -137,7 +135,7 @@ public class FornecedorController {
 		ModelAndView mv = new ModelAndView("Financeiro/fornecedor/DetalheFornecedor");
 		fornecedor = service.findOne(id);
 		mv.addObject("contasPagar", contaPagarService.findByContaPagarFornecedor(fornecedor));
-		mv.addObject("impostos", impostoService.findByContaPagarOrigemFornecedorOrderByVencimento(fornecedor));
+//		mv.addObject("impostos", impostoService.findByContaPagarOrigemFornecedorOrderByVencimento(fornecedor));
 		mv.addObject(fornecedor);
 		return mv;
 	}	

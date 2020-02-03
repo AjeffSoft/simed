@@ -12,7 +12,6 @@
 
 	<section layout:fragment="conteudo">
 
-		<!-- CABEÇALHO DO CADASTRO -->
 		<div class="page-header">
 			<div class="container-fluid">
 				<div class="row">
@@ -33,16 +32,12 @@
 			
 				<input type="hidden" th:field="*{id}">
 				<input type="hidden" th:field="*{apuracao}">
-				<input type="hidden" th:field="*{documento}">
-				<input type="hidden" th:field="*{codigo}">
 				<input type="hidden" th:field="*{nome}">
 				<input type="hidden" th:field="*{status}">
-				<input type="hidden" th:field="*{dataPago}">
 				<input type="hidden" th:field="*{valorNF}">
 				<input type="hidden" th:field="*{emissaoNF}">
 				<input type="hidden" th:field="*{numeroNF}">
-				<input type="hidden" th:field="*{gerarDarf}">
-				<input type="hidden" th:field="*{contaPagarOrigem}">
+				<input type="hidden" th:field="*{contaPagar}">
 
 
 				<div class="row">
@@ -51,7 +46,7 @@
 						<input id="vencimento" type="text" class="form-control  js-date" th:field = "*{vencimento}" autocomplete="off"/>
 					</div>
 					
-					<div class="col-sm-2  form-group">
+					<div class="col-sm-2  form-group" simed:classforerror="valor">
 						<label for="valor" class="control-label">Valor</label>
 						<div class="input-group">
 							<input id="valor" type="text" class="form-control  js-decimal" th:field = "*{valor}"/>
@@ -95,8 +90,9 @@
 				</div>
 						
 				<div class="form-group">
-					<button class="btn  btn-success" type="submit">Gerar Imposto</button>
-					<a class="btn  btn-default" href="javascript:history.back(1);"> Cancelar e/ou voltar	</a>
+					<button class="btn  btn-success" type="submit">Gerar</button>
+					<a class="btn  btn-danger" sec:authorize-url="/financeiro/imposto/pesquisar" th:href="@{/financeiro/imposto/pesquisar}">Voltar</a>
+					
 				</div>
 		</form>
 	</div>
@@ -104,7 +100,6 @@
 </section>
 
 <th:block layout:fragment="javascript-extra">
-<script th:src="@{/javascripts/validate/gerarImposto.validate.js}"></script>
 
 <script>
 	function formatarValor(valor){

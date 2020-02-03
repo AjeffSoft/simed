@@ -47,7 +47,7 @@ public class ImpostosRepositoryImpl implements ImpostosRepositoryQueries {
 	}
 
 	private void adicionarFiltro(ImpostoFilter filtro, Criteria criteria) {
-		criteria.createAlias("contaPagarOrigem", "c");
+		criteria.createAlias("contaPagar", "c");
 		criteria.createAlias("c.fornecedor", "f");
 		criteria.createAlias("c.empresa", "e");
 		criteria.addOrder(Order.asc("vencimento"));
@@ -58,24 +58,24 @@ public class ImpostosRepositoryImpl implements ImpostosRepositoryQueries {
 				criteria.add(Restrictions.ilike("f.nome", filtro.getFornecedor(), MatchMode.ANYWHERE));
 			}
 
-			if (!StringUtils.isEmpty(filtro.getEmpresa())) {
-				criteria.add(Restrictions.eq("e.fantasia", filtro.getEmpresa()));
-			}
-			
 			if (!StringUtils.isEmpty(filtro.getNumeroNF())) {
 				criteria.add(Restrictions.eq("numeroNF", filtro.getNumeroNF()));
 			}
 			
-			if(!StringUtils.isEmpty(filtro.getCodigo())) {
-				criteria.add(Restrictions.eq("codigo", filtro.getCodigo()));
+			if(!StringUtils.isEmpty(filtro.getNome())) {
+				criteria.add(Restrictions.eq("nome", filtro.getNome()));
 			}
 
 			if(!StringUtils.isEmpty(filtro.getStatus())) {
 				criteria.add(Restrictions.eq("status", filtro.getStatus()));
 			}
 			
-			if (filtro.getApuracaoInicio() != null || filtro.getApuracaoFim() != null) {
-				criteria.add(Restrictions.between("apuracao", filtro.getApuracaoInicio(), filtro.getApuracaoFim()));
+			if (filtro.getApuracaoInicio() != null) {
+				criteria.add(Restrictions.ge("apuracao", filtro.getApuracaoInicio()));
+			}
+
+			if (filtro.getApuracaoFim() != null) {
+				criteria.add(Restrictions.le("apuracao", filtro.getApuracaoFim()));
 			}
 			
 			if(filtro.getValorInicio() != null) {
@@ -86,15 +86,13 @@ public class ImpostosRepositoryImpl implements ImpostosRepositoryQueries {
 				criteria.add(Restrictions.le("total", filtro.getValorFim()));
 			}
 			
-//			if(isEmpresaPresente(filtro)) {
-//				criteria.add(Restrictions.eq("empresa", filtro.getEmpresa()));
-//			}
+			if(filtro.getEmpresa() != null) {
+				criteria.add(Restrictions.eq("e.fantasia", filtro.getEmpresa()));
+			}
 			
+
 		}
 	}
-	
-//	private boolean isEmpresaPresente(ImpostoFilter filtro) {
-//		return filtro.getEmpresa() != null && filtro.getEmpresa().getId() != null;
-//	}
+
 	
 }

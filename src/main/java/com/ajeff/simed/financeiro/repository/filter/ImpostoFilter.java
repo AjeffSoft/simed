@@ -8,7 +8,7 @@ import com.ajeff.simed.financeiro.model.ContaPagar;
 public class ImpostoFilter {
 
 	private String fornecedor;
-	private String codigo;
+	private String nome;
 	private String numeroNF;
 	private String status;
 	private LocalDate apuracaoInicio;
@@ -24,11 +24,11 @@ public class ImpostoFilter {
 	public void setFornecedor(String fornecedor) {
 		this.fornecedor = fornecedor;
 	}
-	public String getCodigo() {
-		return codigo;
+	public String getNome() {
+		return nome;
 	}
-	public void setCodigo(String codigo) {
-		this.codigo = codigo;
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 	public String getNumeroNF() {
 		return numeroNF;
@@ -78,4 +78,5 @@ public class ImpostoFilter {
 	public void setEmpresa(String empresa) {
 		this.empresa = empresa;
 	}
+
 }

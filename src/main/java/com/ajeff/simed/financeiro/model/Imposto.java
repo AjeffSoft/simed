@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,6 +16,9 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -34,8 +36,10 @@ public class Imposto implements Serializable {
 	
 	private String nome;
 	
+	@NotNull(message = "Informe a data de vencimento")
 	private LocalDate vencimento;
 
+	@NotNull(message = "Informe o valor")	
 	private BigDecimal valor;
 	
 	private BigDecimal multa;
@@ -58,6 +62,7 @@ public class Imposto implements Serializable {
 	@Transient
 	private Boolean gerarDarf;
 
+	@NotBlank(message = "Informe um histórico")	
 	private String historico;
 	
 	@JsonIgnore
@@ -91,16 +96,6 @@ public class Imposto implements Serializable {
 	public void setApuracao(LocalDate apuracao) {
 		this.apuracao = apuracao;
 	}
-
-	public ContaPagar getContaPagarGerada() {
-		return contaPagarGerada;
-	}
-
-
-	public void setContaPagarGerada(ContaPagar contaPagarGerada) {
-		this.contaPagarGerada = contaPagarGerada;
-	}
-
 
 	public LocalDate getVencimento() {
 		return vencimento;
@@ -204,6 +199,14 @@ public class Imposto implements Serializable {
 
 	public void setContaPagar(ContaPagar contaPagar) {
 		this.contaPagar = contaPagar;
+	}
+
+	public ContaPagar getContaPagarGerada() {
+		return contaPagarGerada;
+	}
+
+	public void setContaPagarGerada(ContaPagar contaPagarGerada) {
+		this.contaPagarGerada = contaPagarGerada;
 	}
 
 	@Override

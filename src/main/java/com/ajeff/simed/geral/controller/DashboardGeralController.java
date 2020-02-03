@@ -1,19 +1,17 @@
 package com.ajeff.simed.geral.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.ajeff.simed.geral.security.UsuarioSistema;
-import com.ajeff.simed.geral.service.UsuarioService;
 
 @Controller
 public class DashboardGeralController {
 	
-	@Autowired
-	private UsuarioService usuarioService;
+//	@Autowired
+//	private UsuarioService usuarioService;
 	
 	
 	@GetMapping("/")

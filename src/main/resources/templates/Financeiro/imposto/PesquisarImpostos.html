@@ -29,10 +29,7 @@
 					<div class="col-sm-4  form-group">
 						<label for="empresa" class="control-label">Empresa</label>
 						<select id="empresa" class="form-control" th:field="*{empresa}">
-							<option value="">Selecione uma empresa</option>
-							<option value="UNIMED">Unimed</option>
-							<option value="UNILAB">Unilab</option>
-							<option value="UNICLINICA">Uniclinica</option>
+							<option th:each="empresa : ${empresas}" th:value="${empresa.fantasia}" th:text="${empresa.fantasia}"></option>
 						</select>
 					</div>
 
@@ -55,8 +52,8 @@
 	    					</div>
 
 	  						<div class="radio  radio-inline">
-		    					<input id="gerado" type="radio" value="PAGO" th:field="*{status}"/>
-		    					<label for="gerado">Pago</label>
+		    					<input id="pago" type="radio" value="PAGO" th:field="*{status}"/>
+		    					<label for="pago">Pago</label>
 	    					</div>
 
 		  					<div class="radio  radio-inline">
@@ -91,8 +88,8 @@
 					</div>
 
 					<div class="form-group  col-sm-2">
-						<label class="control-label" for="codigo">Código</label>
-						<input type="text" class="form-control" id="codigo"  th:field="*{codigo}" maxlength="15"/>
+						<label class="control-label" for="codigo">Nome</label>
+						<input type="text" class="form-control" id="codigo"  th:field="*{nome}" maxlength="15"/>
 					</div>
 					
 					<div class="form-group  col-sm-2">
@@ -104,7 +101,6 @@
 									
 				<div class="form-group">
 					<button class="btn  btn-primary" type="submit">Pesquisar</button>
-					<a class="btn  btn-info" th:href="@{/financeiro/imposto/relatorio}" sec:authorize-url="/financeiro/imposto/relatorio">Relatórios</a>
 				</div>
 			</form>
 		
@@ -116,7 +112,7 @@
 						<tr>
 							<th class="table-col-minima">Emp</th>
 
-							<th class="table-col-minima">Código</th>
+							<th class="table-col-minima">Nome</th>
 
 							<th class="table-col-minima">Nota Fiscal</th>
 
@@ -125,7 +121,7 @@
 							</th>
 
 							<th class="table-col-grande">
-								<simed:order page="${pagina}" field="fornecedor" text="Fornecedor"/>
+								<simed:order page="${pagina}" field="f.nome" text="Fornecedor"/>
 							</th>
 
 							<th class="table-col-grande">
@@ -146,11 +142,11 @@
 					
 					<tbody>
 						<tr th:each="imposto : ${pagina.conteudo}">
-							<td th:text="${imposto.contaPagarOrigem.empresa.sigla}"></td>
-							<td th:text="${imposto.codigo}"></td>
+							<td th:text="${imposto.contaPagar.empresa.sigla}"></td>
+							<td th:text="${imposto.nome}"></td>
 							<td th:text="${imposto.numeroNF}"></td>
 							<td th:text="${{imposto.apuracao}}"></td>
-							<td th:text="${imposto.contaPagarOrigem.fornecedor.nome}"></td>
+							<td th:text="${imposto.contaPagar.fornecedor.nome}"></td>
 							<td th:text="${{imposto.vencimento}}"></td>
 							<td th:text="${{imposto.total}}"></td>
 
@@ -170,24 +166,24 @@
 							</td>
 
 							<td class="text-center">
-								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes"
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes" sec:authorize-url="/financeiro/imposto/detalhe/**"
 										th:href="@{/financeiro/imposto/detalhe/{id}(id=${imposto.id})}"> 
 									<i class="glyphicon glyphicon-eye-open"></i>
 								</a>
 
-								<a class="btn  btn-link  btn-xs  js-tooltip js-imposto-btn" title="Gerar" 
-										th:href="@{/financeiro/imposto/abreGerar/{id}(id=${imposto.id})}" th:if = "${imposto.aberto}"> 
+								<a class="btn  btn-link  btn-xs  js-tooltip js-imposto-btn" title="Gerar" sec:authorize-url="/financeiro/imposto/gerar/**"
+										th:href="@{/financeiro/imposto/gerar/{id}(id=${imposto.id})}" th:if = "${imposto.aberto}"> 
 									<i class="glyphicon glyphicon-ok"></i>
 								</a>
 
 								<a class="btn  btn-link  btn-xs  js-tooltip  js-cancelar-btn" title="Cancelar" th:if = "${imposto.gerado}"
-										data:codigo="${imposto.id}" sec:authorize-url="/financeiro/imposto/cancelarGerar"> 
+										data:codigo="${imposto.id}" sec:authorize-url="/financeiro/imposto/cancelaGerar"> 
 									<i class="glyphicon glyphicon-remove"></i>
 								</a>
 
 								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir" href="#"
 									data:url="@{/financeiro/imposto/excluir/{id}(id=${imposto.id})}" th:if="${imposto.aberto}"
-									data:objeto="${imposto.codigo} + ' - '+ ${imposto.numeroNF}" sec:authorize-url="/financeiro/imposto/excluir/**">
+									data:objeto="${imposto.nome} + ' - '+ ${imposto.numeroNF}" sec:authorize-url="/financeiro/imposto/excluir/**">
 									<i class="glyphicon glyphicon-trash"></i>
 								</a>
 							</td>
@@ -202,7 +198,6 @@
 				</table>
 			</div>
 
-			<!-- COMPONENTE THYMELEAF PARA PAGINAÇÃO -->	
 			<simed:pagination page="${pagina}"/>						
 
 		</div>	

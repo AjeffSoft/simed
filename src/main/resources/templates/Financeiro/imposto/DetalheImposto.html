@@ -42,6 +42,7 @@
 					<div class="form-group  col-lg-12">
 						<ul class="nav nav-tabs  js-abas">
 						  <li role="presentation" class="active"><a href="#dados">Cadastro</a></li>
+						  <li role="presentation"><a href="#pagamentos">Pagamento</a></li>
 						</ul>
 					</div>
 				</div>			
@@ -49,11 +50,6 @@
 				<div class="tab-content">
 					<div class="tab-pane active" id="dados">
 						<div class="row">
-							<div class="col-sm-2  form-group">
-								<label for="codigo" class="label label-default">Código</label>
-								<h3 id="codigo" th:text="${imposto.codigo}"></h3>
-							</div>
-
 							<div class="col-sm-2  form-group">
 								<label for="nome" class="label label-default">Nome</label>
 								<h3 id="nome" th:text="${imposto.nome}"></h3>
@@ -78,13 +74,14 @@
 								<label for="valorNF" class="label label-default">Valor NF</label>
 								<h3 id="valorNF" th:text="${{imposto.valorNF}}"></h3>
 							</div>
-						</div>
-						
-						<div class="row">
+
 							<div class="col-sm-2  form-group">
 								<label for="valor" class="label label-default">Valor R$</label>
 								<h3 id="valor" th:text="${{imposto.valor}}"></h3>
 							</div>
+						</div>
+						
+						<div class="row">
 
 							<div class="col-sm-2  form-group">
 								<label for="multa" class="label label-default">Multa R$</label>
@@ -101,14 +98,15 @@
 								<h3 id="total" th:text="${{imposto.total}}"></h3>
 							</div>
 
-							<div class="col-sm-4  form-group">
+							<div class="col-sm-6  form-group">
 								<label for="historico" class="label label-default">Histórico</label>
 								<h3 id="historico" th:text="${imposto.historico}"></h3>
 							</div>
 						</div>
 
 						<br>
-	
+
+
 						<div class="table-responsive  bw-tabela-simples">
 							<table class="table  table-hover" th:with="total=0">
 								<thead>
@@ -134,13 +132,10 @@
 								</tbody>
 							</table>
 						</div>
+						
+					</div>
 	
 									
-					</div>
-					
-					
-					
-			<!-- DADOS DO PAGAMENTO -->
 					<div class="tab-pane" id="pagamento">
 
 					</div>										
