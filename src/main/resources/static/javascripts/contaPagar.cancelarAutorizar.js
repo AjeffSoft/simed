@@ -1,6 +1,6 @@
-Sinte = Sinte || {};
+Simed = Simed || {};
 
-Sinte.CancelarAutorizar = (function (){
+Simed.CancelarAutorizar = (function (){
 	
 	function CancelarAutorizar (){
 		this.btn = $('.js-cancelar-btn');
@@ -31,6 +31,6 @@ Sinte.CancelarAutorizar = (function (){
 }());
 
 $(function(){
-	var cancelarAutorizar = new Sinte.CancelarAutorizar();
+	var cancelarAutorizar = new Simed.CancelarAutorizar();
 	cancelarAutorizar.iniciar();
 }); 

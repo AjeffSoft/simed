@@ -76,6 +76,7 @@ public class ImpostoController {
 		if (result.hasErrors()) {
 			return abreGerar(id, imposto, usuarioSistema);
 		}
+		
 		try {
 			service.gerar(imposto);
 		} catch (PagamentoNaoEfetuadoException e) {

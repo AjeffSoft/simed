@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -20,8 +21,11 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -98,6 +102,17 @@ public class ContaPagarController {
 		mv.addObject("pagina", paginaWrapper);
 		return mv;
 	}
+	
+	
+	@GetMapping("/autorizarConta")
+	public ModelAndView autorizarConta(ContaPagarFilter contaPagarFilter, BindingResult result, @PageableDefault(size=100) Pageable pageable,
+										HttpServletRequest httpServletRequest, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
+		ModelAndView mv = new ModelAndView("Financeiro/contaPagar/AutorizarContaPagar");
+		mv.addObject("empresas", empresaService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
+		PageWrapper<ContaPagar> paginaWrapper = new PageWrapper<>(service.filtrarAutorizar(contaPagarFilter, pageable), httpServletRequest);
+		mv.addObject("pagina", paginaWrapper);
+		return mv;
+	}	
 
 	
 	@DeleteMapping("/excluir/{id}")
@@ -128,20 +143,20 @@ public class ContaPagarController {
 	}	
 
 	
-//	@PutMapping("/autorizar")
-//	@ResponseStatus(HttpStatus.OK)
-//	public void autorizarPagamento(@RequestParam Long id) {
-//		ContaPagar contaPagar = service.findOne(id);
-//		service.autorizarPagamento(contaPagar);
-//	}	
+	@PutMapping("/autorizar")
+	@ResponseStatus(HttpStatus.OK)
+	public void autorizarPagamento(@RequestParam Long id) {
+		ContaPagar contaPagar = service.findOne(id);
+		service.autorizarPagamento(contaPagar);
+	}	
 
-//	
-//	@PutMapping("/cancelarAutorizar")
-//	@ResponseStatus(HttpStatus.OK)
-//	public void cancelarAutorizarPagamento(@RequestParam Long id) {
-//		ContaPagar contaPagar = service.findOne(id);
-//		service.cancelarAutorizarPagamento(contaPagar);
-//	}	
+	
+	@PutMapping("/cancelarAutorizar")
+	@ResponseStatus(HttpStatus.OK)
+	public void cancelarAutorizarPagamento(@RequestParam Long id) {
+		ContaPagar contaPagar = service.findOne(id);
+		service.cancelarAutorizarPagamento(contaPagar);
+	}	
 	
 	
 	@GetMapping("/detalhe/{id}")
@@ -152,8 +167,6 @@ public class ContaPagarController {
 		mv.addObject(contaPagar);
 		return mv;
 	}
-
-	
 
 
 	@GetMapping("/imprimirDetalhe/{id}")

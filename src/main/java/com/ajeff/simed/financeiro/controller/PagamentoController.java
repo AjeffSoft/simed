@@ -122,15 +122,15 @@ public class PagamentoController {
 	}
 
 	
-	@GetMapping("/autorizarConta")
-	public ModelAndView autorizarConta(ContaPagarFilter contaPagarFilter, BindingResult result, @PageableDefault(size=50) Pageable pageable,
-										HttpServletRequest httpServletRequest, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
-		ModelAndView mv = new ModelAndView("Financeiro/contaPagar/AutorizarContaPagar");
-		mv.addObject("empresas", usuarioService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
-		PageWrapper<ContaPagar> paginaWrapper = new PageWrapper<>(contaService.filtrarAutorizar(contaPagarFilter, pageable), httpServletRequest);
-		mv.addObject("pagina", paginaWrapper);
-		return mv;
-	}	
+//	@GetMapping("/autorizarConta")
+//	public ModelAndView autorizarConta(ContaPagarFilter contaPagarFilter, BindingResult result, @PageableDefault(size=50) Pageable pageable,
+//										HttpServletRequest httpServletRequest, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
+//		ModelAndView mv = new ModelAndView("Financeiro/contaPagar/AutorizarContaPagar");
+//		mv.addObject("empresas", usuarioService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
+//		PageWrapper<ContaPagar> paginaWrapper = new PageWrapper<>(contaService.filtrarAutorizar(contaPagarFilter, pageable), httpServletRequest);
+//		mv.addObject("pagina", paginaWrapper);
+//		return mv;
+//	}	
 	
 	
 	@GetMapping("/contasAutorizadas")

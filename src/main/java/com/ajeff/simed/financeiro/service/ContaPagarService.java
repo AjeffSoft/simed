@@ -209,16 +209,16 @@ public class ContaPagarService {
 	}
 	
 
-//	@Transactional
-//	public void autorizarPagamento(ContaPagar contaPagar) {
-//		contaPagar.setStatus("AUTORIZADO");
-//		repository.save(contaPagar);
-//	}
-//	
-//	@Transactional	
-//	public void cancelarAutorizarPagamento(ContaPagar contaPagar) {
-//		contaPagar.setStatus("ABERTO");
-//		repository.save(contaPagar);
-//	}
+	@Transactional
+	public void autorizarPagamento(ContaPagar contaPagar) {
+		contaPagar.setStatus("AUTORIZADO");
+		repository.save(contaPagar);
+	}
+	
+	@Transactional	
+	public void cancelarAutorizarPagamento(ContaPagar contaPagar) {
+		contaPagar.setStatus("ABERTO");
+		repository.save(contaPagar);
+	}
 }
 

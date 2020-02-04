@@ -1,6 +1,6 @@
-Sinte = Sinte || {};
+Simed = Simed || {};
 
-Sinte.Autorizar = (function (){
+Simed.Autorizar = (function (){
 	
 	function Autorizar (){
 		this.btn = $('.js-autorizar-btn');
