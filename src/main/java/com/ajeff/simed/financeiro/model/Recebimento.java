@@ -43,7 +43,7 @@ public class Recebimento implements Serializable{
 	
 	@ManyToOne
 	@JoinColumn(name = "id_movimentacao")
-	private MovimentacaoBancaria movimentacao;
+	private Movimentacao movimentacao;
 	
 	@OneToMany(mappedBy="recebimento", cascade = CascadeType.REMOVE)
 	private List<ExtratoBancario> extratos;
@@ -89,11 +89,11 @@ public class Recebimento implements Serializable{
 		this.contaReceber = contaReceber;
 	}
 
-	public MovimentacaoBancaria getMovimentacao() {
+	public Movimentacao getMovimentacao() {
 		return movimentacao;
 	}
 
-	public void setMovimentacao(MovimentacaoBancaria movimentacao) {
+	public void setMovimentacao(Movimentacao movimentacao) {
 		this.movimentacao = movimentacao;
 	}
 

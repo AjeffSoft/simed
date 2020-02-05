@@ -112,7 +112,7 @@ public class ExtratoService {
 		extrato.setRecebimento(recebimento);
 		extrato.setStatus(status);
 		extrato.setTipo("RECEBIMENTO");
-		extrato.setMovimentacao(recebimento.getMovimentacao());
+//		extrato.setMovimentacao(recebimento.getMovimentacao());
 		extrato.setValor(recebimento.getValor());
 		repository.save(extrato);
 	}	

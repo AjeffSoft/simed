@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.ajeff.simed.geral.model.ContaEmpresa;
-import com.ajeff.simed.geral.model.Empresa;
 
 public class TransferenciaFilter {
 
@@ -14,9 +13,8 @@ public class TransferenciaFilter {
 	private BigDecimal valorFim;
 	private String status;
 	private String tipo;
-	private Empresa empresa;
+	private String empresa;
 	private ContaEmpresa contaOrigem;
-	private ContaEmpresa contaDestino;
 	
 
 	public LocalDate getVencimentoInicio() {
@@ -49,12 +47,6 @@ public class TransferenciaFilter {
 	public void setContaOrigem(ContaEmpresa contaOrigem) {
 		this.contaOrigem = contaOrigem;
 	}
-	public ContaEmpresa getContaDestino() {
-		return contaDestino;
-	}
-	public void setContaDestino(ContaEmpresa contaDestino) {
-		this.contaDestino = contaDestino;
-	}
 	public String getStatus() {
 		return status;
 	}
@@ -67,10 +59,10 @@ public class TransferenciaFilter {
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
 	}
-	public Empresa getEmpresa() {
+	public String getEmpresa() {
 		return empresa;
 	}
-	public void setEmpresa(Empresa empresa) {
+	public void setEmpresa(String empresa) {
 		this.empresa = empresa;
 	}
 	

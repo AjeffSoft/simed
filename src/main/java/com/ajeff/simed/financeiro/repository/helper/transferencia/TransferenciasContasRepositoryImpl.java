@@ -44,10 +44,10 @@ public class TransferenciasContasRepositoryImpl implements TransferenciasContasR
 	}
 
 	private void adicionarFiltro(TransferenciaFilter filtro, Criteria criteria) {
-		
-		criteria
-		.add(Restrictions.eq("empresa", filtro.getEmpresa()))
-		.addOrder(Order.asc("data"));
+		criteria.createAlias("contaOrigem", "c");
+		criteria.createAlias("c.empresa", "e");
+		criteria.addOrder(Order.asc("data"));
+
 		
 		if (filtro != null) {
 
@@ -59,8 +59,12 @@ public class TransferenciasContasRepositoryImpl implements TransferenciasContasR
 				criteria.add(Restrictions.eq("tipo", filtro.getTipo()));
 			}
 			
-			if (filtro.getVencimentoInicio() != null || filtro.getVencimentoFim() != null) {
-				criteria.add(Restrictions.between("data", filtro.getVencimentoInicio(), filtro.getVencimentoFim()));
+			if (filtro.getVencimentoInicio() != null) {
+				criteria.add(Restrictions.ge("data", filtro.getVencimentoInicio()));
+			}
+
+			if (filtro.getVencimentoFim() != null) {
+				criteria.add(Restrictions.le("data", filtro.getVencimentoFim()));
 			}
 			
 			if(filtro.getValorInicio() != null) {
@@ -70,19 +74,14 @@ public class TransferenciasContasRepositoryImpl implements TransferenciasContasR
 			if(filtro.getValorFim() != null) {
 				criteria.add(Restrictions.le("valor", filtro.getValorFim()));
 			}
+
+			if(filtro.getEmpresa() != null) {
+				criteria.add(Restrictions.eq("e.fantasia", filtro.getEmpresa()));
+			}	
 			
 			if(isContaOrigemPresente(filtro)) {
 				criteria.add(Restrictions.eq("contaOrigem", filtro.getContaOrigem()));
 			}
-
-			if(isContaDestinoPresente(filtro)) {
-				criteria.add(Restrictions.eq("contaDestino", filtro.getContaDestino()));
-			}
-			
-			if(isEmpresaPresente(filtro)) {
-				criteria.add(Restrictions.eq("empresa", filtro.getEmpresa()));
-			}
-			
 		}
 	}
 	
@@ -90,14 +89,5 @@ public class TransferenciasContasRepositoryImpl implements TransferenciasContasR
 		return filtro.getContaOrigem() != null && filtro.getContaOrigem().getId() != null;
 	}
 
-	private boolean isContaDestinoPresente(TransferenciaFilter filtro) {
-		return filtro.getContaDestino() != null && filtro.getContaDestino().getId() != null;
-	}
-	
-	private boolean isEmpresaPresente(TransferenciaFilter filtro) {
-		return filtro.getEmpresa() != null && filtro.getEmpresa().getId() != null;
-	}
-	
-	
 	
 }

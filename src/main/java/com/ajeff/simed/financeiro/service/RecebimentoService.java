@@ -5,14 +5,13 @@ import java.util.List;
 
 import javax.persistence.PersistenceException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ajeff.simed.financeiro.model.ContaReceber;
 import com.ajeff.simed.financeiro.model.ExtratoBancario;
+import com.ajeff.simed.financeiro.model.Movimentacao;
 import com.ajeff.simed.financeiro.model.Recebimento;
 import com.ajeff.simed.financeiro.repository.RecebimentosRepository;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
@@ -22,13 +21,9 @@ import com.ajeff.simed.financeiro.service.exception.ValorInformadoInvalidoExcept
 @Service
 public class RecebimentoService {
 
-	@SuppressWarnings("unused")
-	private static final Logger LOG = LoggerFactory.getLogger(RecebimentoService.class);	
 	
 	@Autowired
 	private RecebimentosRepository repository;
-//	@Autowired
-//	private ContaEmpresaRepository contaEmpresaRepository;
 	@Autowired
 	private ContaReceberService contaReceberService;
 	@Autowired
@@ -38,19 +33,25 @@ public class RecebimentoService {
 	
 	
 	@Transactional
-	public void salvar(Recebimento recebimento, ContaReceber contaReceber) {
+	public void salvar(Recebimento recebimento, Long id) {
+		ContaReceber contaReceber = contaReceberService.findOne(id);
 
 		movimentacaoService.verificarSeMovimentacaoEstaFechado(recebimento.getContaEmpresa().getEmpresa(), recebimento.getData());
 		try {
 			receberConta(recebimento, contaReceber);
 			recebimento.setContaReceber(contaReceber);
 			recebimento.setFechado(false);
+			Movimentacao movimentacao = movimentacaoService.findByEmpresaAnStatusAtivo(recebimento.getContaEmpresa().getEmpresa());
 
-//			recebimento.setMovimentacao(setarMovimentacao(recebimento));
-//			creditarRecebimentoMovimento(recebimento);
+			recebimento.setMovimentacao(movimentacao);
+			movimentacaoService.creditarValor(movimentacao, recebimento.getValor());
 			extratoService.criarRecebimentoNoExtrato(recebimento, "ABERTO");
 			repository.save(recebimento);
 		} catch (PersistenceException e) {
+			e.printStackTrace();
+			throw new RecebimentoNaoEfetuadoException("Algo deu errado!! Recebimento não efetuado");
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
 			throw new RecebimentoNaoEfetuadoException("Algo deu errado!! Recebimento não efetuado");
 		}
 	}
@@ -112,7 +113,8 @@ public class RecebimentoService {
 		try {
 			contaReceberService.alterarStatusESubtrairValorConta(recebimento.getContaReceber().getId(), "ABERTO", recebimento.getValor());
 			excluirMovimentoDoExtrato(recebimento);
-//			cancelarLancamentoValorCreditosMovimentacao(recebimento);
+			Movimentacao movimentacao = movimentacaoService.findByEmpresaAnStatusAtivo(recebimento.getContaEmpresa().getEmpresa());
+			movimentacaoService.cancelarCredito(movimentacao, recebimento.getValor());
 			repository.delete(id);
 			repository.flush();
 		} catch (PersistenceException e) {
@@ -130,36 +132,5 @@ public class RecebimentoService {
 	public List<Recebimento> findByContaReceber(ContaReceber contaReceber) {
 		return repository.findByContaReceberOrderByData(contaReceber);
 	}	
-
-	
-	
-	
-//	private void cancelarLancamentoValorCreditosMovimentacao(Recebimento recebimento) {
-//		try {
-//			MovimentacaoBancaria movBanco = movBancariaRepository.findOne(recebimento.getMovimentacao().getId());
-//			movBanco.setValorCreditos(movBanco.getValorCreditos().subtract(recebimento.getValor()));
-//			movBancariaRepository.save(movBanco);
-//		} catch (Exception e) {
-//			LOG.error("recebimento não excluído. Erro ao cancelar o lançamento do recebimento nos créditos do movimento--" + e.getMessage()+"/"+e.getLocalizedMessage());	
-//		}
-//	}
-	
-//	private void creditarRecebimentoMovimento(Recebimento recebimento) {
-//	try {
-//		MovimentacaoBancaria movBanco = movBancariaRepository.findOne(recebimento.getMovimentacao().getId());
-//		movBanco.setValorCreditos(movBanco.getValorCreditos().add(recebimento.getValor()));
-//		movBancariaRepository.save(movBanco);
-//	} catch (Exception e) {
-//		LOG.error("recebimento não efetuado. Erro ao incluir o creditar no movimento bancário--" + e.getMessage()+"/"+e.getLocalizedMessage());	
-//		throw new RecebimentoNaoEfetuadoException("Algo deu errado!! Recebimento não efetuado");
-//	}
-//}	
-
-
-//private MovimentacaoBancaria setarMovimentacao(Recebimento recebimento) {
-//	Movimentacao movimento = movRepository.findByEmpresaAndStatus(recebimento.getContaEmpresa().getEmpresa());
-//	MovimentacaoBancaria movBancaria = movBancariaRepository.findByMovimentacaoAndContaEmpresa(movimento, recebimento.getContaEmpresa());
-//	return movBancaria;
-//}	
 
 }

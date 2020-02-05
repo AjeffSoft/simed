@@ -1,10 +1,6 @@
 package com.ajeff.simed.financeiro.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.swing.ImageIcon;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -33,12 +29,12 @@ import com.ajeff.simed.financeiro.model.TransferenciaContas;
 import com.ajeff.simed.financeiro.repository.filter.TransferenciaFilter;
 import com.ajeff.simed.financeiro.service.TransferenciaService;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
-import com.ajeff.simed.financeiro.service.exception.PeriodoMovimentacaoException;
+import com.ajeff.simed.financeiro.service.exception.MovimentacaoFechadaException;
 import com.ajeff.simed.financeiro.service.exception.TransferenciaNaoEfetuadaException;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
 import com.ajeff.simed.geral.security.UsuarioSistema;
 import com.ajeff.simed.geral.service.ContaEmpresaService;
-import com.ajeff.simed.geral.service.UsuarioService;
+import com.ajeff.simed.geral.service.EmpresaService;
 
 @Controller
 @RequestMapping("/financeiro/transferencia")
@@ -53,14 +49,14 @@ public class TransferenciaController {
 	@Autowired
 	private ContaEmpresaService contaEmpresaService;
 	@Autowired
-	private UsuarioService usuarioService;
+	private EmpresaService empresaService;
 
 	
 	
 	@GetMapping("/novo")
 	private ModelAndView nova(TransferenciaContas transferenciaContas, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
 		ModelAndView mv = new ModelAndView("Financeiro/transferencia/CadastroTransferencia");
-		mv.addObject("empresas", usuarioService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
+		mv.addObject("empresas", empresaService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
 		mv.addObject("contasOrigem", contaEmpresaService.listarTodosOrdenadoPorNome());
 		mv.addObject("contasDestino", contaEmpresaService.listarTodosOrdenadoPorNome());
 		return mv;
@@ -76,7 +72,7 @@ public class TransferenciaController {
 		
 		try {
 			service.salvar(transferenciaContas);
-		} catch (PeriodoMovimentacaoException e) {
+		} catch (MovimentacaoFechadaException e) {
 			result.rejectValue("data", e.getMessage(), e.getMessage());
 			return nova(transferenciaContas, usuarioSistema);
 		} catch (TransferenciaNaoEfetuadaException e) {
@@ -88,7 +84,6 @@ public class TransferenciaController {
 	}
 
 
-	//ABRE O COMPROVANTE DA TRANSFERENCIA
 	@GetMapping("/comprovante/{id}")
 	public ModelAndView comprovante(@PathVariable Long id, TransferenciaContas transferenciaContas) {
 		ModelAndView mv = new ModelAndView("Financeiro/transferencia/ComprovanteTransferencia");
@@ -99,12 +94,11 @@ public class TransferenciaController {
 
 	
 	@GetMapping("/pesquisar")
-	public ModelAndView pesquisar(TransferenciaFilter transferenciaFilter, BindingResult result, @PageableDefault(size=50) Pageable pageable,
+	public ModelAndView pesquisar(TransferenciaFilter transferenciaFilter, BindingResult result, @PageableDefault(size=100) Pageable pageable,
 										HttpServletRequest httpServletRequest, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
 		ModelAndView mv = new ModelAndView("Financeiro/transferencia/PesquisarTransferencias");
 		mv.addObject("contasOrigem", contaEmpresaService.listarTodosOrdenadoPorNome());
-		mv.addObject("contasDestino", contaEmpresaService.listarTodosOrdenadoPorNome());
-		mv.addObject("empresas", usuarioService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
+		mv.addObject("empresas", empresaService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
 		PageWrapper<TransferenciaContas> paginaWrapper = new PageWrapper<>(service.filtrar(transferenciaFilter, pageable), httpServletRequest);
 		mv.addObject("pagina", paginaWrapper);
 		return mv;
@@ -131,14 +125,14 @@ public class TransferenciaController {
 	}	
 	
 	
-	@GetMapping("/imprimirOrdemTransferencia/{id}")
-	public ModelAndView imprimirOrdemPagamento(@PathVariable Long id) {
-		TransferenciaContas transferencia = service.findOne(id);
-		Map<String, Object> map = new HashMap<>();
-		ImageIcon gto = new ImageIcon(getClass().getResource("/relatorios/logo" +transferencia.getEmpresa().getId()+".jpg"));
-		map.put("format", "pdf");
-		map.put("logo", gto.getImage());
-		map.put("id_transferencia", id);
-		return new ModelAndView("rel_TRANSFERENCIA_OrdemTransferencia", map);
-	}
+//	@GetMapping("/imprimirOrdemTransferencia/{id}")
+//	public ModelAndView imprimirOrdemPagamento(@PathVariable Long id) {
+//		TransferenciaContas transferencia = service.findOne(id);
+//		Map<String, Object> map = new HashMap<>();
+//		ImageIcon gto = new ImageIcon(getClass().getResource("/relatorios/logo" +transferencia.getEmpresa().getId()+".jpg"));
+//		map.put("format", "pdf");
+//		map.put("logo", gto.getImage());
+//		map.put("id_transferencia", id);
+//		return new ModelAndView("rel_TRANSFERENCIA_OrdemTransferencia", map);
+//	}
 }

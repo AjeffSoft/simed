@@ -58,7 +58,7 @@ public class TransferenciaContas implements Serializable{
 
 	@ManyToOne
 	@JoinColumn(name = "id_movimentacao")
-	private MovimentacaoBancaria movimentacao;
+	private Movimentacao movimentacao;
 	
 	
 	public Long getId() {
@@ -133,11 +133,11 @@ public class TransferenciaContas implements Serializable{
 		this.empresa = empresa;
 	}
 
-	public MovimentacaoBancaria getMovimentacao() {
+	public Movimentacao getMovimentacao() {
 		return movimentacao;
 	}
 
-	public void setMovimentacao(MovimentacaoBancaria movimentacao) {
+	public void setMovimentacao(Movimentacao movimentacao) {
 		this.movimentacao = movimentacao;
 	}
 

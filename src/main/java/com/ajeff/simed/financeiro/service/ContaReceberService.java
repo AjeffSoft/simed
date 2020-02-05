@@ -112,9 +112,11 @@ public class ContaReceberService {
 	public Page<ContaReceber> filtrar(ContaReceberFilter contaReceberFilter, Pageable pageable) {
 		return repository.filtrar(contaReceberFilter, pageable);
 	}
+	
 	public ContaReceber findOne(Long id) {
 		return repository.findOne(id);
 	}
+	
 	public ContaReceber buscarComPlanoConta(Long id) {
 		return repository.buscarComPlanoConta(id);
 	}

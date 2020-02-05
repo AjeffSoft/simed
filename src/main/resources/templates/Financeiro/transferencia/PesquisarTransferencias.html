@@ -37,7 +37,7 @@
 					<div class="col-sm-2  form-group">
 						<label for="empresa" class="control-label">Empresa</label>
 						<select id="empresa" class="form-control" th:field="*{empresa}">
-							<option th:each="empresa : ${empresas}" th:value="${empresa.id}" th:text="${empresa.fantasia}"></option>
+							<option th:each="empresa : ${empresas}" th:value="${empresa.fantasia}" th:text="${empresa.fantasia}"></option>
 						</select>
 					</div>
 					
@@ -49,51 +49,7 @@
 						</select>
 					</div>
 
-					<div class="col-sm-5  form-group">
-						<label for="destino" class="control-label">Conta Destino</label>
-						<select id="destino" class="form-control" th:field="*{contaDestino}">
-							<option value="">Selecione a conta de destino</option>
-							<option th:each="destino : ${contasDestino}" th:value="${destino.id}" th:text="${destino.nome}+' - '+${destino.empresa.fantasia} + ' - ' +  ${destino.agencia.banco.nome} +' - '+ ${destino.conta}"></option>
-						</select>
-					</div>
-				</div>
-				
-				<div class="row">
-					<div class="col-sm-2  form-group">
-						<label for="tipo" class="control-label">Tipo*</label>
-						<select id="tipo" class="form-control" th:field="*{tipo}">
-							<option value = "">Selecione...</option>
-							<option value="APLICAÇÃO">Aplicação</option>
-							<option value="DÉBITO AUTORIZADO">Débito autorizado</option>
-							<option value="REPASSE">Repasse</option>
-							<option value="TRANSFERENCIA">Transferencia</option>
-						</select>
-					</div>					
-
-					<div class="form-group  col-sm-4">
-						<label for="vencimentoInicio">Data</label>
-						<div class="form-inline">
-							<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="vencimentoInicio" 
-								th:field="*{vencimentoInicio}" autocomplete="off" placeholder="Data Inicial"/>
-							<label for="vencimentoFim" class="aw-form-label-between">até</label>
-							<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="vencimentoFim" 
-								th:field="*{vencimentoFim}" autocomplete="off" placeholder="Data Final"/>
-						</div>
-					</div>		
-
-					<div class="form-group  col-sm-3">
-						<label for="valorInicio">Valor R$</label>
-						<div class="form-inline">
-							<input type="text" class="form-control  aw-form-control-inline-sm  js-decimal" id="valorInicio" 
-								th:field="*{valorInicio}" autocomplete="off" placeholder="Valor Inicial"/>
-							<label for="valorFim" class="aw-form-label-between">até</label>
-							<input type="text" class="form-control  aw-form-control-inline-sm  js-decimal" id="valorFim" 
-								th:field="*{valorFim}" autocomplete="off" placeholder="Valor Final"/>
-						</div>
-					</div>
-					
-
-					<div class="form-group  col-sm-3">
+					<div class="form-group  col-sm-5">
 						<label class="control-label">Status</label> 
 						<div>
 	  						<div class="radio  radio-inline">
@@ -112,7 +68,44 @@
 		    				</div>
 						</div>
 					</div>
-	
+					
+				</div>
+				
+				<div class="row">
+					<div class="col-sm-2  form-group">
+						<label for="tipo" class="control-label">Tipo*</label>
+						<select id="tipo" class="form-control" th:field="*{tipo}">
+							<option value = "">Selecione...</option>
+							<option value="APLICAÇÃO">Aplicação</option>
+							<option value="DÉBITO AUTORIZADO">Débito autorizado</option>
+							<option value="REPASSE">Repasse</option>
+							<option value="TRANSFERENCIA">Transferencia</option>
+						</select>
+					</div>					
+
+					<div class="form-group  col-sm-5">
+						<label for="vencimentoInicio">Data</label>
+						<div class="form-inline">
+							<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="vencimentoInicio" 
+								th:field="*{vencimentoInicio}" autocomplete="off" placeholder="Data Inicial"/>
+							<label for="vencimentoFim" class="aw-form-label-between">até</label>
+							<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="vencimentoFim" 
+								th:field="*{vencimentoFim}" autocomplete="off" placeholder="Data Final"/>
+						</div>
+					</div>		
+
+					<div class="form-group  col-sm-5">
+						<label for="valorInicio">Valor R$</label>
+						<div class="form-inline">
+							<input type="text" class="form-control  aw-form-control-inline-sm  js-decimal" id="valorInicio" 
+								th:field="*{valorInicio}" autocomplete="off" placeholder="Valor Inicial"/>
+							<label for="valorFim" class="aw-form-label-between">até</label>
+							<input type="text" class="form-control  aw-form-control-inline-sm  js-decimal" id="valorFim" 
+								th:field="*{valorFim}" autocomplete="off" placeholder="Valor Final"/>
+						</div>
+					</div>
+					
+
 				</div>										
 				
 				<button type="submit" class="btn  btn-primary">Pesquisar</button>
@@ -125,7 +118,7 @@
 					<thead>
 						<tr>
 							<th class="table-col-minima">
-								<simed:order page="${pagina}" field="empresa" text="Emp"/>
+								<simed:order page="${pagina}" field="e.sigla" text="Emp"/>
 							</th>
 						
 							<th class="table-col-grande">
@@ -163,7 +156,7 @@
 					
 					<tbody>
 						<tr th:each="transferencia : ${pagina.conteudo}">
-							<td th:text="${transferencia.empresa.sigla}"></td>
+							<td th:text="${transferencia.contaOrigem.empresa.sigla}"></td>
 							<td th:text="${transferencia.id}"></td>
 							<td th:text="${transferencia.contaOrigem.conta} + ' - ' +${transferencia.contaOrigem.agencia.banco.nome}"></td>
 							<td th:text="${transferencia.contaDestino.conta} + ' - ' +${transferencia.contaDestino.agencia.banco.nome}"></td>
@@ -212,7 +205,6 @@
 				</table>
 			</div>
 
-			<!-- COMPONENTE THYMELEAF PARA PAGINAÇÃO -->	
 			<simed:pagination page="${pagina}"/>						
 
 		</div>		

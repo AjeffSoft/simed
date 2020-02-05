@@ -37,9 +37,9 @@
 				<input type="hidden" th:field="*{saldoInicial}">
 				<input type="hidden" th:field="*{totalCreditos}">
 				<input type="hidden" th:field="*{totalDebitos}">
-				<input type="hidden" th:field="*{saldoFinal}">
+				<input type="hidden" th:field="*{saldoMovimento}">
 				<input type="hidden" th:field="*{saldoGeral}">
-				<input type="hidden" th:field="*{chequeCompensar}">
+				<input type="hidden" th:field="*{chequePendente}">
 				<input type="hidden" th:field="*{fechado}">
 				
 				<div class="row">
@@ -62,8 +62,8 @@
 				</div>
 
 				<div class="form-group">
-					<button class="btn  btn-primary" type="submit">Salvar</button>
-					<a class="btn  btn-default" th:href="@{/financeiro/movimentacao/pesquisar}">Cancelar e/ou voltar	</a>
+					<button class="btn  btn-success" type="submit">Salvar</button>
+					<a class="btn  btn-danger" th:href="@{/financeiro/movimentacao/pesquisar}">Voltar</a>
 				</div>
 		</form>
 	</div>

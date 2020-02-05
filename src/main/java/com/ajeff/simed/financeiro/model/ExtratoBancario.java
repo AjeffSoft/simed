@@ -48,7 +48,7 @@ public class ExtratoBancario implements Serializable{
 	
 	@ManyToOne
 	@JoinColumn(name = "id_movimentacao")
-	private MovimentacaoBancaria movimentacao;	
+	private Movimentacao movimentacao;	
 
 	@OneToOne
 	@JoinColumn(name = "id_transferencia")
@@ -126,11 +126,11 @@ public class ExtratoBancario implements Serializable{
 		this.pagamento = pagamento;
 	}
 
-	public MovimentacaoBancaria getMovimentacao() {
+	public Movimentacao getMovimentacao() {
 		return movimentacao;
 	}
 
-	public void setMovimentacao(MovimentacaoBancaria movimentacao) {
+	public void setMovimentacao(Movimentacao movimentacao) {
 		this.movimentacao = movimentacao;
 	}
 

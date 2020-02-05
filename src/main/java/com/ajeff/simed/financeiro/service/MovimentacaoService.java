@@ -17,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ajeff.simed.financeiro.model.ExtratoBancario;
 import com.ajeff.simed.financeiro.model.Movimentacao;
 import com.ajeff.simed.financeiro.model.MovimentacaoBancaria;
 import com.ajeff.simed.financeiro.model.Pagamento;
@@ -32,7 +31,6 @@ import com.ajeff.simed.financeiro.service.exception.ErroAoFecharMovimentacaoExce
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.financeiro.service.exception.MovimentacaoFechadaException;
 import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoException;
-import com.ajeff.simed.financeiro.service.exception.RegistroNaoCadastradoException;
 import com.ajeff.simed.geral.model.ContaEmpresa;
 import com.ajeff.simed.geral.model.Empresa;
 import com.ajeff.simed.geral.repository.ContaEmpresaRepository;
@@ -57,6 +55,17 @@ public class MovimentacaoService {
 
 	
 
+	@Transactional
+	public void salvar(Movimentacao movimentacao) {
+		testeRegistroJaCadastrado(movimentacao);
+		movimentacao.setFechado(false);
+		movimentacao.setTotalCreditos(BigDecimal.ZERO);;
+		movimentacao.setTotalDebitos(BigDecimal.ZERO);;
+		movimentacao.setSaldoMovimento(BigDecimal.ZERO);;
+		repository.save(movimentacao);
+	}
+
+	
 	public void verificarSeMovimentacaoEstaFechado(Empresa empresa, LocalDate data) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		
@@ -71,67 +80,72 @@ public class MovimentacaoService {
 	}	
 	
 	
+	public void creditarValor(Movimentacao movimentacao, BigDecimal valor) {
+		movimentacao.setTotalCreditos(movimentacao.getTotalCreditos().add(valor));
+		repository.save(movimentacao);
+	}
 	
-	
-	
-	
-	
-	@Transactional
-	public void salvar(Movimentacao movimentacao) {
-		try {
-			testeRegistroJaCadastrado(movimentacao);
-			if(movimentacao.isNovo()) {
-				movimentacao.setFechado(false);
-				criarRegistroMovimentacaoBancaria(movimentacao);
-			}
-			repository.save(movimentacao);
-		} catch (PersistenceException e) {
-			throw new RegistroNaoCadastradoException("Algo deu errado!! Movimento não salvo");
-		} catch (Exception e) {
-			throw new RegistroNaoCadastradoException("Algo deu errado!! Movimento não salvo");
-		}
+
+	public void cancelarCredito(Movimentacao movimentacao, BigDecimal valor) {
+		movimentacao.setTotalCreditos(movimentacao.getTotalCreditos().subtract(valor));
+		repository.save(movimentacao);
 	}
 
 	
-
-	private void criarRegistroMovimentacaoBancaria(Movimentacao movimentacao) {
-		List<ContaEmpresa> contasBancarias = contaRepository.findByEmpresa(movimentacao.getEmpresa());
-		
-		for(ContaEmpresa c : contasBancarias) {
-			criarMovimentoAberturaNoExtrato(unicoRegistroDeMovimentacaoBancaria(movimentacao, c));
-		}
-		movimentacao.setTotalAbertura(contasBancarias.stream().map(m-> m.getSaldo()).reduce(BigDecimal.ZERO, BigDecimal::add));
-	}
-
-
-	//Unico registro de movimentação bancária - para persistir
-	private MovimentacaoBancaria unicoRegistroDeMovimentacaoBancaria(Movimentacao mov, ContaEmpresa c) {
-		MovimentacaoBancaria movBanco = new MovimentacaoBancaria();
-		movBanco.setValorAbertura(c.getSaldo()); //Pega o saldo gravado nas contas da empresa
-		movBanco.setValorCreditos(BigDecimal.ZERO);
-		movBanco.setValorDebitos(BigDecimal.ZERO);
-		movBanco.setSaldoPeriodo(BigDecimal.ZERO);
-		movBanco.setSaldoGeral(BigDecimal.ZERO);
-		movBanco.setValorPendente(c.getValorPendente());
-		movBanco.setContaEmpresa(c);
-		movBanco.setMovimentacao(mov);
-		return movBancarioRepository.save(movBanco);
+	public void debitarValor(Movimentacao movimentacao, BigDecimal valor) {
+		movimentacao.setTotalDebitos(movimentacao.getTotalDebitos().add(valor));
+		repository.save(movimentacao);
 	}
 	
-	//Cria o movimento de abertura no extrato de cada conta da empresa
-	private void criarMovimentoAberturaNoExtrato(MovimentacaoBancaria movimentacao) {
-		ExtratoBancario ex = new ExtratoBancario();
-		ex.setContaBancaria(movimentacao.getContaEmpresa());
-		ex.setValor(BigDecimal.ZERO);
-		ex.setCredito(true);
-		ex.setTipo("SALDO INICIAL");
-		ex.setData(movimentacao.getMovimentacao().getDataInicio());
-		ex.setHistorico("Saldo inicial do movimento nº: " + movimentacao.getId());
-		ex.setMovimentacao(movimentacao);
-		ex.setSaldo(movimentacao.getValorAbertura());
-		ex.setStatus("CONFERIDO");
-		extratoRepository.save(ex);
-	}
+
+	public void cancelarDebito(Movimentacao movimentacao, BigDecimal valor) {
+		movimentacao.setTotalDebitos(movimentacao.getTotalDebitos().subtract(valor));
+		repository.save(movimentacao);
+	}	
+	
+	
+	
+
+	
+
+//	private void criarRegistroMovimentacaoBancaria(Movimentacao movimentacao) {
+//		List<ContaEmpresa> contasBancarias = contaRepository.findByEmpresa(movimentacao.getEmpresa());
+//		
+//		for(ContaEmpresa c : contasBancarias) {
+//			criarMovimentoAberturaNoExtrato(unicoRegistroDeMovimentacaoBancaria(movimentacao, c));
+//		}
+//		movimentacao.setTotalAbertura(contasBancarias.stream().map(m-> m.getSaldo()).reduce(BigDecimal.ZERO, BigDecimal::add));
+//	}
+
+
+//	//Unico registro de movimentação bancária - para persistir
+//	private MovimentacaoBancaria unicoRegistroDeMovimentacaoBancaria(Movimentacao mov, ContaEmpresa c) {
+//		MovimentacaoBancaria movBanco = new MovimentacaoBancaria();
+//		movBanco.setValorAbertura(c.getSaldo()); //Pega o saldo gravado nas contas da empresa
+//		movBanco.setValorCreditos(BigDecimal.ZERO);
+//		movBanco.setValorDebitos(BigDecimal.ZERO);
+//		movBanco.setSaldoPeriodo(BigDecimal.ZERO);
+//		movBanco.setSaldoGeral(BigDecimal.ZERO);
+//		movBanco.setValorPendente(c.getValorPendente());
+//		movBanco.setContaEmpresa(c);
+//		movBanco.setMovimentacao(mov);
+//		return movBancarioRepository.save(movBanco);
+//	}
+	
+//	//Cria o movimento de abertura no extrato de cada conta da empresa
+//	private void criarMovimentoAberturaNoExtrato(MovimentacaoBancaria movimentacao) {
+//		ExtratoBancario ex = new ExtratoBancario();
+//		ex.setContaBancaria(movimentacao.getContaEmpresa());
+//		ex.setValor(BigDecimal.ZERO);
+//		ex.setCredito(true);
+//		ex.setTipo("SALDO INICIAL");
+//		ex.setData(movimentacao.getMovimentacao().getDataInicio());
+//		ex.setHistorico("Saldo inicial do movimento nº: " + movimentacao.getId());
+//		ex.setMovimentacao(movimentacao);
+//		ex.setSaldo(movimentacao.getValorAbertura());
+//		ex.setStatus("CONFERIDO");
+//		extratoRepository.save(ex);
+//	}
 
 	
 	@Transactional
@@ -143,7 +157,6 @@ public class MovimentacaoService {
 		} catch (PersistenceException e) {
 			throw new ImpossivelExcluirEntidade("Não foi possivel excluir a movimentação nº "+movimentacao.getId()+".\nTalvez esteja vinculada a outras tabelas!"); 
 		}
-		
 	}	
 
 	
@@ -214,12 +227,12 @@ public class MovimentacaoService {
 	
 	private void calcularTotaisMovimentacao(Movimentacao movimentacao, List<MovimentacaoBancaria> movBancarios) {
 		try {
-			movimentacao.setTotalCreditos(calcularTotalCreditosDoMovimento(movBancarios));
-			movimentacao.setTotalDebitos(calcularTotalDebitosDoMovimento(movBancarios));
-			movimentacao.setTotalPeriodo(calcularSaldoPeriodoDoMovimento(movBancarios));
-			movimentacao.setTotalPendente(calcularTotalPendenteDoMovimento(movimentacao));
-			movimentacao.setTotalCreditos(calcularTotalCreditosDoMovimento(movBancarios));
-			movimentacao.setTotalGeral(calcularTotalGeralDoMovimento(movBancarios));
+//			movimentacao.setTotalCreditos(calcularTotalCreditosDoMovimento(movBancarios));
+//			movimentacao.setTotalDebitos(calcularTotalDebitosDoMovimento(movBancarios));
+//			movimentacao.setTotalPeriodo(calcularSaldoPeriodoDoMovimento(movBancarios));
+//			movimentacao.setTotalPendente(calcularTotalPendenteDoMovimento(movimentacao));
+//			movimentacao.setTotalCreditos(calcularTotalCreditosDoMovimento(movBancarios));
+//			movimentacao.setTotalGeral(calcularTotalGeralDoMovimento(movBancarios));
 		} catch (Exception e) {
 			LOG.error("***** Erro ao fechar calcular os totais da movimentação *****" + e.getMessage());
 			throw new ErroAoFecharMovimentacaoException("Algo deu errado!! Fechamento não efetuado" + e.getMessage());
@@ -341,10 +354,10 @@ public class MovimentacaoService {
 	
 	
 	private void testeRegistroJaCadastrado(Movimentacao movimentacao) {
-		Optional<Movimentacao> movAberto = repository.findByEmpresaAndAbertoAndDataInicioAndDataFinal(movimentacao.getEmpresa(), movimentacao.getDataInicio(), movimentacao.getDataFinal());
+		Optional<Movimentacao> movAberto = repository.findByEmpresaAndStatusAberto(movimentacao.getEmpresa());
 
 		if(movAberto.isPresent() && !movAberto.get().equals(movimentacao)) {
-			throw new RegistroJaCadastradoException("Existe uma movimentação em aberto para esta empresa!");
+			throw new RegistroJaCadastradoException("Existe um movimento em aberto para esta empresa!");
 		}
 	}
 
@@ -383,8 +396,9 @@ public class MovimentacaoService {
 		return movimentacao.getFechado();
 	}
 
-	public Movimentacao findByEmpresaAndStatus(Empresa empresa) {
+	public Movimentacao findByEmpresaAnStatusAtivo(Empresa empresa) {
 		return repository.findByEmpresaAndStatus(empresa);
-	}	
+	}
+
 	
 }

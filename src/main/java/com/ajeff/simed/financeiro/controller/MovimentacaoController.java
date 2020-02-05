@@ -74,9 +74,6 @@ public class MovimentacaoController {
 		} catch (RegistroJaCadastradoException e) {
 			result.rejectValue("empresa", e.getMessage(), e.getMessage());
 			return novo(movimentacao, usuarioSistema);
-		} catch (RegistroNaoCadastradoException e) {
-			result.rejectValue("empresa", e.getMessage(), e.getMessage());
-			return novo(movimentacao, usuarioSistema);
 		}
 		attributes.addFlashAttribute("mensagem", "Movimentação salva com sucesso");
 		return new ModelAndView("redirect:/financeiro/movimentacao/novo");

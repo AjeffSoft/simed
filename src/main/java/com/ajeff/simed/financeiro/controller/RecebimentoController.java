@@ -51,12 +51,11 @@ public class RecebimentoController {
 
 	@PostMapping("/novo")
 	public ModelAndView salvar(@Valid Recebimento recebimento, @RequestParam("idContaReceber") Long id, BindingResult result) {
-		ContaReceber contaReceber = contaReceberService.findOne(id);
 		if(result.hasErrors()) {
 			return novo(id, recebimento);
 		}
 		try {
-			service.salvar(recebimento, contaReceber);
+			service.salvar(recebimento, id);
 		} catch (ValorInformadoInvalidoException e) {
 			result.rejectValue("valor", e.getMessage(), e.getMessage());
 			return novo(id, recebimento);
