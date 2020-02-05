@@ -16,7 +16,6 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotBlank;
 
 import com.ajeff.simed.geral.model.ContaEmpresa;
-import com.ajeff.simed.geral.model.Empresa;
 
 @Entity
 @Table(name = "transferencia_conta")
@@ -46,10 +45,6 @@ public class TransferenciaContas implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "id_conta_origem")
 	private ContaEmpresa contaOrigem;
-
-	@ManyToOne
-	@JoinColumn(name = "id_empresa")
-	private Empresa empresa;
 
 	@NotNull(message = "Informe a conta de destino")
 	@ManyToOne
@@ -123,14 +118,6 @@ public class TransferenciaContas implements Serializable{
 
 	public void setStatus(String status) {
 		this.status = status;
-	}
-
-	public Empresa getEmpresa() {
-		return empresa;
-	}
-
-	public void setEmpresa(Empresa empresa) {
-		this.empresa = empresa;
 	}
 
 	public Movimentacao getMovimentacao() {

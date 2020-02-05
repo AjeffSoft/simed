@@ -124,15 +124,4 @@ public class TransferenciaController {
 		service.cancelarOuPagar(transferencia);
 	}	
 	
-	
-//	@GetMapping("/imprimirOrdemTransferencia/{id}")
-//	public ModelAndView imprimirOrdemPagamento(@PathVariable Long id) {
-//		TransferenciaContas transferencia = service.findOne(id);
-//		Map<String, Object> map = new HashMap<>();
-//		ImageIcon gto = new ImageIcon(getClass().getResource("/relatorios/logo" +transferencia.getEmpresa().getId()+".jpg"));
-//		map.put("format", "pdf");
-//		map.put("logo", gto.getImage());
-//		map.put("id_transferencia", id);
-//		return new ModelAndView("rel_TRANSFERENCIA_OrdemTransferencia", map);
-//	}
 }

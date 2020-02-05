@@ -40,8 +40,8 @@ public class ContaEmpresa implements Serializable{
 	
 	private Boolean situacao;
 	
-	@Column(name = "valor_pendente")
-	private BigDecimal valorPendente;
+	@Column(name = "cheque_pendente")
+	private BigDecimal chequePendente;
 	
 	@NotNull(message = "Informe a agencia")
 	@ManyToOne
@@ -99,12 +99,12 @@ public class ContaEmpresa implements Serializable{
 		this.empresa = empresa;
 	}
 
-	public BigDecimal getValorPendente() {
-		return valorPendente;
+	public BigDecimal getChequePendente() {
+		return chequePendente;
 	}
 
-	public void setValorPendente(BigDecimal valorPendente) {
-		this.valorPendente = valorPendente;
+	public void setChequePendente(BigDecimal chequePendente) {
+		this.chequePendente = chequePendente;
 	}
 
 	public Boolean getSituacao() {

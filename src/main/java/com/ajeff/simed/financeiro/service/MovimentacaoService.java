@@ -255,7 +255,7 @@ public class MovimentacaoService {
 
 	private BigDecimal calcularTotalPendenteDoMovimento(Movimentacao movimentacao) {
 		List<ContaEmpresa> contas = contaRepository.findByEmpresa(movimentacao.getEmpresa());
-		return contas.stream().map(m->m.getValorPendente()).reduce(BigDecimal.ZERO, BigDecimal::add);
+		return contas.stream().map(m->m.getChequePendente()).reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 
 	private BigDecimal calcularTotalGeralDoMovimento(List<MovimentacaoBancaria> movBancarios) {
