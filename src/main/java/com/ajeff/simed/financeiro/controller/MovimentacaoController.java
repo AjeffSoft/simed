@@ -23,7 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ajeff.simed.financeiro.model.Movimentacao;
-import com.ajeff.simed.financeiro.repository.MovimentacoesBancariasRepository;
+import com.ajeff.simed.financeiro.repository.MovimentacoesItensRepository;
 import com.ajeff.simed.financeiro.repository.filter.MovimentacaoFilter;
 import com.ajeff.simed.financeiro.service.MovimentacaoService;
 import com.ajeff.simed.financeiro.service.exception.ErroAoFecharMovimentacaoException;
@@ -41,7 +41,7 @@ public class MovimentacaoController {
 	@Autowired
 	private MovimentacaoService service;
 	@Autowired
-	private MovimentacoesBancariasRepository movBancarioRepository;
+	private MovimentacoesItensRepository movBancarioRepository;
 	@Autowired
 	private EmpresaService empresaService;
 	

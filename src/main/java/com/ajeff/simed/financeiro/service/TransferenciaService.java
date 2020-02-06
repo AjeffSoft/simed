@@ -1,5 +1,6 @@
 package com.ajeff.simed.financeiro.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
@@ -11,14 +12,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ajeff.simed.financeiro.model.ExtratoBancario;
+import com.ajeff.simed.financeiro.model.Extrato;
 import com.ajeff.simed.financeiro.model.Movimentacao;
+import com.ajeff.simed.financeiro.model.MovimentacaoItem;
 import com.ajeff.simed.financeiro.model.TransferenciaContas;
 import com.ajeff.simed.financeiro.repository.ExtratosRepository;
 import com.ajeff.simed.financeiro.repository.TransferenciasContasRepository;
 import com.ajeff.simed.financeiro.repository.filter.TransferenciaFilter;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.financeiro.service.exception.TransferenciaNaoEfetuadaException;
+import com.ajeff.simed.geral.model.ContaEmpresa;
+import com.ajeff.simed.geral.model.Empresa;
 
 @Service
 public class TransferenciaService {
@@ -30,18 +34,21 @@ public class TransferenciaService {
 	private ExtratosRepository extratoRepository;
 	@Autowired
 	private MovimentacaoService movimentacaoService;
-
+	@Autowired
+	private MovimentacaoItensService movimentacaoItemService;
 	
 	
 	@Transactional
 	public void salvar(TransferenciaContas transferencia) {
 
-		movimentacaoService.verificarSeMovimentacaoEstaFechado(transferencia.getContaOrigem().getEmpresa(), transferencia.getData());
-		movimentacaoService.verificarSeMovimentacaoEstaFechado(transferencia.getContaDestino().getEmpresa(), transferencia.getData());
+		Movimentacao movimentacaoOrigem = setarMovimentacao(transferencia.getContaOrigem().getEmpresa(), transferencia.getData());
+		@SuppressWarnings("unused")
+		Movimentacao movimentacaoDestino = setarMovimentacao(transferencia.getContaDestino().getEmpresa(), transferencia.getData());
+		MovimentacaoItem movimentacaoItemOrigem = setarMovimentacaoItem(transferencia.getContaOrigem(), movimentacaoOrigem);
 
 		try {
 			if(transferencia.isNovo()) {
-				emissaoTransferencia(transferencia);
+				emissaoTransferencia(transferencia, movimentacaoItemOrigem);
 			}
 			
 		} catch (EntityNotFoundException e) {
@@ -53,9 +60,20 @@ public class TransferenciaService {
 	}
 	
 	
-	private void emissaoTransferencia(TransferenciaContas transferencia) {
-		Movimentacao movimentacao = movimentacaoService.findByEmpresaAnStatusAtivo(transferencia.getContaOrigem().getEmpresa());
-		transferencia.setMovimentacao(movimentacao);
+	private MovimentacaoItem setarMovimentacaoItem(ContaEmpresa contaEmpresa, Movimentacao movimentacao) {
+		MovimentacaoItem movimentacaoItem = movimentacaoItemService.findByMovimentacaoAndContaEmpresa(movimentacao, contaEmpresa);
+		return movimentacaoItem;
+	}
+
+
+	private Movimentacao setarMovimentacao(Empresa empresa, LocalDate data) {
+		Movimentacao movimentacao = movimentacaoService.verificarSeMovimentacaoEstaFechado(empresa, data);
+		return movimentacao;
+	}	
+	
+	
+	private void emissaoTransferencia(TransferenciaContas transferencia, MovimentacaoItem movimentacaoItem) {
+		transferencia.setMovimentacaoItem(movimentacaoItem);
 		transferencia.setStatus("ABERTO");
 		transferencia.setFechado(false);
 		repository.save(transferencia);
@@ -72,14 +90,14 @@ public class TransferenciaService {
 
 
 	private void criarMovimentoDaContaPorTipo(TransferenciaContas transferencia, boolean tipo) {
-		ExtratoBancario extrato = new ExtratoBancario();
+		Extrato extrato = new Extrato();
 		extrato.setData(transferencia.getData());
 		extrato.setCredito(tipo);
 		extrato.setHistorico("TRANSFERENCIA Nº " + transferencia.getId() +" ENTRE AS CONTAS: "+ transferencia.getContaOrigem().getNome()+" E: "+ transferencia.getContaDestino().getNome() );
 		extrato.setTransferencia(transferencia);
 		extrato.setStatus("ABERTO");
 		extrato.setTipo("TRANSFERENCIA");
-		extrato.setMovimentacao(transferencia.getMovimentacao());
+		extrato.setMovimentacaoItem(transferencia.getMovimentacaoItem());
 		extrato.setValor(transferencia.getValor());
 		
 		if(tipo) {
@@ -105,9 +123,9 @@ public class TransferenciaService {
 	@Transactional
 	public void excluir(Long id) {
 		TransferenciaContas transferencia = repository.findOne(id);
-		List<ExtratoBancario> extratos = extratoRepository.findByTransferencia(transferencia);
+		List<Extrato> extratos = extratoRepository.findByTransferencia(transferencia);
 		try {
-			for (ExtratoBancario extratoBancario : extratos) {
+			for (Extrato extratoBancario : extratos) {
 				extratoRepository.delete(extratoBancario);
 			}
 			repository.delete(id);
@@ -135,8 +153,8 @@ public class TransferenciaService {
 
 
 	private void alterarStatusExtrato(TransferenciaContas transferencia, String status) {
-		List<ExtratoBancario> extratos = extratoRepository.findByTransferencia(transferencia);
-		for (ExtratoBancario extratoBancario : extratos) {
+		List<Extrato> extratos = extratoRepository.findByTransferencia(transferencia);
+		for (Extrato extratoBancario : extratos) {
 			extratoBancario.setStatus(status);
 			extratoRepository.save(extratoBancario);
 		}

@@ -18,11 +18,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ajeff.simed.financeiro.model.Movimentacao;
-import com.ajeff.simed.financeiro.model.MovimentacaoBancaria;
+import com.ajeff.simed.financeiro.model.MovimentacaoItem;
 import com.ajeff.simed.financeiro.model.Pagamento;
 import com.ajeff.simed.financeiro.model.TransferenciaContas;
 import com.ajeff.simed.financeiro.repository.ExtratosRepository;
-import com.ajeff.simed.financeiro.repository.MovimentacoesBancariasRepository;
 import com.ajeff.simed.financeiro.repository.MovimentacoesRepository;
 import com.ajeff.simed.financeiro.repository.PagamentosRepository;
 import com.ajeff.simed.financeiro.repository.TransferenciasContasRepository;
@@ -31,9 +30,8 @@ import com.ajeff.simed.financeiro.service.exception.ErroAoFecharMovimentacaoExce
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.financeiro.service.exception.MovimentacaoFechadaException;
 import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoException;
-import com.ajeff.simed.geral.model.ContaEmpresa;
 import com.ajeff.simed.geral.model.Empresa;
-import com.ajeff.simed.geral.repository.ContaEmpresaRepository;
+import com.ajeff.simed.geral.service.ContaEmpresaService;
 
 @Service
 public class MovimentacaoService {
@@ -43,9 +41,9 @@ public class MovimentacaoService {
 	@Autowired
 	private MovimentacoesRepository repository;
 	@Autowired
-	private ContaEmpresaRepository contaRepository;
+	private ContaEmpresaService contaEmpresaService;
 	@Autowired
-	private MovimentacoesBancariasRepository movBancarioRepository;
+	private MovimentacaoItensService movimentacaoItensService;
 	@Autowired
 	private ExtratosRepository extratoRepository;
 	@Autowired
@@ -59,24 +57,38 @@ public class MovimentacaoService {
 	public void salvar(Movimentacao movimentacao) {
 		testeRegistroJaCadastrado(movimentacao);
 		movimentacao.setFechado(false);
-		movimentacao.setTotalCreditos(BigDecimal.ZERO);;
-		movimentacao.setTotalDebitos(BigDecimal.ZERO);;
-		movimentacao.setSaldoMovimento(BigDecimal.ZERO);;
+		movimentacao.setSaldoInicial(BigDecimal.ZERO);
+		movimentacao.setTotalCreditos(BigDecimal.ZERO);
+		movimentacao.setTotalDebitos(BigDecimal.ZERO);
+		movimentacao.setSaldoMovimento(BigDecimal.ZERO);
+		movimentacao.setChequePendente(BigDecimal.ZERO);
+		movimentacao.setSaldoGeral(BigDecimal.ZERO);
+		movimentacao.setItens(criarItensDeMovimentacao(movimentacao));
 		repository.save(movimentacao);
 	}
 
 	
-	public void verificarSeMovimentacaoEstaFechado(Empresa empresa, LocalDate data) {
+	private List<MovimentacaoItem> criarItensDeMovimentacao(Movimentacao movimentacao) {
+		return movimentacaoItensService.criarItensDeMovimentacaoPorContaDeEmpresas(movimentacao);
+	}
+	
+	
+
+
+	public Movimentacao verificarSeMovimentacaoEstaFechado(Empresa empresa, LocalDate data) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		
 		Optional<Movimentacao> mov = repository.findByEmpresaAndStatusAberto(empresa);	
 		if(!mov.isPresent()) {
 			throw new MovimentacaoFechadaException("Não existe movimentação em aberto para a empresa: " + empresa.getFantasia());
-		}
-			
-		if (data.isBefore(mov.get().getDataInicio()) || data.isAfter(mov.get().getDataFinal())){
+		}else if (data.isBefore(mov.get().getDataInicio()) || data.isAfter(mov.get().getDataFinal())){
 			throw new MovimentacaoFechadaException("A data informada esta fora do limite do movimento em aberto: " + mov.get().getDataInicio().format(formatter) + " à "+ mov.get().getDataFinal().format(formatter));
+		}else {
+			Movimentacao movimentacao = repository.findByEmpresaAndStatus(empresa);
+			return movimentacao;
 		}
+		
+		
 	}	
 	
 	
@@ -160,34 +172,34 @@ public class MovimentacaoService {
 	}	
 
 	
-	@Transactional
-	public void fechar(Movimentacao movimentacao) {
-		try {
-			List<MovimentacaoBancaria> movBancarios = movBancarioRepository.findByMovimentacao(movimentacao);
-			
-			List<Pagamento> pgtosAberto = new ArrayList<>();
-			List<TransferenciaContas> transfAberto = new ArrayList<>();
-			
-			for (MovimentacaoBancaria m : movBancarios) {
-				//movimentacaoDoMovBancario(m); //Pagamentos, recebimentos e transferencias
-				verificarSeTemPagamentoAberto(m, pgtosAberto);
-				verificarSeTemTransferenciaAberto(m, transfAberto);
-				m.setSaldoPeriodo(calculaSaldoDoPeriodo(m));
-				m.setSaldoGeral(calculaSaldoGeral(m));
-				atualizarSaldoContaEmpresa(m);
-				//atualizarSaldoPendenteContaEmpresa(m);				
-			}
-			calcularTotaisMovimentacao(movimentacao, movBancarios);
-			movimentacao.setDataFechamento(LocalDate.now());
-			movimentacao.setFechado(true);
-			repository.save(movimentacao);
-		} catch (Exception e) {
-			throw new ErroAoFecharMovimentacaoException("Algo deu errado!! Fechamento não efetuado" + e.getMessage());
-		}
-	}
+//	@Transactional
+//	public void fechar(Movimentacao movimentacao) {
+//		try {
+//			List<MovimentacaoItem> movBancarios = movBancarioRepository.findByMovimentacao(movimentacao);
+//			
+//			List<Pagamento> pgtosAberto = new ArrayList<>();
+//			List<TransferenciaContas> transfAberto = new ArrayList<>();
+//			
+//			for (MovimentacaoItem m : movBancarios) {
+//				//movimentacaoDoMovBancario(m); //Pagamentos, recebimentos e transferencias
+//				verificarSeTemPagamentoAberto(m, pgtosAberto);
+//				verificarSeTemTransferenciaAberto(m, transfAberto);
+////				m.setSaldoPeriodo(calculaSaldoDoPeriodo(m));
+//				m.setSaldoGeral(calculaSaldoGeral(m));
+////				atualizarSaldoContaEmpresa(m);
+//				//atualizarSaldoPendenteContaEmpresa(m);				
+//			}
+//			calcularTotaisMovimentacao(movimentacao, movBancarios);
+//			movimentacao.setDataFechamento(LocalDate.now());
+//			movimentacao.setFechado(true);
+//			repository.save(movimentacao);
+//		} catch (Exception e) {
+//			throw new ErroAoFecharMovimentacaoException("Algo deu errado!! Fechamento não efetuado" + e.getMessage());
+//		}
+//	}
 	
 	
-	private void verificarSeTemPagamentoAberto(MovimentacaoBancaria m, List<Pagamento> pgtosAberto) {
+	private void verificarSeTemPagamentoAberto(MovimentacaoItem m, List<Pagamento> pgtosAberto) {
 		List<Pagamento> pgtos = pagamentosRepository.findByMovimentacao(m);
 		List<Pagamento> pgtosParaFechar = new ArrayList<>();
 		for (Pagamento p : pgtos) {
@@ -206,7 +218,7 @@ public class MovimentacaoService {
 	}
 
 
-	private void verificarSeTemTransferenciaAberto(MovimentacaoBancaria m, List<TransferenciaContas> transfAberto) {
+	private void verificarSeTemTransferenciaAberto(MovimentacaoItem m, List<TransferenciaContas> transfAberto) {
 		List<TransferenciaContas> transfs = transferenciaRepository.findByMovimentacao(m);
 		List<TransferenciaContas> transfParaFechar = new ArrayList<>();
 		for (TransferenciaContas t : transfs) {
@@ -225,7 +237,7 @@ public class MovimentacaoService {
 	}
 
 	
-	private void calcularTotaisMovimentacao(Movimentacao movimentacao, List<MovimentacaoBancaria> movBancarios) {
+	private void calcularTotaisMovimentacao(Movimentacao movimentacao, List<MovimentacaoItem> movBancarios) {
 		try {
 //			movimentacao.setTotalCreditos(calcularTotalCreditosDoMovimento(movBancarios));
 //			movimentacao.setTotalDebitos(calcularTotalDebitosDoMovimento(movBancarios));
@@ -241,56 +253,56 @@ public class MovimentacaoService {
 
 
 
-	private BigDecimal calcularTotalCreditosDoMovimento(List<MovimentacaoBancaria> movBancarios) {
-		return movBancarios.stream().map(m->m.getValorCreditos()).reduce(BigDecimal.ZERO, BigDecimal::add);
-	}
+//	private BigDecimal calcularTotalCreditosDoMovimento(List<MovimentacaoItem> movBancarios) {
+//		return movBancarios.stream().map(m->m.getValorCreditos()).reduce(BigDecimal.ZERO, BigDecimal::add);
+//	}
+//
+//	private BigDecimal calcularTotalDebitosDoMovimento(List<MovimentacaoItem> movBancarios) {
+//		return movBancarios.stream().map(m->m.getValorDebitos()).reduce(BigDecimal.ZERO, BigDecimal::add);
+//	}
+//
+//	private BigDecimal calcularSaldoPeriodoDoMovimento(List<MovimentacaoItem> movBancarios) {
+//		return movBancarios.stream().map(m->m.getSaldoPeriodo()).reduce(BigDecimal.ZERO, BigDecimal::add);
+//	}
 
-	private BigDecimal calcularTotalDebitosDoMovimento(List<MovimentacaoBancaria> movBancarios) {
-		return movBancarios.stream().map(m->m.getValorDebitos()).reduce(BigDecimal.ZERO, BigDecimal::add);
-	}
+//	private BigDecimal calcularTotalPendenteDoMovimento(Movimentacao movimentacao) {
+//		List<ContaEmpresa> contas = contaRepository.findByEmpresa(movimentacao.getEmpresa());
+//		return contas.stream().map(m->m.getChequePendente()).reduce(BigDecimal.ZERO, BigDecimal::add);
+//	}
 
-	private BigDecimal calcularSaldoPeriodoDoMovimento(List<MovimentacaoBancaria> movBancarios) {
-		return movBancarios.stream().map(m->m.getSaldoPeriodo()).reduce(BigDecimal.ZERO, BigDecimal::add);
-	}
-
-	private BigDecimal calcularTotalPendenteDoMovimento(Movimentacao movimentacao) {
-		List<ContaEmpresa> contas = contaRepository.findByEmpresa(movimentacao.getEmpresa());
-		return contas.stream().map(m->m.getChequePendente()).reduce(BigDecimal.ZERO, BigDecimal::add);
-	}
-
-	private BigDecimal calcularTotalGeralDoMovimento(List<MovimentacaoBancaria> movBancarios) {
-		return movBancarios.stream().map(m->m.getSaldoGeral()).reduce(BigDecimal.ZERO, BigDecimal::add);
-	}
-	
-	private BigDecimal calculaSaldoDoPeriodo(MovimentacaoBancaria m) {
-		try {
-			return m.getValorCreditos().subtract(m.getValorDebitos()); 
-		} catch (Exception e) {
-			LOG.error("***** Erro ao calcular o saldo do período *****" + e.getMessage());
-			throw new ErroAoFecharMovimentacaoException("Algo deu errado!! Fechamento não efetuado." + e.getMessage());
-		}
-	}	
-	
-	//Saldo Geral = SaldoAbertura + SaldoPeriodo
-	private BigDecimal calculaSaldoGeral(MovimentacaoBancaria m) {
-		try {
-			return m.getValorAbertura().add(m.getSaldoPeriodo()); 
-		} catch (Exception e) {
-			LOG.error("***** Erro ao calcular o saldo geral (Abertura + Periodo) *****" + e.getMessage());
-			throw new ErroAoFecharMovimentacaoException("Algo deu errado!! Fechamento não efetuado." + e.getMessage());
-		}
-	}	
-	
-	private void atualizarSaldoContaEmpresa(MovimentacaoBancaria m) {
-		try {
-			ContaEmpresa conta = contaRepository.findOne(m.getContaEmpresa().getId());
-			conta.setSaldo(m.getSaldoGeral());
-			contaRepository.save(conta);
-		} catch (Exception e) {
-			LOG.error("***** Erro ao atualizar o saldo da conta empresa *****" + e.getMessage());
-			throw new ErroAoFecharMovimentacaoException("Algo deu errado!! Fechamento não efetuado" + e.getMessage());
-		}
-	}
+//	private BigDecimal calcularTotalGeralDoMovimento(List<MovimentacaoItem> movBancarios) {
+//		return movBancarios.stream().map(m->m.getSaldoGeral()).reduce(BigDecimal.ZERO, BigDecimal::add);
+//	}
+//	
+//	private BigDecimal calculaSaldoDoPeriodo(MovimentacaoItem m) {
+//		try {
+//			return m.getValorCreditos().subtract(m.getValorDebitos()); 
+//		} catch (Exception e) {
+//			LOG.error("***** Erro ao calcular o saldo do período *****" + e.getMessage());
+//			throw new ErroAoFecharMovimentacaoException("Algo deu errado!! Fechamento não efetuado." + e.getMessage());
+//		}
+//	}	
+//	
+//	//Saldo Geral = SaldoAbertura + SaldoPeriodo
+//	private BigDecimal calculaSaldoGeral(MovimentacaoItem m) {
+//		try {
+//			return m.getValorAbertura().add(m.getSaldoPeriodo()); 
+//		} catch (Exception e) {
+//			LOG.error("***** Erro ao calcular o saldo geral (Abertura + Periodo) *****" + e.getMessage());
+//			throw new ErroAoFecharMovimentacaoException("Algo deu errado!! Fechamento não efetuado." + e.getMessage());
+//		}
+//	}	
+//	
+//	private void atualizarSaldoContaEmpresa(MovimentacaoBancaria m) {
+//		try {
+//			ContaEmpresa conta = contaRepository.findOne(m.getContaEmpresa().getId());
+//			conta.setSaldo(m.getSaldoGeral());
+//			contaRepository.save(conta);
+//		} catch (Exception e) {
+//			LOG.error("***** Erro ao atualizar o saldo da conta empresa *****" + e.getMessage());
+//			throw new ErroAoFecharMovimentacaoException("Algo deu errado!! Fechamento não efetuado" + e.getMessage());
+//		}
+//	}
 
 
 //	private void atualizarSaldoPendenteContaEmpresa(MovimentacaoBancaria m) {
@@ -396,7 +408,7 @@ public class MovimentacaoService {
 		return movimentacao.getFechado();
 	}
 
-	public Movimentacao findByEmpresaAnStatusAtivo(Empresa empresa) {
+	public Movimentacao findByEmpresaAndStatus(Empresa empresa) {
 		return repository.findByEmpresaAndStatus(empresa);
 	}
 

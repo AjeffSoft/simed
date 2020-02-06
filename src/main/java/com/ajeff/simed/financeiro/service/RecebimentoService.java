@@ -10,8 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ajeff.simed.financeiro.model.ContaReceber;
-import com.ajeff.simed.financeiro.model.ExtratoBancario;
+import com.ajeff.simed.financeiro.model.Extrato;
 import com.ajeff.simed.financeiro.model.Movimentacao;
+import com.ajeff.simed.financeiro.model.MovimentacaoItem;
 import com.ajeff.simed.financeiro.model.Recebimento;
 import com.ajeff.simed.financeiro.repository.RecebimentosRepository;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
@@ -29,6 +30,8 @@ public class RecebimentoService {
 	@Autowired
 	private MovimentacaoService movimentacaoService;
 	@Autowired
+	private MovimentacaoItensService movimentacaoItemService;
+	@Autowired
 	private ExtratoService extratoService;
 	
 	
@@ -36,27 +39,36 @@ public class RecebimentoService {
 	public void salvar(Recebimento recebimento, Long id) {
 		ContaReceber contaReceber = contaReceberService.findOne(id);
 
-		movimentacaoService.verificarSeMovimentacaoEstaFechado(recebimento.getContaEmpresa().getEmpresa(), recebimento.getData());
-		try {
+		Movimentacao movimentacao = setarMovimentacao(recebimento);
+		MovimentacaoItem movimentacaoItem = setarMovimentacaoItem(recebimento, movimentacao);
+ 		try {
 			receberConta(recebimento, contaReceber);
 			recebimento.setContaReceber(contaReceber);
 			recebimento.setFechado(false);
-			Movimentacao movimentacao = movimentacaoService.findByEmpresaAnStatusAtivo(recebimento.getContaEmpresa().getEmpresa());
 
-			recebimento.setMovimentacao(movimentacao);
-			movimentacaoService.creditarValor(movimentacao, recebimento.getValor());
+			recebimento.setMovimentacaoItem(movimentacaoItem);
+			movimentacaoItemService.creditarValor(movimentacaoItem, recebimento.getValor());
 			extratoService.criarRecebimentoNoExtrato(recebimento, "ABERTO");
 			repository.save(recebimento);
 		} catch (PersistenceException e) {
-			e.printStackTrace();
-			throw new RecebimentoNaoEfetuadoException("Algo deu errado!! Recebimento não efetuado");
-		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new RecebimentoNaoEfetuadoException("Algo deu errado!! Recebimento não efetuado");
 		}
 	}
 
 
+	private MovimentacaoItem setarMovimentacaoItem(Recebimento recebimento, Movimentacao movimentacao) {
+		MovimentacaoItem movimentacaoItem = movimentacaoItemService.findByMovimentacaoAndContaEmpresa(movimentacao, recebimento.getContaEmpresa());
+		return movimentacaoItem;
+	}
+
+
+	private Movimentacao setarMovimentacao(Recebimento recebimento) {
+		Movimentacao movimentacao = movimentacaoService.verificarSeMovimentacaoEstaFechado(recebimento.getContaEmpresa().getEmpresa(), recebimento.getData());
+		return movimentacao;
+	}
+	
+	
 	private void receberConta(Recebimento recebimento, ContaReceber contaReceber) {
 		String tipo = verificarSeOValorDoRecebimentoEMenorQueSaldo(recebimento, contaReceber);
 		if(tipo.equals("PARCIAL")) {
@@ -111,10 +123,11 @@ public class RecebimentoService {
 	public void excluir(Long id) {
 		Recebimento recebimento = repository.findOne(id);
 		try {
+			Movimentacao movimentacao = setarMovimentacao(recebimento);
 			contaReceberService.alterarStatusESubtrairValorConta(recebimento.getContaReceber().getId(), "ABERTO", recebimento.getValor());
 			excluirMovimentoDoExtrato(recebimento);
-			Movimentacao movimentacao = movimentacaoService.findByEmpresaAnStatusAtivo(recebimento.getContaEmpresa().getEmpresa());
-			movimentacaoService.cancelarCredito(movimentacao, recebimento.getValor());
+			MovimentacaoItem movimentacaoItem = setarMovimentacaoItem(recebimento, movimentacao);
+			movimentacaoItemService.cancelarCredito(movimentacaoItem, recebimento.getValor());
 			repository.delete(id);
 			repository.flush();
 		} catch (PersistenceException e) {
@@ -124,7 +137,7 @@ public class RecebimentoService {
 	
 	
 	private void excluirMovimentoDoExtrato(Recebimento recebimento) {
-		ExtratoBancario extrato = extratoService.findByRecebimento(recebimento);
+		Extrato extrato = extratoService.findByRecebimento(recebimento);
 		extratoService.excluir(extrato);
 	}	
 	

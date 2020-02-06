@@ -52,8 +52,8 @@ public class TransferenciaContas implements Serializable{
 	private ContaEmpresa contaDestino;
 
 	@ManyToOne
-	@JoinColumn(name = "id_movimentacao")
-	private Movimentacao movimentacao;
+	@JoinColumn(name = "id_movimentacao_item")
+	private MovimentacaoItem movimentacaoItem;
 	
 	
 	public Long getId() {
@@ -120,12 +120,12 @@ public class TransferenciaContas implements Serializable{
 		this.status = status;
 	}
 
-	public Movimentacao getMovimentacao() {
-		return movimentacao;
+	public MovimentacaoItem getMovimentacaoItem() {
+		return movimentacaoItem;
 	}
 
-	public void setMovimentacao(Movimentacao movimentacao) {
-		this.movimentacao = movimentacao;
+	public void setMovimentacaoItem(MovimentacaoItem movimentacaoItem) {
+		this.movimentacaoItem = movimentacaoItem;
 	}
 
 	public Boolean getFechado() {

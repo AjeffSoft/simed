@@ -3,7 +3,9 @@ package com.ajeff.simed.financeiro.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -61,6 +64,9 @@ public class Movimentacao implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "id_empresa")
 	private Empresa empresa;
+	
+	@OneToMany(mappedBy = "movimentacao", cascade = CascadeType.ALL)
+	private List<MovimentacaoItem> itens;
 	
 
 	public Long getId() {
@@ -158,6 +164,14 @@ public class Movimentacao implements Serializable {
 
 	public void setSaldoGeral(BigDecimal saldoGeral) {
 		this.saldoGeral = saldoGeral;
+	}
+
+	public List<MovimentacaoItem> getItens() {
+		return itens;
+	}
+
+	public void setItens(List<MovimentacaoItem> itens) {
+		this.itens = itens;
 	}
 
 	@Override

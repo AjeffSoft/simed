@@ -42,11 +42,11 @@ public class Recebimento implements Serializable{
 	private ContaReceber contaReceber;
 	
 	@ManyToOne
-	@JoinColumn(name = "id_movimentacao")
-	private Movimentacao movimentacao;
+	@JoinColumn(name = "id_movimentacao_item")
+	private MovimentacaoItem movimentacaoItem;
 	
 	@OneToMany(mappedBy="recebimento", cascade = CascadeType.REMOVE)
-	private List<ExtratoBancario> extratos;
+	private List<Extrato> extratos;
 
 
 	public Long getId() {
@@ -89,12 +89,12 @@ public class Recebimento implements Serializable{
 		this.contaReceber = contaReceber;
 	}
 
-	public Movimentacao getMovimentacao() {
-		return movimentacao;
+	public MovimentacaoItem getMovimentacaoItem() {
+		return movimentacaoItem;
 	}
 
-	public void setMovimentacao(Movimentacao movimentacao) {
-		this.movimentacao = movimentacao;
+	public void setMovimentacaoItem(MovimentacaoItem movimentacaoItem) {
+		this.movimentacaoItem = movimentacaoItem;
 	}
 
 	public Boolean getFechado() {
@@ -105,11 +105,11 @@ public class Recebimento implements Serializable{
 		this.fechado = fechado;
 	}
 
-	public List<ExtratoBancario> getExtratos() {
+	public List<Extrato> getExtratos() {
 		return extratos;
 	}
 
-	public void setExtratos(List<ExtratoBancario> extratos) {
+	public void setExtratos(List<Extrato> extratos) {
 		this.extratos = extratos;
 	}
 

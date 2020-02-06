@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ajeff.simed.financeiro.model.ContaPagar;
 import com.ajeff.simed.financeiro.model.Movimentacao;
-import com.ajeff.simed.financeiro.model.MovimentacaoBancaria;
+import com.ajeff.simed.financeiro.model.MovimentacaoItem;
 import com.ajeff.simed.financeiro.model.Pagamento;
 import com.ajeff.simed.financeiro.repository.PagamentosRepository;
 import com.ajeff.simed.financeiro.repository.filter.PagamentoFilter;
@@ -42,7 +42,7 @@ public class PagamentoService {
 	@Autowired
 	private EmpresaService empresaService;
 	@Autowired
-	private MovimentacaoBancariaService movBancariaService;
+	private MovimentacaoItensService movBancariaService;
 	@Autowired
 	private MovimentacaoService movimentacaoService;
 	
@@ -100,12 +100,12 @@ public class PagamentoService {
 	}
 
 	
-	private MovimentacaoBancaria setarMovimentacao(Pagamento pagamento, Boolean tipoCheque) {
+	private MovimentacaoItem setarMovimentacao(Pagamento pagamento, Boolean tipoCheque) {
 		if(tipoCheque) {
 			return null;
 		}else {
 			Movimentacao movimento = movimentacaoService.findByEmpresaAndStatus(pagamento.getContaEmpresa().getEmpresa());
-			MovimentacaoBancaria movBancaria = movBancariaService.findByMovimentacaoAndContaEmpresa(movimento, pagamento.getContaEmpresa());
+			MovimentacaoItem movBancaria = movBancariaService.findByMovimentacaoAndContaEmpresa(movimento, pagamento.getContaEmpresa());
 			return movBancaria;
 		}
 	}

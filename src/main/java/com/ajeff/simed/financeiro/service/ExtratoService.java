@@ -1,24 +1,18 @@
 package com.ajeff.simed.financeiro.service;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.ajeff.simed.financeiro.model.ExtratoBancario;
+import com.ajeff.simed.financeiro.model.Extrato;
 import com.ajeff.simed.financeiro.model.Movimentacao;
-import com.ajeff.simed.financeiro.model.MovimentacaoBancaria;
-import com.ajeff.simed.financeiro.model.Pagamento;
+import com.ajeff.simed.financeiro.model.MovimentacaoItem;
 import com.ajeff.simed.financeiro.model.Recebimento;
 import com.ajeff.simed.financeiro.repository.ExtratosRepository;
-import com.ajeff.simed.financeiro.repository.MovimentacoesBancariasRepository;
+import com.ajeff.simed.financeiro.repository.MovimentacoesItensRepository;
 import com.ajeff.simed.financeiro.repository.MovimentacoesRepository;
 import com.ajeff.simed.financeiro.repository.filter.ExtratoFilter;
 
@@ -38,7 +32,7 @@ public class ExtratoService {
 //	@Autowired
 //	private ContasPagarRepository contaPagarRepository;
 	@Autowired
-	private MovimentacoesBancariasRepository movBancariaRepository;
+	private MovimentacoesItensRepository movBancariaRepository;
 	@Autowired
 	private MovimentacoesRepository movRepository;
 //	
@@ -75,36 +69,36 @@ public class ExtratoService {
 //	}
 //
 //
-	public void excluirPagamentoDoExtrato(Pagamento pagamento) {
-		ExtratoBancario extrato = repository.findByPagamento(pagamento);
-		repository.delete(extrato);
-	}	
-	
-	
-	public void alterarStatusDoExtratoPorPagamento(Pagamento pagamento, String status) {
-		ExtratoBancario extrato = repository.findByPagamento(pagamento);
-		extrato.setStatus(status);
-		repository.save(extrato);
-	}	
-	
-	
-	public void criarMovimentoNoExtratoPorPagamento(Pagamento pagamento, String status, LocalDate data) {
-		ExtratoBancario extrato = new ExtratoBancario();
-		extrato.setData(data);
-		extrato.setContaBancaria(pagamento.getContaEmpresa());
-		extrato.setCredito(false);
-		extrato.setHistorico("Pagamento por " + pagamento.getTipo() +" - Documento nº: "+ pagamento.getDocumento());
-		extrato.setPagamento(pagamento);
-		extrato.setStatus(status);
-		extrato.setTipo("PAGAMENTO");
-		extrato.setMovimentacao(pagamento.getMovimentacao());
-		extrato.setValor(pagamento.getValor());
-		repository.save(extrato);
-	}	
-	
-	
+//	public void excluirPagamentoDoExtrato(Pagamento pagamento) {
+//		Extrato extrato = repository.findByPagamento(pagamento);
+//		repository.delete(extrato);
+//	}	
+//	
+//	
+//	public void alterarStatusDoExtratoPorPagamento(Pagamento pagamento, String status) {
+//		Extrato extrato = repository.findByPagamento(pagamento);
+//		extrato.setStatus(status);
+//		repository.save(extrato);
+//	}	
+//	
+//	
+//	public void criarMovimentoNoExtratoPorPagamento(Pagamento pagamento, String status, LocalDate data) {
+//		Extrato extrato = new Extrato();
+//		extrato.setData(data);
+//		extrato.setContaBancaria(pagamento.getContaEmpresa());
+//		extrato.setCredito(false);
+//		extrato.setHistorico("Pagamento por " + pagamento.getTipo() +" - Documento nº: "+ pagamento.getDocumento());
+//		extrato.setPagamento(pagamento);
+//		extrato.setStatus(status);
+//		extrato.setTipo("PAGAMENTO");
+//		extrato.setMovimentacao(pagamento.getMovimentacao());
+//		extrato.setValor(pagamento.getValor());
+//		repository.save(extrato);
+//	}	
+//	
+//	
 	public void criarRecebimentoNoExtrato(Recebimento recebimento, String status) {
-		ExtratoBancario extrato = new ExtratoBancario();
+		Extrato extrato = new Extrato();
 		extrato.setData(recebimento.getData());
 		extrato.setContaBancaria(recebimento.getContaEmpresa());
 		extrato.setCredito(true);
@@ -187,19 +181,19 @@ public class ExtratoService {
 ////	}
 	
 
-	public Page<ExtratoBancario> filtrar(ExtratoFilter extratoFilter, Pageable pageable) {
+	public Page<Extrato> filtrar(ExtratoFilter extratoFilter, Pageable pageable) {
 		return repository.filtrar(extratoFilter, pageable);
 	}
 	
 	
-	public ExtratoBancario findOne(Long id) {
+	public Extrato findOne(Long id) {
 		return repository.findOne(id);
 	}
 
 
-	public MovimentacaoBancaria setarMovimentacao(ExtratoFilter extratoFilter) {
+	public MovimentacaoItem setarMovimentacao(ExtratoFilter extratoFilter) {
 		Movimentacao movimento = movRepository.findByEmpresaAndStatus(extratoFilter.getEmpresa());
-		MovimentacaoBancaria movBancaria = movBancariaRepository.findByMovimentacaoAndContaEmpresa(movimento, extratoFilter.getContaEmpresa());
+		MovimentacaoItem movBancaria = movBancariaRepository.findByMovimentacaoAndContaEmpresa(movimento, extratoFilter.getContaEmpresa());
 		return movBancaria;
 	}
 
@@ -220,46 +214,46 @@ public class ExtratoService {
 //	}
 
 
-	@Transactional
-	public void exibirSaldo(ExtratoFilter extratoFilter) {
-//		Movimentacao mov = movimentacaoRepository.findByEmpresaAndStatus(extratoFilter.getEmpresa());
-//		MovimentacaoBancaria movBancaria = movimentacaoBancariaRepository.findByMovimentacaoAndContaEmpresa(mov, extratoFilter.getContaEmpresa());
-		
-		List<ExtratoBancario> movimentacoes = repository.findByMovimentacaoAndContaBancariaOrderByDataAndId(extratoFilter.getMovimentacao(), extratoFilter.getContaEmpresa());
-		movimentacoes.forEach(item->System.out.println(item.getValor()));
-		BigDecimal saldoAtual = new BigDecimal(0);
-
-		for (ExtratoBancario ex : movimentacoes) {
-			if(ex.getTipo().equals("SALDO INICIAL")) {
-				saldoAtual = ex.getSaldo();
-			}
-			ex.setSaldo(BigDecimal.ZERO);
-			
-			if (ex.getCredito()) {
-				ex.setSaldo(saldoAtual.add(ex.getValor()));
-			}else {
-				ex.setSaldo(saldoAtual.subtract(ex.getValor()));
-			}
-			saldoAtual = ex.getSaldo();
-			repository.save(ex);
-		}
-		
-		
-////
-////		for (ExtratoBancario extratoBancario : movimentacoes) {
-////			BigDecimal saldo = mov.getTotalInicio();
-////			
-////		}
+//	@Transactional
+//	public void exibirSaldo(ExtratoFilter extratoFilter) {
+////		Movimentacao mov = movimentacaoRepository.findByEmpresaAndStatus(extratoFilter.getEmpresa());
+////		MovimentacaoBancaria movBancaria = movimentacaoBancariaRepository.findByMovimentacaoAndContaEmpresa(mov, extratoFilter.getContaEmpresa());
 //		
-	}
+//		List<Extrato> movimentacoes = repository.findByMovimentacaoAndContaBancariaOrderByDataAndId(extratoFilter.getMovimentacao(), extratoFilter.getContaEmpresa());
+//		movimentacoes.forEach(item->System.out.println(item.getValor()));
+//		BigDecimal saldoAtual = new BigDecimal(0);
+//
+//		for (Extrato ex : movimentacoes) {
+//			if(ex.getTipo().equals("SALDO INICIAL")) {
+//				saldoAtual = ex.getSaldo();
+//			}
+//			ex.setSaldo(BigDecimal.ZERO);
+//			
+//			if (ex.getCredito()) {
+//				ex.setSaldo(saldoAtual.add(ex.getValor()));
+//			}else {
+//				ex.setSaldo(saldoAtual.subtract(ex.getValor()));
+//			}
+//			saldoAtual = ex.getSaldo();
+//			repository.save(ex);
+//		}
+//		
+//		
+//////
+//////		for (ExtratoBancario extratoBancario : movimentacoes) {
+//////			BigDecimal saldo = mov.getTotalInicio();
+//////			
+//////		}
+////		
+//	}
+//
 
-
-	public ExtratoBancario findByRecebimento(Recebimento recebimento) {
+	public Extrato findByRecebimento(Recebimento recebimento) {
 		return repository.findByRecebimento(recebimento);
 	}
 
 
-	public void excluir(ExtratoBancario extrato) {
+	public void excluir(Extrato extrato) {
 		repository.delete(extrato);
 	}
 

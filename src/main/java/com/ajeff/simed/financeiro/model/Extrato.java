@@ -18,8 +18,8 @@ import org.hibernate.validator.constraints.NotBlank;
 import com.ajeff.simed.geral.model.ContaEmpresa;
 
 @Entity
-@Table(name = "extrato_bancario")
-public class ExtratoBancario implements Serializable{
+@Table(name = "extrato")
+public class Extrato implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -47,8 +47,8 @@ public class ExtratoBancario implements Serializable{
 	private Pagamento pagamento;
 	
 	@ManyToOne
-	@JoinColumn(name = "id_movimentacao")
-	private Movimentacao movimentacao;	
+	@JoinColumn(name = "id_movimentacao_item")
+	private MovimentacaoItem movimentacaoItem;	
 
 	@OneToOne
 	@JoinColumn(name = "id_transferencia")
@@ -126,12 +126,12 @@ public class ExtratoBancario implements Serializable{
 		this.pagamento = pagamento;
 	}
 
-	public Movimentacao getMovimentacao() {
-		return movimentacao;
+	public MovimentacaoItem getMovimentacaoItem() {
+		return movimentacaoItem;
 	}
 
-	public void setMovimentacao(Movimentacao movimentacao) {
-		this.movimentacao = movimentacao;
+	public void setMovimentacaoItem(MovimentacaoItem movimentacaoItem) {
+		this.movimentacaoItem = movimentacaoItem;
 	}
 
 	public TransferenciaContas getTransferencia() {
@@ -182,7 +182,7 @@ public class ExtratoBancario implements Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ExtratoBancario other = (ExtratoBancario) obj;
+		Extrato other = (Extrato) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

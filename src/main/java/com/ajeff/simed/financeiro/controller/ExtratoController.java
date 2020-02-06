@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.ajeff.simed.financeiro.model.ExtratoBancario;
-import com.ajeff.simed.financeiro.model.MovimentacaoBancaria;
+import com.ajeff.simed.financeiro.model.Extrato;
+import com.ajeff.simed.financeiro.model.MovimentacaoItem;
 import com.ajeff.simed.financeiro.repository.filter.ExtratoFilter;
 import com.ajeff.simed.financeiro.service.ExtratoService;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
@@ -44,10 +44,10 @@ public class ExtratoController {
 		ModelAndView mv = new ModelAndView("Financeiro/extrato/PesquisarExtratos");
 		
 		extratoFilter.setEmpresa(extratoFilter.getContaEmpresa().getEmpresa());
-		MovimentacaoBancaria movimentacao = service.setarMovimentacao(extratoFilter);
+		MovimentacaoItem movimentacao = service.setarMovimentacao(extratoFilter);
 		extratoFilter.setMovimentacao(movimentacao);
 		service.exibirSaldo(extratoFilter);
-		PageWrapper<ExtratoBancario> paginaWrapper = new PageWrapper<>(service.filtrar(extratoFilter, pageable), httpServletRequest);
+		PageWrapper<Extrato> paginaWrapper = new PageWrapper<>(service.filtrar(extratoFilter, pageable), httpServletRequest);
 		mv.addObject("pagina", paginaWrapper);
 		return mv;
 	}	

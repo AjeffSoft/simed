@@ -16,7 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import com.ajeff.simed.financeiro.model.ExtratoBancario;
+import com.ajeff.simed.financeiro.model.Extrato;
 import com.ajeff.simed.financeiro.repository.filter.ExtratoFilter;
 import com.ajeff.simed.geral.repository.paginacao.PaginacaoUtil;
 
@@ -30,15 +30,15 @@ public class ExtratosRepositoryImpl implements ExtratosRepositoryQueries {
 	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(readOnly = true)
-	public Page<ExtratoBancario> filtrar(ExtratoFilter filtro, Pageable pageable) {
-		Criteria criteria = manager.unwrap(Session.class).createCriteria(ExtratoBancario.class);
+	public Page<Extrato> filtrar(ExtratoFilter filtro, Pageable pageable) {
+		Criteria criteria = manager.unwrap(Session.class).createCriteria(Extrato.class);
 		paginacaoUtil.prepararPaginacao(criteria, pageable);
 		adicionarFiltro(filtro, criteria);
 		return new PageImpl<>(criteria.list(), pageable, total(filtro));
 	}
 		
 	private Long total(ExtratoFilter filtro) {
-		Criteria criteria = manager.unwrap(Session.class).createCriteria(ExtratoBancario.class);
+		Criteria criteria = manager.unwrap(Session.class).createCriteria(Extrato.class);
 		adicionarFiltro(filtro, criteria);
 		criteria.setProjection(Projections.rowCount());
 		return (Long) criteria.uniqueResult();

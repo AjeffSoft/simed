@@ -1,64 +1,107 @@
 package com.ajeff.simed.financeiro.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ajeff.simed.financeiro.model.Movimentacao;
-import com.ajeff.simed.financeiro.model.MovimentacaoBancaria;
-import com.ajeff.simed.financeiro.repository.MovimentacoesBancariasRepository;
+import com.ajeff.simed.financeiro.model.MovimentacaoItem;
+import com.ajeff.simed.financeiro.repository.MovimentacoesItensRepository;
 import com.ajeff.simed.geral.model.ContaEmpresa;
+import com.ajeff.simed.geral.service.ContaEmpresaService;
 
 @Service
-public class MovimentacaoBancariaService {
+public class MovimentacaoItensService {
 
-	@SuppressWarnings("unused")
-	private static final Logger LOG = LoggerFactory.getLogger(MovimentacaoBancariaService.class);	
-	
+
 	@Autowired
-	private MovimentacoesBancariasRepository repository;
-//	@Autowired
-//	private ContaEmpresaRepository contaRepository;
-//	@Autowired
-//	private MovimentacoesBancariasRepository movBancarioRepository;
-//	@Autowired
-//	private ExtratosRepository extratoRepository;
-//	@Autowired
-//	private PagamentosRepository pagamentosRepository;
-//	@Autowired
-//	private TransferenciasContasRepository transferenciaRepository;
-
-	
-	
-//	@Autowired
-//	private EmpresasRepository empresaRepository;
+	private MovimentacoesItensRepository repository;
+	@Autowired
+	private ContaEmpresaService contaEmpresaService;
 
 
-	
-	public void creditarValorNosDebitosDoMovimento(Long movBancaria, BigDecimal valor) {
-		MovimentacaoBancaria movBanco = repository.findOne(movBancaria);
-		movBanco.setValorDebitos(movBanco.getValorDebitos().add(valor));
-		repository.save(movBanco);
-	}
-	
-	
-	public void debitarValorNosDebitosDoMovimento(Long movBancaria, BigDecimal valor) {
-		MovimentacaoBancaria movBanco = repository.findOne(movBancaria);
-		movBanco.setValorDebitos(movBanco.getValorDebitos().subtract(valor));
-		repository.save(movBanco);
+	List<MovimentacaoItem> criarItensDeMovimentacaoPorContaDeEmpresas(Movimentacao movimentacao) {
+		List<MovimentacaoItem> itens = new ArrayList<>();
+		List<ContaEmpresa> contasEmpresa = contaEmpresaService.findByEmpresaIdAtivo(movimentacao.getEmpresa().getId());
+		for(ContaEmpresa c : contasEmpresa) {
+			MovimentacaoItem movimentacaoItem = new MovimentacaoItem();
+			movimentacaoItem.setSaldoInicial(c.getSaldo());
+			movimentacaoItem.setChequePendente(c.getChequePendente());
+			movimentacaoItem.setContaEmpresa(c);
+			movimentacaoItem.setCreditos(BigDecimal.ZERO);
+			movimentacaoItem.setDebitos(BigDecimal.ZERO);
+			movimentacaoItem.setMovimentacao(movimentacao);
+			movimentacaoItem.setSaldoGeral(BigDecimal.ZERO);
+			movimentacaoItem.setSaldoMovimento(BigDecimal.ZERO);
+			itens.add(movimentacaoItem);
+		}
+		return itens;
 	}
 
-	
-	public MovimentacaoBancaria findByMovimentacaoAndContaEmpresa(Movimentacao mov, ContaEmpresa contaEmpresa) {
-		return repository.findByMovimentacaoAndContaEmpresa(mov, contaEmpresa);
-	}
 
-	public MovimentacaoBancaria findOne(Long id) {
-		return repository.findOne(id);
+	public MovimentacaoItem findByMovimentacaoAndContaEmpresa(Movimentacao movimentacao, ContaEmpresa contaEmpresa) {
+		return repository.findByMovimentacaoAndContaEmpresa(movimentacao, contaEmpresa);
+	}
+	
+	public void creditarValor(MovimentacaoItem movimentacaoItem, BigDecimal valor) {
+		movimentacaoItem.setCreditos(movimentacaoItem.getCreditos().add(valor));
+		repository.save(movimentacaoItem);
+	}
+	
+	public void cancelarCredito(MovimentacaoItem movimentacaoItem, BigDecimal valor) {
+		movimentacaoItem.setCreditos(movimentacaoItem.getCreditos().subtract(valor));
+		repository.save(movimentacaoItem);
+	}
+	
+	public void debitarValor(MovimentacaoItem movimentacaoItem, BigDecimal valor) {
+		movimentacaoItem.setDebitos(movimentacaoItem.getDebitos().add(valor));
+		repository.save(movimentacaoItem);
 	}	
+
+	public void cancelarDebito(MovimentacaoItem movimentacaoItem, BigDecimal valor) {
+		movimentacaoItem.setDebitos(movimentacaoItem.getDebitos().subtract(valor));
+		repository.save(movimentacaoItem);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+//	public void creditarValorNosDebitosDoMovimento(Long movBancaria, BigDecimal valor) {
+//		MovimentacaoItem movBanco = repository.findOne(movBancaria);
+//		movBanco.setValorDebitos(movBanco.getValorDebitos().add(valor));
+//		repository.save(movBanco);
+//	}
+//	
+//	
+//	public void debitarValorNosDebitosDoMovimento(Long movBancaria, BigDecimal valor) {
+//		MovimentacaoItem movBanco = repository.findOne(movBancaria);
+//		movBanco.setValorDebitos(movBanco.getValorDebitos().subtract(valor));
+//		repository.save(movBanco);
+//	}
+//
+//	
+//	public MovimentacaoItem findByMovimentacaoAndContaEmpresa(Movimentacao mov, ContaEmpresa contaEmpresa) {
+//		return repository.findByMovimentacaoAndContaEmpresa(mov, contaEmpresa);
+//	}
+//
+//	public MovimentacaoItem findOne(Long id) {
+//		return repository.findOne(id);
+//	}	
 	
 	
 //	@Transactional

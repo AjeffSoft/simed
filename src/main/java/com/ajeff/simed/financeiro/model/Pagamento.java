@@ -66,7 +66,7 @@ public class Pagamento implements Serializable{
 	
 	@ManyToOne
 	@JoinColumn(name = "id_movimentacao")
-	private MovimentacaoBancaria movimentacao;
+	private MovimentacaoItem movimentacao;
 	
 	
 		
@@ -158,11 +158,11 @@ public class Pagamento implements Serializable{
 		this.empresa = empresa;
 	}
 
-	public MovimentacaoBancaria getMovimentacao() {
+	public MovimentacaoItem getMovimentacao() {
 		return movimentacao;
 	}
 
-	public void setMovimentacao(MovimentacaoBancaria movimentacao) {
+	public void setMovimentacao(MovimentacaoItem movimentacao) {
 		this.movimentacao = movimentacao;
 	}
 

@@ -2,7 +2,7 @@ package com.ajeff.simed.financeiro.repository.filter;
 
 import java.math.BigDecimal;
 
-import com.ajeff.simed.financeiro.model.MovimentacaoBancaria;
+import com.ajeff.simed.financeiro.model.MovimentacaoItem;
 import com.ajeff.simed.geral.model.ContaEmpresa;
 import com.ajeff.simed.geral.model.Empresa;
 
@@ -14,7 +14,7 @@ public class ExtratoFilter {
 	private BigDecimal valorFim;
 	private ContaEmpresa contaEmpresa;
 	private Empresa empresa;
-	private MovimentacaoBancaria movimentacao;
+	private MovimentacaoItem movimentacao;
 	
 	public String getHistorico() {
 		return historico;
@@ -52,10 +52,10 @@ public class ExtratoFilter {
 	public void setEmpresa(Empresa empresa) {
 		this.empresa = empresa;
 	}
-	public MovimentacaoBancaria getMovimentacao() {
+	public MovimentacaoItem getMovimentacao() {
 		return movimentacao;
 	}
-	public void setMovimentacao(MovimentacaoBancaria movimentacao) {
+	public void setMovimentacao(MovimentacaoItem movimentacao) {
 		this.movimentacao = movimentacao;
 	}
 }
