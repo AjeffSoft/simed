@@ -91,7 +91,7 @@ public class MovimentacaoController {
 	}
 	
 	
-	@GetMapping("/fechar/{id}")
+	@GetMapping("/fecharMovimento/{id}")
 	public ModelAndView abreFechar(@PathVariable Long id, Movimentacao movimentacao) {
 		ModelAndView mv = new ModelAndView("Financeiro/movimentacao/ConfirmarFechamento");
 		movimentacao = service.findOne(id);
@@ -99,13 +99,13 @@ public class MovimentacaoController {
 		return mv;
 	}	
 	
-	@PostMapping(value = {"/fechar/{\\d+}"})
+	@PostMapping(value = {"/fecharMovimento/{\\d+}"})
 	public ModelAndView fechar(@Valid Movimentacao movimentacao, BindingResult result, RedirectAttributes attributes) {
 
 		try {
-			service.fechar(movimentacao);
+			service.fecharMovimento(movimentacao);
 		} catch (ErroAoFecharMovimentacaoException e) {
-			result.rejectValue("id", e.getMessage(), e.getMessage());
+			result.rejectValue("empresa", e.getMessage(), e.getMessage());
 			return abreFechar(movimentacao.getId(), movimentacao);
 		}
 		return new ModelAndView("redirect:/financeiro/movimentacao/pesquisar");

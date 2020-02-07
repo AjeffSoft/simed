@@ -47,7 +47,7 @@ public class RecebimentoService {
 			recebimento.setFechado(false);
 
 			recebimento.setMovimentacaoItem(movimentacaoItem);
-			movimentacaoItemService.creditarValor(movimentacaoItem, recebimento.getValor());
+			movimentacaoItemService.creditarValorNosCreditos(movimentacaoItem, recebimento.getValor());
 			extratoService.criarRecebimentoNoExtrato(recebimento, "ABERTO");
 			repository.save(recebimento);
 		} catch (PersistenceException e) {
@@ -127,7 +127,7 @@ public class RecebimentoService {
 			contaReceberService.alterarStatusESubtrairValorConta(recebimento.getContaReceber().getId(), "ABERTO", recebimento.getValor());
 			excluirMovimentoDoExtrato(recebimento);
 			MovimentacaoItem movimentacaoItem = setarMovimentacaoItem(recebimento, movimentacao);
-			movimentacaoItemService.cancelarCredito(movimentacaoItem, recebimento.getValor());
+			movimentacaoItemService.debitarValorNosCreditos(movimentacaoItem, recebimento.getValor());
 			repository.delete(id);
 			repository.flush();
 		} catch (PersistenceException e) {
@@ -144,6 +144,15 @@ public class RecebimentoService {
 
 	public List<Recebimento> findByContaReceber(ContaReceber contaReceber) {
 		return repository.findByContaReceberOrderByData(contaReceber);
+	}
+
+
+	public void fecharRecebimentos(MovimentacaoItem m) {
+		List<Recebimento> recebimentos = repository.findByMovimentacaoItem(m);
+		if(!recebimentos.isEmpty()) {
+			recebimentos.stream().forEach(t -> t.setFechado(true));
+			repository.save(recebimentos);
+		}
 	}	
 
 }

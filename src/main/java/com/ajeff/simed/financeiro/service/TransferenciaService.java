@@ -1,6 +1,7 @@
 package com.ajeff.simed.financeiro.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
@@ -19,6 +20,7 @@ import com.ajeff.simed.financeiro.model.TransferenciaContas;
 import com.ajeff.simed.financeiro.repository.ExtratosRepository;
 import com.ajeff.simed.financeiro.repository.TransferenciasContasRepository;
 import com.ajeff.simed.financeiro.repository.filter.TransferenciaFilter;
+import com.ajeff.simed.financeiro.service.exception.ErroAoFecharMovimentacaoException;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.financeiro.service.exception.TransferenciaNaoEfetuadaException;
 import com.ajeff.simed.geral.model.ContaEmpresa;
@@ -76,20 +78,35 @@ public class TransferenciaService {
 		transferencia.setMovimentacaoItem(movimentacaoItem);
 		transferencia.setStatus("ABERTO");
 		transferencia.setFechado(false);
+		atualizarValorNasContasDaMovimentacaoItem(transferencia, movimentacaoItem);
 		repository.save(transferencia);
-		criarMovimentacaoNoExtrato(transferencia);
+		criarMovimentacaoNoExtrato(transferencia, movimentacaoItem);
 
 	}
 
 
-	private void criarMovimentacaoNoExtrato(TransferenciaContas transferencia) {
-		criarMovimentoDaContaPorTipo(transferencia, false);
-		criarMovimentoDaContaPorTipo(transferencia, true);
+	private void atualizarValorNasContasDaMovimentacaoItem(TransferenciaContas transferencia,
+			MovimentacaoItem movimentacaoItem) {
+		MovimentacaoItem itemOrigem = movimentacaoItemService.findByMovimentacaoAndContaEmpresa(movimentacaoItem.getMovimentacao(), transferencia.getContaOrigem());
+		MovimentacaoItem itemDestino = movimentacaoItemService.findByMovimentacaoAndContaEmpresa(movimentacaoItem.getMovimentacao(), transferencia.getContaDestino());
+		if(transferencia.isNovo()) {
+			movimentacaoItemService.creditarValorNosDebitos(itemOrigem, transferencia.getValor());
+			movimentacaoItemService.creditarValorNosCreditos(itemDestino, transferencia.getValor());
+		}else {
+			movimentacaoItemService.debitarValorNosDebitos(itemOrigem, transferencia.getValor());
+			movimentacaoItemService.debitarValorNosCreditos(itemDestino, transferencia.getValor());
+		}
+	}
+
+
+	private void criarMovimentacaoNoExtrato(TransferenciaContas transferencia, MovimentacaoItem movimentacaoItem) {
+		criarMovimentoDaContaPorTipo(transferencia, false, movimentacaoItem);
+		criarMovimentoDaContaPorTipo(transferencia, true, movimentacaoItem);
 
 	}
 
 
-	private void criarMovimentoDaContaPorTipo(TransferenciaContas transferencia, boolean tipo) {
+	private void criarMovimentoDaContaPorTipo(TransferenciaContas transferencia, boolean tipo, MovimentacaoItem movimentacaoItem) {
 		Extrato extrato = new Extrato();
 		extrato.setData(transferencia.getData());
 		extrato.setCredito(tipo);
@@ -109,11 +126,10 @@ public class TransferenciaService {
 	}
 
 
-
 	public Page<TransferenciaContas> filtrar(TransferenciaFilter transferenciaFilter, Pageable pageable) {
 		return repository.filtrar(transferenciaFilter, pageable);
 	}
-
+	
 	
 	public TransferenciaContas findOne(Long id) {
 		return repository.findOne(id);
@@ -123,6 +139,8 @@ public class TransferenciaService {
 	@Transactional
 	public void excluir(Long id) {
 		TransferenciaContas transferencia = repository.findOne(id);
+		MovimentacaoItem movimentacaoItem = movimentacaoItemService.findOne(transferencia.getMovimentacaoItem().getId());
+		atualizarValorNasContasDaMovimentacaoItem(transferencia, movimentacaoItem);
 		List<Extrato> extratos = extratoRepository.findByTransferencia(transferencia);
 		try {
 			for (Extrato extratoBancario : extratos) {
@@ -146,7 +164,6 @@ public class TransferenciaService {
 			transferencia.setStatus("ABERTO");
 			alterarStatusExtrato(transferencia, "ABERTO");
 		}
-		
 		repository.save(transferencia);
 	}
 
@@ -158,6 +175,32 @@ public class TransferenciaService {
 			extratoBancario.setStatus(status);
 			extratoRepository.save(extratoBancario);
 		}
-	}	
+	}
+	
+	
+	public Boolean verificarSeTemTransferenciaAberto(MovimentacaoItem movimentacaoItem) {
+		List<TransferenciaContas> transferencias = repository.findByMovimentacaoItem(movimentacaoItem);
+		List<TransferenciaContas> transferenciasAbertas = new ArrayList<>();
+		transferencias.stream().filter(i -> i.getStatus().equals("ABERTO")).forEach(transferenciasAbertas::add);
+		return transferenciasAbertas.isEmpty() ? false: true;
+	}
+
+
+	public List<TransferenciaContas> findByMovimentacaoItem(MovimentacaoItem m) {
+		return repository.findByMovimentacaoItem(m);
+	}
+	
+	
+	public void fecharTransferencias(MovimentacaoItem m) {
+		if(verificarSeTemTransferenciaAberto(m)){
+			throw new ErroAoFecharMovimentacaoException("Não foi possível fechar o movimento. Existe transferencia em aberto!");
+		}else {
+			List<TransferenciaContas> transferencias = repository.findByMovimentacaoItem(m);
+			if(!transferencias.isEmpty()) {
+				transferencias.stream().forEach(t -> t.setFechado(true));
+				repository.save(transferencias);
+			}
+		}
+	}
 
 }

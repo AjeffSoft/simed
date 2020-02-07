@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ajeff.simed.financeiro.model.MovimentacaoItem;
 import com.ajeff.simed.geral.model.ContaEmpresa;
 import com.ajeff.simed.geral.model.Empresa;
 import com.ajeff.simed.geral.repository.ContaEmpresaRepository;
@@ -99,6 +100,13 @@ public class ContaEmpresaService {
 
 	public Object findByEmpresaId(Long idEmpresa) {
 		return repository.findByEmpresaId(idEmpresa);
+	}
+
+	public void atualizarSaldoContaEmpresa(MovimentacaoItem mov) {
+		ContaEmpresa contaEmpresa = repository.findOne(mov.getContaEmpresa().getId());
+		contaEmpresa.setSaldo(contaEmpresa.getSaldo().add(mov.getSaldoMovimento()));
+		contaEmpresa.setChequePendente(contaEmpresa.getChequePendente().add(mov.getChequePendente()));
+		repository.save(contaEmpresa);
 	}
 
 

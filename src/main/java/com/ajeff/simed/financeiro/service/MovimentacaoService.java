@@ -21,17 +21,14 @@ import com.ajeff.simed.financeiro.model.Movimentacao;
 import com.ajeff.simed.financeiro.model.MovimentacaoItem;
 import com.ajeff.simed.financeiro.model.Pagamento;
 import com.ajeff.simed.financeiro.model.TransferenciaContas;
-import com.ajeff.simed.financeiro.repository.ExtratosRepository;
 import com.ajeff.simed.financeiro.repository.MovimentacoesRepository;
 import com.ajeff.simed.financeiro.repository.PagamentosRepository;
-import com.ajeff.simed.financeiro.repository.TransferenciasContasRepository;
 import com.ajeff.simed.financeiro.repository.filter.MovimentacaoFilter;
 import com.ajeff.simed.financeiro.service.exception.ErroAoFecharMovimentacaoException;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.financeiro.service.exception.MovimentacaoFechadaException;
 import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoException;
 import com.ajeff.simed.geral.model.Empresa;
-import com.ajeff.simed.geral.service.ContaEmpresaService;
 
 @Service
 public class MovimentacaoService {
@@ -41,17 +38,10 @@ public class MovimentacaoService {
 	@Autowired
 	private MovimentacoesRepository repository;
 	@Autowired
-	private ContaEmpresaService contaEmpresaService;
-	@Autowired
 	private MovimentacaoItensService movimentacaoItensService;
 	@Autowired
-	private ExtratosRepository extratoRepository;
-	@Autowired
 	private PagamentosRepository pagamentosRepository;
-	@Autowired
-	private TransferenciasContasRepository transferenciaRepository;
 
-	
 
 	@Transactional
 	public void salvar(Movimentacao movimentacao) {
@@ -73,8 +63,6 @@ public class MovimentacaoService {
 	}
 	
 	
-
-
 	public Movimentacao verificarSeMovimentacaoEstaFechado(Empresa empresa, LocalDate data) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		
@@ -87,8 +75,17 @@ public class MovimentacaoService {
 			Movimentacao movimentacao = repository.findByEmpresaAndStatus(empresa);
 			return movimentacao;
 		}
-		
-		
+	}	
+
+	
+	public Movimentacao verificarSeMovimentacaoEstaFechado(Empresa empresa) {
+		Optional<Movimentacao> mov = repository.findByEmpresaAndStatusAberto(empresa);	
+		if(!mov.isPresent()) {
+			throw new MovimentacaoFechadaException("Não existe movimentação em aberto para a empresa: " + empresa.getFantasia());
+		}else {
+			Movimentacao movimentacao = repository.findByEmpresaAndStatus(empresa);
+			return movimentacao;
+		}
 	}	
 	
 	
@@ -113,12 +110,45 @@ public class MovimentacaoService {
 	public void cancelarDebito(Movimentacao movimentacao, BigDecimal valor) {
 		movimentacao.setTotalDebitos(movimentacao.getTotalDebitos().subtract(valor));
 		repository.save(movimentacao);
+	}
+	
+	
+	@Transactional
+	public void excluir(Long id) {
+		Movimentacao movimentacao = repository.findOne(id);
+		try {
+			repository.delete(id);
+			repository.flush();
+		} catch (PersistenceException e) {
+			throw new ImpossivelExcluirEntidade("Não foi possivel excluir a movimentação nº "+movimentacao.getId()+".\nTalvez esteja vinculada a outras tabelas!"); 
+		}
 	}	
 	
+	
+	@Transactional
+	public void fecharMovimento(Movimentacao movimentacao) {
+		try {
+			movimentacaoItensService.fecharTransacoes(movimentacao);
+			movimentacaoItensService.atualizarSaldoContaBancaria(movimentacao);
+			movimentacaoItensService.fecharCalculosEValores(movimentacao);
+			movimentacao.setFechado(true);
+			movimentacao.setDataFechamento(LocalDate.now());
+		
+			repository.save(movimentacao);
+		} catch (MovimentacaoFechadaException e) {
+			throw new MovimentacaoFechadaException("Movimentacao não foi fechada");
+		}
+	}	
 	
 	
 
 	
+	
+	
+	
+
+
+
 
 //	private void criarRegistroMovimentacaoBancaria(Movimentacao movimentacao) {
 //		List<ContaEmpresa> contasBancarias = contaRepository.findByEmpresa(movimentacao.getEmpresa());
@@ -160,16 +190,6 @@ public class MovimentacaoService {
 //	}
 
 	
-	@Transactional
-	public void excluir(Long id) {
-		Movimentacao movimentacao = repository.findOne(id);
-		try {
-			repository.delete(id);
-			repository.flush();
-		} catch (PersistenceException e) {
-			throw new ImpossivelExcluirEntidade("Não foi possivel excluir a movimentação nº "+movimentacao.getId()+".\nTalvez esteja vinculada a outras tabelas!"); 
-		}
-	}	
 
 	
 //	@Transactional
@@ -197,6 +217,8 @@ public class MovimentacaoService {
 //			throw new ErroAoFecharMovimentacaoException("Algo deu errado!! Fechamento não efetuado" + e.getMessage());
 //		}
 //	}
+	
+
 	
 	
 	private void verificarSeTemPagamentoAberto(MovimentacaoItem m, List<Pagamento> pgtosAberto) {
