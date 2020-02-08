@@ -107,7 +107,7 @@ public class ContaPagarController {
 	@GetMapping("/autorizarConta")
 	public ModelAndView autorizarConta(ContaPagarFilter contaPagarFilter, BindingResult result, @PageableDefault(size=100) Pageable pageable,
 										HttpServletRequest httpServletRequest, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
-		ModelAndView mv = new ModelAndView("Financeiro/contaPagar/AutorizarContaPagar");
+		ModelAndView mv = new ModelAndView("Financeiro/contaPagar/AutorizarContasPagar");
 		mv.addObject("empresas", empresaService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
 		PageWrapper<ContaPagar> paginaWrapper = new PageWrapper<>(service.filtrarAutorizar(contaPagarFilter, pageable), httpServletRequest);
 		mv.addObject("pagina", paginaWrapper);

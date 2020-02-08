@@ -23,7 +23,7 @@
 					<div class="col-sm-2" sec:authorize-url="/financeiro/pagamento/contasAutorizadas">
 						<div class="aw-page-header-controls">
 							<a class="btn  btn-warning" th:href="@{/financeiro/pagamento/contasAutorizadas}">
-								<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Selecionar/Emitir</span>
+								<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Selecionar Contas</span>
 							</a>
 						</div>
 					</div>
@@ -37,18 +37,15 @@
 					<div class="col-sm-4  form-group">
 						<label for="empresa" class="control-label">Empresa</label>
 						<select id="empresa" class="form-control" th:field="*{empresa}">
-							<option th:each="empresa : ${empresas}" th:value="${empresa.id}" th:text="${empresa.fantasia}"></option>
-						</select>
-					</div>
-						
-					<div class="col-sm-4  form-group">
-						<label for="conta" class="control-label">Conta Banco</label>
-						<select id="conta" class="form-control" th:field="*{contaEmpresa}">
-							<option value="">Selecione a conta</option>
-							<option th:each="conta : ${contasBancos}" th:value="${conta.id}" th:text="${conta.empresa.fantasia} + ' - ' +${conta.conta} + ' - ' +${conta.tipo} + ' - ' +${conta.agencia.banco.nome}"></option>
+							<option th:each="empresa : ${empresas}" th:value="${empresa.fantasia}" th:text="${empresa.fantasia}"></option>
 						</select>
 					</div>
 					
+					<div class="form-group  col-sm-4">
+						<label class="control-label" for="documento">Documento</label>
+						<input type="text" class="form-control" id="documento" th:field="*{documento}" maxlength="20"/>
+					</div>
+										
 					<div class="form-group  col-sm-4">
 						<label class="control-label">Status</label> 
 						<div>
@@ -93,25 +90,18 @@
 						</div>
 					</div>
 					
-					<div class="col-sm-2  form-group">
+					<div class="col-sm-4  form-group">
 						<label for="tipo" class="control-label">Tipo</label>
 						<select id="tipo" class="form-control" th:field="*{tipo}">
 							<option value="">Selecione o tipo</option>
 								<option th:each="tipo : ${tipos}" th:value="${tipo}" th:text="${tipo.descricao}"></option>
 						</select>
-					</div>
-					
-					<div class="form-group  col-sm-2">
-						<label class="control-label" for="documento">Documento</label>
-						<input type="text" class="form-control" id="documento" th:field="*{documento}" maxlength="20"/>
-					</div>
-					
+					</div>	
 				</div>	
 									
 				
 				<div class="form-group">
 					<button class="btn  btn-primary" type="submit">Pesquisar</button>
-					<a class="btn  btn-info" th:href="@{/financeiro/pagamento/relatorio}" sec:authorize-url="/financeiro/pagamento/relatorio">Relatórios</a>
 				</div>
 			</form>
 			
@@ -171,11 +161,10 @@
 									<i class="glyphicon glyphicon-eye-open"></i>
 								</a>
 
-								<a class="btn  btn-link  btn-xs  js-tooltip  js-cancelar-btn" title="Pagar" th:if = "${pagamento.emitidoEAberto}"
+								<a class="btn  btn-link  btn-xs  js-tooltip  js-pagar-btn" title="Pagar" th:if = "${pagamento.emitidoEAberto}"
 										th:href="@{/financeiro/pagamento/pagar/{id}(id=${pagamento.id})}"> 
 									<i class="glyphicon glyphicon-ok"></i>
 								</a>
-
 
 								<a class="btn  btn-link  btn-xs  js-tooltip  js-cancelar-btn" title="Cancelar" data:codigo="${pagamento.id}" th:if = "${pagamento.pagoEAberto}"> 
 									<i class="glyphicon glyphicon-remove"></i>
@@ -202,7 +191,6 @@
 				
 			</div>
 
-			<!-- COMPONENTE THYMELEAF PARA PAGINAÇÃO	 -->
 			<simed:pagination page="${pagina}"/>						
 
 		</div>	
@@ -210,7 +198,7 @@
 	</section>
 
 	<th:block layout:fragment="javascript-extra">
-		<script th:src="@{/javascripts/pagamento.cancelar-pagar.js}"></script>
+		<script th:src="@{/javascripts/pagamento.cancelamento.js}"></script>
 	</th:block>	
 </body>
 </html>

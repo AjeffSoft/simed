@@ -46,9 +46,8 @@ public class Pagamento implements Serializable{
 
 	private BigDecimal valor;
 	
-	//Opção se marcado gera todas as contas em um único pagamento
 	@Transient
-	private Boolean unico;
+	private Boolean agrupado;
 	
 	@Transient
 	private Integer numCheque;
@@ -57,16 +56,16 @@ public class Pagamento implements Serializable{
 	@JoinColumn(name = "id_conta_empresa")
 	private ContaEmpresa contaEmpresa;
 
-	@ManyToOne
-	@JoinColumn(name = "id_empresa")
-	private Empresa empresa;
+//	@ManyToOne
+//	@JoinColumn(name = "id_empresa")
+//	private Empresa empresa;
 	
 	@OneToMany(mappedBy = "pagamento")
 	private List<ContaPagar> itens;
 	
 	@ManyToOne
-	@JoinColumn(name = "id_movimentacao")
-	private MovimentacaoItem movimentacao;
+	@JoinColumn(name = "id_movimentacao_item")
+	private MovimentacaoItem movimentacaoItem;
 	
 	
 		
@@ -142,30 +141,6 @@ public class Pagamento implements Serializable{
 		this.itens = itens;
 	}
 
-	public Boolean getUnico() {
-		return unico;
-	}
-
-	public void setUnico(Boolean unico) {
-		this.unico = unico;
-	}
-
-	public Empresa getEmpresa() {
-		return empresa;
-	}
-
-	public void setEmpresa(Empresa empresa) {
-		this.empresa = empresa;
-	}
-
-	public MovimentacaoItem getMovimentacao() {
-		return movimentacao;
-	}
-
-	public void setMovimentacao(MovimentacaoItem movimentacao) {
-		this.movimentacao = movimentacao;
-	}
-
 	public Boolean getFechado() {
 		return fechado;
 	}
@@ -180,6 +155,22 @@ public class Pagamento implements Serializable{
 
 	public void setNumCheque(Integer numCheque) {
 		this.numCheque = numCheque;
+	}
+
+	public Boolean getAgrupado() {
+		return agrupado;
+	}
+
+	public void setAgrupado(Boolean agrupado) {
+		this.agrupado = agrupado;
+	}
+
+	public MovimentacaoItem getMovimentacaoItem() {
+		return movimentacaoItem;
+	}
+
+	public void setMovimentacaoItem(MovimentacaoItem movimentacaoItem) {
+		this.movimentacaoItem = movimentacaoItem;
 	}
 
 	@Override

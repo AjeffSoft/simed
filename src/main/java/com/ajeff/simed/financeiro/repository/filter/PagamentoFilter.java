@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.ajeff.simed.geral.model.ContaEmpresa;
-import com.ajeff.simed.geral.model.Empresa;
 
 public class PagamentoFilter {
 
@@ -12,12 +11,11 @@ public class PagamentoFilter {
 	private LocalDate dataFim;
 	private BigDecimal valorInicio;
 	private BigDecimal valorFim;
-	private String tipo;
 	private ContaEmpresa contaEmpresa;
-	private String observacao;
+	private String tipo;
 	private String status;
 	private String documento;
-	private Empresa empresa;
+	private String empresa;
 	
 	public LocalDate getDataInicio() {
 		return dataInicio;
@@ -49,18 +47,6 @@ public class PagamentoFilter {
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
 	}
-	public ContaEmpresa getContaEmpresa() {
-		return contaEmpresa;
-	}
-	public void setContaEmpresa(ContaEmpresa contaEmpresa) {
-		this.contaEmpresa = contaEmpresa;
-	}
-	public String getObservacao() {
-		return observacao;
-	}
-	public void setObservacao(String observacao) {
-		this.observacao = observacao;
-	}
 	public String getStatus() {
 		return status;
 	}
@@ -73,10 +59,16 @@ public class PagamentoFilter {
 	public void setDocumento(String documento) {
 		this.documento = documento;
 	}
-	public Empresa getEmpresa() {
+	public String getEmpresa() {
 		return empresa;
 	}
-	public void setEmpresa(Empresa empresa) {
+	public void setEmpresa(String empresa) {
 		this.empresa = empresa;
-	}	
+	}
+	public ContaEmpresa getContaEmpresa() {
+		return contaEmpresa;
+	}
+	public void setContaEmpresa(ContaEmpresa contaEmpresa) {
+		this.contaEmpresa = contaEmpresa;
+	}
 }

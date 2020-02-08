@@ -65,12 +65,10 @@ public class PagamentosRepositoryImpl implements PagamentosRepositoryQueries {
 	
 
 	private void adicionarFiltro(PagamentoFilter filtro, Criteria criteria) {
+		criteria.createAlias("contaEmpresa", "c");
+		criteria.createAlias("c.empresa", "e");
+		criteria.addOrder(Order.asc("data")).addOrder(Order.desc("id")).addOrder(Order.asc("documento"));
 		
-		criteria
-		.add(Restrictions.eq("empresa", filtro.getEmpresa()))
-		.addOrder(Order.desc("data"))
-		.addOrder(Order.desc("id"))
-		.addOrder(Order.asc("documento"));
 		
 		if (filtro != null) {
 			
@@ -86,12 +84,12 @@ public class PagamentosRepositoryImpl implements PagamentosRepositoryQueries {
 				criteria.add(Restrictions.ilike("documento", filtro.getDocumento(), MatchMode.ANYWHERE));
 			}
 
-			if(!StringUtils.isEmpty(filtro.getObservacao())) {
-				criteria.add(Restrictions.ilike("observacao", filtro.getObservacao(), MatchMode.ANYWHERE));
+			if (filtro.getDataInicio() != null) {
+				criteria.add(Restrictions.ge("data", filtro.getDataInicio()));
 			}
 
-			if (filtro.getDataInicio() != null || filtro.getDataFim() != null) {
-				criteria.add(Restrictions.between("data", filtro.getDataInicio(), filtro.getDataFim()));
+			if (filtro.getDataFim() != null) {
+				criteria.add(Restrictions.le("data", filtro.getDataFim()));
 			}
 			
 			if(filtro.getValorInicio() != null) {
@@ -101,25 +99,13 @@ public class PagamentosRepositoryImpl implements PagamentosRepositoryQueries {
 			if(filtro.getValorFim() != null) {
 				criteria.add(Restrictions.le("valor", filtro.getValorFim()));
 			}
-			
-			if(isEmpresaPresente(filtro)) {
-				criteria.add(Restrictions.eq("empresa", filtro.getEmpresa()));
-			}
-			
-			if(isContaEmpresaPresente(filtro)) {
-				criteria.add(Restrictions.eq("contaEmpresa", filtro.getContaEmpresa()));
-			}
-			
+
+			if(filtro.getEmpresa() != null) {
+				criteria.add(Restrictions.eq("e.fantasia", filtro.getEmpresa()));
+			}			
 		}
 	}
 	
-	private boolean isEmpresaPresente(PagamentoFilter filtro) {
-		return filtro.getEmpresa() != null && filtro.getEmpresa().getId() != null;
-	}
-	
-	private boolean isContaEmpresaPresente(PagamentoFilter filtro) {
-		return filtro.getContaEmpresa() != null && filtro.getContaEmpresa().getId() != null;
-	}
 
 
 //	@Override

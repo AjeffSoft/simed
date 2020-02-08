@@ -81,12 +81,11 @@ public class EmpresaService {
 		return repository.buscarComCidadeEstado(id);
 	}
 	
-	public Long incrementarCodigoPagamento(Long empresa) {
-		Empresa emp = repository.findOne(empresa);
-		Long inc = emp.getCodigoPagamento() + 1;
-		emp.setCodigoPagamento(inc);
-		repository.save(emp);
-		return inc;
+	public Long setarNumeroPagamentoDaEmpresa(Empresa empresa) {
+		empresa.setCodigoPagamento(empresa.getCodigoPagamento() + 1);
+		Long codigo = empresa.getCodigoPagamento();
+		repository.save(empresa);
+		return codigo;
 	}	
 	
 	public List<Empresa> buscarEmpresaPorUsuario(Long id) {

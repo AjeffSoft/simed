@@ -43,16 +43,15 @@ public class ContaEmpresaService {
 		}
 	}
 
-	public void creditarValorNoTotalPendencias(Long empresa, BigDecimal valor) {
-		ContaEmpresa conta = repository.findOne(empresa);
-		conta.setChequePendente(conta.getChequePendente().add(valor));
-		repository.save(conta);
+	public void creditarValorNoTotalPendencias(ContaEmpresa contaEmpresa, BigDecimal valor) {
+		contaEmpresa.setChequePendente(contaEmpresa.getChequePendente().add(valor));
+		repository.save(contaEmpresa);
 	}
+	
 
-	public void debitarValorNoTotalPendencias(Long empresa, BigDecimal valor) {
-		ContaEmpresa conta = repository.findOne(empresa);
-		conta.setChequePendente(conta.getChequePendente().subtract(valor));
-		repository.save(conta);
+	public void debitarValorNoTotalPendencias(ContaEmpresa contaEmpresa, BigDecimal valor) {
+		contaEmpresa.setChequePendente(contaEmpresa.getChequePendente().subtract(valor));
+		repository.save(contaEmpresa);
 	}
 	
 	

@@ -10,6 +10,6 @@ import com.ajeff.simed.financeiro.repository.helper.pagamento.PagamentosReposito
 
 public interface PagamentosRepository extends JpaRepository<Pagamento, Long>, PagamentosRepositoryQueries{
 
-	List<Pagamento> findByMovimentacao(MovimentacaoItem mb);
+	List<Pagamento> findByMovimentacaoItem(MovimentacaoItem m);
 
 }

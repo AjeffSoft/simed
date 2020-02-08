@@ -42,6 +42,7 @@ import com.ajeff.simed.financeiro.repository.filter.PagamentoFilter;
 import com.ajeff.simed.financeiro.service.ContaPagarService;
 import com.ajeff.simed.financeiro.service.PagamentoService;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
+import com.ajeff.simed.financeiro.service.exception.MovimentacaoFechadaException;
 import com.ajeff.simed.financeiro.service.exception.PagamentoNaoEfetuadoException;
 import com.ajeff.simed.financeiro.service.exception.PeriodoMovimentacaoException;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
@@ -70,7 +71,7 @@ public class PagamentoController {
 	
 	
 	@GetMapping("/novo")
-	public ModelAndView novo(@RequestParam(value = "idConta", required = false) List<Long> ids,Pagamento pagamento) {
+	public ModelAndView novo(@RequestParam(value = "idConta", required = true) List<Long> ids,Pagamento pagamento) {
 		ModelAndView mv = new ModelAndView("Financeiro/pagamento/CadastroPagamento");
 		mv.addObject("contasBancos", contaEmpresaService.buscarContaCorrenteBanco());
 		List<ContaPagar> itens = service.listaDeContasSelecionadasParaPagamento(ids);
@@ -93,19 +94,16 @@ public class PagamentoController {
 		}
 		try {
 			service.salvar(pagamento, ids);
-		} catch (PeriodoMovimentacaoException e) {
-			result.rejectValue("data", e.getMessage(), e.getMessage());
-			return novo(ids, pagamento);
-		} catch (PagamentoNaoEfetuadoException e) {
+		} catch (MovimentacaoFechadaException e) {
 			result.rejectValue("data", e.getMessage(), e.getMessage());
 			return novo(ids, pagamento);
 		}
 
-		if (pagamento.getUnico()) {
-			return new ModelAndView("redirect:/financeiro/pagamento/comprovante/"+ pagamento.getId());
-		}else {
+//		if (pagamento.getUnico()) {
+//			return new ModelAndView("redirect:/financeiro/pagamento/comprovante/"+ pagamento.getId());
+//		}else {
 			return new ModelAndView("redirect:/financeiro/pagamento/comprovante");
-		}
+//		}
 	}	
 	
 	
@@ -114,7 +112,7 @@ public class PagamentoController {
 			HttpServletRequest httpServletRequest, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
 		ModelAndView mv = new ModelAndView("Financeiro/pagamento/PesquisarPagamentos");
 		mv.addObject("contasBancos", contaEmpresaService.buscarContaCorrenteBanco());
-		mv.addObject("empresas", usuarioService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
+		mv.addObject("empresas", empresaService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
 		mv.addObject("total", service.totalGeral(pagamentoFilter));
 		PageWrapper<Pagamento> paginaWrapper = new PageWrapper<>(service.filtrar(pagamentoFilter, pageable), httpServletRequest);
 		mv.addObject("pagina", paginaWrapper);
@@ -122,20 +120,9 @@ public class PagamentoController {
 	}
 
 	
-//	@GetMapping("/autorizarConta")
-//	public ModelAndView autorizarConta(ContaPagarFilter contaPagarFilter, BindingResult result, @PageableDefault(size=50) Pageable pageable,
-//										HttpServletRequest httpServletRequest, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
-//		ModelAndView mv = new ModelAndView("Financeiro/contaPagar/AutorizarContaPagar");
-//		mv.addObject("empresas", usuarioService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
-//		PageWrapper<ContaPagar> paginaWrapper = new PageWrapper<>(contaService.filtrarAutorizar(contaPagarFilter, pageable), httpServletRequest);
-//		mv.addObject("pagina", paginaWrapper);
-//		return mv;
-//	}	
-	
-	
 	@GetMapping("/contasAutorizadas")
 	public ModelAndView listaAutorizado(ContaPagar contaPagar) {
-		ModelAndView mv = new ModelAndView("Financeiro/contaPagar/ListaContasAutorizadas");
+		ModelAndView mv = new ModelAndView("Financeiro/contaPagar/ContasPagarAutorizadas");
 		mv.addObject("contasAutorizadas", contaService.buscarTodasContasAutorizadas());
 		return mv;
 	}	
@@ -189,11 +176,11 @@ public class PagamentoController {
 		} catch (PagamentoNaoEfetuadoException e) {
 			result.rejectValue("dataPago", e.getMessage(), e.getMessage());
 			return abrePagar(pagamento.getId(), pagamento);
-		} catch (PeriodoMovimentacaoException e) {
+		} catch (MovimentacaoFechadaException e) {
 			result.rejectValue("dataPago", e.getMessage(), e.getMessage());
 			return abrePagar(pagamento.getId(), pagamento);
 		}		
-		return new ModelAndView("redirect:/financeiro/pagamento/pesquisar?empresa="+pagamento.getEmpresa().getId()+"&status=EMITIDO");
+		return new ModelAndView("redirect:/financeiro/pagamento/pesquisar?empresa="+pagamento.getContaEmpresa().getEmpresa().getId()+"&status=EMITIDO");
 	}
 	
 	

@@ -34,12 +34,12 @@
 				<input type = "hidden" th:field="*{status}"> 
 				
 				<div class="row">
-					<div class="col-sm-3  form-group">
+					<div class="col-sm-5  form-group">
 						<label for="data" class="control-label">Data*</label>
 						<input id="data" type="text" class="form-control  js-date" th:field="*{data}" autocomplete="off"/>
 					</div>
 
-					<div class="col-sm-6  form-group">
+					<div class="col-sm-7  form-group">
 						<label for="contaBanco" class="control-label">Conta Bancária*</label>
 						<select id="contaBanco" class="form-control" th:field="*{contaEmpresa}">
 							<option value = "">Selecione a conta bancária para pagamento...</option>
@@ -50,8 +50,8 @@
 				</div>					
 
 				<div class="row">
-					<div class="col-sm-3  form-group">
-						<label for="sexo" class="control-label">Tipo</label>
+					<div class="col-sm-5  form-group">
+						<label for="tipolbl" class="control-label">Tipo</label>
 						<div>
 							<div class = "radio  radio-inline">
 								<input type="radio" id="debito" name="tipo" value="DEBITO" th:field="*{tipo}" checked>
@@ -75,7 +75,7 @@
 						<label class="control-label">Tipo Emissão</label>
 						<div>
 							<input id="tipoEmissao" type="checkbox" checked data-toggle="toggle" class="form-control"  data-size="small"
-							 data-on="Agrupado" data-off="Individual" data-onstyle="info" data-offstyle="info" th:field="*{unico}"/>
+							 data-on="Agrupado" data-off="Individual" data-onstyle="info" data-offstyle="info" th:field="*{agrupado}"/>
 						</div>
 					</div>
 

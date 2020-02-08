@@ -20,8 +20,8 @@ import com.ajeff.simed.financeiro.model.MovimentacaoItem;
 import com.ajeff.simed.financeiro.model.Pagamento;
 import com.ajeff.simed.financeiro.repository.PagamentosRepository;
 import com.ajeff.simed.financeiro.repository.filter.PagamentoFilter;
+import com.ajeff.simed.financeiro.service.exception.MovimentacaoFechadaException;
 import com.ajeff.simed.financeiro.service.exception.PagamentoNaoEfetuadoException;
-import com.ajeff.simed.financeiro.service.exception.PeriodoMovimentacaoException;
 import com.ajeff.simed.geral.service.ContaEmpresaService;
 import com.ajeff.simed.geral.service.EmpresaService;
 
@@ -42,137 +42,101 @@ public class PagamentoService {
 	@Autowired
 	private EmpresaService empresaService;
 	@Autowired
-	private MovimentacaoItensService movBancariaService;
+	private MovimentacaoItensService movimentacaoItemService;
 	@Autowired
 	private MovimentacaoService movimentacaoService;
 	
 	
 	@Transactional
 	public void salvar(Pagamento pagamento, List<Long> ids){
-		Boolean aberto = movimentacaoService.verificarSeMovimentacaoEstaAberto(pagamento);
-		if(!aberto) {
-			throw new PeriodoMovimentacaoException("Não existe movimentação em aberto!");
-			
-		}else {
-			Boolean dataForaPeriodo = movimentacaoService.verificarSeDataPagamentoEstaForaPeriodoAberto(pagamento, pagamento.getData());
-			
-			if(dataForaPeriodo) {
-				throw new PeriodoMovimentacaoException("A data de pagamento esta fora do período em aberto!");
-			}else {
-				emitirPagamento(pagamento, ids);
-			}
-		}
+		Movimentacao movimentacao = movimentacaoService.verificarSeMovimentacaoEstaFechado(pagamento.getContaEmpresa().getEmpresa(), pagamento.getData());
+		MovimentacaoItem movimentacaoItem = movimentacaoItemService.findByMovimentacaoAndContaEmpresa(movimentacao, pagamento.getContaEmpresa());
+		emitirPagamento(pagamento, ids, movimentacaoItem);
 	}
+	
 
-
-	private void emitirPagamento(Pagamento pagamento, List<Long> ids) {
+	private void emitirPagamento(Pagamento pagamento, List<Long> ids, MovimentacaoItem movimentacaoItem) {
 		Boolean tipoCheque = verificarTipoPagtoCheque(pagamento);
-		if (pagamento.getUnico()) {
-				emitirPagamentoAgrupado(pagamento, ids, tipoCheque);
+		if (pagamento.getAgrupado()) {
+				emitirPagamentoAgrupado(pagamento, ids, tipoCheque, movimentacaoItem);
 			}else {
-				emitirPagamentoIndividual(pagamento, ids, tipoCheque);
+				emitirPagamentoIndividual(pagamento, ids, tipoCheque, movimentacaoItem);
 			}
+	}	
+
+	
+	private Boolean verificarTipoPagtoCheque(Pagamento pgto) {
+		return pgto.getTipo().equals("CHEQUE") ? true: false; 
 	}	
 	
 	
-	private void emitirPagamentoAgrupado(Pagamento pagamento, List<Long> ids, Boolean tipoCheque) {
+	private void emitirPagamentoAgrupado(Pagamento pagamento, List<Long> ids, Boolean tipoCheque, MovimentacaoItem movimentacaoItem) {
 		
 		try {
 			List<ContaPagar> contasAutorizadas = contaPagarService.buscarContasPagarSelecionadas(ids);
 			BigDecimal total = new BigDecimal(0);
-			pagamento.setMovimentacao(setarMovimentacao(pagamento, tipoCheque));
-
 			for(ContaPagar conta : contasAutorizadas ) {
 				total = total.add(conta.getValor());
 				alterarDadosContaPagar("EMITIDO",conta, pagamento);
 			}
-			
 			pagamento.setValor(total);
-			pagamento.setEmpresa(pagamento.getContaEmpresa().getEmpresa());
 			pagamento.setStatus("EMITIDO");
 			pagamento.setFechado(false);
 			pagamento.setDocumento(setarNumeroDocumento(pagamento, tipoCheque));
-			comportamentoPorTipo(pagamento, tipoCheque);
+			comportamentoDoPagamentoPorTipo(pagamento, tipoCheque, movimentacaoItem);
 			repository.save(pagamento);
 		} catch (PersistenceException e) {
 			throw new PagamentoNaoEfetuadoException("Algo deu errado!! Pagamento não efetuado");
 		}
 	}
-
 	
-	private MovimentacaoItem setarMovimentacao(Pagamento pagamento, Boolean tipoCheque) {
-		if(tipoCheque) {
-			return null;
-		}else {
-			Movimentacao movimento = movimentacaoService.findByEmpresaAndStatus(pagamento.getContaEmpresa().getEmpresa());
-			MovimentacaoItem movBancaria = movBancariaService.findByMovimentacaoAndContaEmpresa(movimento, pagamento.getContaEmpresa());
-			return movBancaria;
-		}
-	}
-	
-	
-	private String setarNumeroDocumento(Pagamento pagamento, Boolean tipoCheque) {
-		if(tipoCheque) {
-			return setarNumeroCheque(pagamento);
-		}else {
-			return numeroDocumentoPagamentos(pagamento);
-		}
-	}
-	
-	
-	private String numeroDocumentoPagamentos(Pagamento pagamento) {
-		try {
-			Long codigo = empresaService.incrementarCodigoPagamento(pagamento.getEmpresa().getId());
-			codigo --;
-			return "PGTO:" + codigo.toString();
-		} catch (PersistenceException e) {
-			e.getStackTrace();
-			throw new PagamentoNaoEfetuadoException("Algo deu errado!! Erro ao inserir o numero do documento do pagamento!");
-		}
-	}		
-	
-	
-	private String setarNumeroCheque(Pagamento pagamento) {
-		Integer cheque = pagamento.getNumCheque();
-		String novoDocumento = cheque.toString();
-		cheque++;
-		pagamento.setNumCheque(cheque);
-		return "CH:" + novoDocumento;
-	}	
-
-	
-	private void comportamentoPorTipo(Pagamento pagamento, Boolean tipoCheque) {
-		if(tipoCheque) {
-			creditarChequePendenteEmContaEmpresa(pagamento);
-		}else {
-			criarPagamentoNoExtrato(pagamento);
-			debitarPagamentoNoDebitoDoMovimento(pagamento);
-		}
-	}		
-
-	
-	private void creditarChequePendenteEmContaEmpresa(Pagamento pagamento) {
-		try {
-			contaEmpresaService.creditarValorNoTotalPendencias(pagamento.getEmpresa().getId(), pagamento.getValor());
-		} catch (PersistenceException e) {
-			throw new PagamentoNaoEfetuadoException("Algo deu errado!! Não foi possível atualizar o valor de cheques pendentes!");
-		}
-	}		
-
 	
 	public List<ContaPagar> listaDeContasSelecionadasParaPagamento(List<Long> ids) {
 		List<ContaPagar> itens = contaPagarService.buscarContasPagarSelecionadas(ids);
 		return itens;
 	}		
 
+
+	private String setarNumeroDocumento(Pagamento pagamento, Boolean tipoCheque) {
+		if(tipoCheque) {
+			Integer cheque = pagamento.getNumCheque();
+			String novoDocumento = cheque.toString();
+			cheque++;
+			pagamento.setNumCheque(cheque);
+			return "CH" + novoDocumento;
+		}else {
+			Long codigo = empresaService.setarNumeroPagamentoDaEmpresa(pagamento.getContaEmpresa().getEmpresa());
+			return "PG" + codigo.toString();		}
+	}
 	
-	private void emitirPagamentoIndividual(Pagamento pagamento, List<Long> ids, Boolean tipoCheque) {
+	
+	private void comportamentoDoPagamentoPorTipo(Pagamento pagamento, Boolean tipoCheque, MovimentacaoItem movimentacaoItem) {
+		if(tipoCheque) {
+			creditarChequePendenteEmContaEmpresa(pagamento);
+		}else {
+			criarPagamentoNoExtrato(pagamento);
+			debitarPagamentoNoDebitoDoMovimentoItem(pagamento, movimentacaoItem);
+		}
+	}		
+	
+	
+	private void creditarChequePendenteEmContaEmpresa(Pagamento pagamento) {
+		contaEmpresaService.creditarValorNoTotalPendencias(pagamento.getContaEmpresa(), pagamento.getValor());
+	}	
+	
+	
+	private void debitarPagamentoNoDebitoDoMovimentoItem(Pagamento pagamento, MovimentacaoItem movimentacaoItem) {
+		movimentacaoItemService.creditarValorNosDebitos(movimentacaoItem, pagamento.getValor());
+	}	
+	
+
+	private void emitirPagamentoIndividual(Pagamento pagamento, List<Long> ids, Boolean tipoCheque, MovimentacaoItem movimentacaoItem) {
 		List<ContaPagar> contasAutorizadas = contaPagarService.buscarContasPagarSelecionadas(ids);
 		try {
 			for(ContaPagar conta : contasAutorizadas ) {
 				Pagamento pgto = registroUnico(pagamento, conta, tipoCheque);
 				alterarDadosContaPagar("EMITIDO", conta, pgto);
-				comportamentoPorTipo(pgto, tipoCheque);
+				comportamentoDoPagamentoPorTipo(pgto, tipoCheque, movimentacaoItem);
 				repository.save(pgto);
 			}
 		} catch (PagamentoNaoEfetuadoException e) {
@@ -181,18 +145,181 @@ public class PagamentoService {
 	}
 
 	
-	private void criarPagamentoNoExtrato(Pagamento pagamento) {
-		try {
-//			if(pagamento.isNovo()) {
-				criarMovimentoNoExtrato(pagamento, "ABERTO", pagamento.getData());
-//			}else {
-//				criarMovimentoNoExtrato(pagamento, "CONFERIDO", pagamento.getDataPago());
+	private void alterarDadosContaPagar(String status, ContaPagar conta, Pagamento pgto) {
+		conta.setStatus(status);
+		conta.setPagamento(pgto);
+	}	
+	
+
+	private Pagamento registroUnico(Pagamento pagamento, ContaPagar conta, Boolean tipoCheque) {
+		Pagamento pgto = new Pagamento(); 
+		pgto.setValor(conta.getValor());
+		pgto.setContaEmpresa(pagamento.getContaEmpresa());
+		pgto.setStatus("EMITIDO");
+		pgto.setData(pagamento.getData());
+		pgto.setTipo(pagamento.getTipo());
+		pgto.setFechado(false);
+		pgto.setDocumento(setarNumeroDocumento(pagamento, tipoCheque));
+		return pgto;
+	}		
+	
+
+	public Page<Pagamento> filtrar(PagamentoFilter pagamentoFilter, Pageable pageable) {
+		return repository.filtrar(pagamentoFilter, pageable);
+	}
+	
+	
+	public BigDecimal totalGeral(PagamentoFilter pagamentoFilter) {
+		return repository.totalGeral(pagamentoFilter);
+	}
+	
+	
+	public Pagamento findOne(Long id) {
+		return repository.findOne(id);
+	}	
+	
+	
+	@Transactional
+	public void excluir(Long id) {
+//		Pagamento pagamento = repository.findOne(id);
+//		Boolean fechado = verificarSeMovimentacaoEstaFechado(pagamento);
+//		if(fechado) {
+//			throw new PeriodoMovimentacaoException("Não existe movimentação em aberto ou a data do pagamento esta fora do período!");
+//		}else {
+//			try {
+//				
+//				List<ContaPagar> itens = contaRepository.findByPagamentoId(pagamento.getId());
+//				for(ContaPagar conta : itens ) {
+//					alterarDadosContaPagar("AUTORIZADO", conta, null);			
+//				}
+//			
+//				Boolean tipoCheque = verificarTipoPagtoCheque(pagamento);
+//				if(tipoCheque) {
+//					cancelarLancamentoChequePendenteEmContaEmpresa(pagamento);					
+//				}else {
+//					excluirMovimentoDoExtrato(pagamento);
+//				debitarPagamentoNoDebitoDoMovimento(pagamento);
+//				}
+//				repository.delete(id);
+//				repository.flush();
+//			} catch (ImpossivelExcluirEntidade e) {
+//				throw new ImpossivelExcluirEntidade("Não foi possivel excluir o pagamento. \nPeríodo de movimentação fechado!"); 
+//			} catch (PersistenceException e) {
+//				throw new ImpossivelExcluirEntidade("Não foi possivel excluir o pagamento. \nExclua primeiro o(s) relacionamento(s) com outra(s) tabela(s)!"); 
 //			}
-		} catch (PersistenceException e) {
-			e.getStackTrace();
-			throw new PagamentoNaoEfetuadoException("Algo deu errado!! Não foi possível incluir o movimento no extrato!");
+//		}
+	}	
+	
+	
+	@Transactional
+	public void pagar(Pagamento pagamento) {
+		List<ContaPagar> itens = contaPagarService.findByPagamentoId(pagamento.getId());
+		Boolean tipoCheque = verificarTipoPagtoCheque(pagamento);
+		Movimentacao movimentacao = movimentacaoService.verificarSeMovimentacaoEstaFechado(pagamento.getContaEmpresa().getEmpresa(), pagamento.getData());
+		MovimentacaoItem movimentacaoItem = movimentacaoItemService.findByMovimentacaoAndContaEmpresa(movimentacao, pagamento.getContaEmpresa());
+		
+		if(tipoCheque) {
+			confirmarPagamentoCheques(pagamento, movimentacaoItem);
+		}else {
+			pagamento.setDataPago(pagamento.getData());
+			extratoService.alterarStatusEMovimentacaoDoExtratoPorPagamento(pagamento, "CONFERIDO", movimentacaoItem);
+		}
+		
+		for (ContaPagar conta : itens) {
+			alterarDadosContaPagar("PAGO",conta, pagamento);
+		}
+		pagamento.setStatus("PAGO");
+		repository.save(pagamento);
+	}	
+	
+	
+	private void confirmarPagamentoCheques(Pagamento pagamento, MovimentacaoItem movimentacaoItem) {
+		pagamento.setMovimentacaoItem(movimentacaoItem);
+		contaEmpresaService.debitarValorNoTotalPendencias(pagamento.getContaEmpresa(), pagamento.getValor());
+		criarPagamentoNoExtrato(pagamento);
+		movimentacaoItemService.creditarValorNosDebitos(movimentacaoItem, pagamento.getValor());
+		verificarSeDataPagoMenorDataEmissao(pagamento);
+	}
+
+	
+	private void cancelarConfirmacaoPagamentoCheques(Pagamento pagamento, MovimentacaoItem movimentacaoItem) {
+		contaEmpresaService.creditarValorNoTotalPendencias(pagamento.getContaEmpresa(), pagamento.getValor());
+		movimentacaoItemService.debitarValorNosDebitos(movimentacaoItem, pagamento.getValor());
+		pagamento.setMovimentacaoItem(null);
+//		excluiPagamentoDoExtrato(pagamento);
+	}	
+
+	@Transactional
+	public void cancelarConfirmacao(Pagamento pagamento) {
+		List<ContaPagar> itens = contaPagarService.findByPagamentoId(pagamento.getId());
+		Boolean tipoCheque = verificarTipoPagtoCheque(pagamento);
+		Movimentacao movimentacao = movimentacaoService.verificarSeMovimentacaoEstaFechado(pagamento.getContaEmpresa().getEmpresa(), pagamento.getData());
+		MovimentacaoItem movimentacaoItem = movimentacaoItemService.findByMovimentacaoAndContaEmpresa(movimentacao, pagamento.getContaEmpresa());
+
+		for (ContaPagar conta : itens) {
+			alterarDadosContaPagar("EMITIDO", conta, pagamento);
+		}
+
+		if (tipoCheque) {
+			cancelarConfirmacaoPagamentoCheques(pagamento, movimentacaoItem);
+		} else {
+			pagamento.setDataPago(null);
+			extratoService.alterarStatusEMovimentacaoDoExtratoPorPagamento(pagamento, "ABERTO", null);
+		}
+		pagamento.setStatus("EMITIDO");
+		pagamento.setDataPago(null);
+		repository.save(pagamento);
+	}	
+
+
+
+
+
+	private void criarPagamentoNoExtrato(Pagamento pagamento) {
+		if(pagamento.isNovo()) {
+			criarMovimentoNoExtrato(pagamento, "ABERTO", pagamento.getData());
+		}else {
+			//Cheque
+		    criarMovimentoNoExtrato(pagamento, "CONFERIDO", pagamento.getDataPago());
+		}
+	}	
+	
+	
+	private void criarMovimentoNoExtrato(Pagamento pagamento, String status, LocalDate data) {
+		extratoService.criarMovimentoNoExtratoPorPagamento(pagamento, status, data);
+	}
+	
+	private void verificarSeDataPagoMenorDataEmissao(Pagamento pagamento) {
+		if (pagamento.getDataPago().isBefore(pagamento.getData())) {
+			throw new PagamentoNaoEfetuadoException("Data de pagamento é menor que a data de emissão");
 		}
 	}
+	
+	
+	private void excluiPagamentoDoExtrato(Pagamento pagamento) {
+		extratoService.excluirPagamentoDoExtrato(pagamento);
+	}	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
 	
 	
 
@@ -206,192 +333,36 @@ public class PagamentoService {
 //	}
 	
 	
-	private void criarMovimentoNoExtrato(Pagamento pagamento, String status, LocalDate data) {
-			extratoService.criarMovimentoNoExtratoPorPagamento(pagamento, status, data);
-	}
-	
-	
-	private void alterarDadosContaPagar(String status, ContaPagar conta, Pagamento pgto) {
-		conta.setStatus(status);
-		conta.setPagamento(pgto);
-	}
-
-
-	private Pagamento registroUnico(Pagamento pagamento, ContaPagar conta, Boolean tipoCheque) {
-		Pagamento pgto = new Pagamento(); 
-		pgto.setValor(conta.getValor());
-		pgto.setContaEmpresa(pagamento.getContaEmpresa());
-		pgto.setStatus("EMITIDO");
-		pgto.setData(pagamento.getData());
-		pgto.setTipo(pagamento.getTipo());
-		pgto.setFechado(false);
-		pgto.setEmpresa(pagamento.getContaEmpresa().getEmpresa());
-		pgto.setMovimentacao(setarMovimentacao(pagamento, tipoCheque));
-		pgto.setDocumento(setarNumeroDocumento(pagamento, tipoCheque));
-		return pgto;
-	}	
-	
-
-	private Boolean verificarTipoPagtoCheque(Pagamento pgto) {
-		return pgto.getTipo().equals("CHEQUE") ? true: false; 
-	}
 
 	
-	@Transactional
-	public void excluir(Long id) {
-		Pagamento pagamento = repository.findOne(id);
-//		Boolean fechado = verificarSeMovimentacaoEstaFechado(pagamento);
-//		if(fechado) {
-//			throw new PeriodoMovimentacaoException("Não existe movimentação em aberto ou a data do pagamento esta fora do período!");
-//		}else {
-//			try {
-//				
-//				List<ContaPagar> itens = contaRepository.findByPagamentoId(pagamento.getId());
-//				for(ContaPagar conta : itens ) {
-//					alterarDadosContaPagar("AUTORIZADO", conta, null);			
-//				}
-//			
-				Boolean tipoCheque = verificarTipoPagtoCheque(pagamento);
-				if(tipoCheque) {
-					cancelarLancamentoChequePendenteEmContaEmpresa(pagamento);					
-				}else {
-//					excluirMovimentoDoExtrato(pagamento);
-				debitarPagamentoNoDebitoDoMovimento(pagamento);
-				}
-//				repository.delete(id);
-//				repository.flush();
-//			} catch (ImpossivelExcluirEntidade e) {
-//				throw new ImpossivelExcluirEntidade("Não foi possivel excluir o pagamento. \nPeríodo de movimentação fechado!"); 
-//			} catch (PersistenceException e) {
-//				throw new ImpossivelExcluirEntidade("Não foi possivel excluir o pagamento. \nExclua primeiro o(s) relacionamento(s) com outra(s) tabela(s)!"); 
-//			}
+	
+//	private void cancelarLancamentoChequePendenteEmContaEmpresa(Pagamento pagamento) {
+//		try {
+//			contaEmpresaService.debitarValorNoTotalPendencias(pagamento.getEmpresa().getId(), pagamento.getValor());
+//		} catch (PersistenceException e) {
+//			e.getStackTrace();
+//			throw new PagamentoNaoEfetuadoException("Erro ao cancelar o lançamento do valor do pagamento nos cheques pendentes do movimento!");
 //		}
-	}	
-	
-	
-	private void debitarPagamentoNoDebitoDoMovimento(Pagamento pagamento) {
-		try {
-			movBancariaService.debitarValorNosDebitosDoMovimento(pagamento.getMovimentacao().getId(), pagamento.getValor());
-		} catch (PersistenceException e) {
-			e.getStackTrace();
-			throw new PagamentoNaoEfetuadoException("Algo deu errado!! Erro ao excluir o debito no movimento bancário");
-		}
-	}
-	
-	
-	private void cancelarLancamentoChequePendenteEmContaEmpresa(Pagamento pagamento) {
-		try {
-			contaEmpresaService.debitarValorNoTotalPendencias(pagamento.getEmpresa().getId(), pagamento.getValor());
-		} catch (PersistenceException e) {
-			e.getStackTrace();
-			throw new PagamentoNaoEfetuadoException("Erro ao cancelar o lançamento do valor do pagamento nos cheques pendentes do movimento!");
-		}
-	}	
+//	}	
 		
 	
-	private void excluiPagamentoDoExtrato(Pagamento pagamento) {
-		extratoService.excluirPagamentoDoExtrato(pagamento);
-	}
 
-
-	@Transactional
-	public void pagar(Pagamento pagamento) {
-//		List<ContaPagar> itens = contaRepository.findByPagamentoId(pagamento.getId());
-//		Boolean tipoCheque = verificarTipoPagtoCheque(pagamento);
-//		
-//		if(!tipoCheque) {
-//			pagamento.setDataPago(pagamento.getData());
-//		}
-//		
-//		Boolean fechado = verificarSeMovimentacaoEstaFechadoNaConfirmacao(pagamento);
-//
-//		if(fechado) {
-//			LOG.error("Não existe movimentação em aberto ou a data do pagamento esta fora do período!");
-//			throw new PeriodoMovimentacaoException("Não existe movimentação em aberto ou a data do pagamento esta fora do período!");
-//		}else {
-//			try {
-//				if(tipoCheque){
-//					confirmarPagamentoCheques(pagamento);
-//				}else {
-//					alterarExtratoConfirmacaoPagamentoDebito(pagamento, "CONFERIDO");
-//				}
-//				for (ContaPagar conta : itens) {
-//					alterarDadosContaPagar("PAGO",conta, pagamento);
-//				}
-//				pagamento.setStatus("PAGO");
-//				repository.save(pagamento);
-//			} catch (Exception e) {
-//				LOG.error("Algo deu errado!! Fechamento não efetuado. Erro ao fechar o mês no método principal");
-//				throw new PagamentoNaoEfetuadoException("Algo deu errado!! Fechamento não efetuado");
-//			}
-//		}
-	}
 	
 	
-	private void alterarStatusDoExtratoPorPagamento(Pagamento pagamento, String status) {
-		extratoService.alterarStatusDoExtratoPorPagamento(pagamento, status);
-	}
-
-
-//	private void confirmarPagamentoCheques(Pagamento pagamento) {
-//		Movimentacao mov = movimentacaoService.findByEmpresaAndStatus(pagamento.getContaEmpresa().getEmpresa());	
-//		MovimentacaoBancaria movBancario = movBancariaService.findByMovimentacaoAndContaEmpresa(mov, pagamento.getContaEmpresa());
-//		pagamento.setMovimentacao(movBancario);
-//		cancelarLancamentoChequePendenteEmContaEmpresa(pagamento);
-//		criarPagamentoNoExtrato(pagamento);
-//		creditarPagamentoNoDebitoDoMovimento(pagamento);
-//		verificarSeDataPagoMenorDataEmissao(pagamento);
+//	private void alterarStatusDoExtratoPorPagamento(Pagamento pagamento, String status) {
+//		extratoService.alterarStatusDoExtratoPorPagamento(pagamento, status);
 //	}
 
-	
-//	private void verificarSeDataPagoMenorDataEmissao(Pagamento pagamento) {
-//		if(pagamento.getDataPago().isBefore(pagamento.getData())) {
-//			LOG.error("Algo deu errado!! A data de pagamento não pode ser menor que a data de emissão");
-//			throw new PagamentoNaoEfetuadoException("Algo deu errado!! Fechamento não efetuado");
-//		}
-//	}
-	
-	
-	@Transactional
-	public void cancelarConfirmacao(Pagamento pagamento) {
-		List<ContaPagar> itens = contaPagarService.findByPagamentoId(pagamento.getId());
-		Boolean tipoCheque = verificarTipoPagtoCheque(pagamento);
-		
-		for (ContaPagar conta : itens) {
-			alterarDadosContaPagar("EMITIDO",conta, pagamento);
-		}
-		
-		if(tipoCheque) {
-			cancelarConfirmacaoPagamentoCheques(pagamento);
-		}else {
-			alterarStatusDoExtratoPorPagamento(pagamento, "ABERTO");			
-		}
-		pagamento.setStatus("EMITIDO");
-		pagamento.setDataPago(null);
-		repository.save(pagamento);
-	}	
 
 
-	private void cancelarConfirmacaoPagamentoCheques(Pagamento pagamento) {
-		debitarPagamentoNoDebitoDoMovimento(pagamento);
-		pagamento.setMovimentacao(null);
-		creditarChequePendenteEmContaEmpresa(pagamento);
-		excluiPagamentoDoExtrato(pagamento);
-	}
-
-	public Pagamento findOne(Long id) {
-		return repository.findOne(id);
-	}
 
 	
-	public Page<Pagamento> filtrar(PagamentoFilter pagamentoFilter, Pageable pageable) {
-		return repository.filtrar(pagamentoFilter, pageable);
-	}
+
 	
 	
-	public BigDecimal totalGeral(PagamentoFilter pagamentoFilter) {
-		return repository.totalGeral(pagamentoFilter);
-	}	
+
+
+
 
 //	private void alterarStatusContaPagarAposExcluir(Pagamento pagamento) {
 //	List<ContaPagar> itens = contaRepository.findByPagamentoId(pagamento.getId());
