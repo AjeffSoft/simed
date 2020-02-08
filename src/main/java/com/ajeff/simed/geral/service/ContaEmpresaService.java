@@ -35,13 +35,11 @@ public class ContaEmpresaService {
 
 	@Transactional
 	public void excluir(Long id) {
-		String tipo = "a conta bancária";
-
 		try {
 			repository.delete(id);
 			repository.flush();
 		} catch (PersistenceException e) {
-			throw new ImpossivelExcluirEntidade("Não foi possivel excluir " + tipo +". Exclua primeiro o(s) relacionamento(s) com outra(s) tabela(s)!"); 
+			throw new ImpossivelExcluirEntidade("Não foi possivel excluir a conta bancária. Exclua primeiro o(s) relacionamento(s) com outra(s) tabela(s)!"); 
 		}
 	}
 

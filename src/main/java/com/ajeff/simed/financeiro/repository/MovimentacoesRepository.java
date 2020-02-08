@@ -11,9 +11,6 @@ import com.ajeff.simed.geral.model.Empresa;
 
 public interface MovimentacoesRepository extends JpaRepository<Movimentacao, Long>, MovimentacoesRepositoryQueries{
 
-//	@Query("select m from Movimentacao m where m.empresa = ?1 and m.fechado = false")
-//	Optional<Movimentacao> findByEmpresaAndAbertoAndDataInicioAndDataFinal(Empresa empresa);
-
 
 	@Query("select m from Movimentacao m where m.empresa = ?1 and m.fechado = false")
 	Optional<Movimentacao> findByEmpresaAndStatusAberto(Empresa empresa);
@@ -21,8 +18,6 @@ public interface MovimentacoesRepository extends JpaRepository<Movimentacao, Lon
 	@Query("select m from Movimentacao m where m.empresa = ?1 and m.fechado = false")
 	Movimentacao findByEmpresaAndStatus(Empresa empresa);
 
-//	@Query("select m from Movimentacao m where m.empresa = ?1 order by m.status asc, m.dataInicio desc, m.dataFinal asc")
-//	List<Movimentacao> findByEmpresa(Empresa empresa);
-	
+
 	
 }

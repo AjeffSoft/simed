@@ -3,14 +3,11 @@ package com.ajeff.simed.financeiro.service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.PersistenceException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,11 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ajeff.simed.financeiro.model.Movimentacao;
 import com.ajeff.simed.financeiro.model.MovimentacaoItem;
 import com.ajeff.simed.financeiro.model.Pagamento;
-import com.ajeff.simed.financeiro.model.TransferenciaContas;
 import com.ajeff.simed.financeiro.repository.MovimentacoesRepository;
-import com.ajeff.simed.financeiro.repository.PagamentosRepository;
 import com.ajeff.simed.financeiro.repository.filter.MovimentacaoFilter;
-import com.ajeff.simed.financeiro.service.exception.ErroAoFecharMovimentacaoException;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.financeiro.service.exception.MovimentacaoFechadaException;
 import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoException;
@@ -38,8 +32,7 @@ public class MovimentacaoService {
 	private MovimentacoesRepository repository;
 	@Autowired
 	private MovimentacaoItensService movimentacaoItensService;
-	@Autowired
-	private PagamentosRepository pagamentosRepository;
+
 
 
 	@Transactional
@@ -50,7 +43,6 @@ public class MovimentacaoService {
 		movimentacao.setTotalCreditos(BigDecimal.ZERO);
 		movimentacao.setTotalDebitos(BigDecimal.ZERO);
 		movimentacao.setSaldoMovimento(BigDecimal.ZERO);
-		movimentacao.setChequePendente(BigDecimal.ZERO);
 		movimentacao.setSaldoGeral(BigDecimal.ZERO);
 		movimentacao.setItens(criarItensDeMovimentacao(movimentacao));
 		repository.save(movimentacao);
@@ -139,9 +131,42 @@ public class MovimentacaoService {
 		}
 	}	
 	
-	
+	private void testeRegistroJaCadastrado(Movimentacao movimentacao) {
+		Optional<Movimentacao> movAberto = repository.findByEmpresaAndStatusAberto(movimentacao.getEmpresa());
+
+		if(movAberto.isPresent() && !movAberto.get().equals(movimentacao)) {
+			throw new RegistroJaCadastradoException("Existe um movimento em aberto para esta empresa!");
+		}
+	}
 
 	
+	public Movimentacao findOne(Long id) {
+		return repository.findOne(id);
+	}
+	
+	
+	public Page<Movimentacao> filtrar(MovimentacaoFilter movimentacaoFilter, Pageable pageable) {
+		return repository.filtrar(movimentacaoFilter, pageable);
+	}		
+
+	public Boolean verificarSeMovimentacaoEstaAberto(Pagamento pagamento) {
+		Optional<Movimentacao> mov = repository.findByEmpresaAndStatusAberto(pagamento.getContaEmpresa().getEmpresa());	
+		return mov.isPresent();
+	}	
+
+	
+	public Boolean verificarSeDataPagamentoEstaForaPeriodoAberto(Pagamento pagamento, LocalDate data) {
+		Optional<Movimentacao> mov = repository.findByEmpresaAndStatusAberto(pagamento.getContaEmpresa().getEmpresa());	
+		return data.isBefore(mov.get().getDataInicio()) || data.isAfter(mov.get().getDataFinal());
+	}
+
+	public Boolean isAberto(Movimentacao movimentacao) {
+		return movimentacao.getFechado();
+	}
+
+	public Movimentacao findByEmpresaAndStatus(Empresa empresa) {
+		return repository.findByEmpresaAndStatus(empresa);
+	}	
 	
 	
 	
@@ -386,23 +411,7 @@ public class MovimentacaoService {
 ////	}	
 	
 	
-	private void testeRegistroJaCadastrado(Movimentacao movimentacao) {
-		Optional<Movimentacao> movAberto = repository.findByEmpresaAndStatusAberto(movimentacao.getEmpresa());
 
-		if(movAberto.isPresent() && !movAberto.get().equals(movimentacao)) {
-			throw new RegistroJaCadastradoException("Existe um movimento em aberto para esta empresa!");
-		}
-	}
-
-	
-	public Movimentacao findOne(Long id) {
-		return repository.findOne(id);
-	}
-	
-	
-	public Page<Movimentacao> filtrar(MovimentacaoFilter movimentacaoFilter, Pageable pageable) {
-		return repository.filtrar(movimentacaoFilter, pageable);
-	}	
 
 //	
 //	public Boolean verificarSeTemMovimentacaoBancariaAberta(Empresa empresa) {
@@ -414,24 +423,7 @@ public class MovimentacaoService {
 //		return data.isBefore(movimentacao.getDataInicio()) || data.isAfter(movimentacao.getDataFinal());
 //	}	
 	
-	public Boolean verificarSeMovimentacaoEstaAberto(Pagamento pagamento) {
-		Optional<Movimentacao> mov = repository.findByEmpresaAndStatusAberto(pagamento.getContaEmpresa().getEmpresa());	
-		return mov.isPresent();
-	}	
 
-	
-	public Boolean verificarSeDataPagamentoEstaForaPeriodoAberto(Pagamento pagamento, LocalDate data) {
-		Optional<Movimentacao> mov = repository.findByEmpresaAndStatusAberto(pagamento.getContaEmpresa().getEmpresa());	
-		return data.isBefore(mov.get().getDataInicio()) || data.isAfter(mov.get().getDataFinal());
-	}
-
-	public Boolean isAberto(Movimentacao movimentacao) {
-		return movimentacao.getFechado();
-	}
-
-	public Movimentacao findByEmpresaAndStatus(Empresa empresa) {
-		return repository.findByEmpresaAndStatus(empresa);
-	}
 
 	
 }

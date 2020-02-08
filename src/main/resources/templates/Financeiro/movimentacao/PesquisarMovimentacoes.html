@@ -20,7 +20,7 @@
 						<h1>Pesquisar movimentações</h1>
 					</div>
 
-					<div class="col-sm-2">
+					<div class="col-sm-2" sec:authorize-url="/financeiro/movimentacao/novo">
 						<div class="aw-page-header-controls">
 							<a class="btn  btn-warning" th:href="@{/financeiro/movimentacao/novo}">
 								<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Cadastrar</span>
@@ -101,16 +101,17 @@
 							</td>
 
 							<td class="text-center">
-								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes" th:href="@{/financeiro/movimentacao/detalhe/{id}(id=${movimentacao.id})}"> 
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes" sec:authorize-url="/financeiro/movimentacao/detalhe/**"
+									th:href="@{/financeiro/movimentacao/detalhe/{id}(id=${movimentacao.id})}"> 
 									<i class="glyphicon glyphicon-eye-open"></i>
 								</a>
 
-								<a class="btn  btn-link  btn-xs js-tooltip" title="Fechar" href="#" th:unless="${movimentacao.fechado}"
+								<a class="btn  btn-link  btn-xs js-tooltip" title="Fechar" href="#" sec:authorize-url="/financeiro/movimentacao/fecharMovimento/**" th:unless="${movimentacao.fechado}"
 									th:href="@{/financeiro/movimentacao/fecharMovimento/{id}(id=${movimentacao.id})}">
 									<i class="glyphicon glyphicon-ok"></i>
 								</a>
 
-								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir" href="#" th:unless="${movimentacao.fechado}"
+								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir" href="#" th:unless="${movimentacao.fechado}" sec:authorize-url="/financeiro/movimentacao/excluir/**"
 									data:url="@{/financeiro/movimentacao/excluir/{id}(id=${movimentacao.id})}"	data:objeto="${movimentacao.id}">
 									<i class="glyphicon glyphicon-trash"></i>
 								</a>
@@ -118,7 +119,7 @@
 						</tr>
 						
 						<tr th:if="${pagina.vazia}">
-							<td colspan="11"> Nenhuma movimentação encontrada</td>
+							<td colspan="10"> Nenhuma movimentação encontrada</td>
 						</tr>
 
 					</tbody>

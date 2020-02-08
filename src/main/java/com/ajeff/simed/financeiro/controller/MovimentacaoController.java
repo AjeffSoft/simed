@@ -1,8 +1,5 @@
 package com.ajeff.simed.financeiro.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -29,7 +26,6 @@ import com.ajeff.simed.financeiro.service.MovimentacaoService;
 import com.ajeff.simed.financeiro.service.exception.ErroAoFecharMovimentacaoException;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoException;
-import com.ajeff.simed.financeiro.service.exception.RegistroNaoCadastradoException;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
 import com.ajeff.simed.geral.security.UsuarioSistema;
 import com.ajeff.simed.geral.service.EmpresaService;
@@ -54,7 +50,7 @@ public class MovimentacaoController {
 	
 	
 	@GetMapping("/pesquisar")
-	public ModelAndView pesquisar(MovimentacaoFilter movimentacaoFilter, BindingResult result, @PageableDefault(size=50) Pageable pageable,
+	public ModelAndView pesquisar(MovimentacaoFilter movimentacaoFilter, BindingResult result, @PageableDefault(size=100) Pageable pageable,
 										HttpServletRequest httpServletRequest, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
 		ModelAndView mv = new ModelAndView("Financeiro/movimentacao/PesquisarMovimentacoes");
 		mv.addObject("empresas", empresaService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
@@ -122,36 +118,5 @@ public class MovimentacaoController {
 	}		
 	
 	
-	@GetMapping("/imprimirDetalhe/{id}")
-	public ModelAndView imprimirDetalhe(@PathVariable Long id) {
-		Map<String, Object> map = new HashMap<>();
-		map.put("format", "pdf");
-		map.put("id_movimentacao", id);
-		return new ModelAndView("rel_MOVIMENTACAO_Detalhes", map);
-	}
-	
-	@GetMapping("/imprimirDebito/{id}")
-	public ModelAndView imprimirDebitos(@PathVariable Long id) {
-		Map<String, Object> map = new HashMap<>();
-		map.put("format", "pdf");
-		map.put("id_movimentacao", id);
-		return new ModelAndView("rel_MOVIMENTACAO_FinalizacaoDebito", map);
-	}
-
-	@GetMapping("/imprimirCredito/{id}")
-	public ModelAndView imprimirCreditos(@PathVariable Long id) {
-		Map<String, Object> map = new HashMap<>();
-		map.put("format", "pdf");
-		map.put("id_movimentacao", id);
-		return new ModelAndView("rel_MOVIMENTACAO_FinalizacaoCredito", map);
-	}
-
-	@GetMapping("/imprimirExtratoIndividual/{id}")
-	public ModelAndView imprimirExtratoIndividual(@PathVariable Long id) {
-		Map<String, Object> map = new HashMap<>();
-		map.put("format", "pdf");
-		map.put("id_movimentacao", id);
-		return new ModelAndView("rel_MOVIMENTACAO_ExtratoCompleto", map);
-	}	
 	
 }

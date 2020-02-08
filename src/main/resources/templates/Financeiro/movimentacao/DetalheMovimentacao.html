@@ -52,8 +52,8 @@
 							</div>
 
 							<div class="col-sm-2  form-group">
-								<label for="valor" class="label label-default">Saldo Abertura</label>
-								<h3 id="valor" th:text="${{movimentacao.totalAbertura}}"></h3>
+								<label for="valor" class="label label-default">Saldo Inicial</label>
+								<h3 id="valor" th:text="${{movimentacao.saldoInicial}}"></h3>
 							</div>
 							
 							<div class="col-sm-2  form-group">
@@ -67,8 +67,8 @@
 							</div>
 
 							<div class="col-sm-2  form-group">
-								<label for="valorFinal" class="label label-default">Saldo Período</label>
-								<h3 id="valorFinal" th:text="${{movimentacao.totalPeriodo}}"></h3>
+								<label for="valorFinal" class="label label-default">Saldo Movimento</label>
+								<h3 id="valorFinal" th:text="${{movimentacao.saldoMovimento}}"></h3>
 							</div>
 						</div>
 						
@@ -79,18 +79,13 @@
 							</div>
 
 							<div class="col-sm-2  form-group">
-								<label for="tipo" class="label label-default">Total Pendente</label>
-								<h3 id="tipo" th:text="${{movimentacao.totalPendente}}"></h3>
-							</div>
-						
-							<div class="col-sm-2  form-group">
 								<label for="fechamento" class="label label-default">Data Fechamento</label>
 								<h3 id="fechamento" th:text="${{movimentacao.dataFechamento}}"></h3>
 							</div>
 
 							<div class="col-sm-2  form-group">
 								<label for="saldo" class="label label-default">Saldo Geral</label>
-								<h3 id="saldo" th:text="${{movimentacao.totalGeral}}"></h3>
+								<h3 id="saldo" th:text="${{movimentacao.saldoGeral}}"></h3>
 							</div>
 						</div>						
 					</div>
@@ -101,11 +96,12 @@
 							<table class="table  table-hover" th:with="total=0">
 								<thead>
 									<tr>
-										<th class="table-col-minima">Conta/Banco/Tipo</th>
-										<th class="table-col-minima">Saldo Abertura</th>
-										<th class="table-col-minima">Valor Creditos</th>
-										<th class="table-col-minima">Valor Debitos</th>
-										<th class="table-col-minima">Saldo Período</th>
+										<th class="table-col-minima">Nome Banco</th>
+										<th class="table-col-minima">Banco</th>
+										<th class="table-col-minima">Saldo Inicial</th>
+										<th class="table-col-minima">Creditos</th>
+										<th class="table-col-minima">Debitos</th>
+										<th class="table-col-minima">Saldo Movimento</th>
 										<th class="table-col-minima">Saldo Geral</th>
 										<th class="table-col-acoes"></th>
 									</tr>
@@ -113,15 +109,15 @@
 								
 								<tbody>
 									<tr th:each="mov : ${movBancarias}">
-										<td th:text="${mov.contaEmpresa.conta}+' / '+${mov.contaEmpresa.agencia.banco.nome}+' - '+${mov.contaEmpresa.tipo.descricao}"></td>
-										<td th:text="${{mov.valorAbertura}}"></td>
-										<td th:text="${{mov.valorCreditos}}"></td>
-										<td th:text="${{mov.valorDebitos}}"></td>
-										<td th:text="${{mov.saldoPeriodo}}"></td>
+										<td th:text="${mov.contaEmpresa.nome}"></td>
+										<td th:text="${mov.contaEmpresa.agencia.banco.nome}"></td>
+										<td th:text="${{mov.saldoInicial}}"></td>
+										<td th:text="${{mov.creditos}}"></td>
+										<td th:text="${{mov.debitos}}"></td>
+										<td th:text="${{mov.saldoMovimento}}"></td>
 										<td th:text="${{mov.saldoGeral}}"></td>
 										<td class="text-center">
-											<a target="'_blank'" class="btn  btn-link  btn-xs  js-tooltip" title="Extrato"
-													th:href="@{/financeiro/movimentacao/imprimirExtratoIndividual/{id}(id=${mov.id})}"> 
+											<a target="'_blank'" class="btn  btn-link  btn-xs  js-tooltip" title="Detalhe"> 
 												<i class="glyphicon glyphicon-print"></i>
 											</a>
 										</td>										
@@ -135,10 +131,7 @@
 				<br>
 														
 				<div class="form-group">
-					<a target="'_blank'" class="btn  btn-info" th:href="@{/financeiro/movimentacao/imprimirDetalhe/{id}(id=${movimentacao.id})}">Imprimir</a>
-					<a target="'_blank'" class="btn  btn-info" th:href="@{/financeiro/movimentacao/imprimirDebito/{id}(id=${movimentacao.id})}">Débitos</a>
-					<a target="'_blank'" class="btn  btn-info" th:href="@{/financeiro/movimentacao/imprimirCredito/{id}(id=${movimentacao.id})}">Créditos</a>
-					<a class="btn  btn-default" href="javascript:history.back(1);">Cancelar e/ou voltar</a>
+					<a class="btn  btn-default" href="javascript:history.back(1);">Voltar</a>
 				</div>
 			</form>
 			
