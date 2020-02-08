@@ -51,10 +51,6 @@ public class Movimentacao implements Serializable {
 
 	@Column(name = "total_debitos")
 	private BigDecimal totalDebitos;
-
-	
-	@Column(name = "cheque_pendente")
-	private BigDecimal chequePendente;
 	
 	@Column(name = "saldo_geral")
 	private BigDecimal saldoGeral;
@@ -148,14 +144,6 @@ public class Movimentacao implements Serializable {
 
 	public void setSaldoMovimento(BigDecimal saldoMovimento) {
 		this.saldoMovimento = saldoMovimento;
-	}
-
-	public BigDecimal getChequePendente() {
-		return chequePendente;
-	}
-
-	public void setChequePendente(BigDecimal chequePendente) {
-		this.chequePendente = chequePendente;
 	}
 
 	public BigDecimal getSaldoGeral() {

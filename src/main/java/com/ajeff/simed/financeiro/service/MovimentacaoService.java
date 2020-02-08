@@ -33,8 +33,7 @@ import com.ajeff.simed.geral.model.Empresa;
 @Service
 public class MovimentacaoService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(MovimentacaoService.class);	
-	
+
 	@Autowired
 	private MovimentacoesRepository repository;
 	@Autowired
@@ -221,57 +220,57 @@ public class MovimentacaoService {
 
 	
 	
-	private void verificarSeTemPagamentoAberto(MovimentacaoItem m, List<Pagamento> pgtosAberto) {
-		List<Pagamento> pgtos = pagamentosRepository.findByMovimentacao(m);
-		List<Pagamento> pgtosParaFechar = new ArrayList<>();
-		for (Pagamento p : pgtos) {
-			if (!p.isCheque() && p.getStatus().equals("EMITIDO")) {
-				pgtosAberto.add(p);
-			}else {
-				p.setFechado(true);
-			}
-		}
-		if(!pgtosAberto.isEmpty()) {
-			LOG.error("Erro - Não foi possível fechar, pois há pagamentos abertos");
-			throw new ErroAoFecharMovimentacaoException("Não foi possível fechar o movimento!");
-		}else {
-			pagamentosRepository.save(pgtosParaFechar);
-		}
-	}
+//	private void verificarSeTemPagamentoAberto(MovimentacaoItem m, List<Pagamento> pgtosAberto) {
+//		List<Pagamento> pgtos = pagamentosRepository.findByMovimentacao(m);
+//		List<Pagamento> pgtosParaFechar = new ArrayList<>();
+//		for (Pagamento p : pgtos) {
+//			if (!p.isCheque() && p.getStatus().equals("EMITIDO")) {
+//				pgtosAberto.add(p);
+//			}else {
+//				p.setFechado(true);
+//			}
+//		}
+//		if(!pgtosAberto.isEmpty()) {
+//			LOG.error("Erro - Não foi possível fechar, pois há pagamentos abertos");
+//			throw new ErroAoFecharMovimentacaoException("Não foi possível fechar o movimento!");
+//		}else {
+//			pagamentosRepository.save(pgtosParaFechar);
+//		}
+//	}
 
 
-	private void verificarSeTemTransferenciaAberto(MovimentacaoItem m, List<TransferenciaContas> transfAberto) {
-		List<TransferenciaContas> transfs = transferenciaRepository.findByMovimentacao(m);
-		List<TransferenciaContas> transfParaFechar = new ArrayList<>();
-		for (TransferenciaContas t : transfs) {
-			if (t.getStatus().equals("ABERTO")) {
-				transfAberto.add(t);
-			}else {
-				t.setFechado(true);
-			}
-		}
-		if(!transfAberto.isEmpty()) {
-			LOG.error("Erro - Não foi possível fechar, pois há transferencias abertas");
-			throw new ErroAoFecharMovimentacaoException("Não foi possível fechar o movimento!");
-		}else {
-			transferenciaRepository.save(transfParaFechar);
-		}
-	}
+//	private void verificarSeTemTransferenciaAberto(MovimentacaoItem m, List<TransferenciaContas> transfAberto) {
+//		List<TransferenciaContas> transfs = transferenciaRepository.findByMovimentacao(m);
+//		List<TransferenciaContas> transfParaFechar = new ArrayList<>();
+//		for (TransferenciaContas t : transfs) {
+//			if (t.getStatus().equals("ABERTO")) {
+//				transfAberto.add(t);
+//			}else {
+//				t.setFechado(true);
+//			}
+//		}
+//		if(!transfAberto.isEmpty()) {
+//			LOG.error("Erro - Não foi possível fechar, pois há transferencias abertas");
+//			throw new ErroAoFecharMovimentacaoException("Não foi possível fechar o movimento!");
+//		}else {
+//			transferenciaRepository.save(transfParaFechar);
+//		}
+//	}
 
 	
-	private void calcularTotaisMovimentacao(Movimentacao movimentacao, List<MovimentacaoItem> movBancarios) {
-		try {
-//			movimentacao.setTotalCreditos(calcularTotalCreditosDoMovimento(movBancarios));
-//			movimentacao.setTotalDebitos(calcularTotalDebitosDoMovimento(movBancarios));
-//			movimentacao.setTotalPeriodo(calcularSaldoPeriodoDoMovimento(movBancarios));
-//			movimentacao.setTotalPendente(calcularTotalPendenteDoMovimento(movimentacao));
-//			movimentacao.setTotalCreditos(calcularTotalCreditosDoMovimento(movBancarios));
-//			movimentacao.setTotalGeral(calcularTotalGeralDoMovimento(movBancarios));
-		} catch (Exception e) {
-			LOG.error("***** Erro ao fechar calcular os totais da movimentação *****" + e.getMessage());
-			throw new ErroAoFecharMovimentacaoException("Algo deu errado!! Fechamento não efetuado" + e.getMessage());
-		}
-	}
+//	private void calcularTotaisMovimentacao(Movimentacao movimentacao, List<MovimentacaoItem> movBancarios) {
+//		try {
+////			movimentacao.setTotalCreditos(calcularTotalCreditosDoMovimento(movBancarios));
+////			movimentacao.setTotalDebitos(calcularTotalDebitosDoMovimento(movBancarios));
+////			movimentacao.setTotalPeriodo(calcularSaldoPeriodoDoMovimento(movBancarios));
+////			movimentacao.setTotalPendente(calcularTotalPendenteDoMovimento(movimentacao));
+////			movimentacao.setTotalCreditos(calcularTotalCreditosDoMovimento(movBancarios));
+////			movimentacao.setTotalGeral(calcularTotalGeralDoMovimento(movBancarios));
+//		} catch (Exception e) {
+//			LOG.error("***** Erro ao fechar calcular os totais da movimentação *****" + e.getMessage());
+//			throw new ErroAoFecharMovimentacaoException("Algo deu errado!! Fechamento não efetuado" + e.getMessage());
+//		}
+//	}
 
 
 

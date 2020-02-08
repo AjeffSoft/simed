@@ -69,11 +69,11 @@
 							<th class="table-col-pequena">Código</th>
 							<th class="table-col-pequena">Data Inicio</th>
 							<th class="table-col-pequena">Data Final</th>
+							<th class="table-col-pequena">Saldo Inicial</th>
 							<th class="table-col-pequena">Créditos</th>
 							<th class="table-col-pequena">Débitos</th>
 							<th class="table-col-pequena">Saldo Movimento</th>
 							<th class="table-col-pequena">Saldo Geral</th>
-							<th class="table-col-pequena">Cheques Pendentes</th>
 							<th class="table-col-pequena">Status</th>
 							<th class="table-agencia-col-acoes"></th>
 						</tr>
@@ -84,11 +84,11 @@
 							<td th:text="${movimentacao.id}"></td>
 							<td th:text="${{movimentacao.dataInicio}}"></td>
 							<td th:text="${{movimentacao.dataFinal}}"></td>
+							<td th:text="${{movimentacao.saldoInicial}}"></td>
 							<td th:text="${{movimentacao.totalCreditos}}"></td>
 							<td th:text="${{movimentacao.totalDebitos}}"></td>
 							<td th:text="${{movimentacao.saldoMovimento}}"></td>
 							<td th:text="${{movimentacao.saldoGeral}}"></td>
-							<td th:text="${{movimentacao.chequePendente}}"></td>
 
 							<td>
 								<th:block th:if="${movimentacao.fechado}">

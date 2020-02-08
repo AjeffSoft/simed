@@ -47,13 +47,13 @@ public class ContaEmpresaService {
 
 	public void creditarValorNoTotalPendencias(Long empresa, BigDecimal valor) {
 		ContaEmpresa conta = repository.findOne(empresa);
-		conta.setValorPendente(conta.getValorPendente().add(valor));
+		conta.setChequePendente(conta.getChequePendente().add(valor));
 		repository.save(conta);
 	}
 
 	public void debitarValorNoTotalPendencias(Long empresa, BigDecimal valor) {
 		ContaEmpresa conta = repository.findOne(empresa);
-		conta.setValorPendente(conta.getValorPendente().subtract(valor));
+		conta.setChequePendente(conta.getChequePendente().subtract(valor));
 		repository.save(conta);
 	}
 	
@@ -71,7 +71,7 @@ public class ContaEmpresaService {
 	private void testeNovoRegistro(ContaEmpresa contaEmpresa) {
 		if(contaEmpresa.isNovo()) {
 			contaEmpresa.setSaldo(new BigDecimal(0));
-			contaEmpresa.setValorPendente(new BigDecimal(0));
+			contaEmpresa.setChequePendente(new BigDecimal(0));
 		}
 	}
 	
@@ -105,7 +105,6 @@ public class ContaEmpresaService {
 	public void atualizarSaldoContaEmpresa(MovimentacaoItem mov) {
 		ContaEmpresa contaEmpresa = repository.findOne(mov.getContaEmpresa().getId());
 		contaEmpresa.setSaldo(contaEmpresa.getSaldo().add(mov.getSaldoMovimento()));
-		contaEmpresa.setChequePendente(contaEmpresa.getChequePendente().add(mov.getChequePendente()));
 		repository.save(contaEmpresa);
 	}
 
