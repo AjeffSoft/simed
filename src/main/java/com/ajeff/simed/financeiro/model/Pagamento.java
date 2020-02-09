@@ -18,7 +18,6 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import com.ajeff.simed.geral.model.ContaEmpresa;
-import com.ajeff.simed.geral.model.Empresa;
 
 @Entity
 @Table(name = "pagamento")
@@ -55,10 +54,6 @@ public class Pagamento implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "id_conta_empresa")
 	private ContaEmpresa contaEmpresa;
-
-//	@ManyToOne
-//	@JoinColumn(name = "id_empresa")
-//	private Empresa empresa;
 	
 	@OneToMany(mappedBy = "pagamento")
 	private List<ContaPagar> itens;
@@ -66,8 +61,6 @@ public class Pagamento implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "id_movimentacao_item")
 	private MovimentacaoItem movimentacaoItem;
-	
-	
 		
 	public Long getId() {
 		return id;

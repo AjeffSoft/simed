@@ -69,6 +69,20 @@ public class ExtratoService {
 		repository.delete(extrato);
 	}	
 	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -126,7 +140,7 @@ public class ExtratoService {
 		extrato.setRecebimento(recebimento);
 		extrato.setStatus(status);
 		extrato.setTipo("RECEBIMENTO");
-//		extrato.setMovimentacao(recebimento.getMovimentacao());
+		extrato.setMovimentacaoItem(recebimento.getMovimentacaoItem());
 		extrato.setValor(recebimento.getValor());
 		repository.save(extrato);
 	}	

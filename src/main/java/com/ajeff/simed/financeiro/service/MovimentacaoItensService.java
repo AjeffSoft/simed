@@ -25,7 +25,8 @@ public class MovimentacaoItensService {
 	private RecebimentoService recebimentoService;
 	@Autowired
 	private TransferenciaService transferenciaService;
-	
+	@Autowired
+	private PagamentoService pagamentoService;	
 	
 	List<MovimentacaoItem> criarItensDeMovimentacaoPorContaDeEmpresas(Movimentacao movimentacao) {
 		List<MovimentacaoItem> itens = new ArrayList<>();
@@ -94,7 +95,7 @@ public class MovimentacaoItensService {
 		for(MovimentacaoItem mov : movimentacoesItens) {
 			transferenciaService.fecharTransferencias(mov);
 			recebimentoService.fecharRecebimentos(mov);
-//			pagamentoService.fecharPagamentos(mov);
+			pagamentoService.fecharPagamentos();
 		}
 	}
 

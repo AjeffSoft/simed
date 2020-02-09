@@ -39,12 +39,12 @@ public class MovimentacaoService {
 	public void salvar(Movimentacao movimentacao) {
 		testeRegistroJaCadastrado(movimentacao);
 		movimentacao.setFechado(false);
-		movimentacao.setSaldoInicial(BigDecimal.ZERO);
 		movimentacao.setTotalCreditos(BigDecimal.ZERO);
 		movimentacao.setTotalDebitos(BigDecimal.ZERO);
 		movimentacao.setSaldoMovimento(BigDecimal.ZERO);
 		movimentacao.setSaldoGeral(BigDecimal.ZERO);
 		movimentacao.setItens(criarItensDeMovimentacao(movimentacao));
+		movimentacao.setSaldoInicial(movimentacao.getItens().stream().map(i -> i.getSaldoInicial()).reduce(BigDecimal.ZERO, BigDecimal::add));
 		repository.save(movimentacao);
 	}
 

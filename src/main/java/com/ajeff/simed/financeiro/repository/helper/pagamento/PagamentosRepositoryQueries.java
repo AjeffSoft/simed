@@ -13,14 +13,4 @@ public interface PagamentosRepositoryQueries {
 	public Page<Pagamento> filtrar(PagamentoFilter filtro, Pageable pageable);
 	
 	public BigDecimal totalGeral(PagamentoFilter filtro);
-	
-//	public BigDecimal totalPagamentosNoMes(Usuario usuario);
-//
-//	public BigDecimal totalPagamentosNoAno(Usuario usuario);
-//	
-//	public List<ContaPagarContaXpagamento> contaPagarXpagamentoMes(Usuario usuario);
-//
-//	public List<ContaPagarContaXpagamento> contaPagarXpagamentoAno(Usuario usuario);
-//	
-//	public List<PagamentoSemestre> totalPagamentoSemestre(Usuario usuario);
 }

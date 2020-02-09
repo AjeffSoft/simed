@@ -12,4 +12,6 @@ public interface PagamentosRepository extends JpaRepository<Pagamento, Long>, Pa
 
 	List<Pagamento> findByMovimentacaoItem(MovimentacaoItem m);
 
+	List<Pagamento> findByFechadoFalse();
+
 }

@@ -89,14 +89,6 @@
 								th:field="*{valorFim}" autocomplete="off" placeholder="Valor Final"/>
 						</div>
 					</div>
-					
-					<div class="col-sm-4  form-group">
-						<label for="tipo" class="control-label">Tipo</label>
-						<select id="tipo" class="form-control" th:field="*{tipo}">
-							<option value="">Selecione o tipo</option>
-								<option th:each="tipo : ${tipos}" th:value="${tipo}" th:text="${tipo.descricao}"></option>
-						</select>
-					</div>	
 				</div>	
 									
 				

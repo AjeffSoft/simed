@@ -46,7 +46,7 @@ public class ExtratoController {
 		extratoFilter.setEmpresa(extratoFilter.getContaEmpresa().getEmpresa());
 		MovimentacaoItem movimentacao = service.setarMovimentacao(extratoFilter);
 		extratoFilter.setMovimentacao(movimentacao);
-		service.exibirSaldo(extratoFilter);
+//		service.exibirSaldo(extratoFilter);
 		PageWrapper<Extrato> paginaWrapper = new PageWrapper<>(service.filtrar(extratoFilter, pageable), httpServletRequest);
 		mv.addObject("pagina", paginaWrapper);
 		return mv;
