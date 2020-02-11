@@ -12,7 +12,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -38,7 +37,6 @@ public class Extrato implements Serializable{
 	
 	private BigDecimal valor;
 
-	@Transient
 	private BigDecimal saldo;
 	
 	@NotBlank(message = "Informe um breve histórico da movimentação")

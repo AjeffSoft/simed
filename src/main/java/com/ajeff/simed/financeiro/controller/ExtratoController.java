@@ -16,7 +16,6 @@ import com.ajeff.simed.financeiro.model.Extrato;
 import com.ajeff.simed.financeiro.model.MovimentacaoItem;
 import com.ajeff.simed.financeiro.repository.filter.ExtratoFilter;
 import com.ajeff.simed.financeiro.service.ExtratoService;
-import com.ajeff.simed.financeiro.service.MovimentacaoItensService;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
 import com.ajeff.simed.geral.model.ContaEmpresa;
 import com.ajeff.simed.geral.security.UsuarioSistema;
@@ -33,12 +32,11 @@ public class ExtratoController {
 	private ContaEmpresaService contaEmpresaService;
 	@Autowired
 	private EmpresaService empresaService;
-	@Autowired
-	private MovimentacaoItensService movimentacaoItemService;
+
 	
 	
 	@GetMapping("/pesquisar")
-	public ModelAndView pesquisar(ExtratoFilter extratoFilter, BindingResult result, @PageableDefault(size=80) Pageable pageable,
+	public ModelAndView pesquisar(ExtratoFilter extratoFilter, BindingResult result, @PageableDefault(size=200) Pageable pageable,
 										HttpServletRequest httpServletRequest) {
 		ModelAndView mv = new ModelAndView("Financeiro/extrato/PesquisarExtratos");
 		
