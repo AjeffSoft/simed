@@ -115,8 +115,6 @@ public class MovimentacaoController {
 		mv.addObject("movBancarias", movBancarioRepository.findByMovimentacao(movimentacao));
 		mv.addObject(movimentacao);
 		return mv;
-	}		
-	
-	
+	}	
 	
 }

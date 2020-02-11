@@ -43,7 +43,7 @@
 					
 					<tbody>
 						<tr th:each="pagamento : ${pagamentos}">
-							<td th:text="${pagamento.empresa.sigla}"></td>
+							<td th:text="${pagamento.contaEmpresa.empresa.sigla}"></td>
 							<td th:text="${pagamento.documento}"></td>
 							<td th:text="${{pagamento.data}}"></td>
 							<td th:text="${pagamento.tipo}"></td>

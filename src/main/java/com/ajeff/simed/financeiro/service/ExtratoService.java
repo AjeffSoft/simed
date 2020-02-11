@@ -1,9 +1,9 @@
 package com.ajeff.simed.financeiro.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,20 +18,20 @@ import com.ajeff.simed.financeiro.repository.ExtratosRepository;
 import com.ajeff.simed.financeiro.repository.MovimentacoesItensRepository;
 import com.ajeff.simed.financeiro.repository.MovimentacoesRepository;
 import com.ajeff.simed.financeiro.repository.filter.ExtratoFilter;
+import com.ajeff.simed.geral.model.ContaEmpresa;
+import com.ajeff.simed.geral.service.ContaEmpresaService;
 
 @Service
 public class ExtratoService {
-	
-	@SuppressWarnings("unused")
-	private static final Logger LOG = LoggerFactory.getLogger(ExtratoService.class);	
+
 	
 
 	@Autowired
 	private ExtratosRepository repository;
-//	@Autowired
-//	private ContaEmpresaRepository contaRepository;
-//	@Autowired
-//	private PagamentosRepository pagamentoRepository;
+	@Autowired
+	private ContaEmpresaService contaEmpresaService;
+	@Autowired
+	private PagamentoService pagamentoService;
 //	@Autowired
 //	private ContasPagarRepository contaPagarRepository;
 	@Autowired
@@ -40,19 +40,70 @@ public class ExtratoService {
 	private MovimentacoesRepository movRepository;
 
 	
-	public void criarMovimentoNoExtratoPorPagamento(Pagamento pagamento, String status, LocalDate data) {
+	public void criarMovimentoNoExtrato(BigDecimal valor, Pagamento pagamento, ContaEmpresa conta, Boolean credito, String status, LocalDate data, String tipo, MovimentacaoItem movimentacaoItem) {
 		Extrato extrato = new Extrato();
 		extrato.setData(data);
-		extrato.setContaBancaria(pagamento.getContaEmpresa());
-		extrato.setCredito(false);
-		extrato.setHistorico("Pagamento afetuado por: " + pagamento.getTipo() + " - Documento nº: " + pagamento.getDocumento());
-		extrato.setPagamento(pagamento);
+		extrato.setContaBancaria(conta);
+		extrato.setCredito(credito);
+		extrato.setTipo(tipo);
 		extrato.setStatus(status);
-		extrato.setTipo("PAGAMENTO");
-		extrato.setMovimentacaoItem(pagamento.getMovimentacaoItem());
-		extrato.setValor(pagamento.getValor());
+		extrato.setMovimentacaoItem(movimentacaoItem);
+		extrato.setValor(valor);
+		criarMovimentacaoPorTipo(tipo, extrato, pagamento);
+		repository.save(extrato);
+	}
+
+	private void criarMovimentacaoPorTipo(String tipo, Extrato extrato, Pagamento pagamento) {
+		if(tipo.equals("PAGAMENTO")) {
+			movimentacaoExtratoPagamento(extrato, pagamento);
+		}else if (tipo.equals("SALDO INICIAL")) {
+			movimentacaoExtratoSaldoInicial(extrato);
+		}
+	}
+	
+
+	private void movimentacaoExtratoSaldoInicial(Extrato extrato) {
+		extrato.setHistorico("Saldo Inicial da Movimentacao nº: " + extrato.getMovimentacaoItem().getMovimentacao().getId());
+	}
+
+	
+	private void movimentacaoExtratoPagamento(Extrato extrato, Pagamento pagamento) {
+		extrato.setPagamento(pagamento);
+		extrato.setHistorico("Pagamento afetuado por: " + pagamento.getTipo() + " - Documento nº: " + pagamento.getDocumento());
+	}
+	
+	
+	
+	
+//	public void criarMovimentoNoExtratoPorPagamento(Pagamento pagamento, String status, LocalDate data) {
+//		Extrato extrato = new Extrato();
+//		extrato.setData(data);
+//		extrato.setContaBancaria(pagamento.getContaEmpresa());
+//		extrato.setCredito(false);
+//		extrato.setHistorico("Pagamento afetuado por: " + pagamento.getTipo() + " - Documento nº: " + pagamento.getDocumento());
+//		extrato.setPagamento(pagamento);
+//		extrato.setStatus(status);
+//		extrato.setTipo("PAGAMENTO");
+//		extrato.setMovimentacaoItem(pagamento.getMovimentacaoItem());
+//		extrato.setValor(pagamento.getValor());
+//		repository.save(extrato);
+//	}	
+	
+	
+	public void criarRecebimentoNoExtrato(Recebimento recebimento, String status) {
+		Extrato extrato = new Extrato();
+		extrato.setData(recebimento.getData());
+		extrato.setContaBancaria(recebimento.getContaEmpresa());
+		extrato.setCredito(true);
+		extrato.setHistorico("Recebimento de: " + recebimento.getContaReceber().getFornecedor().getFantasia() +" - Documento nº: "+ recebimento.getContaReceber().getDocumento());
+		extrato.setRecebimento(recebimento);
+		extrato.setStatus(status);
+		extrato.setTipo("RECEBIMENTO");
+		extrato.setMovimentacaoItem(recebimento.getMovimentacaoItem());
+		extrato.setValor(recebimento.getValor());
 		repository.save(extrato);
 	}	
+	
 	
 	
 	public void alterarStatusEMovimentacaoDoExtratoPorPagamento(Pagamento pagamento, String status,
@@ -70,12 +121,64 @@ public class ExtratoService {
 	}	
 	
 
+	public Page<Extrato> filtrar(ExtratoFilter extratoFilter, Pageable pageable) {
+		return repository.filtrar(extratoFilter, pageable);
+	}
 	
 	
+	public Extrato findOne(Long id) {
+		return repository.findOne(id);
+	}
+
+
+	public MovimentacaoItem setarMovimentacao(ExtratoFilter extratoFilter) {
+		Movimentacao movimento = movRepository.findByEmpresaAndStatus(extratoFilter.getContaEmpresa().getEmpresa());
+		MovimentacaoItem movBancaria = movBancariaRepository.findByMovimentacaoAndContaEmpresa(movimento, extratoFilter.getContaEmpresa());
+		return movBancaria;
+	}
 	
 	
+	public Extrato findByRecebimento(Recebimento recebimento) {
+		return repository.findByRecebimento(recebimento);
+	}
+
+
+	public void excluir(Extrato extrato) {
+		repository.delete(extrato);
+	}
 	
 	
+//	@Transactional
+	public void calcularSaldoExtrato(ExtratoFilter extratoFilter) {
+		
+		List<Extrato> extratos = repository.findByMovimentacaoItemAndContaBancariaOrderByDataAndId(extratoFilter.getMovimentacao());
+		ContaEmpresa contaEmpresa = contaEmpresaService.findOne(extratoFilter.getContaEmpresa().getId());
+
+		BigDecimal saldoAtual = new BigDecimal(0);
+
+		for (Extrato ex : extratos) {
+			if(ex.getTipo().equals("SALDO INICIAL")) {
+				saldoAtual = ex.getSaldo();
+			}
+//			ex.setSaldo(BigDecimal.ZERO);
+			
+			if (ex.getCredito()) {
+				ex.setSaldo(saldoAtual.add(ex.getValor()));
+			}else {
+				ex.setSaldo(saldoAtual.subtract(ex.getValor()));
+			}
+			saldoAtual = ex.getSaldo();
+//			repository.save(ex);
+		}
+		
+		
+////
+////		for (ExtratoBancario extratoBancario : movimentacoes) {
+////			BigDecimal saldo = mov.getTotalInicio();
+////			
+////		}
+//		
+	}
 	
 	
 	
@@ -131,19 +234,6 @@ public class ExtratoService {
 //	
 //	
 
-	public void criarRecebimentoNoExtrato(Recebimento recebimento, String status) {
-		Extrato extrato = new Extrato();
-		extrato.setData(recebimento.getData());
-		extrato.setContaBancaria(recebimento.getContaEmpresa());
-		extrato.setCredito(true);
-		extrato.setHistorico("Recebimento de: " + recebimento.getContaReceber().getFornecedor().getFantasia() +" - Documento nº: "+ recebimento.getContaReceber().getDocumento());
-		extrato.setRecebimento(recebimento);
-		extrato.setStatus(status);
-		extrato.setTipo("RECEBIMENTO");
-		extrato.setMovimentacaoItem(recebimento.getMovimentacaoItem());
-		extrato.setValor(recebimento.getValor());
-		repository.save(extrato);
-	}	
 	
 	
 //	@Transactional
@@ -215,21 +305,7 @@ public class ExtratoService {
 ////	}
 	
 
-	public Page<Extrato> filtrar(ExtratoFilter extratoFilter, Pageable pageable) {
-		return repository.filtrar(extratoFilter, pageable);
-	}
-	
-	
-	public Extrato findOne(Long id) {
-		return repository.findOne(id);
-	}
 
-
-	public MovimentacaoItem setarMovimentacao(ExtratoFilter extratoFilter) {
-		Movimentacao movimento = movRepository.findByEmpresaAndStatus(extratoFilter.getEmpresa());
-		MovimentacaoItem movBancaria = movBancariaRepository.findByMovimentacaoAndContaEmpresa(movimento, extratoFilter.getContaEmpresa());
-		return movBancaria;
-	}
 
 
 ////	public void exibirMovimentacoes(ExtratoFilter extratoFilter) {
@@ -248,48 +324,9 @@ public class ExtratoService {
 //	}
 
 
-//	@Transactional
-//	public void exibirSaldo(ExtratoFilter extratoFilter) {
-////		Movimentacao mov = movimentacaoRepository.findByEmpresaAndStatus(extratoFilter.getEmpresa());
-////		MovimentacaoBancaria movBancaria = movimentacaoBancariaRepository.findByMovimentacaoAndContaEmpresa(mov, extratoFilter.getContaEmpresa());
-//		
-//		List<Extrato> movimentacoes = repository.findByMovimentacaoAndContaBancariaOrderByDataAndId(extratoFilter.getMovimentacao(), extratoFilter.getContaEmpresa());
-//		movimentacoes.forEach(item->System.out.println(item.getValor()));
-//		BigDecimal saldoAtual = new BigDecimal(0);
-//
-//		for (Extrato ex : movimentacoes) {
-//			if(ex.getTipo().equals("SALDO INICIAL")) {
-//				saldoAtual = ex.getSaldo();
-//			}
-//			ex.setSaldo(BigDecimal.ZERO);
-//			
-//			if (ex.getCredito()) {
-//				ex.setSaldo(saldoAtual.add(ex.getValor()));
-//			}else {
-//				ex.setSaldo(saldoAtual.subtract(ex.getValor()));
-//			}
-//			saldoAtual = ex.getSaldo();
-//			repository.save(ex);
-//		}
-//		
-//		
-//////
-//////		for (ExtratoBancario extratoBancario : movimentacoes) {
-//////			BigDecimal saldo = mov.getTotalInicio();
-//////			
-//////		}
-////		
-//	}
-//
-
-	public Extrato findByRecebimento(Recebimento recebimento) {
-		return repository.findByRecebimento(recebimento);
-	}
 
 
-	public void excluir(Extrato extrato) {
-		repository.delete(extrato);
-	}
+
 
 
 

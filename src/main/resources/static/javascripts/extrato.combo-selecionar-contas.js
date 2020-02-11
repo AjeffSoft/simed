@@ -1,6 +1,6 @@
-var Sinte = Sinte || {};
+var Simed = Simed || {};
 
-Sinte.ComboEmpresa = (function() {
+Simed.ComboEmpresa = (function() {
 
 	function ComboEmpresa() {
 		this.combo = $('#empresa');
@@ -20,7 +20,8 @@ Sinte.ComboEmpresa = (function() {
 
 }());
 
-Sinte.ComboConta = (function() {
+
+Simed.ComboConta = (function() {
 
 	function ComboConta(comboEmpresa) {
 		this.comboEmpresa = comboEmpresa;
@@ -39,7 +40,6 @@ Sinte.ComboConta = (function() {
 	function onEmpresaAlterado(evento, codigoEmpresa) {
 		this.inputHiddenContaSelecionada.val('');
 		inicializarContas.call(this, codigoEmpresa);
-		inicializarMovimentos.call(this, codigoEmpresa);
 
 	}
 
@@ -61,24 +61,6 @@ Sinte.ComboConta = (function() {
 		}
 	}
 
-	
-	function inicializarMovimentos(codigoEmpresa) {
-		if (codigoEmpresa) {
-			var resposta = $.ajax({
-				url : this.combo.data('url'),
-				method : 'GET',
-				contentType : 'application/json',
-				data : {
-					'empresa' : codigoEmpresa
-				},
-				complete : finalizarRequisicao.bind(this)
-			});
-			resposta.done(onBuscarMovFinalizado.bind(this));
-		} else {
-			reset.call(this);
-		}
-	}	
-	
 	function onBuscarContasFinalizado(contas) {
 		var options = [];
 		contas.forEach(function(conta) {
@@ -95,24 +77,6 @@ Sinte.ComboConta = (function() {
 		}
 	}
 
-//	function onBuscarMovFinalizado(movimentos) {
-//		var options = [];
-//		movimentos.forEach(function(movimento) {
-//			options.push('<option value="' + movimento.id + '">' + "CONTA " + movimento.id + "  Nº " + movimento.id + "  -  " + movimento.id
-//					+ '</option>');
-//		});
-//
-//		this.combo.html(options.join(''));
-//		this.combo.removeAttr('disabled');
-//
-//		var codigoMovSelecionada = this.inputHiddenMovSelecionada.val();
-//		if (codigoMovSelecionada) {
-//			this.combo.val(codigoMovSelecionada);
-//		}
-//	}
-	
-	
-	
 	function reset() {
 		this.combo.html('<option value="">Selecione uma conta bancária</option>');
 		this.combo.val('');
@@ -134,10 +98,10 @@ Sinte.ComboConta = (function() {
 
 $(function() {
 
-	var comboEmpresa = new Sinte.ComboEmpresa();
+	var comboEmpresa = new Simed.ComboEmpresa();
 	comboEmpresa.iniciar();
 
-	var comboConta = new Sinte.ComboConta(comboEmpresa);
+	var comboConta = new Simed.ComboConta(comboEmpresa);
 	comboConta.iniciar();
 
 });

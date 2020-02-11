@@ -13,5 +13,7 @@ public interface MovimentacoesItensRepository extends JpaRepository<Movimentacao
 	MovimentacaoItem findByMovimentacaoAndContaEmpresa(Movimentacao movimentacao, ContaEmpresa contaEmpresa);
 
 	List<MovimentacaoItem> findByMovimentacao(Movimentacao movimentacao);
+
+	List<MovimentacaoItem> findByContaEmpresa(ContaEmpresa contaEmpresa);
 }
 

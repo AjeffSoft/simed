@@ -85,11 +85,11 @@ public class PagamentoController {
 			return novo(ids, pagamento);
 		}
 
-//		if (pagamento.getUnico()) {
-//			return new ModelAndView("redirect:/financeiro/pagamento/comprovante/"+ pagamento.getId());
-//		}else {
+		if (pagamento.getAgrupado()) {
+			return new ModelAndView("redirect:/financeiro/pagamento/comprovante/"+ pagamento.getId());
+		}else {
 			return new ModelAndView("redirect:/financeiro/pagamento/comprovante");
-//		}
+		}
 	}	
 	
 	
@@ -178,16 +178,15 @@ public class PagamentoController {
 	}	
 
 
-//	@GetMapping("/comprovante")
-//	public ModelAndView comprovanteIndividual() {
-//		return new ModelAndView("Financeiro/pagamento/ComprovantePagamento");
-//	}
-//	
-//	
-//	@GetMapping("/comprovante/{id}")
-//	public ModelAndView comprovante(@PathVariable Long id) {
-//		ModelAndView mv = new ModelAndView("Financeiro/pagamento/ComprovantePagamentoUnico");
-//		mv.addObject("pagamentos", service.findOne(id));
-//		return mv;
-//	}
+	@GetMapping("/comprovante")
+	public ModelAndView comprovanteIndividual() {
+		return new ModelAndView("Financeiro/pagamento/ComprovantePagamento");
+	}
+
+	@GetMapping("/comprovante/{id}")
+	public ModelAndView comprovante(@PathVariable Long id) {
+		ModelAndView mv = new ModelAndView("Financeiro/pagamento/ComprovantePagamentoAgrupado");
+		mv.addObject("pagamentos", service.findOne(id));
+		return mv;
+	}
 }

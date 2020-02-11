@@ -26,7 +26,11 @@ public class MovimentacaoItensService {
 	@Autowired
 	private TransferenciaService transferenciaService;
 	@Autowired
-	private PagamentoService pagamentoService;	
+	private PagamentoService pagamentoService;
+	@Autowired
+	private ExtratoService extratoService;		
+	
+	
 	
 	List<MovimentacaoItem> criarItensDeMovimentacaoPorContaDeEmpresas(Movimentacao movimentacao) {
 		List<MovimentacaoItem> itens = new ArrayList<>();
@@ -41,6 +45,7 @@ public class MovimentacaoItensService {
 			movimentacaoItem.setDebitos(BigDecimal.ZERO);
 			movimentacaoItem.setSaldoGeral(BigDecimal.ZERO);
 			movimentacaoItem.setSaldoMovimento(BigDecimal.ZERO);
+			extratoService.criarMovimentoNoExtrato(c.getSaldo(), null, c, true, "CONFERIDO", movimentacaoItem.getMovimentacao().getDataInicio(), "SALDO INICIAL", movimentacaoItem);
 			itens.add(movimentacaoItem);
 		}
 		return itens;
@@ -120,6 +125,11 @@ public class MovimentacaoItensService {
 
 	public MovimentacaoItem findOne(Long id) {
 		return repository.findOne(id);
+	}
+
+
+	public List<MovimentacaoItem> findByContaEmpresa(ContaEmpresa contaEmpresa) {
+		return repository.findByContaEmpresa(contaEmpresa);
 	}
 	
 

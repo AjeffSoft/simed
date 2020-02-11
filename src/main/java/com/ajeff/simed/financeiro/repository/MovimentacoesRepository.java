@@ -1,5 +1,6 @@
 package com.ajeff.simed.financeiro.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,6 +18,8 @@ public interface MovimentacoesRepository extends JpaRepository<Movimentacao, Lon
 
 	@Query("select m from Movimentacao m where m.empresa = ?1 and m.fechado = false")
 	Movimentacao findByEmpresaAndStatus(Empresa empresa);
+
+	List<Movimentacao> findByEmpresaId(Long codigoEmpresa);
 
 
 	

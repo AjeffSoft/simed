@@ -166,6 +166,11 @@ public class MovimentacaoService {
 
 	public Movimentacao findByEmpresaAndStatus(Empresa empresa) {
 		return repository.findByEmpresaAndStatus(empresa);
+	}
+
+
+	public List<Movimentacao> findByEmpresaId(Long codigoEmpresa) {
+		return repository.findByEmpresaId(codigoEmpresa);
 	}	
 	
 	

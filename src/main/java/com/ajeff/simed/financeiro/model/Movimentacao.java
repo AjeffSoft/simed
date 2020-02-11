@@ -18,6 +18,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import com.ajeff.simed.geral.model.Empresa;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "movimentacao")
@@ -57,10 +58,12 @@ public class Movimentacao implements Serializable {
 	
 	private Boolean fechado;
 	
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "id_empresa")
 	private Empresa empresa;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "movimentacao", cascade = CascadeType.ALL)
 	private List<MovimentacaoItem> itens;
 	

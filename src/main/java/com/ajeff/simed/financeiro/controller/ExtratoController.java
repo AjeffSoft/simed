@@ -2,8 +2,6 @@ package com.ajeff.simed.financeiro.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -18,35 +16,35 @@ import com.ajeff.simed.financeiro.model.Extrato;
 import com.ajeff.simed.financeiro.model.MovimentacaoItem;
 import com.ajeff.simed.financeiro.repository.filter.ExtratoFilter;
 import com.ajeff.simed.financeiro.service.ExtratoService;
+import com.ajeff.simed.financeiro.service.MovimentacaoItensService;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
 import com.ajeff.simed.geral.model.ContaEmpresa;
 import com.ajeff.simed.geral.security.UsuarioSistema;
 import com.ajeff.simed.geral.service.ContaEmpresaService;
-import com.ajeff.simed.geral.service.UsuarioService;
+import com.ajeff.simed.geral.service.EmpresaService;
 
 @Controller
 @RequestMapping("/financeiro/extrato")
 public class ExtratoController {
-
-	@SuppressWarnings("unused")
-	private static final Logger LOG = LoggerFactory.getLogger(ExtratoController.class);
 
 	@Autowired
 	private ExtratoService service;
 	@Autowired
 	private ContaEmpresaService contaEmpresaService;
 	@Autowired
-	private UsuarioService usuarioService;
-
+	private EmpresaService empresaService;
+	@Autowired
+	private MovimentacaoItensService movimentacaoItemService;
+	
+	
 	@GetMapping("/pesquisar")
 	public ModelAndView pesquisar(ExtratoFilter extratoFilter, BindingResult result, @PageableDefault(size=80) Pageable pageable,
 										HttpServletRequest httpServletRequest) {
 		ModelAndView mv = new ModelAndView("Financeiro/extrato/PesquisarExtratos");
 		
-		extratoFilter.setEmpresa(extratoFilter.getContaEmpresa().getEmpresa());
 		MovimentacaoItem movimentacao = service.setarMovimentacao(extratoFilter);
 		extratoFilter.setMovimentacao(movimentacao);
-//		service.exibirSaldo(extratoFilter);
+		service.calcularSaldoExtrato(extratoFilter);
 		PageWrapper<Extrato> paginaWrapper = new PageWrapper<>(service.filtrar(extratoFilter, pageable), httpServletRequest);
 		mv.addObject("pagina", paginaWrapper);
 		return mv;
@@ -57,7 +55,7 @@ public class ExtratoController {
 	@GetMapping("/selecionarConta")
 	public ModelAndView selecionarConta(ContaEmpresa contaEmpresa, @AuthenticationPrincipal UsuarioSistema usuarioSistema, ExtratoFilter extratoFilter) {
 		ModelAndView mv = new ModelAndView("Financeiro/extrato/SelecionarContaBancaria");
-		mv.addObject("empresas", usuarioService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
+		mv.addObject("empresas", empresaService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
 		mv.addObject("contasBancarias", contaEmpresaService.listarTodosOrdenadoPorNome());
 		return mv;
 	}

@@ -111,6 +111,7 @@ public class PagamentoService {
 		if(tipoCheque) {
 			creditarChequePendenteEmContaEmpresa(pagamento);
 		}else {
+			pagamento.setMovimentacaoItem(movimentacaoItem);
 			criarPagamentoNoExtrato(pagamento);
 		}
 	}		
@@ -181,7 +182,6 @@ public class PagamentoService {
 			confirmarPagamentoCheques(pagamento, movimentacaoItem);
 		}else {
 			pagamento.setDataPago(pagamento.getData());
-			pagamento.setMovimentacaoItem(movimentacaoItem);
 			movimentacaoItemService.creditarValorNosDebitos(movimentacaoItem, pagamento.getValor());
 			extratoService.alterarStatusEMovimentacaoDoExtratoPorPagamento(pagamento, "CONFERIDO", movimentacaoItem);
 		}
@@ -226,7 +226,6 @@ public class PagamentoService {
 			cancelarConfirmacaoPagamentoCheques(pagamento, movimentacaoItem);
 		} else {
 			pagamento.setDataPago(null);
-			pagamento.setMovimentacaoItem(null);
 			movimentacaoItemService.debitarValorNosDebitos(movimentacaoItem, pagamento.getValor());
 			extratoService.alterarStatusEMovimentacaoDoExtratoPorPagamento(pagamento, "ABERTO", null);
 		}
@@ -269,7 +268,8 @@ public class PagamentoService {
 	
 	
 	private void criarMovimentoNoExtrato(Pagamento pagamento, String status, LocalDate data) {
-		extratoService.criarMovimentoNoExtratoPorPagamento(pagamento, status, data);
+		extratoService.criarMovimentoNoExtrato(pagamento.getValor(), pagamento, pagamento.getContaEmpresa(), false, status, data, "PAGAMENTO", pagamento.getMovimentacaoItem());
+
 	}
 	
 	private void verificarSeDataPagoMenorDataEmissao(Pagamento pagamento) {
