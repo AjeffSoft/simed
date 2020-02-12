@@ -131,12 +131,13 @@ public class ExtratoService {
 		BigDecimal saldoAtual = new BigDecimal(0);
 
 		for (Extrato ex : extratos) {
+			ex.setSaldo(BigDecimal.ZERO);
 			if (ex.getCredito()) {
 				ex.setSaldo(saldoAtual.add(ex.getValor()));
 			}else {
 				ex.setSaldo(saldoAtual.subtract(ex.getValor()));
 			}
-			saldoAtual = saldoAtual.add(ex.getSaldo());
+			saldoAtual = ex.getSaldo();
 			repository.save(ex);
 		}
 	}
