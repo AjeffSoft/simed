@@ -227,7 +227,7 @@ public class PagamentoService {
 		} else {
 			pagamento.setDataPago(null);
 			movimentacaoItemService.debitarValorNosDebitos(movimentacaoItem, pagamento.getValor());
-			extratoService.alterarStatusEMovimentacaoDoExtratoPorPagamento(pagamento, "ABERTO", null);
+			extratoService.alterarStatusEMovimentacaoDoExtratoPorPagamento(pagamento, "ABERTO", movimentacaoItem);
 		}
 		pagamento.setStatus("EMITIDO");
 		pagamento.setDataPago(null);
@@ -259,16 +259,16 @@ public class PagamentoService {
 
 	private void criarPagamentoNoExtrato(Pagamento pagamento) {
 		if(pagamento.isNovo()) {
-			criarMovimentoNoExtrato(pagamento, "ABERTO", pagamento.getData());
+			criarMovimentoPagamentoNoExtrato(pagamento, "ABERTO", pagamento.getData());
 		}else {
 			//Cheque
-		    criarMovimentoNoExtrato(pagamento, "CONFERIDO", pagamento.getDataPago());
+		    criarMovimentoPagamentoNoExtrato(pagamento, "CONFERIDO", pagamento.getDataPago());
 		}
 	}	
 	
 	
-	private void criarMovimentoNoExtrato(Pagamento pagamento, String status, LocalDate data) {
-		extratoService.criarMovimentoNoExtrato(pagamento.getValor(), pagamento, pagamento.getContaEmpresa(), false, status, data, "PAGAMENTO", pagamento.getMovimentacaoItem());
+	private void criarMovimentoPagamentoNoExtrato(Pagamento pagamento, String status, LocalDate data) {
+		extratoService.criarMovimentoPagamentoNoExtrato(pagamento.getValor(), pagamento, pagamento.getContaEmpresa(), false, status, data, "PAGAMENTO", pagamento.getMovimentacaoItem());
 
 	}
 	

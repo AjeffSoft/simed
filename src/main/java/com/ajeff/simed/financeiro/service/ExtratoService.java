@@ -15,6 +15,7 @@ import com.ajeff.simed.financeiro.model.Movimentacao;
 import com.ajeff.simed.financeiro.model.MovimentacaoItem;
 import com.ajeff.simed.financeiro.model.Pagamento;
 import com.ajeff.simed.financeiro.model.Recebimento;
+import com.ajeff.simed.financeiro.model.TransferenciaContas;
 import com.ajeff.simed.financeiro.repository.ExtratosRepository;
 import com.ajeff.simed.financeiro.repository.MovimentacoesItensRepository;
 import com.ajeff.simed.financeiro.repository.MovimentacoesRepository;
@@ -34,8 +35,7 @@ public class ExtratoService {
 	private MovimentacoesRepository movRepository;
 
 	
-	public void criarMovimentoNoExtrato(BigDecimal valor, Pagamento pagamento, ContaEmpresa conta, Boolean credito, String status, LocalDate data, String tipo, MovimentacaoItem movimentacaoItem) {
-		Extrato extrato = new Extrato();
+	public void criarMovimentoNoExtrato(Extrato extrato, BigDecimal valor, ContaEmpresa conta, Boolean credito, String status, LocalDate data, String tipo, MovimentacaoItem movimentacaoItem) {
 		extrato.setData(data);
 		extrato.setContaBancaria(conta);
 		extrato.setCredito(credito);
@@ -43,44 +43,46 @@ public class ExtratoService {
 		extrato.setStatus(status);
 		extrato.setMovimentacaoItem(movimentacaoItem);
 		extrato.setValor(valor);
-		criarMovimentacaoPorTipo(tipo, extrato, pagamento);
-		repository.save(extrato);
-	}
-
-	private void criarMovimentacaoPorTipo(String tipo, Extrato extrato, Pagamento pagamento) {
-		if(tipo.equals("PAGAMENTO")) {
-			movimentacaoExtratoPagamento(extrato, pagamento);
-		}else if (tipo.equals("SALDO INICIAL")) {
-			movimentacaoExtratoSaldoInicial(extrato);
-		}
-	}
-	
-
-	private void movimentacaoExtratoSaldoInicial(Extrato extrato) {
-		extrato.setHistorico("Saldo Inicial da Movimentacao nº: " + extrato.getMovimentacaoItem().getMovimentacao().getId());
 	}
 
 	
-	private void movimentacaoExtratoPagamento(Extrato extrato, Pagamento pagamento) {
+	public void criarMovimentoPagamentoNoExtrato(BigDecimal valor, Pagamento pagamento, ContaEmpresa contaEmpresa,
+			boolean credito, String status, LocalDate data, String tipo, MovimentacaoItem movimentacaoItem) {
+		Extrato extrato = new Extrato();
 		extrato.setPagamento(pagamento);
 		extrato.setHistorico("Pagamento afetuado por: " + pagamento.getTipo() + " - Documento nº: " + pagamento.getDocumento());
+		criarMovimentoNoExtrato(extrato, valor, contaEmpresa, credito, status, data, tipo, movimentacaoItem);
+		repository.save(extrato);
 	}
 	
-	
-	public void criarRecebimentoNoExtrato(Recebimento recebimento, String status) {
+	public void criarMovimentoInicialNoExtrato(BigDecimal valor, ContaEmpresa contaEmpresa, boolean credito,
+			String status, LocalDate data, String tipo, MovimentacaoItem movimentacaoItem) {
 		Extrato extrato = new Extrato();
-		extrato.setData(recebimento.getData());
-		extrato.setContaBancaria(recebimento.getContaEmpresa());
-		extrato.setCredito(true);
-		extrato.setHistorico("Recebimento de: " + recebimento.getContaReceber().getFornecedor().getFantasia() +" - Documento nº: "+ recebimento.getContaReceber().getDocumento());
-		extrato.setRecebimento(recebimento);
-		extrato.setStatus(status);
-		extrato.setTipo("RECEBIMENTO");
-		extrato.setMovimentacaoItem(recebimento.getMovimentacaoItem());
-		extrato.setValor(recebimento.getValor());
+		extrato.setHistorico("Saldo Inicial da Movimentação");
+		criarMovimentoNoExtrato(extrato, valor, contaEmpresa, credito, status, data, tipo, movimentacaoItem);
 		repository.save(extrato);
 	}	
 	
+
+	public void criarRecebimentoNoExtrato(BigDecimal valor, Recebimento recebimento, ContaEmpresa contaEmpresa,
+			boolean credito, String status, LocalDate data, String tipo, MovimentacaoItem movimentacaoItem) {
+		Extrato extrato = new Extrato();
+		extrato.setRecebimento(recebimento);
+		extrato.setHistorico("Recebimento de: " + recebimento.getContaReceber().getFornecedor().getFantasia() +" - Documento nº: "+ recebimento.getContaReceber().getDocumento());
+		criarMovimentoNoExtrato(extrato, valor, contaEmpresa, credito, status, data, tipo, movimentacaoItem);
+		repository.save(extrato);
+	}	
+	
+
+	public void criarMovimentoTransferenciaNoExtrato(BigDecimal valor, TransferenciaContas transferencia,
+			ContaEmpresa contaEmpresa, boolean credito, String status, LocalDate data, String tipo,
+			MovimentacaoItem movimentacaoItem) {
+		Extrato extrato = new Extrato();
+		extrato.setTransferencia(transferencia);
+		extrato.setHistorico("Transferencia nº " + transferencia.getId() +" entre as contas: "+ transferencia.getContaOrigem().getNome()+" e "+ transferencia.getContaDestino().getNome() );
+		criarMovimentoNoExtrato(extrato, valor, contaEmpresa, credito, status, data, tipo, movimentacaoItem);
+		repository.save(extrato);
+	}	
 	
 	
 	public void alterarStatusEMovimentacaoDoExtratoPorPagamento(Pagamento pagamento, String status,

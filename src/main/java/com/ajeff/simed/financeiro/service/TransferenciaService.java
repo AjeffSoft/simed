@@ -35,6 +35,8 @@ public class TransferenciaService {
 	@Autowired
 	private ExtratosRepository extratoRepository;
 	@Autowired
+	private ExtratoService extratoService;	
+	@Autowired
 	private MovimentacaoService movimentacaoService;
 	@Autowired
 	private MovimentacaoItensService movimentacaoItemService;
@@ -81,7 +83,6 @@ public class TransferenciaService {
 		atualizarValorNasContasDaMovimentacaoItem(transferencia, movimentacaoItem);
 		repository.save(transferencia);
 		criarMovimentacaoNoExtrato(transferencia, movimentacaoItem);
-
 	}
 
 
@@ -100,29 +101,15 @@ public class TransferenciaService {
 
 
 	private void criarMovimentacaoNoExtrato(TransferenciaContas transferencia, MovimentacaoItem movimentacaoItem) {
-		criarMovimentoDaContaPorTipo(transferencia, false, movimentacaoItem);
-		criarMovimentoDaContaPorTipo(transferencia, true, movimentacaoItem);
+		criarMovimentoDaContaPorTipo(transferencia, false, transferencia.getContaOrigem(), movimentacaoItem);
+		MovimentacaoItem movItemDestino = setarMovimentacaoItem(transferencia.getContaDestino(), transferencia.getMovimentacaoItem().getMovimentacao());
+		criarMovimentoDaContaPorTipo(transferencia, true, transferencia.getContaDestino(), movItemDestino);
 
 	}
 
-
-	private void criarMovimentoDaContaPorTipo(TransferenciaContas transferencia, boolean tipo, MovimentacaoItem movimentacaoItem) {
-		Extrato extrato = new Extrato();
-		extrato.setData(transferencia.getData());
-		extrato.setCredito(tipo);
-		extrato.setHistorico("TRANSFERENCIA Nº " + transferencia.getId() +" ENTRE AS CONTAS: "+ transferencia.getContaOrigem().getNome()+" E: "+ transferencia.getContaDestino().getNome() );
-		extrato.setTransferencia(transferencia);
-		extrato.setStatus("ABERTO");
-		extrato.setTipo("TRANSFERENCIA");
-		extrato.setMovimentacaoItem(transferencia.getMovimentacaoItem());
-		extrato.setValor(transferencia.getValor());
-		
-		if(tipo) {
-			extrato.setContaBancaria(transferencia.getContaDestino());
-		}else {
-			extrato.setContaBancaria(transferencia.getContaOrigem());
-		}
-		extratoRepository.save(extrato);
+	
+	private void criarMovimentoDaContaPorTipo(TransferenciaContas transferencia, boolean credito, ContaEmpresa conta, MovimentacaoItem movimentacaoItem) {
+		extratoService.criarMovimentoTransferenciaNoExtrato(transferencia.getValor(), transferencia, conta, credito, "ABERTO", transferencia.getData(), "TRANSFERENCIA", movimentacaoItem);
 	}
 
 

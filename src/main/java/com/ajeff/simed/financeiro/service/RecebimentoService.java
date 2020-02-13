@@ -48,7 +48,7 @@ public class RecebimentoService {
 
 			recebimento.setMovimentacaoItem(movimentacaoItem);
 			movimentacaoItemService.creditarValorNosCreditos(movimentacaoItem, recebimento.getValor());
-			extratoService.criarRecebimentoNoExtrato(recebimento, "ABERTO");
+			extratoService.criarRecebimentoNoExtrato(recebimento.getValor(), recebimento, recebimento.getContaEmpresa(), true, "CONFERIDO", recebimento.getData(), "RECEBIMENTO", recebimento.getMovimentacaoItem());
 			repository.save(recebimento);
 		} catch (PersistenceException e) {
 			e.printStackTrace();
