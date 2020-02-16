@@ -51,7 +51,7 @@
 							<td th:text="${{pagamento.valor}}"></td>
 							<td class="text-center">
 								
-								<a target="'_blank'" class="btn  btn-link  btn-xs  js-tooltip" title="Imprimir"	th:href="@{/financeiro/pagamento/imprimirOrdemPagamento/{id}(id=${pagamento.id})}"> 
+								<a target="'_blank'" class="btn  btn-link  btn-xs  js-tooltip" title="Imprimir"	th:href="@{/relatorios/financeiro/pagamento/ordemPagamento/{id}(id=${pagamento.id})}"> 
 									<i class="glyphicon glyphicon-print"></i>
 								</a>							
 							</td>

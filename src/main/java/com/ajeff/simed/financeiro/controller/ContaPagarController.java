@@ -167,13 +167,4 @@ public class ContaPagarController {
 		mv.addObject(contaPagar);
 		return mv;
 	}
-
-
-	@GetMapping("/imprimirDetalhe/{id}")
-	public ModelAndView imprimirDetalhe(@PathVariable Long id) {
-		Map<String, Object> map = new HashMap<>();
-		map.put("format", "pdf");
-		map.put("conta_pagar", id);
-		return new ModelAndView("rel_CONTAPAGAR_DetalheConta", map);
-	}
 }

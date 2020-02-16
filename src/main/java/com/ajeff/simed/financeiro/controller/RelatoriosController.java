@@ -25,4 +25,18 @@ public class RelatoriosController {
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
 				.body(relatorio);
 	}
+	
+	@GetMapping("/pagamento/ordemPagamento/{id}")
+	public ResponseEntity<byte[]> imprimirOrdemPagamento(@PathVariable Long id) throws Exception {
+		byte[] relatorio = service.imprimirOrdemPagamento(id);
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
+				.body(relatorio);
+	}
+	
+	@GetMapping("/transferencia/ordemTransferencia/{id}")
+	public ResponseEntity<byte[]> imprimirOrdemTransferencia(@PathVariable Long id) throws Exception {
+		byte[] relatorio = service.imprimirOrdemTransferencia(id);
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
+				.body(relatorio);
+	}	
 }

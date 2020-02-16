@@ -100,10 +100,10 @@ public class PagamentoService {
 			String novoDocumento = cheque.toString();
 			cheque++;
 			pagamento.setNumCheque(cheque);
-			return "CH" + novoDocumento;
+			return "CH-" + novoDocumento;
 		}else {
 			Long codigo = empresaService.setarNumeroPagamentoDaEmpresa(pagamento.getContaEmpresa().getEmpresa());
-			return "PG" + codigo.toString();		}
+			return "PG-" + codigo.toString();		}
 	}
 	
 	
