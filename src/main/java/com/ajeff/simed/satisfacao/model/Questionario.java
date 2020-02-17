@@ -14,19 +14,17 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.ajeff.simed.geral.model.Empresa;
-import com.ajeff.simed.satisfacao.model.enumerations.TipoResposta;
+import com.ajeff.simed.satisfacao.model.enums.TipoResposta;
 
 @Entity
-@Table(name = "questao")
-public class Questao implements Serializable {
+@Table(name = "questionario")
+public class Questionario implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-
-	private String nome;
 	
 	@Column(name = "tipo_resposta")
 	@Enumerated(EnumType.STRING)
@@ -36,20 +34,17 @@ public class Questao implements Serializable {
 	@JoinColumn(name = "id_empresa")
 	private Empresa empresa;
 
+	@ManyToOne
+	@JoinColumn(name = "id_pergunta")
+	private Pergunta pergunta;
+	
+	
 	public Long getId() {
 		return id;
 	}
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
 	}
 
 	public Empresa getEmpresa() {
@@ -68,6 +63,14 @@ public class Questao implements Serializable {
 		this.tipoResposta = tipoResposta;
 	}
 
+	public Pergunta getPergunta() {
+		return pergunta;
+	}
+
+	public void setPergunta(Pergunta pergunta) {
+		this.pergunta = pergunta;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -84,7 +87,7 @@ public class Questao implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Questao other = (Questao) obj;
+		Questionario other = (Questionario) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -95,23 +98,6 @@ public class Questao implements Serializable {
 
 	public boolean isNovo() {
 		return this.id == null;
-	}
-	
-	
-	public boolean isTipoNota() {
-		return this.tipoResposta.equals(TipoResposta.NOTA);
-	}
-	
-	public boolean isTipoSimNao() {
-		return this.tipoResposta.equals(TipoResposta.SIMNAO);
-	}
-
-	public boolean isTipoIndicacao() {
-		return this.tipoResposta.equals(TipoResposta.INDICACAO);
-	}
-
-	public boolean isTipoServico() {
-		return this.tipoResposta.equals(TipoResposta.SERVICO);
 	}
 	
 }

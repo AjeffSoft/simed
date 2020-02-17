@@ -2,13 +2,10 @@ package com.ajeff.simed.satisfacao.model;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -21,19 +18,7 @@ public class Pergunta implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
-	private String resp;
-
-	@ManyToOne
-	@JoinColumn(name = "id_resposta")
-	private Resposta resposta;
-	
-	@ManyToOne
-	@JoinColumn(name = "id_questao")
-	private Questao questao;
-	
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "id_pesquisa")
-	private Pesquisa pesquisa;
+	private String nome;
 
 	public Long getId() {
 		return id;
@@ -43,36 +28,12 @@ public class Pergunta implements Serializable {
 		this.id = id;
 	}
 
-	public Resposta getResposta() {
-		return resposta;
+	public String getNome() {
+		return nome;
 	}
 
-	public void setResposta(Resposta resposta) {
-		this.resposta = resposta;
-	}
-
-	public Questao getQuestao() {
-		return questao;
-	}
-
-	public void setQuestao(Questao questao) {
-		this.questao = questao;
-	}
-
-	public Pesquisa getPesquisa() {
-		return pesquisa;
-	}
-
-	public void setPesquisa(Pesquisa pesquisa) {
-		this.pesquisa = pesquisa;
-	}
-
-	public String getResp() {
-		return resp;
-	}
-
-	public void setResp(String resp) {
-		this.resp = resp;
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 
 	@Override

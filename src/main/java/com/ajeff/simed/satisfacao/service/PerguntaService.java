@@ -1,17 +1,12 @@
 package com.ajeff.simed.satisfacao.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ajeff.simed.geral.model.Empresa;
 import com.ajeff.simed.satisfacao.model.Pergunta;
-import com.ajeff.simed.satisfacao.model.Questao;
 import com.ajeff.simed.satisfacao.repository.PerguntasRepository;
 
 @Service
@@ -22,8 +17,8 @@ public class PerguntaService {
 	
 	@Autowired
 	private PerguntasRepository repository;
-	@Autowired
-	private QuestaoService questaoService;
+//	@Autowired
+//	private QuestaoService questaoService;
 	
 //	public List<Pergunta> listarTodasAsPerguntas(Pesquisa pesquisa, UsuarioSistema usuarioSistema) {
 //		List<Questao> perguntas = perguntaRepository.findByEmpresa(usuarioSistema.getUsuario().getEmpresa());
@@ -42,21 +37,21 @@ public class PerguntaService {
 		return repository.findOne(id);
 	}
 
-	public List<Pergunta> findByQuestaoEmpresa(Empresa empresa) {
-		return repository.findByQuestaoEmpresa(empresa);
-	}
+//	public List<Pergunta> findByQuestaoEmpresa(Empresa empresa) {
+//		return repository.findByQuestaoEmpresa(empresa);
+//	}
 
-	public List<Pergunta> listarPerguntasPorEmpresa(Empresa empresa) {
-		List<Questao> questoes = questaoService.listarTodasAsQuestoes(empresa);
-		List<Pergunta> perguntas = new ArrayList<>();
-		for (Questao q : questoes) {
-			Pergunta pergunta = new Pergunta();
-			pergunta.setQuestao(q);
-			perguntas.add(pergunta);
-			System.out.println(pergunta.getQuestao().getNome());
-		}
-		return perguntas;
-	}
+//	public List<Pergunta> listarPerguntasPorEmpresa(Empresa empresa) {
+//		List<Questionario> questoes = questaoService.listarTodasAsQuestoes(empresa);
+//		List<Pergunta> perguntas = new ArrayList<>();
+//		for (Questionario q : questoes) {
+//			Pergunta pergunta = new Pergunta();
+//			pergunta.setQuestao(q);
+//			perguntas.add(pergunta);
+//			System.out.println(pergunta.getQuestao().getNome());
+//		}
+//		return perguntas;
+//	}
 	
 //	@GetMapping("/novo")
 //	public ModelAndView novo(PesquisaSatisfacao pesquisa, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {

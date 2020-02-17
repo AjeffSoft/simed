@@ -3,7 +3,6 @@ package com.ajeff.simed.satisfacao.session;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ajeff.simed.satisfacao.model.Questao;
 import com.ajeff.simed.satisfacao.model.Pergunta;
 
 class TabelaQuestionarios {
@@ -16,14 +15,14 @@ class TabelaQuestionarios {
 	}
 	
 	
-	public void adicionarQuestao(Questao questao, String resposta) {
-		Pergunta questionario = new Pergunta();
-		questionario.setQuestao(questao);
-		questionario.setResp(resposta);
-		
-		System.out.println("Q: " + questionario.getResp());
-		questionarios.add(questionario);
-	}
+//	public void adicionarQuestao(Questionario questao, String resposta) {
+//		Pergunta questionario = new Pergunta();
+//		questionario.setQuestao(questao);
+//		questionario.setResp(resposta);
+//		
+//		System.out.println("Q: " + questionario.getResp());
+//		questionarios.add(questionario);
+//	}
 	
 	public int total() {
 		return questionarios.size();

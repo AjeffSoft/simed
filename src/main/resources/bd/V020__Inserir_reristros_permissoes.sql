@@ -176,5 +176,4 @@ INSERT INTO `simed`.`grupo_permissao` (`id_grupo`, `id_permissao`) VALUES ('1', 
 INSERT INTO `simed`.`grupo_permissao` (`id_grupo`, `id_permissao`) VALUES ('1', '77');
 INSERT INTO `simed`.`grupo_permissao` (`id_grupo`, `id_permissao`) VALUES ('1', '78');
 INSERT INTO `simed`.`grupo_permissao` (`id_grupo`, `id_permissao`) VALUES ('1', '79');
-INSERT INTO `simed`.`grupo_permissao` (`id_grupo`, `id_permissao`) VALUES ('1', '80');
 

@@ -11,9 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.ajeff.simed.geral.security.UsuarioSistema;
 import com.ajeff.simed.satisfacao.model.Pergunta;
-import com.ajeff.simed.satisfacao.model.Questao;
 import com.ajeff.simed.satisfacao.service.PerguntaService;
-import com.ajeff.simed.satisfacao.service.QuestaoService;
 
 @Controller
 @RequestMapping("/pergunta")
@@ -21,8 +19,8 @@ public class PerguntaControler {
 
 	@Autowired
 	private PerguntaService service;
-	@Autowired
-	private QuestaoService questaoService;
+//	@Autowired
+//	private QuestaoService questaoService;
 //	
 //	
 //	@GetMapping("/lista")
@@ -67,8 +65,8 @@ public class PerguntaControler {
 	public ModelAndView salvar(Pergunta pergunta, @RequestParam("idQuestao") Long idQuestao, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
 
 //		try {
-		Questao q = questaoService.findOne(idQuestao);
-		pergunta.setQuestao(q); 
+//		Questionario q = questaoService.findOne(idQuestao);
+//		pergunta.setQuestao(q); 
 			service.salvar(pergunta);
 //		} catch (AgenciaEBancoJaCadastradoException e) {
 //			result.rejectValue("agencia", e.getMessage(), e.getMessage());

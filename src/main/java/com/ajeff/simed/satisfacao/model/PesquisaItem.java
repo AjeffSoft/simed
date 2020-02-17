@@ -3,18 +3,16 @@ package com.ajeff.simed.satisfacao.model;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.ajeff.simed.satisfacao.model.enumerations.TipoResposta;
-
 @Entity
-@Table(name = "resposta")
-public class Resposta implements Serializable {
+@Table(name = "pesquisa_item")
+public class PesquisaItem implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -22,10 +20,11 @@ public class Resposta implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 
-	private String nome;
+	@ManyToOne
+	@JoinColumn(name = "id_pesquisa")
+	private Pesquisa pesquisa;
 	
-	@Enumerated(EnumType.STRING)
-	private TipoResposta tipoResposta;
+	private Integer nota;
 	
 	public Long getId() {
 		return id;
@@ -35,20 +34,20 @@ public class Resposta implements Serializable {
 		this.id = id;
 	}
 
-	public String getNome() {
-		return nome;
+	public Pesquisa getPesquisa() {
+		return pesquisa;
 	}
 
-	public void setNome(String nome) {
-		this.nome = nome;
+	public void setPesquisa(Pesquisa pesquisa) {
+		this.pesquisa = pesquisa;
 	}
 
-	public TipoResposta getTipoResposta() {
-		return tipoResposta;
+	public Integer getNota() {
+		return nota;
 	}
 
-	public void setTipoResposta(TipoResposta tipoResposta) {
-		this.tipoResposta = tipoResposta;
+	public void setNota(Integer nota) {
+		this.nota = nota;
 	}
 
 	@Override
@@ -67,7 +66,7 @@ public class Resposta implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Resposta other = (Resposta) obj;
+		PesquisaItem other = (PesquisaItem) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -75,8 +74,9 @@ public class Resposta implements Serializable {
 			return false;
 		return true;
 	}
-
+	
 	public boolean isNovo() {
 		return this.id == null;
-	}	
+	}
+
 }

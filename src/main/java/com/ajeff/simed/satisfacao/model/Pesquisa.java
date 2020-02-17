@@ -2,18 +2,14 @@ package com.ajeff.simed.satisfacao.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import com.ajeff.simed.geral.model.Usuario;
 
@@ -29,18 +25,15 @@ public class Pesquisa implements Serializable {
 
 	private LocalDateTime data;
 	
-	private String cliente;
-
 	@ManyToOne
 	@JoinColumn(name = "id_usuario")
 	private Usuario usuario;
 	
-	@OneToMany(mappedBy="pesquisa", cascade = CascadeType.ALL)
-	private List<Pergunta> perguntas;
+	private String anotacoes;
 	
-	@Transient
-	private String uuid;	
-
+	private Boolean fechado;
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -65,34 +58,20 @@ public class Pesquisa implements Serializable {
 		this.usuario = usuario;
 	}
 
-	public String getCliente() {
-		return cliente;
+	public Boolean getFechado() {
+		return fechado;
 	}
 
-	public void setCliente(String cliente) {
-		this.cliente = cliente;
-	}
-	
-	public List<Pergunta> getPerguntas() {
-		return perguntas;
+	public void setFechado(Boolean fechado) {
+		this.fechado = fechado;
 	}
 
-	public void setPerguntas(List<Pergunta> perguntas) {
-		this.perguntas = perguntas;
+	public String getAnotacoes() {
+		return anotacoes;
 	}
 
-
-	public void adicionarQuestionarios(List<Pergunta> perguntas) {
-		this.perguntas = perguntas;
-		this.perguntas.forEach(i -> i.setPesquisa(this));
-	}	
-
-	public String getUuid() {
-		return uuid;
-	}
-
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
+	public void setAnotacoes(String anotacoes) {
+		this.anotacoes = anotacoes;
 	}
 
 	@Override
