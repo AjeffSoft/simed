@@ -16,25 +16,6 @@
           			<a th:href="@{/}"><i class="fa  fa-fw  fa-home"></i><span>Inicio</span></a>
         		</li>
         		
-        		<li class="aw-menu__item" simed:menu="@{/financeiro/extrato}">
-          			<a th:href="@{/financeiro/extrato/selecionarConta}">
-            			<i class="fa fa-bar-chart"></i><span>Extrato</span>
-          			</a>
-        		</li>        		
-
-				<li class="aw-menu__item" simed:menu="@{/financeiro/movimentacao}">
-          			<a th:href="@{/financeiro/movimentacao/pesquisar}">
-            			<i class="fa fa-balance-scale"></i><span>Movimentação</span>
-          			</a>
-        		</li>        		
-
-
-				<li class="aw-menu__item" simed:menu="@{/financeiro/planoConta}">
-          			<a th:href="@{/financeiro/planoConta/pesquisar}">
-            			<i class="fa fa-asterisk"></i><span>Plano Conta</span>
-          			</a>
-        		</li>        		
-        		
 				<li class="aw-menu__item">
           			<a href="#">
             			<i class="fa  fa-fw  fa-usd"></i><span>Contas a Pagar</span>
@@ -50,10 +31,22 @@
 						</li>
           			</ul>
         		</li>        		
-
+        		
 				<li class="aw-menu__item" simed:menu="@{/financeiro/fornecedor}">
           			<a th:href="@{/financeiro/fornecedor/pesquisar}">
             			<i class="fa fa-truck"></i><span>Fornecedor</span>
+          			</a>
+        		</li>        		
+        		
+				<li class="aw-menu__item" simed:menu="@{/financeiro/pagamento}">
+          			<a th:href="@{/financeiro/pagamento/pesquisar}">
+            			<i class="fa  fa-fw  fa-credit-card"></i><span>Pagamento</span>
+          			</a>
+        		</li>        		
+
+				<li class="aw-menu__item" simed:menu="@{/financeiro/transferencia}">
+          			<a th:href="@{/financeiro/transferencia/pesquisar}">
+            			<i class="fa fa-calculator"></i><span>Transferencias</span>
           			</a>
         		</li>        		
 
@@ -62,21 +55,8 @@
             			<i class="fa fa-recycle"></i><span>Impostos</span>
           			</a>
         		</li>        		
-
-				<li class="aw-menu__item" simed:menu="@{/financeiro/pagamento}">
-          			<a th:href="@{/financeiro/pagamento/pesquisar}">
-            			<i class="fa  fa-fw  fa-credit-card"></i><span>Pagamento</span>
-          			</a>
-        		</li>        		
-
-
-				<li class="aw-menu__item" simed:menu="@{/financeiro/transferencia}">
-          			<a th:href="@{/financeiro/transferencia/pesquisar}">
-            			<i class="fa fa-calculator"></i><span>Transferencias</span>
-          			</a>
-        		</li>        		
-
-				<li class="aw-menu__item" simed:menu="@{/financeiro/contaReceber}">
+        		
+        		<li class="aw-menu__item" simed:menu="@{/financeiro/contaReceber}">
           			<a th:href="@{/financeiro/contaReceber/pesquisar}">
             			<i class="fa  fa-fw  fa-money"></i><span>Conta Receber</span>
           			</a>
@@ -86,13 +66,35 @@
           			<a th:href="@{/financeiro/cliente/pesquisar}">
             			<i class="fa fa-briefcase"></i><span>Clientes</span>
           			</a>
+        		</li>  
+        		
+        		<li class="aw-menu__item" simed:menu="@{/financeiro/extrato}">
+          			<a th:href="@{/financeiro/extrato/selecionarConta}">
+            			<i class="fa fa-bar-chart"></i><span>Extrato</span>
+          			</a>
         		</li>        		
-         		
+
+			
+				<li class="aw-menu__item" simed:menu="@{/financeiro/movimentacao}">
+          			<a th:href="@{/financeiro/movimentacao/pesquisar}">
+            			<i class="fa fa-balance-scale"></i><span>Movimentação</span>
+          			</a>
+        		</li>        		
+
+
+				<li class="aw-menu__item" simed:menu="@{/financeiro/planoConta}">
+          			<a th:href="@{/financeiro/planoConta/pesquisar}">
+            			<i class="fa fa-asterisk"></i><span>Plano Conta</span>
+          			</a>
+        		</li>        		
+ 
+          		
 				<li class="aw-menu__item" simed:menu="@{/financeiro/agencia}">
           			<a th:href="@{/financeiro/agencia/pesquisar}">
             			<i class="fa fa-pencil"></i><span>Agencia Bancária</span>
           			</a>
         		</li>        		
+
 
 				<li class="aw-menu__item" simed:menu="@{/financeiro/banco}">
           			<a th:href="@{/financeiro/banco/pesquisar}">

@@ -16,4 +16,5 @@ public interface BancosRepository extends JpaRepository<Banco, Long>, BancosRepo
 	@Query("select b from Banco b where b.situacao =true order by b.nome asc")
 	List<Banco> findByNomeOrderByNomeAsc();
 
+
 }

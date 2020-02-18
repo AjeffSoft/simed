@@ -15,23 +15,12 @@
         		<li class="aw-menu__item">
           			<a th:href="@{/}"><i class="fa  fa-fw  fa-home"></i><span>Inicio</span></a>
         		</li>
-
-				<li class="aw-menu__item">
-          			<a href="#">
-            			<i class="fa  fa-fw  fa-search"></i><span>Pesquisa</span>
-            			<i class="aw-menu__navigation-icon  fa"></i>
+        		
+        		<li class="aw-menu__item" simed:menu="@{/satisfacao/pergunta}">
+          			<a th:href="@{/satisfacao/pergunta/pesquisar}">
+            			<i class="fa fa-question"></i><span>Perguntas</span>
           			</a>
-      
-          			<ul class="aw-menu__list  aw-menu__list--sublist">
-			            <li class="aw-menu__item  aw-menu__item--link" simed:menu="@{/satisfacao}">
-			            	<a th:href="@{/satisfacao/inicio}">Iniciar</a>
-			            </li>
-
-			            <li class="aw-menu__item  aw-menu__item--link" simed:menu="@{/satisfacao}">
-			            	<a th:href="@{/satisfacao/pergunta/pesquisar}">Perguntas</a>
-			            </li>			            
-          			</ul>
-          		</li>
+        		</li> 
       		</ul>
     	</nav>
 	</div>

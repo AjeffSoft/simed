@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 @Entity
 @Table(name = "pergunta")
 public class Pergunta implements Serializable {
@@ -18,6 +20,7 @@ public class Pergunta implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
+	@NotBlank(message = "Informe um nome")
 	private String nome;
 
 	public Long getId() {
