@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import com.ajeff.simed.geral.model.Empresa;
 import com.ajeff.simed.satisfacao.model.enums.TipoResposta;
@@ -26,17 +27,22 @@ public class Questionario implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
+	@NotNull(message = "Informe um tipo")
 	@Column(name = "tipo_resposta")
 	@Enumerated(EnumType.STRING)
 	private TipoResposta tipoResposta;
-	
+
+	@NotNull(message = "Informe uma empresa")
 	@ManyToOne
 	@JoinColumn(name = "id_empresa")
 	private Empresa empresa;
 
+	@NotNull(message = "Informe uma pergunta")
 	@ManyToOne
 	@JoinColumn(name = "id_pergunta")
 	private Pergunta pergunta;
+	
+	private boolean ativo;
 	
 	
 	public Long getId() {
@@ -69,6 +75,14 @@ public class Questionario implements Serializable {
 
 	public void setPergunta(Pergunta pergunta) {
 		this.pergunta = pergunta;
+	}
+
+	public boolean isAtivo() {
+		return ativo;
+	}
+
+	public void setAtivo(boolean ativo) {
+		this.ativo = ativo;
 	}
 
 	@Override

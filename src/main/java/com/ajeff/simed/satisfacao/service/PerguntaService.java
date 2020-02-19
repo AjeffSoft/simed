@@ -62,5 +62,9 @@ public class PerguntaService {
 		}
 	}
 
+	public List<Pergunta> findAllOrderByNome() {
+		return repository.findAllOrderByNome();
+	}
+
 	
 }

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Satisfacao/LayoutSatisfacao}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+	<link rel="stylesheet" type="text/css" th:href="@{/stylesheets/vendors/bootstrap-toggle.min.css}"/>
+	<title>Cadastro de questionário</title>
+</head>
+
+
+	<section layout:fragment="conteudo">
+
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1 th:if="${questionario.novo}">Cadastro de questionário</h1>
+						<h1 th:unless="${questionario.novo}">Alterar o questionario - [[${questionario.id}]]</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+
+
+			<form method="POST" th:object="${questionario}" class="form-vertical  js-form-loading" 
+			th:action="${questionario.novo} ? @{/satisfacao/questionario/nova} : @{/satisfacao/questionario/{id}(id=${questionario.id})}">
+			
+				<simed:message/>
+			
+				<input type="hidden" th:field="*{id}">
+
+				<div class="row">
+					
+					<div class="col-sm-3  form-group"  simed:classforerror="empresa">
+						<label for="empresa" class="control-label">Empresa*</label>
+						<select id="empresa" class="form-control" th:field="*{empresa}">
+							<option value="">Selecione uma empresa</option>
+							<option th:each="empresa : ${empresas}" th:value="${empresa.id}" th:text="${empresa.fantasia}"></option>
+						</select>
+					</div>
+					
+					<div class="col-sm-5  form-group"  simed:classforerror="pergunta">
+						<label for="pergunta" class="control-label">Pergunta*</label>
+						<select id="pergunta" class="form-control" th:field="*{pergunta}">
+							<option value="">Selecione uma pergunta</option>
+							<option th:each="pergunta : ${perguntas}" th:value="${pergunta.id}" th:text="${pergunta.nome}"></option>
+						</select>
+					</div>
+					
+					<div class="col-sm-2  form-group"  simed:classforerror="tipoResposta">
+						<label for="tipoResposta" class="control-label">Tipo*</label>
+						<select id="tipoResposta" class="form-control" th:field="*{tipoResposta}">
+							<option value="">Selecione um tipo</option>
+							<option th:each="tipo : ${tipos}" th:value="${tipo}" th:text="${tipo.descricao}"></option>
+						</select>
+					</div>
+					
+					<div class="form-group  col-sm-2">
+						<label class="control-label">Situação</label>
+						<div>
+							<input id="situacao" type="checkbox" checked data-toggle="toggle" class="form-control"  data-size="small"
+							 data-on="Ativo" data-off="Inativo" data-onstyle="success" data-offstyle="danger" th:field="*{ativo}"/>
+						</div>
+					</div>
+				</div>
+
+				<div class="form-group">
+						<button class="btn  btn-success" type="submit">Salvar</button>
+					<a class="btn  btn-danger" sec:authorize-url="/satisfacao/questionario/pesquisar" th:href="@{/satisfacao/questionario/pesquisar}">Voltar</a>
+				</div>
+			</form>
+		</div>
+	</section>
+	
+	<th:block layout:fragment="javascript-extra">
+		<script th:src="@{/javascripts/vendors/bootstrap-toggle.min.js}"></script>
+		
+		<script>
+			$('#situacao').bootstrapToggle();	
+		</script>
+
+	</th:block>
+</html>

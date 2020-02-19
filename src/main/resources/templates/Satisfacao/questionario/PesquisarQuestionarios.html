@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Satisfacao/LayoutSatisfacao}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+<head>
+	<title>Questionários</title>
+</head>
+
+<body>
+	<section layout:fragment="conteudo">
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Pesquisar questionários</h1>
+					</div>
+					
+					<div class="col-sm-2" sec:authorize-url="/satisfacao/questionario/nova">
+						<div class="aw-page-header-controls">
+							<a class="btn  btn-warning" th:href="@{/satisfacao/questionario/nova}">
+								<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Cadastrar</span>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+			<form method="GET" th:object="${questionarioFilter}">
+				<div class="row">
+					<div class="col-sm-3  form-group">
+						<label for="empresa" class="control-label">Empresa</label>
+						<select id="empresa" class="form-control" th:field="*{empresa}">
+							<option value="">Selecione uma empresa</option>
+							<option th:each="empresa : ${empresas}" th:value="${empresa.id}" th:text="${empresa.fantasia}"></option>
+						</select>
+					</div>
+					
+					<div class="col-sm-7  form-group">
+						<label for="pergunta" class="control-label">Pergunta</label>
+						<select id="pergunta" class="form-control" th:field="*{pergunta}">
+							<option value="">Selecione uma pergunta</option>
+							<option th:each="pergunta : ${perguntas}" th:value="${pergunta.id}" th:text="${pergunta.nome}"></option>
+						</select>
+					</div>
+					
+					<div class="col-sm-2  form-group">
+						<label for="tipoResposta" class="control-label">Tipo</label>
+						<select id="tipoResposta" class="form-control" th:field="*{tipoResposta}">
+							<option value="">Selecione um tipo</option>
+							<option th:each="tipo : ${tipos}" th:value="${tipo}" th:text="${tipo.descricao}"></option>
+						</select>
+					</div>
+				</div>	
+				
+				<button type="submit" class="btn  btn-primary">Pesquisar</button>
+			</form>
+		
+			<br>
+			
+			<div class="table-responsive  bw-tabela-simples">
+				<table class="table  table-hover">
+					<thead>
+						<tr>
+							<th class="table-col-grande">Código</th>
+							<th class="table-col-minima">
+								<simed:order page="${pagina}" field="empresa.sigla" text="Empresa"/>
+							</th>
+							<th class="table-col-grande">
+								<simed:order page="${pagina}" field="pergunta.nome" text="Pergunta"/>
+							</th>
+							<th class="table-col-grande">Tipo</th>
+							<th class="table-col-grande">Status</th>
+							<th class="table-agencia-col-acoes"></th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						<tr th:each="questionario : ${pagina.conteudo}">
+							<td th:text="${questionario.id}"></td>
+							<td th:text="${questionario.empresa.sigla}"></td>
+							<td th:text="${questionario.pergunta.nome}"></td>
+							<td th:text="${questionario.tipoResposta.descricao}"></td>
+							<td>
+								<th:block th:if="${questionario.ativo}">
+									<span class="label  label-success">Ativo</span>
+								</th:block>
+
+								<th:block th:unless="${questionario.ativo}">
+									<span class="label  label-danger">Inativo</span>
+								</th:block>
+							</td>
+
+							<td class="text-center">
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar" sec:authorize-url="/satisfacao/questionario/alterar/**"
+										th:href="@{//satisfacao/questionario/alterar/{id}(id=${questionario.id})}"> 
+									<i class="glyphicon glyphicon-pencil"></i>
+								</a>
+								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir" href="#" sec:authorize-url="/satisfacao/questionario/excluir/**"
+									data:url="@{//satisfacao/questionario/excluir/{id}(id=${questionario.id})}"
+									data:objeto="${questionario.id}">
+									<i class="glyphicon glyphicon-trash"></i>
+								</a>
+							</td>
+						</tr>
+						
+						<tr th:if="${pagina.vazia}">
+							<td colspan="6"> Nenhum questionário encontrado</td>
+						</tr>
+						
+						
+					</tbody>
+				</table>
+			</div>
+
+			<simed:pagination page="${pagina}"/>						
+
+		</div>		
+	</section>
+</body>
+</html>
