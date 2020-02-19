@@ -70,10 +70,10 @@
 						<tr>
 							<th class="table-col-grande">Código</th>
 							<th class="table-col-minima">
-								<simed:order page="${pagina}" field="empresa.sigla" text="Empresa"/>
+								<simed:order page="${pagina}" field="empresa" text="Empresa"/>
 							</th>
 							<th class="table-col-grande">
-								<simed:order page="${pagina}" field="pergunta.nome" text="Pergunta"/>
+								<simed:order page="${pagina}" field="pergunta" text="Pergunta"/>
 							</th>
 							<th class="table-col-grande">Tipo</th>
 							<th class="table-col-grande">Status</th>
@@ -99,11 +99,11 @@
 
 							<td class="text-center">
 								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar" sec:authorize-url="/satisfacao/questionario/alterar/**"
-										th:href="@{//satisfacao/questionario/alterar/{id}(id=${questionario.id})}"> 
+										th:href="@{/satisfacao/questionario/alterar/{id}(id=${questionario.id})}"> 
 									<i class="glyphicon glyphicon-pencil"></i>
 								</a>
 								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir" href="#" sec:authorize-url="/satisfacao/questionario/excluir/**"
-									data:url="@{//satisfacao/questionario/excluir/{id}(id=${questionario.id})}"
+									data:url="@{/satisfacao/questionario/excluir/{id}(id=${questionario.id})}"
 									data:objeto="${questionario.id}">
 									<i class="glyphicon glyphicon-trash"></i>
 								</a>

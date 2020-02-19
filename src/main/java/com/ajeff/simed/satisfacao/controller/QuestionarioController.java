@@ -62,7 +62,7 @@ public class QuestionarioController {
 		try {
 			service.salvar(questionario);
 		} catch (RegistroJaCadastradoException e) {
-			result.rejectValue("questionario", e.getMessage(), e.getMessage());
+			result.rejectValue("empresa", e.getMessage(), e.getMessage());
 			return nova(questionario, usuarioSistema);
 		}
 		attributes.addFlashAttribute("mensagem", "Questionario salvo com sucesso");

@@ -43,6 +43,8 @@ import com.ajeff.simed.geral.controller.UsuarioController;
 import com.ajeff.simed.geral.controller.converter.CidadeConverter;
 import com.ajeff.simed.geral.thymeleaf.SimedDialect;
 import com.ajeff.simed.satisfacao.controller.PesquisaSatisfacaoControler;
+import com.ajeff.simed.satisfacao.controller.converter.PerguntaConverter;
+import com.ajeff.simed.satisfacao.controller.converter.RespostaConverter;
 import com.github.mxab.thymeleaf.extras.dataattribute.dialect.DataAttributeDialect;
 
 import nz.net.ultraq.thymeleaf.LayoutDialect;
@@ -120,6 +122,9 @@ public class WebConfig implements ApplicationContextAware, WebMvcConfigurer {
 	public FormattingConversionService mvcConversionService() {
 		DefaultFormattingConversionService conversionService = new DefaultFormattingConversionService();
 		conversionService.addConverter(new CidadeConverter());
+		conversionService.addConverter(new PerguntaConverter());
+		conversionService.addConverter(new RespostaConverter());
+
 		NumberStyleFormatter bigDecimalFormatter = new NumberStyleFormatter("#,##0.00");
 		conversionService.addFormatterForFieldType(BigDecimal.class, bigDecimalFormatter);
 

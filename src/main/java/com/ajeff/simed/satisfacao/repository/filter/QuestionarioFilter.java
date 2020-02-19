@@ -2,12 +2,13 @@ package com.ajeff.simed.satisfacao.repository.filter;
 
 import com.ajeff.simed.geral.model.Empresa;
 import com.ajeff.simed.satisfacao.model.Pergunta;
+import com.ajeff.simed.satisfacao.model.enums.TipoResposta;
 
 public class QuestionarioFilter {
 
 	private Empresa empresa;
 	private Pergunta pergunta;
-	private String tipoResposta;
+	private TipoResposta tipoResposta;
 	
 	public Empresa getEmpresa() {
 		return empresa;
@@ -21,12 +22,13 @@ public class QuestionarioFilter {
 	public void setPergunta(Pergunta pergunta) {
 		this.pergunta = pergunta;
 	}
-	public String getTipoResposta() {
+	public TipoResposta getTipoResposta() {
 		return tipoResposta;
 	}
-	public void setTipoResposta(String tipoResposta) {
+	public void setTipoResposta(TipoResposta tipoResposta) {
 		this.tipoResposta = tipoResposta;
 	}
+
 	
 
 

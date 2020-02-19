@@ -59,7 +59,7 @@ public class QuestionariosRepositoryImpl implements QuestionariosRepositoryQueri
 			}
 			
 			if (isPerguntaPresente(filtro)){
-				criteria.add(Restrictions.eq("pergunta", filtro.getEmpresa()));
+				criteria.add(Restrictions.eq("pergunta", filtro.getPergunta()));
 			}
 		}
 	}

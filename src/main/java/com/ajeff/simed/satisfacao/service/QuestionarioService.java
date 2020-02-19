@@ -50,7 +50,7 @@ public class QuestionarioService {
 			repository.delete(id);
 			repository.flush();
 		} catch (PersistenceException e) {
-			throw new ImpossivelExcluirEntidade("Não foi possivel excluir a questionario. Exclua primeiro o(s) relacionamento(s) com outra(s) tabela(s)!"); 
+			throw new ImpossivelExcluirEntidade("Não foi possivel excluir o questionario. Exclua primeiro o(s) relacionamento(s) com outra(s) tabela(s)!"); 
 		}
 		
 	}	

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Satisfacao/LayoutSatisfacao}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+<head>
+	<title>Pesquisa de respostas</title>
+</head>
+
+<body>
+	<section layout:fragment="conteudo">
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Pesquisa de respostas</h1>
+					</div>
+					
+					<div class="col-sm-2" sec:authorize-url="/satisfacao/resposta/novo">
+						<div class="aw-page-header-controls">
+							<a class="btn  btn-warning" th:href="@{/satisfacao/resposta/novo}">
+								<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Cadastrar</span>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+			<form method="GET" th:object="${respostaFilter}">
+				<div class="row">
+					<div class="form-group  col-sm-12">
+						<label class="control-label" for="nome">Nome</label>
+						<input type="text" class="form-control" id="nome" th:field="*{nome}" autofocus="autofocus" maxlength="100"/>
+					</div>
+				</div>
+				
+				
+				<button type="submit" class="btn  btn-primary">Pesquisar</button>
+			</form>
+		
+			<br>
+			
+			<div class="table-responsive  bw-tabela-simples">
+				<table class="table  table-hover">
+					<thead>
+						<tr>
+							<th class="table-col-grande">
+								<simed:order page="${pagina}" field="nome" text="Nome"/>
+							</th>
+			
+							<th class="table-agencia-col-acoes"></th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						<tr th:each="resposta : ${pagina.conteudo}">
+							<td th:text="${resposta.nome}"></td>
+							
+										
+							<td class="text-center">
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar" sec:authorize-url="/satisfacao/resposta/alterar/**"
+										th:href="@{/satisfacao/resposta/alterar/{id}(id=${resposta.id})}"> 
+									<i class="glyphicon glyphicon-pencil"></i>
+								</a>
+								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir" href="#" sec:authorize-url="/satisfacao/resposta/excluir/**"
+									data:url="@{/satisfacao/resposta/excluir/{id}(id=${resposta.id})}" data:objeto="${resposta.nome}">
+									<i class="glyphicon glyphicon-trash"></i>
+								</a>
+							</td>
+						</tr>
+						
+						<tr th:if="${pagina.vazia}">
+							<td colspan="1"> Nenhuma resposta encontrada</td>
+						</tr>
+						
+						
+					</tbody>
+				</table>
+			</div>
+
+			<simed:pagination page="${pagina}"/>						
+
+		</div>		
+	</section>
+</body>
+</html>

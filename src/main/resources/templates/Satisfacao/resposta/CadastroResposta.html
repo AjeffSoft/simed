@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Satisfacao/LayoutSatisfacao}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+	<link rel="stylesheet" type="text/css" th:href="@{/stylesheets/vendors/bootstrap-toggle.min.css}"/>
+    <title>Cadastro de resposta</title>
+</head>
+
+<body>
+	<section layout:fragment="conteudo">
+	
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-sm-10">
+						<h1 th:if="${resposta.novo}">Cadastro de resposta</h1>
+						<h1 th:unless="${resposta.novo}">Alterando a resposta [[${resposta.nome}]]</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+	
+		<div class="container-fluid">
+	
+			<form id="form" method="POST" th:object="${resposta}" class="form-vertical  js-form-loading"
+				th:action="${resposta.novo} ? @{/satisfacao/resposta/novo} : @{/satisfacao/resposta/{id}(id=${resposta.id})}">
+
+				<simed:message/>
+		
+				
+				<input type="hidden" th:field="*{id}">
+
+				<div class="row">
+				
+					<div class="col-sm-12  form-group" simed:classforerror="nome">
+						<label for="nome" class="control-label">Nome*</label>
+						<input id="nome" type="text" class="form-control" th:field="*{nome}" maxlength="200"/>
+					</div>
+				</div>
+				
+				<div class="form-group">
+						<button class="btn  btn-success" type="submit">Salvar</button>
+						<a class="btn  btn-danger" th:href="@{/satisfacao/resposta/pesquisar}" sec:authorize-url="/satisfacao/resposta/pesquisar">Voltar	</a>
+				</div>
+		
+			</form>
+		</div>
+	        
+	</section>
+
+	<th:block layout:fragment="javascript-extra">
+
+	</th:block>	
+	
+</body>
+</html>
