@@ -1,42 +1,32 @@
 <!DOCTYPE html>
 <html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
 	xmlns:th="http://www.thymeleaf.org"
-	xmlns:simed="http://simed.ajeffsoft.com"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-	
 <head>
-	<link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/vendors.min.css}"/>
-	<link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/algaworks.min.css}"/>
-	<link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/application.css}"/>
-	<link rel="stylesheet" type="text/css" th:href="@{/stylesheets/satisfacao.css}"/>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
 
-	<title>Pesquisa de Satisfação</title>
-
+    <link rel="stylesheet" type="text/css" th:href="@{/stylesheets/vendors/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/stylesheets/simed-pesquisa.css}">
 </head>
-<body style="background-image: url('/simed/images/background1.png')">
-
-<div class="container-fluid  container-principal">
-	<form method="GET" th:action="@{/satisfacao/pesquisa/novo}">
-		<div class="row">
-			<div >
-				<div class="row  area-botao-iniciar">
-					<div class="col-sm-11  form-group" align="right">
-						<button id="iniciar" class="btn  btn-success botoes botao-iniciar" type="submit">Iniciar Pesquisa</button>
-					</div>
-				</div>	
-
-				<div class="row  area-botao-logout">
-					<div class="col-sm-11  form-group" align="left">
-						<a class="btn  btn-danger  botao-logout botoes" th:href="@{/logout}">Logout</a>
-					</div>
-				</div>	
-			</div>				
-		</div>
-	</form>
-</div>
-
-	<script th:src="@{/layout/javascripts/vendors.min.js}"></script>
-	<script th:src="@{/layout/javascripts/algaworks.min.js}"></script>
+<body >
+    <div class="container-fluid card" style="background-color: black;">
+    	<form method="GET" th:action="@{/satisfacao/pesquisa/novo}">
+	        <img th:src="@{/images/InicioImg.png}" alt="Imagem Inicio">
+	        <div class="col-sm-12  card-img-overlay  d-flex">
+	            <div class=" col-sm-6 d-flex justify-content-start  align-items-end" >
+	                <a  class="btn btn-success rounded-circle" th:href="@{/logout}">?</a>
+	            </div>
+	            <div class="div-btns col-sm-6 d-flex justify-content-center  align-items-center" >
+	                <button type="submit" class="btn btn-success btn-lg-satisfacao">INICIAR A PESQUISA</button>
+	            </div>
+	        </div>
+	   </form>     
+    </div>
+ 
+    <script th:src="@{/javascripts/vendors/jquery-3.4.1.min.js}"></script>
+    <script th:src="@{/javascripts/vendors/bootstrap.bundle.min.js}"></script>
 </body>
 </html>
