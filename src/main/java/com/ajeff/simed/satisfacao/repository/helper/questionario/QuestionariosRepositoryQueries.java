@@ -10,4 +10,6 @@ public interface QuestionariosRepositoryQueries {
 	
 	Page<Questionario> filtrar(QuestionarioFilter filtro, Pageable pageable);
 
+	public Questionario buscarQuestionarioComRespostas(Long id);
+
 }

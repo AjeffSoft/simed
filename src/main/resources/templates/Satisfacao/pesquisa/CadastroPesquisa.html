@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	layout:decorate="~{Satisfacao/LayoutSatisfacaoSimples}"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	
+<head>
+	<title>Pesquisa</title>
+</head>
+	<section layout:fragment="conteudo">
+	
+		<div class="container-fluid  css-container-principal">
+			<div class = "justify-content-md-center">
+				<form method="POST" th:object="${pesquisa}" class="form-vertical  js-form-loading" th:action="@{/satisfacao/novo}">			
+					<input type="hidden" th:field="*{id}"/>
+			
+					
+					<th:block  th:each="questionario, iterStat : ${questionarios}" th:field="*{questionarios}">
+	
+						<div class = "questao  d-none" th:id="'questao' + ${iterStat.count}">
+							<div class="row  nomeQuestao justify-content-end  align-items-center">
+								<div class="form-group  col-sm-10">
+									<h1 class = "text-break  font-weight-bold  text-center" th:text="${questionario.pergunta.nome}"></h1>
+								</div>
+							</div>
+							
+							
+							<div class="row  questionario justify-content-end  align-items-center">
+			 					<input class = "pergunta" type="hidden"/>
+								<div class="form-group  text-center col-sm-10">
+									<div>
+										<div th:each="resposta: ${questionario.respostas}">
+					    					<input class="nota" type="radio" th:value="${resposta.nome}" th:name="'r' + ${iterStat.count}" th:text="${resposta.nome}"/>
+										</div>
+									</div>
+								</div>					
+							</div>
+							
+							
+							
+							<div class="row  botoes justify-content-end  align-items-center">
+								<div class="col-sm-5 form-group  text-right">
+									<a class="btn  btn-success  btn-lg active  css-a" th:id="'botao'+${iterStat.count}" th:unless="${iterStat.last}" th:href="'#questao' + ${iterStat.count+1}">Próximo</a>
+									<a class="btn  btn-success btn-incluir-questionario  btn-lg active css-a" th:if="${iterStat.last}" href="#cliente">Próximo -></a>
+								</div>
+							</div>							
+						</div>
+					</th:block>	
+					
+				<div th:each="questionario : ${questionarios}">
+                    <h1 th:text="${questionario.pergunta.nome}">
+                    
+                    </h1>
+                        <div th:each="resposta: ${questionario.respostas}">
+                            <p th:text="${resposta.nome}"></p>
+                        </div>
+                </div>
+					
+													
+				</form>
+			</div>	
+		</div>
+
+</section>
+
+<th:block layout:fragment="javascript-extra">
+
+	 
+</th:block>
+</html>

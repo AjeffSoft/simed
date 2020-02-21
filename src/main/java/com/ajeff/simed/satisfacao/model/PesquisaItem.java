@@ -24,7 +24,7 @@ public class PesquisaItem implements Serializable {
 	@JoinColumn(name = "id_pesquisa")
 	private Pesquisa pesquisa;
 	
-	private Integer nota;
+	private String nota;
 	
 	public Long getId() {
 		return id;
@@ -42,11 +42,11 @@ public class PesquisaItem implements Serializable {
 		this.pesquisa = pesquisa;
 	}
 
-	public Integer getNota() {
+	public String getNota() {
 		return nota;
 	}
 
-	public void setNota(Integer nota) {
+	public void setNota(String nota) {
 		this.nota = nota;
 	}
 

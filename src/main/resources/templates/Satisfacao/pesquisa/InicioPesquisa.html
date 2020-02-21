@@ -17,15 +17,11 @@
 <body style="background-image: url('/simed/images/background1.png')">
 
 <div class="container-fluid  container-principal">
-	<form method="GET" th:action="@{/satisfacao/novo}">
+	<form method="GET" th:action="@{/satisfacao/pesquisa/novo}">
 		<div class="row">
 			<div >
 				<div class="row  area-botao-iniciar">
 					<div class="col-sm-11  form-group" align="right">
-
-						<div class="load area-loading">
-							<img alt="loading" th:src="@{/images/loading.gif}">
-						</div>					
 						<button id="iniciar" class="btn  btn-success botoes botao-iniciar" type="submit">Iniciar Pesquisa</button>
 					</div>
 				</div>	
@@ -42,21 +38,5 @@
 
 	<script th:src="@{/layout/javascripts/vendors.min.js}"></script>
 	<script th:src="@{/layout/javascripts/algaworks.min.js}"></script>
-
-
-	<script>
-	    $(document).ready(function() {
-  		  $('.load').hide();
-  		  $('.botoes').show();
-    	});
-	 </script>	
-
-	<script>
-	    $('.botoes').click(function() {
-  		  $('.load').show();
-  		  $('.botoes').hide();
-    	});
-	 </script>
-
 </body>
 </html>

@@ -1,5 +1,6 @@
 package com.ajeff.simed.satisfacao.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.geral.service.exception.RegistroJaCadastradoException;
+import com.ajeff.simed.satisfacao.model.Questionario;
 import com.ajeff.simed.satisfacao.model.Resposta;
 import com.ajeff.simed.satisfacao.repository.RespostasRepository;
 import com.ajeff.simed.satisfacao.repository.filter.RespostaFilter;
@@ -23,7 +25,8 @@ public class RespostaService {
 	
 	@Autowired
 	private RespostasRepository repository;
-	
+	@Autowired
+	private QuestionarioService questionarioService;	
 	
 	@Transactional
 	public Resposta salvar(Resposta resposta) {
@@ -65,6 +68,16 @@ public class RespostaService {
 	public List<Resposta> findAllOrderByNome() {
 		return repository.findAllOrderByNome();
 	}
-
 	
+
+	public List<Resposta> buscarQuestionarioComRespostas(Long id) {
+		Questionario questionario = questionarioService.buscarRespostaPorQuestao(id);
+		List<Resposta> respostas = new ArrayList<Resposta>();
+		for (Resposta r: questionario.getRespostas()) {
+			respostas.add(r);
+		}
+		return respostas;
+	}
+
+
 }

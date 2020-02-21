@@ -8,6 +8,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.sql.JoinType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -70,5 +71,15 @@ public class QuestionariosRepositoryImpl implements QuestionariosRepositoryQueri
 
 	private boolean isEmpresaPresente(QuestionarioFilter filtro) {
 		return filtro.getEmpresa() != null && filtro.getEmpresa().getId() != null;
+	}
+	
+	@Transactional(readOnly = true)
+	@Override
+	public Questionario buscarQuestionarioComRespostas(Long id) {
+		Criteria criteria = manager.unwrap(Session.class).createCriteria(Questionario.class);
+		criteria.createAlias("respostas", "r", JoinType.LEFT_OUTER_JOIN);
+		criteria.add(Restrictions.eq("id", id));
+		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		return (Questionario) criteria.uniqueResult();
 	}	
 }

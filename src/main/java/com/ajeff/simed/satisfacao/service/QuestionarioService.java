@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ajeff.simed.geral.model.Empresa;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.geral.service.exception.RegistroJaCadastradoException;
 import com.ajeff.simed.satisfacao.model.Questionario;
@@ -60,6 +61,14 @@ public class QuestionarioService {
 		if(optional.isPresent() && !optional.get().equals(questionario)) {
 			throw new RegistroJaCadastradoException("Já existe uma questão com essa pergunta cadastrada para essa empresa!");
 		}
+	}
+
+	public List<Questionario> findByEmpresaAndAtivoTrue(Empresa empresa) {
+		return repository.findByEmpresaAndAtivoTrue(empresa);
+	}
+
+	public Questionario buscarRespostaPorQuestao(Long id) {
+		return repository.buscarQuestionarioComRespostas(id);
 	}
 
 }
