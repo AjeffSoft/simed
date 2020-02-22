@@ -47,9 +47,9 @@
 		            <div class="row">
 		                <div class="col-sm-1 d-flex justify-content-around  align-items-center">
 		                </div>
-		                <div class="div-btn-proximo col-sm-11 d-flex justify-content-end  align-items-end">
-		                	<a class="btn btn-success rounded-pill btn-lg-satisfacao" th:id="'botao'+${iterStat.count}" th:unless="${iterStat.last}" href="#">PRÓXIMO</a>
-		                
+		                <div class="div-btn-proximo col-sm-11 d-flex justify-content-end  align-items-center">
+<!-- 		                	<a class="btn btn-success btn-lg" th:id="'botao'+${iterStat.count}" th:unless="${iterStat.last}" href="#">PRÓXIMO</a> -->
+		                    <button th:id="'botao'+${iterStat.count}" type="button" class="btn btn-success rounded-pill btn-lg-satisfacao" th:unless="${iterStat.last}">PRÓXIMO</button>
 		                    <button th:id="'botao'+${iterStat.count}" type="submit" class="btn btn-success rounded-pill btn-lg-satisfacao" th:if="${iterStat.last}">FINALIZAR PESQUISA</button>
 		                </div>
 		            </div>
