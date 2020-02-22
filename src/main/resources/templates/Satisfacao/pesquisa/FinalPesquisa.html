@@ -1,22 +1,36 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Pesquisa</title>
 
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/simed-pesquisa.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/stylesheets/vendors/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/stylesheets/simed-pesquisa.css}">
 </head>
 <body >
-    <div class="container-fluid card" style="background-color: black;">
-        <img src="images/FinalImg.png" alt="Imagem Final">
+    <div class="container-fluid card">
+        <img th:src="@{/images/FinalImg.png}" alt="Imagem Final">
         <div class="col-sm-12  card-img-overlay  d-flex">
         </div>
     </div>
+    
+
  
-    <script src="js/jquery-3.4.1.min.js"></script>
-    <script src="js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/javascripts/vendors/jquery-3.4.1.min.js}"></script>
+    <script th:src="@{/javascripts/vendors/bootstrap.bundle.min.js}"></script>
+    
+    <script type="text/javascript">
+    
+		 $(function(){
+			 var delay = 3000; 
+			 var URL = "inicio";
+			 setTimeout(function(){ window.location = URL; }, delay);
+
+		 });
+	</script>
+    
 </body>
 </html>

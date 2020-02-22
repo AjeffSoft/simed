@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Pesquisa</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/stylesheets/vendors/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/stylesheets/vendors/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/stylesheets/simed-pesquisa.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body >
+    <div class="container-fluid card">
+        <img th:src="@{/images/PerguntaImg.png}" alt="Imagem Perguntas">
+       
+        <form method="POST" th:object="${pesquisa}" class="form-vertical" th:action="@{/satisfacao/pesquisa/novo}">
+        	<input type="hidden" th:field="*{id}"/>
+	            
+            <th:block th:each="questionario, iterStat : ${questionarios}" th:field="*{questionarios}">
+
+	        	<div class="iteration  col-sm-12  card-img-overlay  flex-column  d-none" th:id="'questao' + ${iterStat.count}">
+	            
+		            <div class="row">
+		                <div class="div-pergunta col-sm-2 d-flex justify-content-around  align-items-center">
+		                </div>
+		                <div class="div-pergunta text-justify  text-center  font-weight-bold col-sm-10 d-flex justify-content-center  align-items-center">
+		                    <h1 th:text="${questionario.pergunta.nome}"></h1>
+		                </div>
+		            </div>
+		
+		            <div class="row">
+		                <div class="div-pergunta col-sm-2 d-flex justify-content-around  align-items-center">
+		                </div>
+		                <div class="div-resposta col-sm-10 d-flex justify-content-center  align-items-center">
+				            <th:block  th:each="resposta, iter : ${questionario.respostas}" th:field="*{resposta}">
+			                    <div>
+			                        <input type="radio" th:id="'resp'+${iter.count} + ${iterStat.count}" name="select" th:value="${resposta.nome}">
+			                        <label th:for="'resp'+${iter.count} + ${iterStat.count}" th:text="${resposta.nome}">Péssimo</label>
+			                    </div>
+							</th:block>
+		                </div>
+		            </div>
+					
+		            <div class="row">
+		                <div class="col-sm-1 d-flex justify-content-around  align-items-center">
+		                </div>
+		                <div class="div-btn-proximo col-sm-11 d-flex justify-content-end  align-items-end">
+		                	<a class="btn btn-success rounded-pill btn-lg-satisfacao" th:id="'botao'+${iterStat.count}" th:unless="${iterStat.last}" href="#">PRÓXIMO</a>
+		                
+		                    <button th:id="'botao'+${iterStat.count}" type="submit" class="btn btn-success rounded-pill btn-lg-satisfacao" th:if="${iterStat.last}">FINALIZAR PESQUISA</button>
+		                </div>
+		            </div>
+		        </div>
+			</th:block>
+		            
+	    </form>    
+    </div>
+    <script th:src="@{/javascripts/vendors/jquery-3.4.1.min.js}"></script>
+    <script th:src="@{/javascripts/vendors/bootstrap.bundle.min.js}"></script>
+    
+    <script type="text/javascript">
+		 $(function(){
+			 $('#questao1').removeClass('d-none');
+		 });
+		 
+		 $('.iteration').each(function(index, element) {
+			  
+			 $('#botao'+index).click(function(){
+				 $('#questao'+index).addClass('d-none');
+				 var newIndex = index + 1;
+				 $('#questao'+newIndex).removeClass('d-none');
+			})
+			 
+			 
+			});
+    </script>
+</body>
+</html>
