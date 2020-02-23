@@ -19,7 +19,7 @@
         <form method="POST" th:object="${pesquisa}" class="form-vertical" th:action="@{/satisfacao/pesquisa/novo}">
         	<input type="hidden" th:field="*{id}"/>
 	            
-            <th:block th:each="questionario, iterStat : ${questionarios}" th:field="*{questionarios}">
+            <th:block th:each="item, iterStat : ${itens}" th:field="*{itens}">
 
 	        	<div class="iteration  col-sm-12  card-img-overlay  flex-column  d-none" th:id="'questao' + ${iterStat.count}">
 	            
@@ -27,7 +27,7 @@
 		                <div class="div-pergunta col-sm-2 d-flex justify-content-around  align-items-center">
 		                </div>
 		                <div class="div-pergunta text-justify  text-center  font-weight-bold col-sm-10 d-flex justify-content-center  align-items-center">
-		                    <h1 th:text="${questionario.pergunta.nome}"></h1>
+		                    <h1 th:text="${item.questionario.pergunta.nome}"></h1>
 		                </div>
 		            </div>
 		
@@ -35,9 +35,9 @@
 		                <div class="div-pergunta col-sm-2 d-flex justify-content-around  align-items-center">
 		                </div>
 		                <div class="div-resposta col-sm-10 d-flex justify-content-center  align-items-center">
-				            <th:block  th:each="resposta, iter : ${questionario.respostas}" th:field="*{resposta}">
+				            <th:block  th:each="resposta, iter : ${item.questionario.respostas}" th:field="*{resposta}">
 			                    <div>
-			                        <input type="radio" th:id="'resp'+${iter.count} + ${iterStat.count}" name="select" th:value="${resposta.nome}">
+			                        <input type="radio" th:id="'resp'+${iter.count} + ${iterStat.count}" class="radio" th:value="${resposta.nome}" th:field="*{pesquisaItens}" checked="checked">
 			                        <label th:for="'resp'+${iter.count} + ${iterStat.count}" th:text="${resposta.nome}">Péssimo</label>
 			                    </div>
 							</th:block>
@@ -73,9 +73,29 @@
 				 var newIndex = index + 1;
 				 $('#questao'+newIndex).removeClass('d-none');
 			})
-			 
-			 
-			});
+		});
     </script>
+    
+        <script type="text/javascript">
+	 
+		 $('.iteration').each(function(index, element) {
+			  
+			 console.log(">>>>>", element);
+		});
+    </script>
+    
+    <script>
+    	$(document).ready(function(){
+        	$(".btn").click(function(){
+            	var radioValue = $(".radio:checked").val();
+	            if(radioValue){
+	                alert("Your are a - " + radioValue);
+	            }else {
+	            	console.log("error");
+	            }
+        	});
+    });
+</script>
+    
 </body>
 </html>

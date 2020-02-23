@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Satisfacao/LayoutSatisfacao}"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+
+<title>Detalhe da Pesquisa</title> 
+
+</head>
+
+
+	<section layout:fragment="conteudo">
+
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Pesquisa nº: [[${pesquisa.id}]]</h1>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-xs-12">
+						<p th:if="${pesquisa.fechado}">Status: <span class="label  label-success">Fechado</span></p> 
+						<p th:unless="${pesquisa.fechado}">Status: <span  class="label  label-danger">Aberto</span></p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid" >
+			<form id="form" method="GET" th:object="${pesquisa}" class="form-vertical  js-form-loading"
+				th:action="@{/satisfacao/pesquisa/detalhe/{id}(id=${pesquisa.id})}">
+			
+			<input type="hidden" th:field="*{id}">
+			
+				<div class="tab-content">
+					<div class="tab-pane active" id="dados">
+						<div class="row">
+							<div class="col-sm-3  form-group">
+								<label for="emissao" class="label label-default">Data/Hora</label>
+								<h3 id="emissao" th:text="${{pesquisa.data}}"></h3>
+							</div>
+
+							<div class="col-sm-3  form-group">
+								<label for="empresa" class="label label-default">Empresa</label>
+								<h3 id="empresa" th:text="${pesquisa.usuario.empresa.fantasia}"></h3>
+							</div>
+							
+							<div class="col-sm-6  form-group">
+								<label for="usuario" class="label label-default">Atendente</label>
+								<h3 id="usuario" th:text="${pesquisa.usuario.nome}"></h3>
+							</div>
+						</div>
+					</div>
+					
+					<br>
+					
+						<div class="table-responsive  bw-tabela-simples">
+							<table class="table  table-hover" th:with="total=0">
+								<thead>
+									<tr>
+										<th class="table-col-minima">Pergunta</th>
+										<th class="table-col-minima">Resposta</th>
+									</tr>
+								</thead>
+								
+								<tbody>
+									<tr th:each="resp : ${respostas}">
+										<td th:text="${resp.questionario.pergunta.nome}"></td>
+										<td th:text="${resp.nota}"></td>	
+									</tr>
+								</tbody>
+							</table>
+						</div>					
+				</div>
+				
+				<br>
+														
+				<div class="form-group">
+					<a class="btn  btn-default" href="javascript:history.back(1);">Voltar</a>
+				</div>
+			</form>
+			
+		</div>
+	</section>
+
+	<th:block layout:fragment="javascript-extra">
+
+	<script>
+		$(function() {
+			$('.js-abas a').click(function (e) {
+				e.preventDefault();
+				$(this).tab('show');
+			});
+		});
+	</script>
+	</th:block>	
+</html>

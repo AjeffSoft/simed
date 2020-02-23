@@ -1,24 +1,47 @@
 <!DOCTYPE html>
-<html lang="pt"
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
 	xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layout/LayoutSimples}">
-	
-<section layout:fragment="conteudo">
-	<div class="aw-error-panel">
-		<h1 class="aw-error-panel__code">
-			<i class="fa  fa-location-arrow"></i> 404
-		</h1>
-		
-		<h2 class="aw-error-panel__title">Página não encontrada</h2>
-		
-		<div class="aw-error-panel__description">
-			Desculpe, a página que você tentou acessar não foi encontrada ou não existe. 
-			Verifique se a URL está correta ou entre em contato com a gente se precisar de ajuda.
-			<br/><br/>
-			<a href="javascript:history.back()" class="btn  btn-primary">Voltar para onde estava</a>
-		</div>
-	</div>
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+	<meta charset="UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-</section>
+	<title>Erro 404</title>
+
+	<link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/vendors.min.css}"/>
+	<link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/algaworks.min.css}"/>
+	<link rel="stylesheet" type="text/css" th:href="@{/layout/stylesheets/application.css}"/>
+	
+	
+	<link rel="shortcut icon" th:href="@{/images/favicon.png}"/>
+
+</head>
+<body>
+
+<div class="aw-layout-page">
+	
+	
+	<section>
+		<div class="aw-error-panel">
+			<h1 class="aw-error-panel__code">
+				<i class="fa  fa-location-arrow"></i> 404
+			</h1>
+			
+			<h2 class="aw-error-panel__title">PÃ¡gina nÃ£o encontrada</h2>
+			
+			<div class="aw-error-panel__description">
+				Desculpe, a página que você tentou acessar não foi encontrada ou não existe. 
+				Verifique se a URL está correta ou entre em contato com o administrador se precisar de ajuda.
+				<br/><br/>
+				<a href="javascript:history.back()" class="btn  btn-primary">Voltar para onde estava</a>
+			</div>
+		</div>
+ </section>	
+</div>
+<script th:src="@{/layout/javascripts/vendors.min.js}"></script>
+<script th:src="@{/layout/javascripts/algaworks.min.js}"></script>
+<script th:src="@{/javascripts/simed.js}"></script>
+
+</body>
 </html>

@@ -12,7 +12,9 @@ CREATE TABLE pesquisa_item (
   id BIGINT(20) PRIMARY KEY AUTO_INCREMENT,
   nota VARCHAR(15),
   id_pesquisa BIGINT(20),
-  FOREIGN KEY (id_pesquisa) REFERENCES pesquisa(id)
+  id_questionario BIGINT(20),
+  FOREIGN KEY (id_pesquisa) REFERENCES pesquisa(id),
+  FOREIGN KEY (id_questionario) REFERENCES questionario(id)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

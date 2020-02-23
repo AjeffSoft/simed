@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Satisfacao/LayoutSatisfacao}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+<head>
+	<link rel="stylesheet" type="text/css" th:href="@{/stylesheets/vendors/bootstrap-datetimepicker.min.css}"/>
+
+	<title>Pesquisas de satisfação</title>
+</head>
+
+<body>
+	<section layout:fragment="conteudo">
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-12">
+						<h1>Pesquisas de satisfação</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+			<form method="GET" th:object="${pesquisaFilter}">
+				<div class="row">
+					<div class="col-sm-5  form-group">
+						<label for="empresa" class="control-label">Empresa</label>
+						<select id="empresa" class="form-control" th:field="*{empresa}">
+							<option th:each="empresa : ${empresas}" th:value="${empresa.id}" th:text="${empresa.fantasia}"></option>
+						</select>
+					</div>
+
+					<div class="col-sm-4  form-group">
+						<label for="atendente" class="control-label">Atendente</label>
+						<select id="atendente" class="form-control" th:field="*{usuario}">
+							<option value="">Selecione um(a) atendente</option>
+							<option th:each="usuario : ${usuarios}" th:value="${usuario.id}" th:text="${usuario.nome}"></option>
+						</select>
+					</div>
+					
+					<div class="form-group  col-sm-3">
+						<label class="control-label">Status</label> 
+						<div>
+	  						<div class="radio  radio-inline">
+		    					<input id="aberto" type="radio" value="false" th:field="*{fechado}"/>
+		    					<label for="aberto" >Aberto</label>
+	    					</div>
+
+	  						<div class="radio  radio-inline">
+		    					<input id="fechado" type="radio" value="true" th:field="*{fechado}"/>
+		    					<label for="fechado">Fechado</label>
+	    					</div>
+
+		  					<div class="radio  radio-inline">
+			    				<input id="todosTipos" type="radio" value="" th:checked="*{fechado} == null" name="fechado"/>
+			    				<label for="todosTipos" >Todos</label>
+		    				</div>
+						</div>
+					</div>					
+				</div>
+				
+				<div class="row">
+					<div class="form-group  col-sm-5">
+						<label for="dataInicio">Data</label>
+						<div class="form-inline">
+							<input type="text" class="form-control  aw-form-control-inline-sm" id="dataInicio" 
+								th:field="*{dataInicio}" autocomplete="off" placeholder="dd/mm/aa hh:mm"/>
+							<label for="dataFim" class="aw-form-label-between">até</label>
+							<input type="text" class="form-control  aw-form-control-inline-sm" id="dataFim" 
+								th:field="*{dataFim}" autocomplete="off" placeholder="dd/mm/aa hh:mm"/>
+						</div>
+					</div>		
+				</div>	
+
+				<div class="form-group">
+					<button class="btn  btn-primary" type="submit">Pesquisar</button>
+				</div>
+			</form>
+			
+			<div class="table-responsive  bw-tabela-simples">
+				<table class="table  table-hover" th:with="total=0">
+					<thead>
+						<tr>
+							<th class="table-col-grande">Código</th>
+						
+							<th class="table-col-minima">
+								<simed:order page="${pagina}" field="u.empresa" text="Emp"/>
+							</th>
+
+							<th class="table-col-minima">
+								<simed:order page="${pagina}" field="usuario" text="Atendente"/>
+							</th>
+							
+							<th class="table-col-grande">
+								<simed:order page="${pagina}" field="data" text="Data"/>
+							</th>
+
+							<th class="table-col-grande">Status</th>
+
+							<th class="table-agencia-col-acoes"></th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						<tr th:each="pesquisa : ${pagina.conteudo}">
+							<td th:text="${pesquisa.id}"></td>
+							<td th:text="${pesquisa.usuario.empresa.sigla}"></td>
+							<td th:text="${pesquisa.usuario.nome}"></td>
+							<td th:text="${{pesquisa.data}}"></td>
+							<td>
+								<th:block th:unless="${pesquisa.fechado}">
+									<span class="label  label-danger">Aberto</span>
+								</th:block>
+
+								<th:block th:if="${pesquisa.fechado}">
+									<span class="label  label-success">Fechado</span>
+								</th:block>
+							</td>
+
+							<td class="text-center">
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes" sec:authorize-url="/satisfacao/pesquisa/detalhe/**"
+										th:href="@{/satisfacao/pesquisa/detalhe/{id}(id=${pesquisa.id})}"> 
+									<i class="glyphicon glyphicon-eye-open"></i>
+								</a>
+
+								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir" href="#" 
+									data:url="@{/satisfacao/pesquisa/excluir/{id}(id=${pesquisa.id})}"
+									data:objeto="${pesquisa.id}" sec:authorize-url="/satisfacao/pesquisa/excluir/**">
+									<i class="glyphicon glyphicon-trash"></i>
+								</a>
+							</td>
+						</tr>
+						
+						<tr th:if="${pagina.vazia}">
+							<td colspan="6"> Nenhuma pesquisa encontrada</td>
+						</tr>
+
+					</tbody>
+				</table>
+	
+			</div>
+
+			<simed:pagination page="${pagina}"/>						
+
+		</div>		
+	</section>
+	
+<th:block layout:fragment="javascript-extra">
+
+</th:block>	
+</body>
+</html>

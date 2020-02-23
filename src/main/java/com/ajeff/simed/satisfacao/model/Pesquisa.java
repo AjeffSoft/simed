@@ -2,6 +2,7 @@ package com.ajeff.simed.satisfacao.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.ajeff.simed.geral.model.Usuario;
@@ -33,6 +35,8 @@ public class Pesquisa implements Serializable {
 	
 	private Boolean fechado;
 	
+	@OneToMany(mappedBy = "pesquisa")
+	private List<PesquisaItem> pesquisaItens;
 	
 	public Long getId() {
 		return id;
@@ -72,6 +76,14 @@ public class Pesquisa implements Serializable {
 
 	public void setAnotacoes(String anotacoes) {
 		this.anotacoes = anotacoes;
+	}
+
+	public List<PesquisaItem> getPesquisaItens() {
+		return pesquisaItens;
+	}
+
+	public void setPesquisaItens(List<PesquisaItem> pesquisaItens) {
+		this.pesquisaItens = pesquisaItens;
 	}
 
 	@Override

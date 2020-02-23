@@ -1,5 +1,6 @@
 package com.ajeff.simed.geral.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,5 +19,8 @@ public interface UsuariosRepository extends JpaRepository<Usuario, Long>, Usuari
 
 	@Query("select u from Usuario u where u.nome like ?1")
 	Usuario buscarUsuarioLogado(String name);
+
+	@Query("select u from Usuario u where u.empresa <> null")
+	List<Usuario> findByUsuarioAtendentes();
 
 }

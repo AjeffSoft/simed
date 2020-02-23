@@ -90,5 +90,9 @@ public class UsuarioService {
 	public Usuario buscarEmpresaPorUsuario(Long id) {
 		return repository.buscarEmpresaPorUsuario(id);
 	}
+
+	public List<Usuario> findByUsuarioAtendentes() {
+		return repository.findByUsuarioAtendentes();
+	}
 	
 }

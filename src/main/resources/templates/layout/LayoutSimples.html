@@ -28,7 +28,11 @@
 <div class="aw-layout-page">
 	
 	
+	<div th:replace="layout/fragments/BarraNavegacao :: navbar"></div>
+	
 	<section class="aw-layout-content  js-content" layout:fragment="conteudo"></section>
+	
+	<div th:replace="layout/fragments/Footer :: layout-footer"></div>
 	
 </div>
 <script th:src="@{/layout/javascripts/vendors.min.js}"></script>

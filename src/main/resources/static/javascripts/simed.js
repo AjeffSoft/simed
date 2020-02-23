@@ -118,6 +118,21 @@ Simed.MaskDate = (function() {
 }());	
 
 
+Simed.MaskDateHora = (function() {
+	function MaskDateHora() {
+		this.inputDate = $('.js-date-hora');
+	}
+	MaskDateHora.prototype.enable = function() {
+		this.inputDate.mask('00/00/0000 00:00');
+		this.inputDate.datepicker({
+			orientation: 'bottom',
+			language: 'pt-BR',
+			autoclose: true
+		});
+	}
+	return MaskDateHora;
+}());	
+
 Simed.MaskDateSimples = (function() {
 	function MaskDateSimples() {
 		this.inputDate = $('.js-dateSimples');
@@ -194,6 +209,9 @@ $(function() {
 	var maskDate = new Simed.MaskDate();
 	maskDate.enable();	
 
+	var maskDateHora = new Simed.MaskDateHora();
+	maskDateHora.enable();	
+	
 	var maskDateSimples = new Simed.MaskDateSimples();
 	maskDateSimples.enable();	
 	
