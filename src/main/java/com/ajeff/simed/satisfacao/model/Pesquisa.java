@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -35,7 +36,7 @@ public class Pesquisa implements Serializable {
 	
 	private Boolean fechado;
 	
-	@OneToMany(mappedBy = "pesquisa")
+	@OneToMany(mappedBy = "pesquisa", cascade = CascadeType.ALL)
 	private List<PesquisaItem> pesquisaItens;
 	
 	public Long getId() {

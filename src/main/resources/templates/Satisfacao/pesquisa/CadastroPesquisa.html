@@ -22,35 +22,42 @@
             <th:block th:each="item, iterStat : ${itens}" th:field="*{itens}">
 
 	        	<div class="iteration  col-sm-12  card-img-overlay  flex-column  d-none" th:id="'questao' + ${iterStat.count}">
-	            
-		            <div class="row">
-		                <div class="div-pergunta col-sm-2 d-flex justify-content-around  align-items-center">
+
+		            <div class="row" id="divPergunta">
+		                <div class="col-sm-2 d-flex justify-content-around  align-items-center">
 		                </div>
 		                <div class="div-pergunta text-justify  text-center  font-weight-bold col-sm-10 d-flex justify-content-center  align-items-center">
+		                    
+		                    <!-- 8888888888888888 -->
+		                    <input type="hidden" th:id="'perg'+${iterStat.count}" class="questaoId" name="idQuestao" th:value="${item.questionario.id}"/>
+		                    <input type="hidden" th:id="'resp'+${iterStat.index}" class="respostaId" name="idResposta"/>
+
+
 		                    <h1 th:text="${item.questionario.pergunta.nome}"></h1>
 		                </div>
 		            </div>
 		
-		            <div class="row">
+		            <div class="row" id="divResposta">
 		                <div class="div-pergunta col-sm-2 d-flex justify-content-around  align-items-center">
 		                </div>
-		                <div class="div-resposta col-sm-10 d-flex justify-content-center  align-items-center">
+		                <div class="iteration2 div-resposta col-sm-10 d-flex justify-content-center  align-items-center">
 				            <th:block  th:each="resposta, iter : ${item.questionario.respostas}" th:field="*{resposta}">
 			                    <div>
-			                        <input type="radio" th:id="'resp'+${iter.count} + ${iterStat.count}" class="radio" th:value="${resposta.nome}" th:field="*{pesquisaItens}" checked="checked">
+			                        <input type="radio" th:id="'resp'+${iter.count} + ${iterStat.count}" class="radio" th:value="${resposta.id}" th:field="*{pesquisaItens}" checked="checked">
 			                        <label th:for="'resp'+${iter.count} + ${iterStat.count}" th:text="${resposta.nome}">Péssimo</label>
 			                    </div>
 							</th:block>
 		                </div>
 		            </div>
 					
-		            <div class="row">
+		            <div class="row" id="divBotao">
 		                <div class="col-sm-1 d-flex justify-content-around  align-items-center">
 		                </div>
-		                <div class="div-btn-proximo col-sm-11 d-flex justify-content-end  align-items-center">
-<!-- 		                	<a class="btn btn-success btn-lg" th:id="'botao'+${iterStat.count}" th:unless="${iterStat.last}" href="#">PRÓXIMO</a> -->
+		                <div class="div-btn-proximo col-sm-11 d-flex justify-content-end  align-items-center" th:id="'div'+${iterStat.index}">
+		                
 		                    <button th:id="'botao'+${iterStat.count}" type="button" class="btn btn-success rounded-pill btn-lg-satisfacao" th:unless="${iterStat.last}">PRÓXIMO</button>
-		                    <button th:id="'botao'+${iterStat.count}" type="submit" class="btn btn-success rounded-pill btn-lg-satisfacao" th:if="${iterStat.last}">FINALIZAR PESQUISA</button>
+		                    <button th:id="'botao'+${iterStat.count}" type="submit" class="btn btn-success rounded-pill btn-lg-satisfacao" th:if="${iterStat.last}">FINALIZAR A PESQUISA</button>
+		                    
 		                </div>
 		            </div>
 		        </div>
@@ -64,38 +71,72 @@
     <script type="text/javascript">
 		 $(function(){
 			 $('#questao1').removeClass('d-none');
+			 $('#questao1').addClass('ative');
+
 		 });
 		 
 		 $('.iteration').each(function(index, element) {
-			  
 			 $('#botao'+index).click(function(){
 				 $('#questao'+index).addClass('d-none');
-				 var newIndex = index + 1;
+				 $('#questao'+index).removeClass('ative');
+				 
+  				 var newIndex = index + 1;
 				 $('#questao'+newIndex).removeClass('d-none');
-			})
+				 $('#questao'+newIndex).addClass('ative');
+
+			 })
 		});
     </script>
-    
-        <script type="text/javascript">
-	 
-		 $('.iteration').each(function(index, element) {
-			  
-			 console.log(">>>>>", element);
-		});
-    </script>
+   
     
     <script>
-    	$(document).ready(function(){
-        	$(".btn").click(function(){
-            	var radioValue = $(".radio:checked").val();
-	            if(radioValue){
-	                alert("Your are a - " + radioValue);
-	            }else {
-	            	console.log("error");
-	            }
-        	});
-    });
-</script>
+    	$(function(){
+	
+//     		var itens = [];
+//     		var questao = null;
+//     		var resposta = null;
+    		var iter = $('.iteration');
+			iter.each(function(i,e){
+	         	var btn = $(e).find('button');
+	         		btn.click(function(){
+	         			
+						var id = $(e).find(".questaoId");
+						var questao = id.val();
+		         		var rad = $(e).find(".radio:checked");
+						var resposta = rad.val();
+
+		         		var inputResp = $(e).find(".respostaId");
+		         		var resp = inputResp.val(resposta);
+						
+		         		console.log("PERGUNTA: " + questao + " RESPOSTA: " + resp);
+	
+	         		})
+			});
+			
+// 			var btnFinalizar = $(".btn-final");
+// 			btnFinalizar.on("click", onEnviarServidor);
+			
+// 			function onEnviarServidor(){
+// 				$.ajax({
+// 					url: '/simed/satisfacao/pesquisa/itens',
+// 					method: 'POST',
+// 					contentType: 'application/json',
+// 					data: JSON.stringify({'nota': questao}),
+// 					error: onError,
+// 					success: onSuccess
+// 				});
+// 			}
+	
+// 			function onError(){
+// 				console.log("error>>>>>>>>>>>")
+// 			}
+			
+// 			function onSuccess(){
+// 				console.log("SUCESSO!!!!!!!!!!");
+// 			}
+
+    	});
+	</script>
     
 </body>
 </html>

@@ -1,6 +1,7 @@
 package com.ajeff.simed.satisfacao.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.PersistenceException;
@@ -15,6 +16,8 @@ import com.ajeff.simed.geral.model.Usuario;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.satisfacao.model.Pesquisa;
 import com.ajeff.simed.satisfacao.model.PesquisaItem;
+import com.ajeff.simed.satisfacao.model.Questionario;
+import com.ajeff.simed.satisfacao.model.Resposta;
 import com.ajeff.simed.satisfacao.repository.PesquisasItensRepository;
 import com.ajeff.simed.satisfacao.repository.PesquisasRepository;
 import com.ajeff.simed.satisfacao.repository.filter.PesquisaFilter;
@@ -27,12 +30,44 @@ public class PesquisaService {
 	private PesquisasRepository repository;
 	@Autowired
 	private PesquisasItensRepository pesquisaItemRepository;	
+	@Autowired
+	private QuestionarioService questionarioService;
+	@Autowired
+	private RespostaService respostaService;
+	
 	
 	@Transactional
-	public Pesquisa salvar(Pesquisa pesquisa, Usuario usuario) {
+	public Pesquisa salvar(Pesquisa pesquisa, Usuario usuario, List<Long> ids, List<Long> idResp) {
+		
+		List<PesquisaItem> itens = new ArrayList<>();
+		List<Questionario> questoes = new ArrayList<>();
+		List<Resposta> respostas = new ArrayList<>();
+		
+		
+		for (Long id : ids) {
+			Questionario q = questionarioService.findOne(id);
+			questoes.add(q);
+		}
+		
+		for (Long id : idResp) {
+			Resposta r = respostaService.findOne(id);
+			respostas.add(r);
+		}
+		
+		for (int i = 0; i < ids.size(); i++) {
+			PesquisaItem item = new PesquisaItem();
+			item.setQuestionario(questoes.get(i));
+			item.setResposta(respostas.get(i));
+			item.setNota(respostas.get(i).getNome());
+			item.setPesquisa(pesquisa);
+			itens.add(item);
+		}
+		
+		
 		pesquisa.setData(LocalDateTime.now());
 		pesquisa.setUsuario(usuario);
 		pesquisa.setFechado(true);
+		pesquisa.setPesquisaItens(itens);
 //		testeRegistroJaCadastrado(pergunta);
 		return repository.save(pesquisa);
 	}

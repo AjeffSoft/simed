@@ -27,6 +27,10 @@ public class PesquisaItem implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "id_questionario")
 	private Questionario questionario;
+
+	@ManyToOne
+	@JoinColumn(name = "id_resposta")
+	private Resposta resposta;	
 	
 	private String nota;
 	
@@ -60,6 +64,14 @@ public class PesquisaItem implements Serializable {
 
 	public void setQuestionario(Questionario questionario) {
 		this.questionario = questionario;
+	}
+
+	public Resposta getResposta() {
+		return resposta;
+	}
+
+	public void setResposta(Resposta resposta) {
+		this.resposta = resposta;
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package com.ajeff.simed.satisfacao.controller;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -17,7 +19,9 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -30,6 +34,7 @@ import com.ajeff.simed.satisfacao.model.Pesquisa;
 import com.ajeff.simed.satisfacao.model.PesquisaItem;
 import com.ajeff.simed.satisfacao.model.Questionario;
 import com.ajeff.simed.satisfacao.model.Resposta;
+import com.ajeff.simed.satisfacao.repository.PesquisasRepository;
 import com.ajeff.simed.satisfacao.repository.filter.PesquisaFilter;
 import com.ajeff.simed.satisfacao.service.PesquisaService;
 import com.ajeff.simed.satisfacao.service.QuestionarioService;
@@ -41,6 +46,8 @@ public class PesquisaController {
 
 	@Autowired
 	private PesquisaService service;
+	@Autowired
+	private PesquisasRepository repository;
 	@Autowired
 	private QuestionarioService questionarioService;
 	@Autowired
@@ -63,7 +70,11 @@ public class PesquisaController {
 		ModelAndView mv = new ModelAndView("Satisfacao/pesquisa/FinalPesquisa");
 		return mv;
 	}	
-	
+
+	@PostMapping(value = "/itens", consumes = {MediaType.APPLICATION_JSON_VALUE})
+	public void itens(@RequestBody Questionario questionario) {
+		System.out.println(">>>>>>>>>>>>>>>>>>>>>>.");
+	}	
 
 	@GetMapping("/pesquisar")
 	public ModelAndView pesquisar(PesquisaFilter pesquisaFilter, BindingResult result, @PageableDefault(size=100) Pageable pageable,
@@ -128,6 +139,7 @@ public class PesquisaController {
 			pi.setQuestionario(q);
 			itens.add(pi);
 		}
+		
 		mv.addObject("itens", itens);
 		return mv;
 	}		
@@ -159,11 +171,20 @@ public class PesquisaController {
 
 	
 
+//	@PostMapping("/novo")
+//	public ModelAndView salvar(@Valid Pesquisa pesquisa, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
+//
+////		pesquisa.adicionarQuestionarios(tabelaQuestionarios.getQuestionarios(pesquisa.getUuid()));
+////		service.salvar(pesquisa, usuarioSistema.getUsuario());
+//		return new ModelAndView("redirect:/satisfacao/pesquisa/fim");
+//	}
+	
+	
 	@PostMapping("/novo")
-	public ModelAndView salvar(@Valid Pesquisa pesquisa, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
+	public ModelAndView salvar(@RequestParam(value = "idQuestao", required = true) List<Long> ids, @RequestParam(value = "idResposta", required = false) List<Long> idResp, @Valid Pesquisa pesquisa, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
 
 //		pesquisa.adicionarQuestionarios(tabelaQuestionarios.getQuestionarios(pesquisa.getUuid()));
-		service.salvar(pesquisa, usuarioSistema.getUsuario());
+		service.salvar(pesquisa, usuarioSistema.getUsuario(), ids, idResp);
 		return new ModelAndView("redirect:/satisfacao/pesquisa/fim");
 	}	
 }
