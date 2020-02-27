@@ -35,7 +35,8 @@ label {
   border: 1px solid #20df80;
   border-radius: 2px;
   padding-top: 1rem;
-  padding: 1rem;
+  padding: 25px;
+  font-size: 25px;
   text-align: center;
   box-shadow: 0px 3px 10px -2px rgba(161, 170, 166, 0.5);
   position: relative;

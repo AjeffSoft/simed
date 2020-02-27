@@ -149,6 +149,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/satisfacao/pesquisa/pesquisar").hasRole("SATISFACAO_PESQUISA_PESQUISAR")
 				.antMatchers("/satisfacao/pesquisa/excluir/**").hasRole("SATISFACAO_PESQUISA_EXCLUIR")
 				.antMatchers("/satisfacao/pesquisa/detalhe/**").hasRole("SATISFACAO_PESQUISA_DETALHAR")
+
+				.antMatchers("/geral").hasRole("GERAL")
+				.antMatchers("/financeiro").hasRole("FINANCEIRO")
+				.antMatchers("/satisfacao").hasRole("SATISFACAO")
 				
 				.anyRequest().authenticated()
 				.and()

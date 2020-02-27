@@ -2,7 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	xmlns:th="http://www.thymeleaf.org"
-	layout:decorate="~{Satisfacao/LayoutSatisfacao}">
+	layout:decorate="~{Satisfacao/LayoutSatisfacao}"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 
 <head>
 	<title>Dashboard Satisfação</title>
@@ -17,6 +18,7 @@
 	</div>
 
 	<div class="container-fluid">
+		<a class = "btn btn-info rounded-pill btn-lg" th:href="@{/satisfacao/pesquisa/inicio}">INICIAR PESQUISA</a>
 	</div>
 </section>
 

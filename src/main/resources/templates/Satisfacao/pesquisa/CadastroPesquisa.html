@@ -25,10 +25,10 @@
 
 		            <div class="row" id="divPergunta">
 		                <div class="col-sm-2 d-flex justify-content-around  align-items-center">
+		                	<a  class="btn btn-success rounded-circle btn-lg" th:href="@{/satisfacao/pesquisa/inicio}">?</a>
 		                </div>
 		                <div class="div-pergunta text-justify  text-center  font-weight-bold col-sm-10 d-flex justify-content-center  align-items-center">
 		                    
-		                    <!-- 8888888888888888 -->
 		                    <input type="hidden" th:id="'perg'+${iterStat.count}" class="questaoId" name="idQuestao" th:value="${item.questionario.id}"/>
 		                    <input type="hidden" th:id="'resp'+${iterStat.index}" class="respostaId" name="idResposta"/>
 
@@ -92,50 +92,18 @@
     <script>
     	$(function(){
 	
-//     		var itens = [];
-//     		var questao = null;
-//     		var resposta = null;
     		var iter = $('.iteration');
 			iter.each(function(i,e){
 	         	var btn = $(e).find('button');
 	         		btn.click(function(){
-	         			
-						var id = $(e).find(".questaoId");
+	         			var id = $(e).find(".questaoId");
 						var questao = id.val();
 		         		var rad = $(e).find(".radio:checked");
-		         		console.log(rad.val())
 						var resposta = rad.val();
-
 		         		var inputResp = $(e).find(".respostaId");
 		         		var resp = inputResp.val(resposta);
-						
-		         		console.log("PERGUNTA: " + questao + " RESPOSTA: " + rad);
-	
-	         		})
+				 })
 			});
-			
-// 			var btnFinalizar = $(".btn-final");
-// 			btnFinalizar.on("click", onEnviarServidor);
-			
-// 			function onEnviarServidor(){
-// 				$.ajax({
-// 					url: '/simed/satisfacao/pesquisa/itens',
-// 					method: 'POST',
-// 					contentType: 'application/json',
-// 					data: JSON.stringify({'nota': questao}),
-// 					error: onError,
-// 					success: onSuccess
-// 				});
-// 			}
-	
-// 			function onError(){
-// 				console.log("error>>>>>>>>>>>")
-// 			}
-			
-// 			function onSuccess(){
-// 				console.log("SUCESSO!!!!!!!!!!");
-// 			}
-
     	});
 	</script>
     

@@ -2,25 +2,29 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	xmlns:th="http://www.thymeleaf.org"
-	layout:decorate="~{layout/LayoutSimples}">
+	layout:decorate="~{layout/LayoutSimples}"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 
 <head>
 	<title>Simed</title>
 </head>
 
 <section layout:fragment="conteudo">
-
-	<div class="page-header">
-		<div class="container-fluid">
-			<h1>Seja bem vindo ao Simed</h1>
-		</div>
-	</div>
-
+	
+	<br>
+	<br>
 	<div class="container-fluid">
-<!-- 	<a th:href="@{/cooperado}">Cooperado</a> <br> -->
-	<a th:href="@{/financeiro}">Financeiro</a> <br>
-	<a th:href="@{/geral}">Geral</a> <br>
-	<a th:href="@{/satisfacao}">Pesquisa de Satisfação</a> <br>
+	
+	
+		<a class = "btn btn-info rounded-pill btn-lg" th:href="@{/geral}">Geral/Configuração</a>
+		<br>
+		<br>
+	
+		<a class = "btn btn-success rounded-pill btn-lg" th:href="@{/financeiro}"> Financeiro/Contábil </a>
+		<br>
+		<br>
+
+		<a class = "btn btn-danger rounded-pill btn-lg" th:href="@{/satisfacao}">Pesquisa de Satisfação</a> <br>
 	</div>
 </section>
 
