@@ -45,16 +45,20 @@ public class PesquisaService {
 		
 		
 		for (Long id : ids) {
-			Questionario q = questionarioService.findOne(id);
-			questoes.add(q);
+			if(id != null) {
+				Questionario q = questionarioService.findOne(id);
+				questoes.add(q);
+			}
 		}
 		
 		for (Long id : idResp) {
-			Resposta r = respostaService.findOne(id);
-			respostas.add(r);
+			if(id != null) {
+				Resposta r = respostaService.findOne(id);
+				respostas.add(r);
+			}
 		}
 		
-		for (int i = 0; i < ids.size(); i++) {
+		for (int i = 0; i < respostas.size(); i++) {
 			PesquisaItem item = new PesquisaItem();
 			item.setQuestionario(questoes.get(i));
 			item.setResposta(respostas.get(i));

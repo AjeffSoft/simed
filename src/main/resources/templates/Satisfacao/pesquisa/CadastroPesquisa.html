@@ -103,12 +103,13 @@
 						var id = $(e).find(".questaoId");
 						var questao = id.val();
 		         		var rad = $(e).find(".radio:checked");
+		         		console.log(rad.val())
 						var resposta = rad.val();
 
 		         		var inputResp = $(e).find(".respostaId");
 		         		var resp = inputResp.val(resposta);
 						
-		         		console.log("PERGUNTA: " + questao + " RESPOSTA: " + resp);
+		         		console.log("PERGUNTA: " + questao + " RESPOSTA: " + rad);
 	
 	         		})
 			});

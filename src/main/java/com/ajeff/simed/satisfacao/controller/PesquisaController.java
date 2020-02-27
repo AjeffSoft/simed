@@ -1,6 +1,5 @@
 package com.ajeff.simed.satisfacao.controller;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +33,6 @@ import com.ajeff.simed.satisfacao.model.Pesquisa;
 import com.ajeff.simed.satisfacao.model.PesquisaItem;
 import com.ajeff.simed.satisfacao.model.Questionario;
 import com.ajeff.simed.satisfacao.model.Resposta;
-import com.ajeff.simed.satisfacao.repository.PesquisasRepository;
 import com.ajeff.simed.satisfacao.repository.filter.PesquisaFilter;
 import com.ajeff.simed.satisfacao.service.PesquisaService;
 import com.ajeff.simed.satisfacao.service.QuestionarioService;
@@ -46,8 +44,6 @@ public class PesquisaController {
 
 	@Autowired
 	private PesquisaService service;
-	@Autowired
-	private PesquisasRepository repository;
 	@Autowired
 	private QuestionarioService questionarioService;
 	@Autowired

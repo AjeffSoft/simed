@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.ajeff.simed.satisfacao.model.Questionario;
 import com.ajeff.simed.satisfacao.model.Resposta;
 import com.ajeff.simed.satisfacao.repository.helper.resposta.RespostasRepositoryQueries;
 

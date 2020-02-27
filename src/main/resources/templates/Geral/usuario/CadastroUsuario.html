@@ -94,7 +94,7 @@
 
 			<div class="row">
 				<div class="form-group  col-sm-10  bw-required" th:classappend="${#fields.hasErrors('empresas')} ? has-error">
-					<label class="control-label">Empresas</label> 
+					<label class="control-label">Empresas Financeiro</label> 
 					<div>
 						<th:block th:each="empresa : ${empresas}">
 	  						<div class="checkbox  checkbox-inline"> 
@@ -104,7 +104,22 @@
 						</th:block>
 					</div>
 				</div>
-			</div>			
+			</div>
+			
+			
+			<div class="row">
+				<div class="form-group  col-sm-10 " th:classappend="${#fields.hasErrors('empresa')} ? has-error">
+					<label class="control-label">Empresa Atendente</label> 
+					<div>
+						<th:block th:each="empresa : ${empresas}">
+	  						<div class="radio  radio-inline"> 
+		    					<input type="radio" th:value="${empresa.id}" th:field="*{empresa}"/>
+		    					<label th:text="${empresa.fantasia}" th:for="${#ids.prev('empresas')}">Unimed</label>
+	    					</div>
+						</th:block>
+					</div>
+				</div>
+			</div>					
 
 			<div class="form-group">
 					<button class="btn  btn-success" type="submit">Salvar</button>
