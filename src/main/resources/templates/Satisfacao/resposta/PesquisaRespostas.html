@@ -53,7 +53,9 @@
 							<th class="table-col-grande">
 								<simed:order page="${pagina}" field="nome" text="Nome"/>
 							</th>
-			
+							
+							<th class="table-col-media">Grau</th>
+							<th class="table-col-media">Valor</th>
 							<th class="table-agencia-col-acoes"></th>
 						</tr>
 					</thead>
@@ -61,6 +63,8 @@
 					<tbody>
 						<tr th:each="resposta : ${pagina.conteudo}">
 							<td th:text="${resposta.nome}"></td>
+							<td th:text="${resposta.grau}"></td>
+							<td th:text="${resposta.valor}"></td>
 							
 										
 							<td class="text-center">
@@ -76,7 +80,7 @@
 						</tr>
 						
 						<tr th:if="${pagina.vazia}">
-							<td colspan="1"> Nenhuma resposta encontrada</td>
+							<td colspan="4"> Nenhuma resposta encontrada</td>
 						</tr>
 						
 						

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.ajeff.simed.financeiro.model.enums.GrauPergunta;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.geral.service.exception.RegistroJaCadastradoException;
@@ -37,6 +38,7 @@ public class RespostaController {
 	@GetMapping("/novo")
 	public ModelAndView novo(Resposta resposta) {
 		ModelAndView mv = new ModelAndView("Satisfacao/resposta/CadastroResposta");
+		mv.addObject("graus", GrauPergunta.values());
 		return mv;
 	}
 
@@ -63,7 +65,7 @@ public class RespostaController {
 	@GetMapping("/pesquisar")
 	public ModelAndView pesquisar(RespostaFilter respostaFilter, BindingResult result, @PageableDefault(size=100) Pageable pageable,
 										HttpServletRequest httpServletRequest) {
-		ModelAndView mv = new ModelAndView("Satisfacao/resposta/PesquisarRespostas");
+		ModelAndView mv = new ModelAndView("Satisfacao/resposta/PesquisaRespostas");
 		PageWrapper<Resposta> paginaWrapper = new PageWrapper<>(service.filtrar(respostaFilter, pageable), httpServletRequest);
 		mv.addObject("pagina", paginaWrapper);
 		return mv;

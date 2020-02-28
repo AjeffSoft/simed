@@ -22,7 +22,7 @@ public class Pergunta implements Serializable {
 	
 	@NotBlank(message = "Informe um nome")
 	private String nome;
-
+	
 	public Long getId() {
 		return id;
 	}
