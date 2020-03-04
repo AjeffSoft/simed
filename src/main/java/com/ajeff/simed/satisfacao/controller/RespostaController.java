@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.ajeff.simed.financeiro.model.enums.GrauPergunta;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.geral.service.exception.RegistroJaCadastradoException;
 import com.ajeff.simed.satisfacao.model.Resposta;
+import com.ajeff.simed.satisfacao.model.enums.GrauPergunta;
 import com.ajeff.simed.satisfacao.repository.filter.RespostaFilter;
 import com.ajeff.simed.satisfacao.service.RespostaService;
 

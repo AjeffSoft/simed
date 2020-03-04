@@ -3,6 +3,7 @@ package com.ajeff.simed.financeiro.service;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -54,6 +55,7 @@ public class RelatoriosService {
 		Map<String, Object> map = new HashMap<>();
 		ImageIcon gto = new ImageIcon(getClass().getResource("/relatorios/logo" +pagamento.getContaEmpresa().getEmpresa().getId()+".jpg"));
 		map.put("format", "pdf");
+		map.put("REPORT_LOCALE", new Locale("pt", "BR"));
 		map.put("logo", gto.getImage());
 		map.put("id_pagamento", id);
 		

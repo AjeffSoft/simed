@@ -58,11 +58,11 @@ public class PesquisaService {
 			}
 		}
 		
-		for (int i = 0; i < respostas.size(); i++) {
+		for (int i = 0; i < questoes.size(); i++) {
 			PesquisaItem item = new PesquisaItem();
 			item.setQuestionario(questoes.get(i));
 			item.setResposta(respostas.get(i));
-			item.setNota(respostas.get(i).getNome());
+			//item.setNota(respostas.get(i).getNome());
 			item.setPesquisa(pesquisa);
 			itens.add(item);
 		}

@@ -1,10 +1,12 @@
-package com.ajeff.simed.financeiro.model.enums;
+package com.ajeff.simed.satisfacao.model.enums;
 
 public enum GrauPergunta {
 	
 	BAIXO ("Grau Baixo"),
 	MEDIO ("Grau Médio"),
-	ALTO ("Grau Alto");
+	ALTO ("Grau Alto"),
+	NULO ("Nulo");
+
 	
 	private String descricao;
 	

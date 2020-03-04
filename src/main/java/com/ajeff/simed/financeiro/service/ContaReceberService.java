@@ -72,7 +72,7 @@ public class ContaReceberService {
 				cr.setVencimento(contaReceber.getVencimento().plusMonths(i).minusMonths(1));
 				cr.setEmpresa(contaReceber.getEmpresa());
 				cr.setStatus("ABERTO");
-				cr.setDocumento(contaReceber.getFornecedor().getSigla() + contaReceber.getDocumento() +"-"+i);
+				cr.setDocumento(contaReceber.getDocumento() +"-"+i);
 				cr.setParcela(i);
 				cr.setValorRecebido(BigDecimal.ZERO);
 				cr.setTotalParcela(contaReceber.getTotalParcela());

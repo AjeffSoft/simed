@@ -149,8 +149,8 @@
 
 						</div>
 						
-						<div class="row" th:if="${contaPagar.novo}">
-							<div class="form-group  col-sm-2">
+						<div class="row">
+							<div class="form-group  col-sm-2" th:if="${contaPagar.novo}">
 								<label class="control-label">IRRF</label>
 								<div>
 									<input id="impRenda" type="checkbox" checked data-toggle="toggle" class="form-control"  data-size="small"
@@ -158,7 +158,7 @@
 								</div>
 							</div>
 	
-							<div class="form-group  col-sm-2">
+							<div class="form-group  col-sm-2" th:if="${contaPagar.novo}">
 								<label class="control-label">PCCS</label>
 								<div>	
 									<input id="cofins" type="checkbox" checked data-toggle="toggle" class="form-control"  data-size="small"
@@ -166,7 +166,7 @@
 								</div>
 							</div>
 	
-							<div class="form-group  col-sm-2">
+							<div class="form-group  col-sm-2" th:if="${contaPagar.novo}">
 								<label class="control-label">INSS</label>
 								<div>	
 									<input id="impInss" type="checkbox" checked data-toggle="toggle" class="form-control"  data-size="small"
@@ -174,7 +174,7 @@
 								</div>
 							</div>
 							
-							<div class="col-sm-2  form-group">
+							<div class="col-sm-2  form-group" th:if="${contaPagar.novo}">
 								<label for="issPorcentagem" class="control-label">ISS %</label>
 								<input id="issPorcentagem" type="text" class="form-control  js-decimal" maxlength="20" th:field="*{issPorcentagem}">
 							</div>

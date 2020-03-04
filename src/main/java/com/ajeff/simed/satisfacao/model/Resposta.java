@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
 
-import com.ajeff.simed.financeiro.model.enums.GrauPergunta;
+import com.ajeff.simed.satisfacao.model.enums.GrauPergunta;
 
 @Entity
 @Table(name = "resposta")

@@ -54,6 +54,19 @@ public class MovimentacaoService {
 	}
 	
 	
+	
+	public Movimentacao verificarSeSomenteMovimentacaoEstaFechado(Empresa empresa, LocalDate data) {
+		
+		Optional<Movimentacao> mov = repository.findByEmpresaAndStatusAberto(empresa);	
+		if(!mov.isPresent()) {
+			throw new MovimentacaoFechadaException("Não existe movimentação em aberto para a empresa: " + empresa.getFantasia());
+		}else {
+			Movimentacao movimentacao = repository.findByEmpresaAndStatus(empresa);
+			return movimentacao;
+		}
+	}
+	
+	
 	public Movimentacao verificarSeMovimentacaoEstaFechado(Empresa empresa, LocalDate data) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		

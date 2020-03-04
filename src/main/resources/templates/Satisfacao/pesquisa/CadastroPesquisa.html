@@ -55,7 +55,7 @@
 		                <div class="div-btn-proximo col-sm-11 d-flex justify-content-end  align-items-center" th:id="'div'+${iterStat.index}">
 		                
 		                    <button th:id="'botao'+${iterStat.count}" type="button" class="btn btn-success rounded-pill btn-lg-satisfacao" th:unless="${iterStat.last}">PRÓXIMO</button>
-		                    <button th:id="'botao'+${iterStat.count}" type="submit" class="btn btn-success rounded-pill btn-lg-satisfacao" th:if="${iterStat.last}">FINALIZAR A PESQUISA</button>
+		                    <button th:id="'botao'+${iterStat.count}" type="submit" class="btn btn-success rounded-pill btn-lg-satisfacao btn-finalizar" th:if="${iterStat.last}">FINALIZAR A PESQUISA</button>
 		                    
 		                </div>
 		            </div>
@@ -95,16 +95,33 @@
 			iter.each(function(i,e){
 	         	var btn = $(e).find('button');
 	         		btn.click(function(){
-	         			var id = $(e).find(".questaoId");
-						var questao = id.val();
-		         		var rad = $(e).find(".radio:checked");
-						var resposta = rad.val();
+						var resposta;
 		         		var inputResp = $(e).find(".respostaId");
-		         		var resp = inputResp.val(resposta);
+						
+						if($(e).find(".radio:checked")){
+							var radio = $(e).find(".radio:checked");
+							resposta = radio.val();
+			         		var id = $(e).find(".questaoId");
+							var questao = id.val();
+						}
+						
+						if (typeof resposta === 'undefined'){
+							resposta = 11;
+						}
+
+		         		inputResp.val(resposta);
+
+// 		         		Evitar de clicar mais de uma vez
+		         		if(btn.hasClass("btn-finalizar")){
+			        		$(this).one("click", function(){
+			       			 	$(this).prop('disabled', true);
+			       			});
+		         		}
 				 })
 			});
     	});
 	</script>
+
     
 </body>
 </html>
