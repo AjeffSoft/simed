@@ -95,12 +95,13 @@ public class MovimentacaoController {
 		return mv;
 	}	
 	
-	@PostMapping(value = {"/fecharMovimento/{\\d+}"})
+	@PostMapping("/fecharMovimento/{\\d+}")
 	public ModelAndView fechar(@Valid Movimentacao movimentacao, BindingResult result, RedirectAttributes attributes) {
 
 		try {
 			service.fecharMovimento(movimentacao);
 		} catch (ErroAoFecharMovimentacaoException e) {
+			e.printStackTrace();
 			result.rejectValue("empresa", e.getMessage(), e.getMessage());
 			return abreFechar(movimentacao.getId(), movimentacao);
 		}

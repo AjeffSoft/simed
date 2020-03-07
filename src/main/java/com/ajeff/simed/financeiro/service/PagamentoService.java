@@ -2,6 +2,7 @@ package com.ajeff.simed.financeiro.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.PersistenceException;
@@ -297,16 +298,33 @@ public class PagamentoService {
 	}
 
 
-	public void fecharPagamentos() {
-		List<Pagamento> pagamentosAbertos = repository.findByFechadoFalse();
-		if(!pagamentosAbertos.isEmpty()) {
-			for (Pagamento p : pagamentosAbertos) {
-				if (p.getStatus().equals("EMITIDO")) {
-					throw new ErroAoFecharMovimentacaoException("Não foi possível fechar o movimento. Transações em aberto!");
-				}else {
-					p.setFechado(true);
-				}
+
+	private Boolean verificarSeTemPagamentoAberto(MovimentacaoItem movimentacaoItem) {
+		List<Pagamento> pagamentos = repository.findByMovimentacaoItem(movimentacaoItem);
+		List<Pagamento> pagamentosAbertos = new ArrayList<>();
+		pagamentos.stream().filter(i -> i.getStatus().equals("EMITIDO") && i.getTipo() != "CHEQUE").forEach(pagamentosAbertos::add);
+		return pagamentosAbertos.isEmpty() ? false: true;
+	}
+	
+	
+	private List<Pagamento> retornaTodosPagamentoPagosDaMovimentacao(MovimentacaoItem movimentacaoItem) {
+		List<Pagamento> pagamentos = repository.findByMovimentacaoItem(movimentacaoItem);
+		List<Pagamento> pagamentosFechados = new ArrayList<>();
+		pagamentos.stream().filter(i -> i.getStatus().equals("PAGO")).forEach(pagamentosFechados::add);
+		return pagamentosFechados;
+	}
+	
+	
+	public void fecharPagamentos(MovimentacaoItem m) {
+		if(verificarSeTemPagamentoAberto(m)){
+			throw new ErroAoFecharMovimentacaoException("Não foi possível fechar o movimento. Existe pagamento em aberto!");
+		}else {
+			List<Pagamento> pagamentos = retornaTodosPagamentoPagosDaMovimentacao(m);
+			if(!pagamentos.isEmpty()) {
+				pagamentos.stream().forEach(t -> t.setFechado(true));
+				repository.save(pagamentos);
 			}
 		}
-	}	
+	}
+	
 }

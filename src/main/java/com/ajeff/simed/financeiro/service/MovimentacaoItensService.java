@@ -100,7 +100,7 @@ public class MovimentacaoItensService {
 		for(MovimentacaoItem mov : movimentacoesItens) {
 			transferenciaService.fecharTransferencias(mov);
 			recebimentoService.fecharRecebimentos(mov);
-			pagamentoService.fecharPagamentos();
+			pagamentoService.fecharPagamentos(mov);
 		}
 	}
 

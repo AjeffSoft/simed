@@ -165,7 +165,7 @@ public class TransferenciaService {
 	}
 	
 	
-	public Boolean verificarSeTemTransferenciaAberto(MovimentacaoItem movimentacaoItem) {
+	private Boolean verificarSeTemTransferenciaAberto(MovimentacaoItem movimentacaoItem) {
 		List<TransferenciaContas> transferencias = repository.findByMovimentacaoItem(movimentacaoItem);
 		List<TransferenciaContas> transferenciasAbertas = new ArrayList<>();
 		transferencias.stream().filter(i -> i.getStatus().equals("ABERTO")).forEach(transferenciasAbertas::add);
