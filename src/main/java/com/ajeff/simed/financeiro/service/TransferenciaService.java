@@ -71,7 +71,6 @@ public class TransferenciaService {
 
 
 	private Movimentacao setarMovimentacao(Empresa empresa, LocalDate data) {
-		movimentacaoService.movimentacaoAbertaComDataValida(empresa, data);
 		Movimentacao movimentacao = movimentacaoService.verificarSeMovimentacaoEstaFechado(empresa, data);
 		return movimentacao;
 	}	

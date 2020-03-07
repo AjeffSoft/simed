@@ -182,7 +182,7 @@
 								</a>
 
 								<a class="btn  btn-link  btn-xs  js-tooltip  js-cancelar-btn" title="Confirmar/Cancelar" data:codigo="${transferencia.id}" 
-									sec:authorize-url="/financeiro/transferencia/cancelarPagar" th:unless="${transferencia.fechado}"> 
+									sec:authorize-url="/financeiro/transferencia/cancelarPagar" th:unless="${transferencia.fechado}" data:url="@{/financeiro/transferencia/cancelarPagar}"> 
 									<i th:if = "${transferencia.aberto}" class="glyphicon glyphicon-ok"></i> 
 									<i th:unless = "${transferencia.aberto}" class="glyphicon glyphicon-remove"></i>
 								</a>

@@ -28,9 +28,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.ajeff.simed.financeiro.model.TransferenciaContas;
 import com.ajeff.simed.financeiro.repository.filter.TransferenciaFilter;
 import com.ajeff.simed.financeiro.service.TransferenciaService;
+import com.ajeff.simed.financeiro.service.exception.DataForaMovimentacaoAbertaException;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.financeiro.service.exception.MovimentacaoFechadaException;
-import com.ajeff.simed.financeiro.service.exception.TransferenciaNaoEfetuadaException;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
 import com.ajeff.simed.geral.security.UsuarioSistema;
 import com.ajeff.simed.geral.service.ContaEmpresaService;
@@ -75,7 +75,7 @@ public class TransferenciaController {
 		} catch (MovimentacaoFechadaException e) {
 			result.rejectValue("data", e.getMessage(), e.getMessage());
 			return nova(transferenciaContas, usuarioSistema);
-		} catch (TransferenciaNaoEfetuadaException e) {
+		} catch (DataForaMovimentacaoAbertaException e) {
 			result.rejectValue("data", e.getMessage(), e.getMessage());
 			return nova(transferenciaContas, usuarioSistema);
 		}
