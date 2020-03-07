@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -19,9 +18,9 @@ import com.ajeff.simed.financeiro.model.ContaReceber;
 import com.ajeff.simed.financeiro.model.Recebimento;
 import com.ajeff.simed.financeiro.service.ContaReceberService;
 import com.ajeff.simed.financeiro.service.RecebimentoService;
+import com.ajeff.simed.financeiro.service.exception.DataForaMovimentacaoAbertaException;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.financeiro.service.exception.MovimentacaoFechadaException;
-import com.ajeff.simed.financeiro.service.exception.RecebimentoNaoEfetuadoException;
 import com.ajeff.simed.financeiro.service.exception.ValorInformadoInvalidoException;
 import com.ajeff.simed.geral.service.ContaEmpresaService;
 
@@ -49,8 +48,9 @@ public class RecebimentoController {
 	
 
 
-	@PostMapping("/novo")
-	public ModelAndView salvar(@Valid Recebimento recebimento, @RequestParam("idContaReceber") Long id, BindingResult result) {
+	@PostMapping("/novo/{idReceber}")
+	public ModelAndView salvar(@Valid Recebimento recebimento, @PathVariable("idReceber") Long id, BindingResult result) {
+		
 		if(result.hasErrors()) {
 			return novo(id, recebimento);
 		}
@@ -62,10 +62,11 @@ public class RecebimentoController {
 		} catch (MovimentacaoFechadaException e) {
 			result.rejectValue("data", e.getMessage(), e.getMessage());
 			return novo(id, recebimento);
-		} catch (RecebimentoNaoEfetuadoException e) {
+		} catch (DataForaMovimentacaoAbertaException e) {
 			result.rejectValue("data", e.getMessage(), e.getMessage());
 			return novo(id, recebimento);
-		}
+		}		
+		
 		return new ModelAndView("redirect:/financeiro/contaReceber/pesquisar");
 	}
 	

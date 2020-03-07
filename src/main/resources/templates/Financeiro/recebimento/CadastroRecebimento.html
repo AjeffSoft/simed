@@ -31,7 +31,7 @@
 
 		<div class="container-fluid" >
 			<form id="form" method="POST" th:object="${recebimento}" class="form-vertical  js-form-loading"
-				th:action="@{/financeiro/recebimento/novo}">
+				th:action="@{/financeiro/recebimento/novo/{idReceber}(idReceber=${contaReceber.id})}">
 			
 			<simed:message/>
 			

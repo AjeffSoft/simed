@@ -83,6 +83,7 @@ public class PagamentoService {
 			comportamentoDoPagamentoPorTipo(pagamento, tipoCheque, movimentacaoItem);
 			repository.save(pagamento);
 		} catch (PersistenceException e) {
+			e.printStackTrace();
 			throw new PagamentoNaoEfetuadoException("Algo deu errado!! Pagamento não efetuado");
 		}
 	}
@@ -175,7 +176,7 @@ public class PagamentoService {
 	public void pagar(Pagamento pagamento) {
 		List<ContaPagar> itens = contaPagarService.findByPagamentoId(pagamento.getId());
 		Boolean tipoCheque = verificarTipoPagtoCheque(pagamento);
-		Movimentacao movimentacao = movimentacaoService.verificarSeSomenteMovimentacaoEstaFechado(pagamento.getContaEmpresa().getEmpresa(), pagamento.getData());
+		Movimentacao movimentacao = movimentacaoService.verificarSeMovimentacaoEstaFechado(pagamento.getContaEmpresa().getEmpresa(), pagamento.getData());
 		MovimentacaoItem movimentacaoItem = movimentacaoItemService.findByMovimentacaoAndContaEmpresa(movimentacao, pagamento.getContaEmpresa());
 		
 		if(tipoCheque) {

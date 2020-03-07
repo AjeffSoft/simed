@@ -28,6 +28,7 @@
 				th:action="@{/financeiro/pagamento/pagar/{id}(id=${pagamento.id})}">
 
 				<simed:message/>
+				
 				<input type="hidden" th:field="*{id}">
 				<input type="hidden" th:field="*{documento}">
 				<input type="hidden" th:field="*{data}">

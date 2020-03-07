@@ -30,6 +30,7 @@ import com.ajeff.simed.financeiro.model.Pagamento;
 import com.ajeff.simed.financeiro.repository.filter.PagamentoFilter;
 import com.ajeff.simed.financeiro.service.ContaPagarService;
 import com.ajeff.simed.financeiro.service.PagamentoService;
+import com.ajeff.simed.financeiro.service.exception.DataForaMovimentacaoAbertaException;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.financeiro.service.exception.MovimentacaoFechadaException;
 import com.ajeff.simed.financeiro.service.exception.PagamentoNaoEfetuadoException;
@@ -83,8 +84,10 @@ public class PagamentoController {
 		} catch (MovimentacaoFechadaException e) {
 			result.rejectValue("data", e.getMessage(), e.getMessage());
 			return novo(ids, pagamento);
+		} catch (DataForaMovimentacaoAbertaException e) {
+			result.rejectValue("data", e.getMessage(), e.getMessage());
+			return novo(ids, pagamento);
 		}
-
 		if (pagamento.getAgrupado()) {
 			return new ModelAndView("redirect:/financeiro/pagamento/comprovante/"+ pagamento.getId());
 		}else {
@@ -150,21 +153,18 @@ public class PagamentoController {
 	}	
 	
 
-	@PostMapping(value = {"/pagar/{\\d+}"})
-	public ModelAndView pagar(@Valid Pagamento pagamento, BindingResult result) {
-
-		if(result.hasErrors()) {
-			return abrePagar(pagamento.getId(), pagamento);
-		}
+	@PostMapping(value = {"/pagar/{id}"})
+	public ModelAndView pagar(@PathVariable Long id, @Valid Pagamento pagamento, BindingResult result) {
+		if(result.hasErrors()) {return abrePagar(id, pagamento);}
 		
 		try {
 			service.pagar(pagamento);
-		} catch (PagamentoNaoEfetuadoException e) {
-			result.rejectValue("dataPago", e.getMessage(), e.getMessage());
-			return abrePagar(pagamento.getId(), pagamento);
 		} catch (MovimentacaoFechadaException e) {
 			result.rejectValue("dataPago", e.getMessage(), e.getMessage());
-			return abrePagar(pagamento.getId(), pagamento);
+			return abrePagar(id, pagamento);
+		} catch (DataForaMovimentacaoAbertaException e) {
+			result.rejectValue("dataPago", e.getMessage(), e.getMessage());
+			return abrePagar(id, pagamento);
 		}		
 		return new ModelAndView("redirect:/financeiro/pagamento/pesquisar?empresa="+pagamento.getContaEmpresa().getEmpresa().getId()+"&status=EMITIDO");
 	}

@@ -12,11 +12,11 @@ Simed.Autorizar = (function (){
 	
 	function onBotaoClicado(event){
 		var botaoClicado = $(event.currentTarget);
-		
+		var url = botaoClicado.data('url');
 		var codigo = botaoClicado.data('codigo');
 		
 		$.ajax({
-			url: '/simed/financeiro/contaPagar/autorizar',
+			url: url,
 			method: 'PUT',
 			data: {
 				id: codigo

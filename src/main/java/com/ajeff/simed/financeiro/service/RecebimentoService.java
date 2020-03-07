@@ -50,9 +50,8 @@ public class RecebimentoService {
 			movimentacaoItemService.creditarValorNosCreditos(movimentacaoItem, recebimento.getValor());
 			extratoService.criarRecebimentoNoExtrato(recebimento.getValor(), recebimento, recebimento.getContaEmpresa(), true, "CONFERIDO", recebimento.getData(), "RECEBIMENTO", recebimento.getMovimentacaoItem());
 			repository.save(recebimento);
-		} catch (PersistenceException e) {
+ 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new RecebimentoNaoEfetuadoException("Algo deu errado!! Recebimento não efetuado");
 		}
 	}
 

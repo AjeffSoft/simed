@@ -158,7 +158,8 @@
 									<i class="glyphicon glyphicon-ok"></i>
 								</a>
 
-								<a class="btn  btn-link  btn-xs  js-tooltip  js-cancelar-btn" title="Cancelar" data:codigo="${pagamento.id}" th:if = "${pagamento.pagoEAberto}"> 
+								<a class="btn  btn-link  btn-xs  js-tooltip  js-cancelar-btn" title="Cancelar" data:codigo="${pagamento.id}" 
+									th:if = "${pagamento.pagoEAberto}" data:url="@{/financeiro/pagamento/cancelarConfirmacao}"> 
 									<i class="glyphicon glyphicon-remove"></i>
 								</a>
 

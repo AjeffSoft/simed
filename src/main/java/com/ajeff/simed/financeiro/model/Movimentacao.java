@@ -194,4 +194,9 @@ public class Movimentacao implements Serializable {
 		return this.id == null;
 	}
 	
+
+	public Boolean isDataDentroMovimento (LocalDate data) {
+		return data.isAfter(this.dataInicio) && data.isBefore(this.dataFinal);
+	}
+	
 }
