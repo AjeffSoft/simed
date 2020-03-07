@@ -25,7 +25,7 @@
 		<div class="container-fluid" >
 		
 			<form id="form" method="POST" th:object="${pagamento}" class="form-vertical  js-form-loading"
-				th:action="@{/financeiro/pagamento/pagar/{id}(id=${pagamento.id})}">
+				th:action="@{/financeiro/pagamento/confirmar/{id}(id=${pagamento.id})}">
 
 				<simed:message/>
 				
@@ -105,7 +105,7 @@
 				
 				<br>
 				
-				<div class="row" th:if="${pagamento.cheque}">
+				<div class="row" simed:classforerror="dataPago">
 					<div class="col-sm-2  form-group">
 						<label for="data" class="control-label">Data*</label>
 						<input id="data" type="text" class="form-control  js-date" th:field = "*{dataPago}" autocomplete="off"/>
@@ -127,6 +127,6 @@
  			});  
  		</script> 
 	
-	<script th:src="@{/javascripts/validate/pagamentoConta.validate.js}"></script>			
+	<script th:src="@{/javascripts/validate/pagamento.confirmar.validate.js}"></script>			
 	</th:block>	
 </html>

@@ -63,6 +63,7 @@ public class RecebimentoController {
 			result.rejectValue("data", e.getMessage(), e.getMessage());
 			return novo(id, recebimento);
 		} catch (DataForaMovimentacaoAbertaException e) {
+			e.printStackTrace();
 			result.rejectValue("data", e.getMessage(), e.getMessage());
 			return novo(id, recebimento);
 		}		

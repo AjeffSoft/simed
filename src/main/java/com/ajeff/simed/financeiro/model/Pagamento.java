@@ -210,5 +210,9 @@ public class Pagamento implements Serializable{
 	public boolean isCheque() {
 		return this.tipo.equals("CHEQUE");
 	}
+	
+	public boolean isDataPagamentoMenorEmissao() {
+		return this.dataPago.isBefore(this.data);
+	}
 
 }

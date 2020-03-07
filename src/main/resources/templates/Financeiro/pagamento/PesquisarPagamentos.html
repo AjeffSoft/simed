@@ -153,8 +153,8 @@
 									<i class="glyphicon glyphicon-eye-open"></i>
 								</a>
 
-								<a class="btn  btn-link  btn-xs  js-tooltip  js-pagar-btn" title="Pagar" th:if = "${pagamento.emitidoEAberto}"
-										th:href="@{/financeiro/pagamento/pagar/{id}(id=${pagamento.id})}"> 
+								<a class="btn  btn-link  btn-xs  js-tooltip  js-pagar-btn" title="Confirmar" th:if = "${pagamento.emitidoEAberto}"
+										th:href="@{/financeiro/pagamento/confirmar/{id}(id=${pagamento.id})}"> 
 									<i class="glyphicon glyphicon-ok"></i>
 								</a>
 

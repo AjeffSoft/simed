@@ -18,6 +18,7 @@ import com.ajeff.simed.financeiro.model.MovimentacaoItem;
 import com.ajeff.simed.financeiro.model.Pagamento;
 import com.ajeff.simed.financeiro.repository.PagamentosRepository;
 import com.ajeff.simed.financeiro.repository.filter.PagamentoFilter;
+import com.ajeff.simed.financeiro.service.exception.DataInformadaMenorDataEmissaoException;
 import com.ajeff.simed.financeiro.service.exception.ErroAoFecharMovimentacaoException;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.financeiro.service.exception.PagamentoNaoEfetuadoException;
@@ -78,6 +79,7 @@ public class PagamentoService {
 			}
 			pagamento.setValor(total);
 			pagamento.setStatus("EMITIDO");
+			pagamento.setDataPago(pagamento.getData());
 			pagamento.setFechado(false);
 			pagamento.setDocumento(setarNumeroDocumento(pagamento, tipoCheque));
 			comportamentoDoPagamentoPorTipo(pagamento, tipoCheque, movimentacaoItem);
@@ -151,6 +153,7 @@ public class PagamentoService {
 		pgto.setStatus("EMITIDO");
 		pgto.setData(pagamento.getData());
 		pgto.setTipo(pagamento.getTipo());
+		pgto.setDataPago(pagamento.getData());
 		pgto.setFechado(false);
 		pgto.setDocumento(setarNumeroDocumento(pagamento, tipoCheque));
 		return pgto;
@@ -169,16 +172,26 @@ public class PagamentoService {
 	
 	public Pagamento findOne(Long id) {
 		return repository.findOne(id);
+	}
+	
+	private Movimentacao setarMovimentacao(Pagamento pagamento) {
+		Movimentacao movimentacao = movimentacaoService.verificarSeMovimentacaoEstaFechado(pagamento.getContaEmpresa().getEmpresa(), pagamento.getDataPago());
+		return movimentacao;
+	}
+	
+	private MovimentacaoItem setarMovimentacaoItem(Pagamento pagamento, Movimentacao movimentacao) {
+		MovimentacaoItem movimentacaoItem = movimentacaoItemService.findByMovimentacaoAndContaEmpresa(movimentacao, pagamento.getContaEmpresa());
+		return movimentacaoItem;
 	}	
 	
 	
 	@Transactional
-	public void pagar(Pagamento pagamento) {
+	public void confirmar(Pagamento pagamento) {
 		List<ContaPagar> itens = contaPagarService.findByPagamentoId(pagamento.getId());
 		Boolean tipoCheque = verificarTipoPagtoCheque(pagamento);
-		Movimentacao movimentacao = movimentacaoService.verificarSeMovimentacaoEstaFechado(pagamento.getContaEmpresa().getEmpresa(), pagamento.getData());
-		MovimentacaoItem movimentacaoItem = movimentacaoItemService.findByMovimentacaoAndContaEmpresa(movimentacao, pagamento.getContaEmpresa());
-		
+		Movimentacao movimentacao = setarMovimentacao(pagamento);
+		MovimentacaoItem movimentacaoItem = setarMovimentacaoItem(pagamento, movimentacao);
+		verificarSeDataPagoMenorDataEmissao(pagamento);
 		if(tipoCheque) {
 			confirmarPagamentoCheques(pagamento, movimentacaoItem);
 		}else {
@@ -200,7 +213,6 @@ public class PagamentoService {
 		contaEmpresaService.debitarValorNoTotalPendencias(pagamento.getContaEmpresa(), pagamento.getValor());
 		criarPagamentoNoExtrato(pagamento);
 		movimentacaoItemService.creditarValorNosDebitos(movimentacaoItem, pagamento.getValor());
-		verificarSeDataPagoMenorDataEmissao(pagamento);
 	}
 
 	
@@ -273,9 +285,9 @@ public class PagamentoService {
 
 	}
 	
-	private void verificarSeDataPagoMenorDataEmissao(Pagamento pagamento) {
-		if (pagamento.getDataPago().isBefore(pagamento.getData())) {
-			throw new PagamentoNaoEfetuadoException("Data de pagamento é menor que a data de emissão");
+	private void verificarSeDataPagoMenorDataEmissao (Pagamento pagamento){
+		if (pagamento.isDataPagamentoMenorEmissao()) {
+			throw new DataInformadaMenorDataEmissaoException("A data de pagamento não pode ser menor que a data de emissão");
 		}
 	}
 	

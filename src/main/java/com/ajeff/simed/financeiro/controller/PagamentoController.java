@@ -31,6 +31,7 @@ import com.ajeff.simed.financeiro.repository.filter.PagamentoFilter;
 import com.ajeff.simed.financeiro.service.ContaPagarService;
 import com.ajeff.simed.financeiro.service.PagamentoService;
 import com.ajeff.simed.financeiro.service.exception.DataForaMovimentacaoAbertaException;
+import com.ajeff.simed.financeiro.service.exception.DataInformadaMenorDataEmissaoException;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.financeiro.service.exception.MovimentacaoFechadaException;
 import com.ajeff.simed.financeiro.service.exception.PagamentoNaoEfetuadoException;
@@ -143,8 +144,8 @@ public class PagamentoController {
 	}	
 	
 	
-	@GetMapping("/pagar/{id}")
-	public ModelAndView abrePagar(@PathVariable Long id, Pagamento pagamento) {
+	@GetMapping("/confirmar/{id}")
+	public ModelAndView confirmarPagar(@PathVariable Long id, Pagamento pagamento) {
 		ModelAndView mv = new ModelAndView("Financeiro/pagamento/ConfirmarPagamento");
 		pagamento = service.findOne(id);
 		mv.addObject("contas", contaService.findByPagamentoId(pagamento.getId()));
@@ -153,18 +154,27 @@ public class PagamentoController {
 	}	
 	
 
-	@PostMapping(value = {"/pagar/{id}"})
-	public ModelAndView pagar(@PathVariable Long id, @Valid Pagamento pagamento, BindingResult result) {
-		if(result.hasErrors()) {return abrePagar(id, pagamento);}
+	@PostMapping("/confirmar/{id}")
+	public ModelAndView confirmar(@Valid Pagamento pagamento, @PathVariable Long id, BindingResult result) {
+		
+		if(result.hasErrors()) {
+			return confirmarPagar(id, pagamento);
+		}
 		
 		try {
-			service.pagar(pagamento);
+			service.confirmar(pagamento);
 		} catch (MovimentacaoFechadaException e) {
+			e.printStackTrace();
 			result.rejectValue("dataPago", e.getMessage(), e.getMessage());
-			return abrePagar(id, pagamento);
+			return confirmarPagar(id, pagamento);
 		} catch (DataForaMovimentacaoAbertaException e) {
+			e.printStackTrace();
 			result.rejectValue("dataPago", e.getMessage(), e.getMessage());
-			return abrePagar(id, pagamento);
+			return confirmarPagar(id, pagamento);
+		} catch (DataInformadaMenorDataEmissaoException e) {
+			e.printStackTrace();
+			result.rejectValue("dataPago", e.getMessage(), e.getMessage());
+			return confirmarPagar(id, pagamento);
 		}		
 		return new ModelAndView("redirect:/financeiro/pagamento/pesquisar?empresa="+pagamento.getContaEmpresa().getEmpresa().getId()+"&status=EMITIDO");
 	}
