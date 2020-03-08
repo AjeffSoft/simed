@@ -118,7 +118,7 @@ public class MovimentacaoService {
 
 			repository.save(movimentacao);
 		} catch (MovimentacaoFechadaException e) {
-			throw new MovimentacaoFechadaException("Movimentacao não foi fechada");
+			throw new MovimentacaoFechadaException("Movimentação não foi fechada");
 		}
 	}
 
