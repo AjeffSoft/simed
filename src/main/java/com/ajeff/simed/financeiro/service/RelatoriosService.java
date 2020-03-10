@@ -12,6 +12,7 @@ import javax.swing.ImageIcon;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ajeff.simed.financeiro.model.MovimentacaoItem;
 import com.ajeff.simed.financeiro.model.Pagamento;
 import com.ajeff.simed.financeiro.model.TransferenciaContas;
 
@@ -30,6 +31,8 @@ public class RelatoriosService {
 	private PagamentoService pagamentoService;
 	@Autowired
 	private TransferenciaService transferenciaService;
+	@Autowired
+	private MovimentacaoItensService movimentacaoItemService;
 	
 	
 	public byte[] imprimirHistoricoFornecedor(Long id) throws Exception {
@@ -97,6 +100,37 @@ public class RelatoriosService {
 		} finally {
 			con.close();
 		}
-	}		
+	}
+	
+	
+	public byte[] imprimirExtratoPorMovimentacao(Long id) throws Exception {
+		MovimentacaoItem movimentacaoItem = movimentacaoItemService.findOne(id);
+		Map<String, Object> map = new HashMap<>();
+		ImageIcon gto = new ImageIcon(getClass().getResource("/relatorios/logo" +movimentacaoItem.getMovimentacao().getEmpresa().getId()+".jpg"));
+		map.put("format", "pdf");
+		map.put("REPORT_LOCALE", new Locale("pt", "BR"));
+		map.put("logo", gto.getImage());
+		map.put("id_movimentacao", id);
+		
+		InputStream inputStream = null;
+
+		JasperReport subReport =  JasperCompileManager.compileReport(this.getClass().getResourceAsStream("/relatorios/rel_Financeiro_Pagamento_DetalhesItens.jrxml"));
+		JasperReport subReport1=  JasperCompileManager.compileReport(this.getClass().getResourceAsStream("/relatorios/rel_Financeiro_Recebimento_DetalhesItens.jrxml"));
+		JasperReport subReport2 =  JasperCompileManager.compileReport(this.getClass().getResourceAsStream("/relatorios/rel_Financeiro_Transferencia_DetalhesItens.jrxml"));
+
+		map.put("ProductsSubReport", subReport);
+		map.put("ProductsSubReport1", subReport1);
+		map.put("ProductsSubReport2", subReport2);
+
+		inputStream = this.getClass().getResourceAsStream("/relatorios/rel_Financeiro_Extrato_MovimentoDetalhado.jasper");
+		
+		Connection con = this.dataSource.getConnection();
+		try {
+			JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, map, con);
+			return JasperExportManager.exportReportToPdf(jasperPrint);
+		} finally {
+			con.close();
+		}
+	}	
 
 }

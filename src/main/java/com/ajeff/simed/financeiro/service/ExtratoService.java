@@ -129,7 +129,7 @@ public class ExtratoService {
 	
 	@Transactional
 	public void calcularSaldoExtrato(ExtratoFilter extratoFilter) {
-		List<Extrato> extratos = repository.findByMovimentacaoItemAndContaBancariaOrderByDataAndId(extratoFilter.getMovimentacao());
+		List<Extrato> extratos = repository.findByMovimentacaoItemAndContaBancariaOrderByDataAndId(extratoFilter.getMovimentacaoItem());
 		BigDecimal saldoAtual = new BigDecimal(0);
 
 		for (Extrato ex : extratos) {

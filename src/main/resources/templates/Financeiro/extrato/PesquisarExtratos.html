@@ -25,6 +25,9 @@
 						<div class="aw-page-header-controls">
 							<a class="btn  btn-info" th:href="@{/financeiro/extrato/selecionarConta}">
 								<i class="glyphicon glyphicon-refresh"></i> <span class="hidden-xs  hidden-sm">Trocar de Conta</span>
+							</a>																	
+							<a class="btn  btn-info" th:href="@{/relatorios/financeiro/extrato/imprimirExtrato/{id}(id=${extratoFilter.movimentacaoItem.id})}">
+								<i class="glyphicon glyphicon-print"></i> <span class="hidden-xs  hidden-sm"></span>
 							</a>
 						</div>
 					</div>

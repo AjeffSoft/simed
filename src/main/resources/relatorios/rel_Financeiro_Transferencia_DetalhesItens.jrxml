@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.10.0.final using JasperReports Library version 6.10.0-unknown  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PadraoA4Retrato" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="842" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="9f78ec25-1a29-42be-9564-6a7f29ca8c4a">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Simed"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="276"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="713"/>
+	<parameter name="id_transferencia" class="java.lang.Long"/>
+	<queryString language="SQL">
+		<![CDATA[select 
+	t.id,
+    t.valor,
+    t.id_conta_origem,
+    t.id_conta_destino,
+    co.id as cod_conta_origem,
+    co.nome as nome_origem,
+    co.conta as conta_origem,
+    co.tipo as tipo_origem,
+    co.id_empresa,
+    cd.id as cod_conta_destino,
+    cd.nome as nome_destino,
+    cd.conta as conta_destino,
+    cd.tipo as tipo_destino,
+    cd.id_empresa,
+    eo.id as cod_emp_origem,
+    eo.fantasia as fantasia_origem,
+    ed.id as cod_emp_destino,
+    ed.fantasia as fantasia_destino
+ from
+	transferencia_conta t  inner join conta_empresa co on t.id_conta_origem = co.id
+    inner join conta_empresa cd on t.id_conta_destino = cd.id
+    inner join empresa eo on co.id_empresa = eo.id
+    inner join empresa ed on cd.id_empresa = ed.id
+where
+	t.id = $P{id_transferencia}]]>
+	</queryString>
+	<field name="id" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="transferencia_conta"/>
+	</field>
+	<field name="valor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="valor"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="transferencia_conta"/>
+	</field>
+	<field name="id_conta_origem" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="id_conta_origem"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="transferencia_conta"/>
+	</field>
+	<field name="id_conta_destino" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="id_conta_destino"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="transferencia_conta"/>
+	</field>
+	<field name="cod_conta_origem" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="cod_conta_origem"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="conta_empresa"/>
+	</field>
+	<field name="nome_origem" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome_origem"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="conta_empresa"/>
+	</field>
+	<field name="conta_origem" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="conta_origem"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="conta_empresa"/>
+	</field>
+	<field name="tipo_origem" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="tipo_origem"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="conta_empresa"/>
+	</field>
+	<field name="id_empresa" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="id_empresa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="conta_empresa"/>
+	</field>
+	<field name="cod_conta_destino" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="cod_conta_destino"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="conta_empresa"/>
+	</field>
+	<field name="nome_destino" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome_destino"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="conta_empresa"/>
+	</field>
+	<field name="conta_destino" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="conta_destino"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="conta_empresa"/>
+	</field>
+	<field name="tipo_destino" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="tipo_destino"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="conta_empresa"/>
+	</field>
+	<field name="COLUMN_14" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="id_empresa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="conta_empresa"/>
+	</field>
+	<field name="cod_emp_origem" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="cod_emp_origem"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<field name="fantasia_origem" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="fantasia_origem"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<field name="cod_emp_destino" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="cod_emp_destino"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<field name="fantasia_destino" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="fantasia_destino"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="empresa"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="16">
+			<staticText>
+				<reportElement x="10" y="0" width="26" height="16" uuid="cfeb051f-0fc2-4ed8-865b-06ceac525072"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[|_]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="36" y="1" width="740" height="15" backcolor="#FFFFFF" uuid="45da9d80-ace1-4bac-acad-7864533f2b86">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Dados da Transferencia]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="19" splitType="Stretch">
+			<textField>
+				<reportElement stretchType="RelativeToTallestObject" x="430" y="0" width="346" height="19" uuid="f47d0536-8be4-4c42-94d7-11af4af64728"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Destino: " + $F{fantasia_destino}+" - "+ $F{nome_destino} + " - Conta: " + $F{conta_destino} + " - Tipo: " +$F{tipo_destino}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement stretchType="RelativeToTallestObject" x="36" y="0" width="364" height="19" uuid="22ce7b21-8a45-42c1-be46-c5bb3be493d9"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Origem: " + $F{fantasia_origem} +" - " + $F{nome_origem} +" - Conta: " +$F{conta_origem} + " - Tipo: " + $F{tipo_origem}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="400" y="0" width="30" height="19" uuid="81ccb0a9-aee5-4509-8bb7-28eab59a08c4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[>>>]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

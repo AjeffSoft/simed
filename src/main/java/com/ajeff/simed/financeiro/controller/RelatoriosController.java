@@ -26,6 +26,14 @@ public class RelatoriosController {
 				.body(relatorio);
 	}
 	
+	
+	@GetMapping("/extrato/imprimirExtrato/{id}")
+	public ResponseEntity<byte[]> imprimirExtrato(@PathVariable Long id) throws Exception {
+		byte[] relatorio = service.imprimirExtratoPorMovimentacao(id);
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
+				.body(relatorio);
+	}	
+	
 	@GetMapping("/pagamento/ordemPagamento/{id}")
 	public ResponseEntity<byte[]> imprimirOrdemPagamento(@PathVariable Long id) throws Exception {
 		byte[] relatorio = service.imprimirOrdemPagamento(id);
