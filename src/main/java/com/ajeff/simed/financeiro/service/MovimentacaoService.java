@@ -115,7 +115,6 @@ public class MovimentacaoService {
 			movimentacaoItensService.fecharCalculosEValores(movimentacao);
 			movimentacao.setFechado(true);
 			movimentacao.setDataFechamento(LocalDate.now());
-
 			repository.save(movimentacao);
 		} catch (MovimentacaoFechadaException e) {
 			throw new MovimentacaoFechadaException("Movimentação não foi fechada");
