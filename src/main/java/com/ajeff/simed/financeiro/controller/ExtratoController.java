@@ -41,7 +41,7 @@ public class ExtratoController {
 		ModelAndView mv = new ModelAndView("Financeiro/extrato/PesquisarExtratos");
 		
 		MovimentacaoItem movimentacao = service.setarMovimentacao(extratoFilter);
-		extratoFilter.setMovimentacao(movimentacao);
+		extratoFilter.setMovimentacaoItem(movimentacao);
 		service.calcularSaldoExtrato(extratoFilter);
 		PageWrapper<Extrato> paginaWrapper = new PageWrapper<>(service.filtrar(extratoFilter, pageable), httpServletRequest);
 		mv.addObject("pagina", paginaWrapper);

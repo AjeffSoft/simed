@@ -83,7 +83,6 @@ public class MovimentacaoController {
 		} catch (ImpossivelExcluirEntidade e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
-		System.out.println("");
 		return ResponseEntity.ok().build();
 	}
 	

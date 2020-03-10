@@ -10,7 +10,7 @@ public class ExtratoFilter {
 	private LocalDate dataInicio;
 	private LocalDate dataFinal;
 	private ContaEmpresa contaEmpresa;
-	private MovimentacaoItem movimentacao;
+	private MovimentacaoItem movimentacaoItem;
 	
 	public ContaEmpresa getContaEmpresa() {
 		return contaEmpresa;
@@ -18,11 +18,11 @@ public class ExtratoFilter {
 	public void setContaEmpresa(ContaEmpresa contaEmpresa) {
 		this.contaEmpresa = contaEmpresa;
 	}
-	public MovimentacaoItem getMovimentacao() {
-		return movimentacao;
+	public MovimentacaoItem getMovimentacaoItem() {
+		return movimentacaoItem;
 	}
-	public void setMovimentacao(MovimentacaoItem movimentacao) {
-		this.movimentacao = movimentacao;
+	public void setMovimentacaoItem(MovimentacaoItem movimentacaoItem) {
+		this.movimentacaoItem = movimentacaoItem;
 	}
 	public LocalDate getDataInicio() {
 		return dataInicio;

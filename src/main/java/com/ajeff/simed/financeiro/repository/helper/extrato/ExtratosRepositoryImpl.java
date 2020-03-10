@@ -45,29 +45,29 @@ public class ExtratosRepositoryImpl implements ExtratosRepositoryQueries {
 	private void adicionarFiltro(ExtratoFilter filtro, Criteria criteria) {
 		criteria
 		.add(Restrictions.eq("contaBancaria", filtro.getContaEmpresa()))
-		.add(Restrictions.ge("data", filtro.getMovimentacao().getMovimentacao().getDataInicio()))
-		.add(Restrictions.le("data", filtro.getMovimentacao().getMovimentacao().getDataFinal()))
+		.add(Restrictions.ge("data", filtro.getMovimentacaoItem().getMovimentacao().getDataInicio()))
+		.add(Restrictions.le("data", filtro.getMovimentacaoItem().getMovimentacao().getDataFinal()))
 		.add(Restrictions.eq("contaBancaria", filtro.getContaEmpresa()))
 		.addOrder(Order.asc("data"))
 		.addOrder(Order.asc("id"));
 		
 		if (filtro != null) {
 			if(filtro.getDataInicio() != null) {
-				criteria.add(Restrictions.ge("data", filtro.getMovimentacao().getMovimentacao().getDataInicio()));
+				criteria.add(Restrictions.ge("data", filtro.getMovimentacaoItem().getMovimentacao().getDataInicio()));
 			}
 			
 			if(filtro.getDataFinal() != null) {
-				criteria.add(Restrictions.le("data", filtro.getMovimentacao().getMovimentacao().getDataFinal()));
+				criteria.add(Restrictions.le("data", filtro.getMovimentacaoItem().getMovimentacao().getDataFinal()));
 			}
 			
 			if(isMovimentacaoPresente(filtro)) {
-				criteria.add(Restrictions.eq("movimentacaoItem", filtro.getMovimentacao()));
+				criteria.add(Restrictions.eq("movimentacaoItem", filtro.getMovimentacaoItem()));
 				
 			}
 		}
 	}
 	
 	private boolean isMovimentacaoPresente(ExtratoFilter filtro) {
-		return filtro.getMovimentacao() != null && filtro.getMovimentacao().getId() != null;
+		return filtro.getMovimentacaoItem() != null && filtro.getMovimentacaoItem().getId() != null;
 	}
 }
