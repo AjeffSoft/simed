@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.10.0.final using JasperReports Library version 6.10.0-unknown  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PadraoA4Retrato" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="842" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="9f78ec25-1a29-42be-9564-6a7f29ca8c4a">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Simed"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="276"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="713"/>
+	<parameter name="id_movimentacao" class="java.lang.Long"/>
+	<queryString language="SQL">
+		<![CDATA[select 
+	mi.id,
+	mi.saldo_inicial,
+	mi.creditos,
+	mi.debitos,
+	mi.saldo_movimento,
+	mi.saldo_geral,
+	mi.cheque_pendente,
+	mi.id_movimentacao,
+	mi.id_conta_empresa,
+	m.id as cod_movimentacao,
+	c.id as cod_conta_empresa,
+	c.conta,
+	c.tipo,
+	c.nome	
+from
+	movimentacao_item mi inner join movimentacao m on mi.id_movimentacao = m.id
+	inner join conta_empresa c on mi.id_conta_empresa = c.id
+where
+	m.id = $P{id_movimentacao}]]>
+	</queryString>
+	<field name="id" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="movimentacao_item"/>
+	</field>
+	<field name="saldo_inicial" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="saldo_inicial"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="movimentacao_item"/>
+	</field>
+	<field name="creditos" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="creditos"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="movimentacao_item"/>
+	</field>
+	<field name="debitos" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="debitos"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="movimentacao_item"/>
+	</field>
+	<field name="saldo_movimento" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="saldo_movimento"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="movimentacao_item"/>
+	</field>
+	<field name="saldo_geral" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="saldo_geral"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="movimentacao_item"/>
+	</field>
+	<field name="cheque_pendente" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="cheque_pendente"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="movimentacao_item"/>
+	</field>
+	<field name="id_movimentacao" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="id_movimentacao"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="movimentacao_item"/>
+	</field>
+	<field name="id_conta_empresa" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="id_conta_empresa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="movimentacao_item"/>
+	</field>
+	<field name="cod_movimentacao" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="cod_movimentacao"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="movimentacao"/>
+	</field>
+	<field name="cod_conta_empresa" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="cod_conta_empresa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="conta_empresa"/>
+	</field>
+	<field name="conta" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="conta"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="conta_empresa"/>
+	</field>
+	<field name="tipo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="tipo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="conta_empresa"/>
+	</field>
+	<field name="nome" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="nome"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="conta_empresa"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="40">
+			<staticText>
+				<reportElement mode="Opaque" x="515" y="20" width="105" height="20" backcolor="#E0E0E0" uuid="00f8f869-4c5f-4723-b043-c0e70914f4f9"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Saldo Movimento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="169" y="20" width="90" height="20" backcolor="#E0E0E0" uuid="47472d2e-efa9-4e68-b21e-4f87e096c776"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="350" y="20" width="87" height="20" backcolor="#E0E0E0" uuid="32a810cb-f3d1-4f55-a7c1-683a0a92c47d"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Créditos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="700" y="20" width="101" height="20" backcolor="#E0E0E0" uuid="6f572c76-3fd0-4f4d-aacd-3c932d951e63"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Saldo Geral]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="40" y="20" width="71" height="20" backcolor="#E0E0E0" uuid="752de5a4-f9ff-4898-ba22-394852f926ce"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nome Conta]]></text>
+			</staticText>
+			<textField>
+				<reportElement mode="Opaque" x="0" y="0" width="801" height="20" forecolor="#000000" backcolor="#BABABA" uuid="506c4b10-36d9-4de4-b577-158e60c2332c"/>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Double"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ITENS DA MOVIMENTAÇÃO"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="620" y="20" width="80" height="20" backcolor="#E0E0E0" uuid="fb366a9d-b805-4fa0-a5db-5727cbb82d7c"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cheque Pend]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="437" y="20" width="78" height="20" backcolor="#E0E0E0" uuid="d7a254e2-f93f-4be9-a2ce-3a55c0b5561d"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Débitos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="20" width="40" height="20" backcolor="#E0E0E0" uuid="36f651b8-9b2d-4158-98be-b0d0d721e226"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nº]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="111" y="20" width="58" height="20" backcolor="#E0E0E0" uuid="152ad85b-7660-40e4-805c-c73a15d10e1a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Conta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="259" y="20" width="91" height="20" backcolor="#E0E0E0" uuid="95845c09-cb5a-476c-9b21-d9381b62c131"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Saldo Inicio]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="18" splitType="Stretch">
+			<textField pattern="#,##0.00#">
+				<reportElement x="350" y="0" width="87" height="18" uuid="48a10981-e871-455e-b9bc-d2bc14689de5">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{creditos}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00#">
+				<reportElement x="515" y="0" width="105" height="18" uuid="ef1361d3-c75a-4cf8-8a41-a5d594bff3e6">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{saldo_movimento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="40" y="0" width="71" height="18" uuid="09b117a4-e8e5-4bd7-a73a-a84cad2ce8b8">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="111" y="0" width="58" height="18" uuid="acedc63e-5e1b-421f-9354-2a6f67cea53c">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{conta}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00#">
+				<reportElement x="620" y="0" width="80" height="18" uuid="45dd18c0-d9bc-4416-8444-e02864b65c16"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cheque_pendente}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00#">
+				<reportElement x="437" y="0" width="78" height="18" uuid="809aea5f-9864-45b8-8dea-29356ed0a273">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{debitos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="40" height="18" uuid="94860e14-6f68-4506-bd82-a2f5fad3200e">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="169" y="0" width="90" height="18" uuid="5b06ac26-92ed-4e41-8f81-b5d014fe2f4a">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tipo}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤#,##0.00;¤-#,##0.00">
+				<reportElement x="700" y="0" width="101" height="18" uuid="d1d6acf4-cf9a-40b2-b3d1-4f4e9a74166c"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{saldo_geral}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00#">
+				<reportElement x="259" y="0" width="91" height="18" uuid="e81b7171-218c-4bd2-ab1c-9c9da7ce57d3">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{saldo_inicial}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
