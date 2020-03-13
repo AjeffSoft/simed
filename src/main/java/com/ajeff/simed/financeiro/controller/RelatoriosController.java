@@ -47,4 +47,11 @@ public class RelatoriosController {
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
 				.body(relatorio);
 	}	
+	
+	@GetMapping("/movimentacao/imprimirDetalhes/{id}")
+	public ResponseEntity<byte[]> imprimirDetalhesMovimentacao(@PathVariable Long id) throws Exception {
+		byte[] relatorio = service.imprimirDetalhesMovimentacao(id);
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
+				.body(relatorio);
+	}	
 }

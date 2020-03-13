@@ -117,7 +117,8 @@
 										<td th:text="${{mov.saldoMovimento}}"></td>
 										<td th:text="${{mov.saldoGeral}}"></td>
 										<td class="text-center">
-											<a target="'_blank'" class="btn  btn-link  btn-xs  js-tooltip" title="Detalhe"> 
+											<a target="'_blank'" class="btn  btn-link  btn-xs  js-tooltip" title="Extrato"
+													th:href="@{/relatorios/financeiro/extrato/imprimirExtrato/{id}(id=${mov.id})}"> 
 												<i class="glyphicon glyphicon-print"></i>
 											</a>
 										</td>										
@@ -131,6 +132,7 @@
 				<br>
 														
 				<div class="form-group">
+					<a target="'_blank'" class="btn  btn-info" th:href="@{/relatorios/financeiro/movimentacao/imprimirDetalhes/{id}(id=${movimentacao.id})}">Imprimir</a>
 					<a class="btn  btn-default" href="javascript:history.back(1);">Voltar</a>
 				</div>
 			</form>
