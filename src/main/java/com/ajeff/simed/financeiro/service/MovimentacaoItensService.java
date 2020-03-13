@@ -111,7 +111,7 @@ public class MovimentacaoItensService {
 		movimentacao.setTotalCreditos(movimentacoesItens.stream().map(m -> m.getCreditos()).reduce(BigDecimal.ZERO, BigDecimal::add));
 		movimentacao.setTotalDebitos(movimentacoesItens.stream().map(m -> m.getDebitos()).reduce(BigDecimal.ZERO, BigDecimal::add));
 		movimentacao.setSaldoMovimento(movimentacoesItens.stream().map(m -> m.getSaldoMovimento()).reduce(BigDecimal.ZERO, BigDecimal::add));
-		movimentacao.setSaldoGeral(movimentacoesItens.stream().map(m -> m.getSaldoGeral()).reduce(BigDecimal.ZERO, BigDecimal::add));
+		movimentacao.setSaldoGeral(movimentacao.getSaldoInicial().add(movimentacao.getSaldoMovimento()));
 	}
 	
 	
