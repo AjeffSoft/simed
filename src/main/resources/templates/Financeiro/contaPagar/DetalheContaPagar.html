@@ -163,65 +163,66 @@
 										<td th:text="${imposto.status}"></td>
 									</tr>
 									<tr th:if="${#lists.isEmpty(impostos)}">
-										<td colspan="10">Nenhum imposto cadastrado</td>
+										<td colspan="10">Nenhum imposto encontrado</td>
 									</tr>									
 								</tbody>
 							</table>
 						</div>
 					</div>
 					
+			
 			<!-- DADOS DO PAGAMENTO -->
-					<div class="tab-pane" id="pagamento">
+					<div class="tab-pane" id="pagamento" th:if="${contaPagar.pagoOuEmitido}">
 
-<!-- 						<div class="row"> -->
-<!-- 							<div class="col-sm-3  form-group"> -->
-<!-- 								<label for="empresa" class="label label-default">Empresa Pagadora</label> -->
-<!-- 								<h3 id="empresa" th:text="${contaPagar.pagamento.empresa.fantasia}"></h3> -->
-<!-- 							</div> -->
+						<div class="row">
+							<div class="col-sm-3  form-group">
+								<label for="empresa" class="label label-default">Empresa Pagadora</label>
+								<h3 id="empresa" th:text="${contaPagar.pagamento.contaEmpresa.empresa.fantasia}"></h3>
+							</div>
 
-<!-- 							<div class="col-sm-2  form-group"> -->
-<!-- 								<label for="emissao" class="label label-default">Emissão</label> -->
-<!-- 								<h3 id="emissao" th:text="${{contaPagar.pagamento.data}}"></h3> -->
-<!-- 							</div> -->
+							<div class="col-sm-2  form-group">
+								<label for="emissao" class="label label-default">Emissão</label>
+								<h3 id="emissao" th:text="${{contaPagar.pagamento.data}}"></h3>
+							</div>
 
-<!-- 							<div class="col-sm-2  form-group"> -->
-<!-- 								<label for="tipo" class="label label-default">Tipo Pgto</label> -->
-<!-- 								<h3 id="tipo" th:text="${contaPagar.pagamento.tipo}"></h3> -->
-<!-- 							</div> -->
+							<div class="col-sm-2  form-group">
+								<label for="tipo" class="label label-default">Tipo Pgto</label>
+								<h3 id="tipo" th:text="${contaPagar.pagamento.tipo}"></h3>
+							</div>
 
-<!-- 							<div class="col-sm-2  form-group"> -->
-<!-- 								<label for="valor" class="label label-default">Valor Total R$</label> -->
-<!-- 								<h3 id="valor" th:text="${{contaPagar.pagamento.valor}}"></h3> -->
-<!-- 							</div> -->
+							<div class="col-sm-2  form-group">
+								<label for="valor" class="label label-default">Valor Total R$</label>
+								<h3 id="valor" th:text="${{contaPagar.pagamento.valor}}"></h3>
+							</div>
 
-<!-- 							<div class="col-sm-3  form-group"> -->
-<!-- 								<label for="dataPago" class="label label-default">Data Pago</label> -->
-<!-- 								<h3 id="dataPago" th:text="${{contaPagar.pagamento.dataPago}}"></h3> -->
-<!-- 							</div> -->
+							<div class="col-sm-3  form-group" th:if="${contaPagar.pago}">
+								<label for="dataPago" class="label label-default">Data Pago</label>
+								<h3 id="dataPago" th:text="${{contaPagar.pagamento.dataPago}}"></h3>
+							</div>
 							
-<!-- 						</div> -->
+						</div>
 						
-<!-- 						<div class="row"> -->
-<!-- 							<div class="col-sm-3  form-group"> -->
-<!-- 								<label for="banco" class="label label-default">Banco</label> -->
-<!-- 								<h3 id="banco" th:text="${contaPagar.pagamento.contaEmpresa.agencia.banco.nome}"></h3> -->
-<!-- 							</div> -->
+						<div class="row">
+							<div class="col-sm-3  form-group">
+								<label for="banco" class="label label-default">Banco</label>
+								<h3 id="banco" th:text="${contaPagar.pagamento.contaEmpresa.agencia.banco.nome}"></h3>
+							</div>
 
-<!-- 							<div class="col-sm-2  form-group"> -->
-<!-- 								<label for="agencia" class="label label-default">Agencia</label> -->
-<!-- 								<h3 id="agencia" th:text="${contaPagar.pagamento.contaEmpresa.agencia.agencia}"></h3> -->
-<!-- 							</div> -->
+							<div class="col-sm-2  form-group">
+								<label for="agencia" class="label label-default">Agencia</label>
+								<h3 id="agencia" th:text="${contaPagar.pagamento.contaEmpresa.agencia.agencia}"></h3>
+							</div>
 
-<!-- 							<div class="col-sm-2  form-group"> -->
-<!-- 								<label for="conta" class="label label-default">Conta</label> -->
-<!-- 								<h3 id="conta" th:text="${contaPagar.pagamento.contaEmpresa.conta}"></h3> -->
-<!-- 							</div> -->
+							<div class="col-sm-2  form-group">
+								<label for="conta" class="label label-default">Conta</label>
+								<h3 id="conta" th:text="${contaPagar.pagamento.contaEmpresa.conta}"></h3>
+							</div>
 
-<!-- 							<div class="col-sm-2  form-group"> -->
-<!-- 								<label for="status" class="label label-default">Status</label> -->
-<!-- 								<h3 id="status" th:text="${contaPagar.pagamento.status}"></h3> -->
-<!-- 							</div> -->
-<!-- 						</div>						 -->
+							<div class="col-sm-2  form-group">
+								<label for="status" class="label label-default">Status</label>
+								<h3 id="status" th:text="${contaPagar.pagamento.status}"></h3>
+							</div>
+						</div>						
 					</div>										
 				</div>
 				
