@@ -4,8 +4,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.hibernate.TransientObjectException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -29,6 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.ajeff.simed.financeiro.model.ContaPagar;
 import com.ajeff.simed.financeiro.repository.filter.ContaPagarFilter;
 import com.ajeff.simed.financeiro.service.ContaPagarService;
+import com.ajeff.simed.financeiro.service.ImpostoService;
 import com.ajeff.simed.financeiro.service.PlanoContaService;
 import com.ajeff.simed.financeiro.service.exception.DocumentoEFornecedorJaCadastradoException;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
@@ -42,15 +41,14 @@ import com.ajeff.simed.geral.service.EmpresaService;
 @RequestMapping("/financeiro/contaPagar")
 public class ContaPagarController {
 
-	@SuppressWarnings("unused")
-	private static final Logger LOG = LoggerFactory.getLogger(ContaPagarController.class);
-
 	@Autowired
 	private ContaPagarService service;
 	@Autowired
 	private PlanoContaService planoContaService;
 	@Autowired
 	private EmpresaService empresaService;
+	@Autowired
+	private ImpostoService impostoService;
 	
 	
 
@@ -160,7 +158,7 @@ public class ContaPagarController {
 	public ModelAndView detalhe(@PathVariable Long id, ContaPagar contaPagar) {
 		ModelAndView mv = new ModelAndView("Financeiro/contaPagar/DetalheContaPagar");
 		contaPagar = service.findOne(id);
-//		mv.addObject("impostos", impostoRepository.findByContaPagarOrigem(contaPagar));
+		mv.addObject("impostos", impostoService.findByContaPagar(contaPagar));
 		mv.addObject(contaPagar);
 		return mv;
 	}

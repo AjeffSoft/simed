@@ -132,44 +132,42 @@
 					
 			<!-- DADOS DO IMPOSTO -->
 					<div class="tab-pane" id="imposto">
-<!-- 						<div class="table-responsive  bw-tabela-simples"> -->
-<!-- 							<table class="table  table-hover" th:with="total=0"> -->
-<!-- 								<thead> -->
-<!-- 									<tr> -->
-<!-- 										<th class="table-col-minima">Nome</th> -->
-<!-- 										<th class="table-col-minima">Código</th> -->
-<!-- 										<th class="table-col-minima">Nota Fiscal</th> -->
-<!-- 										<th class="table-col-minima">Data Nota</th> -->
-<!-- 										<th class="table-col-minima">Valor Nota</th> -->
-<!-- 										<th class="table-col-minima">Vencimento</th> -->
-<!-- 										<th class="table-col-minima">Valor</th> -->
-<!-- 										<th class="table-col-minima">Juros</th> -->
-<!-- 										<th class="table-col-minima">Multas</th> -->
-<!-- 										<th class="table-col-minima">Total</th> -->
-<!-- 										<th class="table-col-minima">Status</th> -->
-<!-- 									</tr> -->
-<!-- 								</thead> -->
+						<div class="table-responsive  bw-tabela-simples">
+							<table class="table  table-hover" th:with="total=0">
+								<thead>
+									<tr>
+										<th class="table-col-minima">Nome</th>
+										<th class="table-col-minima">Nota Fiscal</th>
+										<th class="table-col-minima">Data Nota</th>
+										<th class="table-col-minima">Valor Nota</th>
+										<th class="table-col-minima">Vencimento</th>
+										<th class="table-col-minima">Valor</th>
+										<th class="table-col-minima">Juros</th>
+										<th class="table-col-minima">Multas</th>
+										<th class="table-col-minima">Total</th>
+										<th class="table-col-minima">Status</th>
+									</tr>
+								</thead>
 								
-<!-- 								<tbody> -->
-<!-- 									<tr th:each="imposto : ${impostos}"> -->
-<!-- 										<td th:text="${imposto.nome}"></td> -->
-<!-- 										<td th:text="${imposto.codigo}"></td> -->
-<!-- 										<td th:text="${imposto.numeroNF}"></td> -->
-<!-- 										<td th:text="${{imposto.emissaoNF}}"></td> -->
-<!-- 										<td th:text="${{imposto.valorNF}}"></td> -->
-<!-- 										<td th:text="${{imposto.vencimento}}"></td> -->
-<!-- 										<td th:text="${{imposto.valor}}"></td> -->
-<!-- 										<td th:text="${{imposto.juros}}"></td> -->
-<!-- 										<td th:text="${{imposto.multa}}"></td> -->
-<!-- 										<td th:text="${{imposto.total}}"></td> -->
-<!-- 										<td th:text="${imposto.status}"></td> -->
-<!-- 									</tr> -->
-<!-- 									<tr th:if="${#lists.isEmpty(impostos)}"> -->
-<!-- 										<td colspan="11">Nenhum imposto cadastrado</td> -->
-<!-- 									</tr>									 -->
-<!-- 								</tbody> -->
-<!-- 							</table> -->
-<!-- 						</div> -->
+								<tbody>
+									<tr th:each="imposto : ${impostos}">
+										<td th:text="${imposto.nome}"></td>
+										<td th:text="${imposto.numeroNF}"></td>
+										<td th:text="${{imposto.emissaoNF}}"></td>
+										<td th:text="${{imposto.valorNF}}"></td>
+										<td th:text="${{imposto.vencimento}}"></td>
+										<td th:text="${{imposto.valor}}"></td>
+										<td th:text="${{imposto.juros}}"></td>
+										<td th:text="${{imposto.multa}}"></td>
+										<td th:text="${{imposto.total}}"></td>
+										<td th:text="${imposto.status}"></td>
+									</tr>
+									<tr th:if="${#lists.isEmpty(impostos)}">
+										<td colspan="10">Nenhum imposto cadastrado</td>
+									</tr>									
+								</tbody>
+							</table>
+						</div>
 					</div>
 					
 			<!-- DADOS DO PAGAMENTO -->

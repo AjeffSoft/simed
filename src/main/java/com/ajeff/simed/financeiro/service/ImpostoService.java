@@ -290,6 +290,10 @@ public class ImpostoService {
 		} catch (Exception e) {	
 			throw new ImpossivelExcluirEntidade("Não foi possivel cancelar o imposto gerado!!!"); 	
 		}	
+	}
+
+	public List<Imposto> findByContaPagar(ContaPagar contaPagar) {
+		return repository.findByContaPagar(contaPagar);
 	}	
 	
 }
