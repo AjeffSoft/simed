@@ -55,6 +55,7 @@ public class ContaPagarService {
 				repository.save(contaPagar);
 			}
 		} catch (RegistroNaoCadastradoException e) {
+			e.printStackTrace();
 			throw new RegistroNaoCadastradoException("Algo deu errado! Conta não cadastrada.");
 		}
 	}

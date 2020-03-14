@@ -46,18 +46,19 @@ public class TransferenciaService {
 	public void salvar(TransferenciaContas transferencia) {
 
 		Movimentacao movimentacaoOrigem = setarMovimentacao(transferencia.getContaOrigem().getEmpresa(), transferencia.getData());
-		@SuppressWarnings("unused")
 		Movimentacao movimentacaoDestino = setarMovimentacao(transferencia.getContaDestino().getEmpresa(), transferencia.getData());
 		MovimentacaoItem movimentacaoItemOrigem = setarMovimentacaoItem(transferencia.getContaOrigem(), movimentacaoOrigem);
+		MovimentacaoItem movimentacaoItemDestino = setarMovimentacaoItem(transferencia.getContaDestino(), movimentacaoDestino);
 
 		try {
 			if(transferencia.isNovo()) {
-				emissaoTransferencia(transferencia, movimentacaoItemOrigem);
+				emissaoTransferencia(transferencia, movimentacaoItemOrigem, movimentacaoItemDestino);
 			}
 			
 		} catch (EntityNotFoundException e) {
 			throw new TransferenciaNaoEfetuadaException("Não foi possível encontrar uma entidade no banco de dados");
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new TransferenciaNaoEfetuadaException("Algo deu errado!! Transferencia não efetuada");
 		}
 					
@@ -76,20 +77,22 @@ public class TransferenciaService {
 	}	
 	
 	
-	private void emissaoTransferencia(TransferenciaContas transferencia, MovimentacaoItem movimentacaoItem) {
-		transferencia.setMovimentacaoItem(movimentacaoItem);
+	private void emissaoTransferencia(TransferenciaContas transferencia, MovimentacaoItem movimentacaoItemOrigem, MovimentacaoItem movimentacaoItemDestino) {
+		transferencia.setMovimentacaoItem(movimentacaoItemOrigem);
 		transferencia.setStatus("ABERTO");
 		transferencia.setFechado(false);
-		atualizarValorNasContasDaMovimentacaoItem(transferencia, movimentacaoItem);
+		atualizarValorNasContasDaMovimentacaoItem(transferencia, movimentacaoItemOrigem, movimentacaoItemDestino);
 		repository.save(transferencia);
-		criarMovimentacaoNoExtrato(transferencia, movimentacaoItem);
+		criarMovimentacaoNoExtrato(transferencia, movimentacaoItemOrigem, movimentacaoItemDestino);
 	}
 
 
 	private void atualizarValorNasContasDaMovimentacaoItem(TransferenciaContas transferencia,
-			MovimentacaoItem movimentacaoItem) {
-		MovimentacaoItem itemOrigem = movimentacaoItemService.findByMovimentacaoAndContaEmpresa(movimentacaoItem.getMovimentacao(), transferencia.getContaOrigem());
-		MovimentacaoItem itemDestino = movimentacaoItemService.findByMovimentacaoAndContaEmpresa(movimentacaoItem.getMovimentacao(), transferencia.getContaDestino());
+			MovimentacaoItem movimentacaoItemOrigem, MovimentacaoItem movimentacaoItemDestino) {
+	
+		
+		MovimentacaoItem itemOrigem = movimentacaoItemService.findByMovimentacaoAndContaEmpresa(movimentacaoItemOrigem.getMovimentacao(), transferencia.getContaOrigem());
+		MovimentacaoItem itemDestino = movimentacaoItemService.findByMovimentacaoAndContaEmpresa(movimentacaoItemDestino.getMovimentacao(), transferencia.getContaDestino());
 		if(transferencia.isNovo()) {
 			movimentacaoItemService.creditarValorNosDebitos(itemOrigem, transferencia.getValor());
 			movimentacaoItemService.creditarValorNosCreditos(itemDestino, transferencia.getValor());
@@ -100,11 +103,9 @@ public class TransferenciaService {
 	}
 
 
-	private void criarMovimentacaoNoExtrato(TransferenciaContas transferencia, MovimentacaoItem movimentacaoItem) {
-		criarMovimentoDaContaPorTipo(transferencia, false, transferencia.getContaOrigem(), movimentacaoItem);
-		MovimentacaoItem movItemDestino = setarMovimentacaoItem(transferencia.getContaDestino(), transferencia.getMovimentacaoItem().getMovimentacao());
-		criarMovimentoDaContaPorTipo(transferencia, true, transferencia.getContaDestino(), movItemDestino);
-
+	private void criarMovimentacaoNoExtrato(TransferenciaContas transferencia, MovimentacaoItem movimentacaoItemOrigem, MovimentacaoItem movimentacaoItemDestino) {
+		criarMovimentoDaContaPorTipo(transferencia, false, transferencia.getContaOrigem(), movimentacaoItemOrigem);
+		criarMovimentoDaContaPorTipo(transferencia, true, transferencia.getContaDestino(), movimentacaoItemDestino);
 	}
 
 	
@@ -126,8 +127,11 @@ public class TransferenciaService {
 	@Transactional
 	public void excluir(Long id) {
 		TransferenciaContas transferencia = repository.findOne(id);
-		MovimentacaoItem movimentacaoItem = movimentacaoItemService.findOne(transferencia.getMovimentacaoItem().getId());
-		atualizarValorNasContasDaMovimentacaoItem(transferencia, movimentacaoItem);
+		MovimentacaoItem movimentacaoItemOrigem = movimentacaoItemService.findOne(transferencia.getMovimentacaoItem().getId());
+		Movimentacao movimentacaoDestino = setarMovimentacao(transferencia.getContaDestino().getEmpresa(), transferencia.getData());
+		MovimentacaoItem movimentacaoItemDestino = setarMovimentacaoItem(transferencia.getContaDestino(), movimentacaoDestino);
+
+		atualizarValorNasContasDaMovimentacaoItem(transferencia, movimentacaoItemOrigem, movimentacaoItemDestino);
 		List<Extrato> extratos = extratoRepository.findByTransferencia(transferencia);
 		try {
 			for (Extrato extratoBancario : extratos) {

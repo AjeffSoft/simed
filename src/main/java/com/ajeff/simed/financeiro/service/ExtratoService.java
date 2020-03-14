@@ -58,7 +58,7 @@ public class ExtratoService {
 	public void criarMovimentoInicialNoExtrato(BigDecimal valor, ContaEmpresa contaEmpresa, boolean credito,
 			String status, LocalDate data, String tipo, MovimentacaoItem movimentacaoItem) {
 		Extrato extrato = new Extrato();
-		extrato.setHistorico("Saldo Inicial da Movimentação");
+		extrato.setHistorico("Saldo Inicial da Movimentação nº " + movimentacaoItem.getId());
 		criarMovimentoNoExtrato(extrato, valor, contaEmpresa, credito, status, data, tipo, movimentacaoItem);
 		repository.save(extrato);
 	}	
