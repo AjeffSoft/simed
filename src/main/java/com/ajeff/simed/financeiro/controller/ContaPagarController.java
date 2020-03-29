@@ -7,7 +7,9 @@ import org.hibernate.TransientObjectException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -24,9 +26,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.ajeff.simed.financeiro.dto.PeriodoRelatorio;
 import com.ajeff.simed.financeiro.model.ContaPagar;
 import com.ajeff.simed.financeiro.repository.filter.ContaPagarFilter;
 import com.ajeff.simed.financeiro.service.ContaPagarService;
+import com.ajeff.simed.financeiro.service.FornecedorService;
 import com.ajeff.simed.financeiro.service.ImpostoService;
 import com.ajeff.simed.financeiro.service.PlanoContaService;
 import com.ajeff.simed.financeiro.service.exception.DocumentoEFornecedorJaCadastradoException;
@@ -49,6 +53,8 @@ public class ContaPagarController {
 	private EmpresaService empresaService;
 	@Autowired
 	private ImpostoService impostoService;
+	@Autowired
+	private FornecedorService fornecedorService;
 	
 	
 
@@ -162,4 +168,23 @@ public class ContaPagarController {
 		mv.addObject(contaPagar);
 		return mv;
 	}
+	
+	
+	@GetMapping("/relatorio")
+	public ModelAndView abrirRelatorio(@AuthenticationPrincipal UsuarioSistema usuarioSistema){
+		ModelAndView mv = new ModelAndView("Financeiro/contaPagar/RelatorioContaPagar");
+		mv.addObject(new PeriodoRelatorio());
+		mv.addObject("empresas", empresaService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
+		mv.addObject("fornecedores", fornecedorService.listarTodosFornecedores());
+		return mv;
+	}	
+	
+	
+	@PostMapping("/relatorio")
+	public ResponseEntity<byte[]> gerarRelatorio(PeriodoRelatorio periodoRelatorio) throws Exception{
+		byte[] relatorio = service.imprimirRelatorio(periodoRelatorio);
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
+				.body(relatorio);
+	}
+
 }

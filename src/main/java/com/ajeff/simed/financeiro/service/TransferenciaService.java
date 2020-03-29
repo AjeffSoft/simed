@@ -184,7 +184,7 @@ public class TransferenciaService {
 	
 	public void fecharTransferencias(MovimentacaoItem m) {
 		if(verificarSeTemTransferenciaAberto(m)){
-			throw new ErroAoFecharMovimentacaoException("Não foi possível fechar o movimento. Existe transferencia em aberto!");
+			throw new ErroAoFecharMovimentacaoException("Não foi possível fechar o movimento. Existem transferencias em aberto!");
 		}else {
 			List<TransferenciaContas> transferencias = repository.findByMovimentacaoItem(m);
 			if(!transferencias.isEmpty()) {

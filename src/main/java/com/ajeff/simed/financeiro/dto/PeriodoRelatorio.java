@@ -25,18 +25,7 @@ public class PeriodoRelatorio {
 	private String ordenar;
 	private PlanoConta planoConta;
 	
-	public LocalDate getDataInicio() {
-		return dataInicio;
-	}
-	public void setDataInicio(LocalDate dataInicio) {
-		this.dataInicio = dataInicio;
-	}
-	public LocalDate getDataFim() {
-		return dataFim;
-	}
-	public void setDataFim(LocalDate dataFim) {
-		this.dataFim = dataFim;
-	}
+
 	public String getTipoRelatorio() {
 		return tipoRelatorio;
 	}
@@ -85,18 +74,6 @@ public class PeriodoRelatorio {
 	public void setPendente(Boolean pendente) {
 		this.pendente = pendente;
 	}
-	public LocalDate getEmissaoInicio() {
-		return emissaoInicio;
-	}
-	public void setEmissaoInicio(LocalDate emissaoInicio) {
-		this.emissaoInicio = emissaoInicio;
-	}
-	public LocalDate getEmissaoFim() {
-		return emissaoFim;
-	}
-	public void setEmissaoFim(LocalDate emissaoFim) {
-		this.emissaoFim = emissaoFim;
-	}
 	public String getOrdenar() {
 		return ordenar;
 	}
@@ -109,4 +86,29 @@ public class PeriodoRelatorio {
 	public void setPlanoConta(PlanoConta planoConta) {
 		this.planoConta = planoConta;
 	}
+	public LocalDate getDataInicio() {
+		return dataInicio;
+	}
+	public void setDataInicio(LocalDate dataInicio) {
+		this.dataInicio = dataInicio;
+	}
+	public LocalDate getDataFim() {
+		return dataFim;
+	}
+	public void setDataFim(LocalDate dataFim) {
+		this.dataFim = dataFim;
+	}
+	public LocalDate getEmissaoInicio() {
+		return emissaoInicio;
+	}
+	public void setEmissaoInicio(LocalDate emissaoInicio) {
+		this.emissaoInicio = emissaoInicio;
+	}
+	public LocalDate getEmissaoFim() {
+		return emissaoFim;
+	}
+	public void setEmissaoFim(LocalDate emissaoFim) {
+		this.emissaoFim = emissaoFim;
+	}
+
 }

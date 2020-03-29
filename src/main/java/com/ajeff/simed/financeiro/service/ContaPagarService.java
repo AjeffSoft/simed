@@ -1,13 +1,23 @@
 package com.ajeff.simed.financeiro.service;
 
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.sql.Connection;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.persistence.PersistenceException;
+import javax.sql.DataSource;
 
 import org.hibernate.TransientObjectException;
 import org.slf4j.Logger;
@@ -18,6 +28,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ajeff.simed.financeiro.dto.PeriodoRelatorio;
 import com.ajeff.simed.financeiro.model.ContaPagar;
 import com.ajeff.simed.financeiro.model.Fornecedor;
 import com.ajeff.simed.financeiro.model.PlanoContaSecundaria;
@@ -28,13 +39,18 @@ import com.ajeff.simed.financeiro.service.exception.RegistroNaoCadastradoExcepti
 import com.ajeff.simed.financeiro.service.exception.VencimentoMenorEmissaoException;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
 
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+
 @Service
 public class ContaPagarService {
 
 	@SuppressWarnings("unused")
 	private static final Logger LOG = LoggerFactory.getLogger(ContaPagarService.class);
 
-	
+	@Autowired
+	DataSource dataSource;
 	@Autowired
 	private ContasPagarRepository repository;
 	@Autowired
@@ -221,5 +237,76 @@ public class ContaPagarService {
 		contaPagar.setStatus("ABERTO");
 		repository.save(contaPagar);
 	}
+
+
+	public byte[] imprimirRelatorio(PeriodoRelatorio periodoRelatorio) throws Exception {
+		
+
+		Map<String, Object> map = new HashMap<>();
+		map.put("format", "pdf");
+		map.put("REPORT_LOCALE", new Locale("pt", "BR"));
+		
+		if (periodoRelatorio.getEmpresa() != null) {
+			map.put("id_empresa", periodoRelatorio.getEmpresa().getId());
+		}
+		
+		if(periodoRelatorio.getFornecedor() != null) {
+			map.put("id_fornecedor", periodoRelatorio.getFornecedor().getId());
+		}
+
+		if(periodoRelatorio.getStatus() != "") {
+			map.put("status", periodoRelatorio.getStatus());
+		}
+		
+//		if(periodoRelatorio.getEmissaoInicio() == null) {
+//			LocalDate localDate = LocalDate.of(1000, 1, 1);
+//			Date date = Date.from(localDate.atStartOfDay(defaultZoneId).toInstant());
+//			map.put("emissao_inicio", date);
+//		}
+//
+//		if(periodoRelatorio.getEmissaoFim() == null) {
+//			LocalDate localDate = LocalDate.of(5000, 12, 31);
+//			Date date = Date.from(localDate.atStartOfDay(defaultZoneId).toInstant());
+//			map.put("emissao_final", date);
+//		}
+		
+		Date dataInicio = null;
+		Date dataFim = null;
+		
+		if(periodoRelatorio.getDataInicio() != null && periodoRelatorio.getDataFim() != null){
+			dataInicio = Date.from(LocalDateTime.of(periodoRelatorio.getEmissaoInicio(), LocalTime.of(0, 0, 0))
+					.atZone(ZoneId.systemDefault()).toInstant());
+			dataFim = Date.from(LocalDateTime.of(periodoRelatorio.getEmissaoFim(), LocalTime.of(23, 59, 59))
+					.atZone(ZoneId.systemDefault()).toInstant());
+			
+			map.put("emissao_inicio", dataInicio);
+			map.put("emissao_final", dataFim);
+
+		}
+		
+		
+//		if(periodoRelatorio.getDataInicio() != null && periodoRelatorio.getDataFim() != null) {
+//			map.put("vencimento_inicio", periodoRelatorio.getDataInicio());
+//			map.put("vencimento_final", periodoRelatorio.getDataFim());
+//		}
+		
+		InputStream inputStream = null;
+//		if(pagamento.getTipo().equals("DEBITO")) {
+//			JasperReport subReport =  JasperCompileManager.compileReport(this.getClass().getResourceAsStream("/relatorios/rel_Financeiro_Pagamento_OrdemPagamentoItens.jrxml"));
+//			map.put("ProductsSubReport", subReport);
+//			inputStream = this.getClass().getResourceAsStream("/relatorios/rel_Financeiro_Pagamento_OrdemPagamento.jasper");
+//		}else {
+//			inputStream = this.getClass().getResourceAsStream("/relatorios/rel_Financeiro_Pagamento_OrdemTransferencia.jasper");
+//		}
+		inputStream = this.getClass().getResourceAsStream("/relatorios/rel_Financeiro_ContaPagar_Pendencias.jasper");
+		Connection con = this.dataSource.getConnection();
+		try {
+			JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, map, con);
+			return JasperExportManager.exportReportToPdf(jasperPrint);
+		} finally {
+			con.close();
+		}
+	}
+
 }
 

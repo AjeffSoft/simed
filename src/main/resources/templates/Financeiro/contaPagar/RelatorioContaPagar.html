@@ -33,7 +33,7 @@
 						<div class="bw-field-action">
 							<select id="comboFornecedor" class="form-control" th:field="*{fornecedor}">
 								<option value="">Selecione...</option>
-								<option th:each="fornecedor : ${fornecedores}" th:value="${fornecedor.id}" th:text="${fornecedor.fantasia}"></option>
+								<option th:each="fornecedor : ${fornecedores}" th:value="${fornecedor.id}" th:text="${fornecedor.nome}"></option>
 							</select>
 						</div>
 					</div>							
@@ -48,23 +48,12 @@
 						</div>
 					</div>							
 					
-					<div class="col-sm-2  form-group">
-						<label for="comboConta" class="control-label">Plano Conta</label>
-						<div class="bw-field-action">
-							<select id="comboConta" class="form-control" th:field="*{planoConta}">
-								<option value="">Selecione...</option>
-								<option th:each="conta : ${contas}" th:value="${conta.id}" th:text="${conta.nome}"></option>
-							</select>
-						</div>
-					</div>							
-
-					<div class="col-sm-2  form-group">
+					<div class="col-sm-4  form-group">
 						<label for="sexo" class="control-label">Status</label>
 						<div class="bw-field-action">
 							<select id="sexo" class="form-control" th:field="*{status}">
 								<option value= "">Todos</option>
 			                    <option value="ABERTO">Aberto</option>
-			                    <option value="AUTORIZADO">Autorizado</option>
 			                    <option value="EMITIDO">Emitido</option>
 			                    <option value="PAGO">Pago</option>
 							</select>
@@ -114,38 +103,8 @@
 						<label for="tipo" class="control-label">Tipo do Relatório</label>
 						<div>
 							<div class = "radio">
-								<input type="radio" id="listaSimples" name="tipo" value="simplificado" th:field="*{tipoRelatorio}">
-								<label class="control-label" for="listaSimples">Simplificado</label>							
-							</div>
-
-							<div class = "radio">
-								<input type="radio" id="listaCompleta" name="tipo" value="detalhado" th:field="*{tipoRelatorio}">
-								<label class="control-label" for="listaCompleta">Detalhado</label>							
-							</div>
-						</div>
-					</div>
-
-					<div class="col-lg-2 col-sm-2  form-group">
-						<label for="tipo" class="control-label">Ordenação</label>
-						<div>
-							<div class = "radio">
-								<input type="radio" id="orderFornecedor" name="tipo" value="fornecedor" th:field="*{ordenar}">
-								<label class="control-label" for="orderFornecedor">Fornecedor</label>							
-							</div>
-
-							<div class = "radio">
-								<input type="radio" id="orderEmpresa" name="tipo" value="empresa" th:field="*{ordenar}">
-								<label class="control-label" for="orderEmpresa">Empresa</label>							
-							</div>
-
-							<div class = "radio">
-								<input type="radio" id="orderVencimento" name="tipo" value="vencimento" th:field="*{ordenar}">
-								<label class="control-label" for="orderVencimento">Vencimento</label>							
-							</div>
-
-							<div class = "radio">
-								<input type="radio" id="orderValor" name="tipo" value="valor" th:field="*{ordenar}">
-								<label class="control-label" for="orderValor">Valor</label>							
+								<input type="radio" id="listaSimples" name="tipo" value="pendencia" th:field="*{tipoRelatorio}">
+								<label class="control-label" for="listaSimples">Pendencias</label>							
 							</div>
 						</div>
 					</div>
@@ -155,7 +114,7 @@
 				<div class="row" style="clear: both" >
 					<div class="col-lg-12">
 						<button formtarget="_blank" class="btn  btn-success" type="submit">Gerar Relatório</button>
-						<a class="btn  btn-danger" th:href="@{/financeiro/contaPagar/pesquisar}"> Cancelar e/ou voltar	</a>
+						<a class="btn  btn-danger" th:href="@{/financeiro/contaPagar/pesquisar}">Voltar	</a>
 					</div>
 				</div>
 

@@ -78,8 +78,6 @@
 							</th>
 							<th class="table-col-grande">Celular</th>
 
-							<th class="table-col-pequeno">Imposto Renda</th>
-
 							<th class="table-agencia-col-acoes"></th>
 						</tr>
 					</thead>
@@ -90,16 +88,7 @@
 							<td th:text="${dependente.cooperado.nome}"></td>
 							<td th:text="${dependente.documento.cpf}"></td>
 							<td th:text="${dependente.celular}"></td>
-							<td>
-								<th:block th:if="${dependente.dependenteIR}">
-									<span class="label  label-success">Sim</span>
-								</th:block>
-
-								<th:block th:unless="${dependente.dependenteIR}">
-									<span class="label  label-danger">Não</span>
-								</th:block>
-
-							</td>							
+														
 							<td class="text-center">
 								
 								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes"
@@ -127,7 +116,6 @@
 				</table>
 			</div>
 
-			<!-- COMPONENTE THYMELEAF PARA PAGINAÇÃO -->	
 			<simed:pagination page="${pagina}"/>						
 
 		</div>		
