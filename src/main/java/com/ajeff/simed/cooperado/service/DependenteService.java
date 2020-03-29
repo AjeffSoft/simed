@@ -31,9 +31,6 @@ public class DependenteService {
 	@Transactional
 	public void salvar(Dependente dependente) {
 		testeRegistroJaCadastrado(dependente);
-		if(dependente.isNovo()) {
-			dependente.setAtivo(true);
-		}
 		
 		repository.save(dependente);
 	}

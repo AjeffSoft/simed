@@ -63,7 +63,7 @@ public class DependenteController {
 	
 
 	@GetMapping("/pesquisar")
-	public ModelAndView pesquisar(DependenteFilter dependenteFilter, BindingResult result, @PageableDefault(size=50) Pageable pageable,
+	public ModelAndView pesquisar(DependenteFilter dependenteFilter, BindingResult result, @PageableDefault(size=100) Pageable pageable,
 										HttpServletRequest httpServletRequest) {
 		ModelAndView mv = new ModelAndView("Cooperado/dependente/PesquisarDependentes");
 		mv.addObject("cooperados", serviceCooperado.listarCooperados());

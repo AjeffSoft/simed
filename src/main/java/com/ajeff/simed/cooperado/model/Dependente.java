@@ -48,8 +48,6 @@ public class Dependente implements Serializable{
 	@NotNull(message = "Informe o grau de parentesco")
 	private String parentesco;
 
-	private Boolean ativo;
-	
 	@Column(name = "imposto_renda")
 	private Boolean impostoRenda;
 	
@@ -104,14 +102,6 @@ public class Dependente implements Serializable{
 
 	public void setDocumento(DocumentoPF documento) {
 		this.documento = documento;
-	}
-
-	public Boolean getAtivo() {
-		return ativo;
-	}
-
-	public void setAtivo(Boolean ativo) {
-		this.ativo = ativo;
 	}
 
 	public InformacaoPessoal getInformacaoPessoal() {
