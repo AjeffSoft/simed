@@ -70,7 +70,7 @@ public class AdmissaoController {
 	
 
 	@GetMapping("/pesquisar")
-	public ModelAndView pesquisar(AdmissaoFilter admissaoFilter, BindingResult result, @PageableDefault(size=50) Pageable pageable,
+	public ModelAndView pesquisar(AdmissaoFilter admissaoFilter, BindingResult result, @PageableDefault(size=100) Pageable pageable,
 										HttpServletRequest httpServletRequest) {
 		ModelAndView mv = new ModelAndView("Cooperado/admissao/PesquisarAdmissoes");
 		mv.addObject("cooperados", serviceCooperado.findByCooperadoAtivoTrue());
