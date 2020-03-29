@@ -34,7 +34,6 @@
 			<form method="POST" th:object="${cooperado}" class="form-vertical  js-form-loading" 
 				th:action="${cooperado.novo} ? @{/cooperado/cooperado/novo} : @{/cooperado/cooperado/{id}(id=${cooperado.id})}">
 			
-				<!-- COMPONENTE THYMELEAF PARA MENSAGENS DE ERRO E SUCESSO -->	
 				<simed:message/>
 			
 				<input type="hidden" th:field="*{id}">

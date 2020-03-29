@@ -16,15 +16,68 @@
 	<div class="container-fluid">
 	
 	
-		<a class = "btn btn-info rounded-pill btn-lg" th:href="@{/geral}">Geral/Configuração</a>
-		<br>
-		<br>
-	
-		<a class = "btn btn-success rounded-pill btn-lg" th:href="@{/financeiro}"> Financeiro/Contábil </a>
-		<br>
-		<br>
+	<div class="row">
+	  <div class="col-sm-6 col-md-3">
+	    <div class="thumbnail">
+	    <a th:href="@{/cooperado}">
+	      <img th:src="@{/images/doctor.png}" alt="Cooperado">
+	      </a>
+	      <div class="caption">
+	        <h3>Cooperados</h3>
+	        <p><a th:href="@{/cooperado/cooperado/pesquisar}" class="btn">Pesquisar um cooperado</a></p>
+	        <p><a th:href="@{/cooperado/admissao/novo}" class="btn">Admissão de novo cooperado</a></p>
+	        <p><a href="#" class="btn">Demissões de cooperados</a></p>
+	      </div>
+	    </div>
+	  </div>
+	  
+	  <div class="col-sm-6 col-md-3">
+	    <div class="thumbnail">
+	    <a th:href="@{/financeiro}">
+	      <img th:src="@{/images/finance.png}" alt="Financeiro">
+	      </a>
+	      <div class="caption">
+	        <h3>Financeiro</h3>
+	        <p><a th:href="@{/financeiro/contaPagar/nova}" class="btn">Cadastrar uma conta a pagar</a></p>
+	        <p><a th:href="@{/financeiro/pagamento/pesquisar}" class="btn">Pesquisar pagamentos</a></p>
+	        <p><a th:href="@{/financeiro/extrato/selecionarConta}" class="btn">Visualizar extratos</a></p>
+	      </div>
+	    </div>
+	  </div>
+	  
 
-		<a class = "btn btn-danger rounded-pill btn-lg" th:href="@{/satisfacao}">Pesquisa de Satisfação</a> <br>
+	  <div class="col-sm-6 col-md-3">
+	    <div class="thumbnail">
+	    <a th:href="@{/satisfacao}">
+	      <img th:src="@{/images/survey.png}" alt="Pesquisa">
+	      </a>
+	      <div class="caption">
+	        <h3>Pesquisa Satisfação</h3>
+	        <p><a th:href="@{/satisfacao/pesquisa/inicio}" class="btn">Cadastrar uma pesquisa</a></p>
+	        <p><a th:href="@{/satisfacao/pergunta/pesquisar}" class="btn">Cadastrar perguntas</a></p>
+	        <p><a href="#" class="btn">Relatório de pesquisas</a></p>
+	      </div>
+	    </div>
+	  </div>
+
+
+	  <div class="col-sm-6 col-md-3">
+	    <div class="thumbnail">
+	    <a th:href="@{/geral}">
+	      <img th:src="@{/images/geral.png}" alt="Geral">
+	      </a>
+	      <div class="caption">
+	        <h3>Geral</h3>
+	        <p><a th:href="@{/usuario/pesquisar}" class="btn">Pesquisar usuários</a></p>
+	        <p><a th:href="@{/empresa/pesquisar}" class="btn">Pesquisar Empresas</a></p>
+	        <p><a th:href="@{/grupo/pesquisar}" class="btn">Pesquisas grupos</a></p>
+	      </div>
+	    </div>
+	  </div>
+		  
+	</div>
+	
+	
 	</div>
 </section>
 
