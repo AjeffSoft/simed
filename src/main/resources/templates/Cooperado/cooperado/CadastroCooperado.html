@@ -151,8 +151,16 @@
 					<div class="tab-pane" id="documentos">
 						<div class="row">
 							<div class="col-sm-2  form-group">
-								<label for="tutulo" class="control-label">Tit.Eleitor</label>
+								<label for="tutulo" class="control-label">Tit. Eleitor</label>
 								<input id="titulo" type="text" class="form-control" th:field="*{documento.tituloEleitor}" maxlength="20">
+							</div>
+							<div class="col-sm-1  form-group">
+								<label for="sessao" class="control-label">Sessão</label>
+								<input id="sessao" type="text" class="form-control" th:field="*{documento.tituloSessao}" maxlength="4">
+							</div>
+							<div class="col-sm-1  form-group">
+								<label for="zona" class="control-label">Zona</label>
+								<input id="zona" type="text" class="form-control" th:field="*{documento.tituloZona}" maxlength="4">
 							</div>
 							<div class="col-sm-2  form-group" simed:classforerror="documento.dataEleitor">
 								<label for="emissaoTit" class="control-label">Data Titulo</label>
@@ -160,7 +168,7 @@
 							</div>
 
 							<div class="col-sm-2  form-group">
-								<label for="ctps" class="control-label">CTPS</label>
+								<label for="ctps" class="control-label">CTPS/Série</label>
 								<input id="ctps" type="text" class="form-control" th:field="*{documento.ctps}" maxlength="20">
 							</div>
 							<div class="col-sm-2  form-group" simed:classforerror="documento.dataCtps">
@@ -172,10 +180,6 @@
 								<label for="pis" class="control-label">PIS</label>
 								<input id="pis" type="text" class="form-control" th:field="*{documento.pis}" maxlength="20">
 							</div>
-							<div class="col-sm-2  form-group" simed:classforerror="documento.dataPis">
-								<label for="emissaoPis" class="control-label">Data PIS</label>
-								<input id="emissaoPis" type="text" class="form-control  js-date" th:field = "*{documento.dataPis}" autocomplete="off"/>
-							</div>
 						</div>	
 						
 						<div class="row">
@@ -185,7 +189,7 @@
 							</div>
 
 							<div class="col-sm-4  form-group">
-								<label for="rg" class="control-label">RG</label>
+								<label for="rg" class="control-label">RG/Org. Emissão</label>
 								<input id="rg" type="text" class="form-control" th:field="*{documento.rg}" maxlength="40">
 							</div>
 							<div class="col-sm-2  form-group" simed:classforerror="documento.dataRG">
@@ -194,7 +198,7 @@
 							</div>
 
 							<div class="col-sm-2  form-group">
-								<label for="habilitacao" class="control-label">Habilitação</label>
+								<label for="habilitacao" class="control-label">Habilitação/Categ</label>
 								<input id="habilitacao" type="text" class="form-control" th:field="*{documento.habilitacao}" maxlength="20">
 							</div>
 							<div class="col-sm-2  form-group" simed:classforerror="documento.dataHabilitacao">

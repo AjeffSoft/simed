@@ -196,7 +196,7 @@ public class Movimentacao implements Serializable {
 	
 
 	public Boolean isDataDentroMovimento (LocalDate data) {
-		return data.isAfter(this.dataInicio) && data.isBefore(this.dataFinal);
+		return data.isAfter(this.dataInicio.minusDays(1)) && data.isBefore(this.dataFinal.plusDays(1));
 	}
 	
 }

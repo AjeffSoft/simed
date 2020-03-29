@@ -17,6 +17,12 @@ public class DocumentoPF implements Serializable{
 	@Column(name = "titulo_eleitor")
 	private String tituloEleitor;
 	
+	@Column(name = "sessao_eleitor")
+	private String tituloSessao;
+	
+	@Column(name = "zona_eleitor")
+	private String tituloZona;	
+	
 	@Column(name = "data_eleitor")
 	private LocalDate dataEleitor;
 
@@ -184,6 +190,22 @@ public class DocumentoPF implements Serializable{
 
 	public void setDataCertidao(LocalDate dataCertidao) {
 		this.dataCertidao = dataCertidao;
+	}
+
+	public String getTituloSessao() {
+		return tituloSessao;
+	}
+
+	public void setTituloSessao(String tituloSessao) {
+		this.tituloSessao = tituloSessao;
+	}
+
+	public String getTituloZona() {
+		return tituloZona;
+	}
+
+	public void setTituloZona(String tituloZona) {
+		this.tituloZona = tituloZona;
 	}
 	
 }

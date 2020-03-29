@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.ajeff.simed.financeiro.model.Movimentacao;
 import com.ajeff.simed.financeiro.model.MovimentacaoItem;
 import com.ajeff.simed.financeiro.repository.MovimentacoesItensRepository;
+import com.ajeff.simed.financeiro.service.exception.ErroAoFecharMovimentacaoException;
 import com.ajeff.simed.geral.model.ContaEmpresa;
 import com.ajeff.simed.geral.service.ContaEmpresaService;
 
@@ -95,7 +96,7 @@ public class MovimentacaoItensService {
 	}
 	
 	
-	public void fecharTransacoes(Movimentacao movimentacao) {
+	public void fecharTransacoes(Movimentacao movimentacao) throws ErroAoFecharMovimentacaoException {
 		List<MovimentacaoItem> movimentacoesItens = repository.findByMovimentacao(movimentacao);
 		for(MovimentacaoItem mov : movimentacoesItens) {
 			transferenciaService.fecharTransferencias(mov);

@@ -109,18 +109,15 @@ public class MovimentacaoService {
 
 	@Transactional
 	public void fecharMovimento(Movimentacao movimentacao) {
-		try {
-			movimentacaoItensService.fecharTransacoes(movimentacao);
-			movimentacaoItensService.atualizarSaldoContaBancaria(movimentacao);
-			movimentacaoItensService.fecharCalculosEValores(movimentacao);
-			movimentacao.setFechado(true);
-			movimentacao.setDataFechamento(LocalDate.now());
-			repository.save(movimentacao);
-		} catch (MovimentacaoFechadaException e) {
-			throw new MovimentacaoFechadaException("Movimentação não foi fechada");
-		}
+		movimentacaoItensService.fecharTransacoes(movimentacao);
+		movimentacaoItensService.atualizarSaldoContaBancaria(movimentacao);
+		movimentacaoItensService.fecharCalculosEValores(movimentacao);
+		movimentacao.setFechado(true);
+		movimentacao.setDataFechamento(LocalDate.now());
+		repository.save(movimentacao);
 	}
 
+	
 	private void testeRegistroJaCadastrado(Movimentacao movimentacao) {
 		Optional<Movimentacao> movAberto = repository.findByEmpresaAndStatusAberto(movimentacao.getEmpresa());
 

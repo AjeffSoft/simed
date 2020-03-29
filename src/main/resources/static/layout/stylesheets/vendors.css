@@ -2185,6 +2185,8 @@
   overflow: visible;
   clip: auto;
 }
+
+
 /*!
  * Bootstrap v3.3.6 (http://getbootstrap.com)
  * Copyright 2011-2015 Twitter, Inc.
@@ -2368,6 +2370,8 @@ td,
 th {
   padding: 0;
 }
+
+
 /*! Source: https://github.com/h5bp/html5-boilerplate/blob/master/src/css/main.css */
 @media print {
   *,
@@ -3242,6 +3246,7 @@ th {
 .glyphicon-menu-up:before {
   content: "\e260";
 }
+
 * {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
