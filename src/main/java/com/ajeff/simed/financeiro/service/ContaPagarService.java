@@ -239,9 +239,11 @@ public class ContaPagarService {
 	}
 
 
+	
+	
+	
+	
 	public byte[] imprimirRelatorio(PeriodoRelatorio periodoRelatorio) throws Exception {
-		
-
 		Map<String, Object> map = new HashMap<>();
 		map.put("format", "pdf");
 		map.put("REPORT_LOCALE", new Locale("pt", "BR"));
@@ -258,18 +260,6 @@ public class ContaPagarService {
 			map.put("status", periodoRelatorio.getStatus());
 		}
 		
-//		if(periodoRelatorio.getEmissaoInicio() == null) {
-//			LocalDate localDate = LocalDate.of(1000, 1, 1);
-//			Date date = Date.from(localDate.atStartOfDay(defaultZoneId).toInstant());
-//			map.put("emissao_inicio", date);
-//		}
-//
-//		if(periodoRelatorio.getEmissaoFim() == null) {
-//			LocalDate localDate = LocalDate.of(5000, 12, 31);
-//			Date date = Date.from(localDate.atStartOfDay(defaultZoneId).toInstant());
-//			map.put("emissao_final", date);
-//		}
-		
 		Date dataInicio = null;
 		Date dataFim = null;
 		
@@ -284,20 +274,8 @@ public class ContaPagarService {
 
 		}
 		
-		
-//		if(periodoRelatorio.getDataInicio() != null && periodoRelatorio.getDataFim() != null) {
-//			map.put("vencimento_inicio", periodoRelatorio.getDataInicio());
-//			map.put("vencimento_final", periodoRelatorio.getDataFim());
-//		}
-		
 		InputStream inputStream = null;
-//		if(pagamento.getTipo().equals("DEBITO")) {
-//			JasperReport subReport =  JasperCompileManager.compileReport(this.getClass().getResourceAsStream("/relatorios/rel_Financeiro_Pagamento_OrdemPagamentoItens.jrxml"));
-//			map.put("ProductsSubReport", subReport);
-//			inputStream = this.getClass().getResourceAsStream("/relatorios/rel_Financeiro_Pagamento_OrdemPagamento.jasper");
-//		}else {
-//			inputStream = this.getClass().getResourceAsStream("/relatorios/rel_Financeiro_Pagamento_OrdemTransferencia.jasper");
-//		}
+
 		inputStream = this.getClass().getResourceAsStream("/relatorios/rel_Financeiro_ContaPagar_Pendencias.jasper");
 		Connection con = this.dataSource.getConnection();
 		try {

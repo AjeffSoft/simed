@@ -42,6 +42,7 @@ public class FornecedorServiceTest{
 		forn.setFantasia("TESTE");
 		forn.setSigla("TES");
 		
+		
 		Mockito.when(service.salvar(forn)).thenReturn(forn);
 		Fornecedor fSalve  = service.salvar(forn);
 		Assertions.assertNotNull(fSalve);
