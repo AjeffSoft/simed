@@ -4,8 +4,6 @@ import java.util.Optional;
 
 import javax.persistence.PersistenceException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,9 +18,6 @@ import com.ajeff.simed.geral.service.exception.RegistroJaCadastradoException;
 
 @Service
 public class DependenteService {
-
-	@SuppressWarnings("unused")
-	private static final Logger LOG = LoggerFactory.getLogger(DependenteService.class);	
 	
 	@Autowired
 	private DependentesRepository repository;
@@ -40,25 +35,16 @@ public class DependenteService {
 		return repository.filtrar(dependenteFilter, pageable);
 	}	
 	
-//	public Integer qtdDependentes(Cooperado cooperado) {
-//		List<Dependente> depends = repository.findByCooperado(cooperado);
-//		Integer i = 0;
-//		for (Dependente d : depends) {
-//			i++;
-//		}
-//		return i;
-//	}
 	
 	
 	@Transactional
 	public void excluir(Long id) {
-		String tipo = "o(a) dependente(a)";
 
 		try {
 			repository.delete(id);
 			repository.flush();
 		} catch (PersistenceException e) {
-			throw new ImpossivelExcluirEntidade("Não foi possivel excluir " + tipo +". Exclua primeiro o(s) relacionamento(s) com outra(s) tabela(s)!"); 
+			throw new ImpossivelExcluirEntidade("Não foi possivel excluir o dependente. Exclua primeiro o(s) relacionamento(s) com outra(s) tabela(s)!"); 
 		}
 		
 	}
@@ -76,14 +62,5 @@ public class DependenteService {
 	public Dependente findOne(Long id) {
 		return repository.findOne(id);
 	}
-
-
-//	public Cooperado buscarComCidadeEstado(Long id) {
-//		return repository.buscarComCidadeEstado(id);
-//	}
-//
-//	public List<Cooperado> listarCooperados() {
-//		return repository.listarCooperados();
-//	}
 
 }

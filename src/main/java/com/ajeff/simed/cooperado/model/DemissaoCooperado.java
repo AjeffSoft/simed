@@ -30,9 +30,12 @@ public class DemissaoCooperado implements Serializable{
 	@NotNull(message = "Informe a data de demissão")
 	private LocalDate data;
 
+	@Column(name = "anotacao")
 	private String observacao;
 	
-	@Column(name = "tipo_demissao")
+	private String motivo;
+	
+	@Column(name = "tipo")
 	@Enumerated(EnumType.STRING)
 	private TipoDemissaoCooperado tipoDemissao;
 	
@@ -80,6 +83,14 @@ public class DemissaoCooperado implements Serializable{
 
 	public void setAdmissao(AdmissaoCooperado admissao) {
 		this.admissao = admissao;
+	}
+
+	public String getMotivo() {
+		return motivo;
+	}
+
+	public void setMotivo(String motivo) {
+		this.motivo = motivo;
 	}
 
 	@Override

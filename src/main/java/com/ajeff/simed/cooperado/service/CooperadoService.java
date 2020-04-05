@@ -5,8 +5,6 @@ import java.util.Optional;
 
 import javax.persistence.PersistenceException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,8 +20,6 @@ import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
 @Service
 public class CooperadoService {
 
-	@SuppressWarnings("unused")
-	private static final Logger LOG = LoggerFactory.getLogger(CooperadoService.class);	
 	
 	@Autowired
 	private CooperadosRepository repository;
@@ -32,7 +28,7 @@ public class CooperadoService {
 	@Transactional
 	public void salvar(Cooperado cooperado) {
 		testeRegistroJaCadastrado(cooperado);
-		desativarCooperado(cooperado);
+		cooperado.setAtivo(true);
 		repository.save(cooperado);
 	}
 	
@@ -48,13 +44,11 @@ public class CooperadoService {
 		repository.save(cooperado);
 	}
 
-//	private Cooperado findOne(Long id) {
-//		return repository.findOne(id);
-//	}
 	
 	public Page<Cooperado> filtrar(CooperadoFilter cooperadoFilter, Pageable pageable) {
 		return repository.filtrar(cooperadoFilter, pageable);
 	}
+	
 	
 	@Transactional
 	public void excluir(Long id) {

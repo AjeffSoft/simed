@@ -46,7 +46,7 @@ public class MovimentacaoItensService {
 			movimentacaoItem.setDebitos(BigDecimal.ZERO);
 			movimentacaoItem.setSaldoGeral(BigDecimal.ZERO);
 			movimentacaoItem.setSaldoMovimento(BigDecimal.ZERO);
-			extratoService.criarMovimentoInicialNoExtrato(c.getSaldo(), c, true, "CONFERIDO", movimentacaoItem.getMovimentacao().getDataInicio(), "SALDO INICIAL", movimentacaoItem);
+//			extratoService.criarMovimentoInicialNoExtrato(c.getSaldo(), c, true, "CONFERIDO", movimentacaoItem.getMovimentacao().getDataInicio(), "SALDO INICIAL", movimentacaoItem);
 			itens.add(movimentacaoItem);
 		}
 		return itens;

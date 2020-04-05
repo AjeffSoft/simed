@@ -33,6 +33,8 @@ public class MovimentacaoService {
 	@Autowired
 	private MovimentacaoItensService movimentacaoItensService;
 
+	
+	
 	@Transactional
 	public void salvar(Movimentacao movimentacao) {
 		testeRegistroJaCadastrado(movimentacao);
