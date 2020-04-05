@@ -91,6 +91,7 @@ public class AdmissaoController {
 		return ResponseEntity.ok().build();
 	}
 	
+	
 	@GetMapping("/alterar/{id}")
 	public ModelAndView alterar(@PathVariable Long id, AdmissaoCooperado admissao) {
 		admissao = service.findOne(id);
@@ -99,24 +100,5 @@ public class AdmissaoController {
 		return mv;
 	}
 	
-	
-//	@GetMapping("/historico/{id}")
-//	public ModelAndView imprimirHistorico(@PathVariable Long id) {
-//		Map<String, Object> map = new HashMap<>();
-//		map.put("format", "pdf");
-//		map.put("id_fornecedor", id);
-//		return new ModelAndView("rel_FORNECEDOR_Historico", map);
-//	}
-	
-//	@GetMapping("/detalhe/{id}")
-//	public ModelAndView detalhe(@PathVariable Long id, Fornecedor fornecedor) {
-//		ModelAndView mv = new ModelAndView("Financeiro/fornecedor/DetalheFornecedor");
-//		fornecedor = service.findOne(id);
-//		mv.addObject("contasPagar", contasPagarRepository.findByContaPagarFornecedor(fornecedor));
-//		mv.addObject("impostos", impostosRepository.findByContaPagarOrigemFornecedorOrderByVencimento(fornecedor));
-//		mv.addObject(fornecedor);
-//		return mv;
-//	}
-	
-	
+
 }

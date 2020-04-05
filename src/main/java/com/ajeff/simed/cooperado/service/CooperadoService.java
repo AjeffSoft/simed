@@ -33,15 +33,17 @@ public class CooperadoService {
 	}
 	
 	@Transactional
-	public void ativarCooperado(Cooperado cooperado) {
+	public Boolean ativarCooperado(Cooperado cooperado) {
 		cooperado.setAtivo(true);		
 		repository.save(cooperado);
+		return true;
 	}
 	
 	@Transactional
-	public void desativarCooperado(Cooperado cooperado) {
+	public Boolean desativarCooperado(Cooperado cooperado) {
 		cooperado.setAtivo(false);		
 		repository.save(cooperado);
+		return false;
 	}
 
 	

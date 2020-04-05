@@ -1,5 +1,7 @@
 package com.ajeff.simed.cooperado.service;
 
+import java.time.LocalDate;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -15,8 +17,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.ajeff.simed.config.init.AppInitializer;
+import com.ajeff.simed.cooperado.model.AdmissaoCooperado;
 import com.ajeff.simed.cooperado.model.Cooperado;
-import com.ajeff.simed.cooperado.repository.CooperadosRepository;
+import com.ajeff.simed.cooperado.repository.AdmissoesRepository;
 import com.ajeff.simed.geral.model.Cidade;
 import com.ajeff.simed.geral.model.DocumentoPF;
 import com.ajeff.simed.geral.model.Endereco;
@@ -25,13 +28,15 @@ import com.ajeff.simed.geral.model.Estado;
 @ExtendWith(SpringExtension.class)
 @TestInstance(Lifecycle.PER_CLASS)
 @ContextConfiguration(classes = {AppInitializer.class}) 
-public class CooperadoServiceTest {
+public class AdmissaoServiceTest {
 	
 	@InjectMocks
-	private CooperadoService service;
+	private AdmissaoService service;
+	@Mock
+	private CooperadoService cooperadoService;
 	
 	@Mock
-	private CooperadosRepository repository;
+	private AdmissoesRepository repository;
 	@Mock
 	private Cidade c;
 	@Mock
@@ -40,7 +45,8 @@ public class CooperadoServiceTest {
 	private Endereco end;	
 	@Mock
 	private DocumentoPF docPF;	
-	
+	@Mock
+	private Cooperado coop;		
 	
 	@BeforeAll
 	public void setUp() {
@@ -63,63 +69,43 @@ public class CooperadoServiceTest {
 		
 		docPF = Mockito.mock(DocumentoPF.class);
 		docPF.setCpf("97996599300");
-
-	}
-	
-	
-	
-	@Test
-	@DisplayName("Deve salvar um cooperado válido")
-	public void deveSalvarCooperadoValido() {
-		Cooperado coop = novoCooperado();
-		Cooperado coopSalvo = novoCooperado();
-		coopSalvo.setId(1L);
 		
-		Mockito.when(repository.save(coop)).thenReturn(coopSalvo);
-		
-		service.salvar(coop);
-		
-		Assertions.assertThat(coopSalvo.getId()).isNotNull();
-		Assertions.assertThat(coopSalvo.getNome()).isEqualTo(coop.getNome());
-		Assertions.assertThat(coopSalvo.getAtivo()).isFalse();
-		Mockito.verify(repository, Mockito.times(1)).save(coop);
-	}
-	
-	
-	@Test
-	@DisplayName("Deve ativar um cooperado desativado")
-	public void deveAtivarCooperadoDesativado() {
-		Cooperado coopSalvo = novoCooperado();
-		coopSalvo.setId(1L);
-		coopSalvo.setAtivo(false);
-		
-		service.ativarCooperado(coopSalvo);
-		
-		Assertions.assertThat(coopSalvo.getAtivo()).isTrue();
-	}
-	
-	
-	@Test
-	@DisplayName("Deve desativar um cooperado ativado")
-	public void deveDesativarCooperadoAtivado() {
-		Cooperado coopSalvo = novoCooperado();
-		coopSalvo.setId(1L);
-		coopSalvo.setAtivo(true);
-		
-		service.desativarCooperado(coopSalvo);
-		
-		Assertions.assertThat(coopSalvo.getAtivo()).isFalse();
-	}	
-	
-
-	private Cooperado novoCooperado() {
-		Cooperado coop = new Cooperado();
+		coop = new Cooperado();
 		coop.setAtivo(false);
 		coop.setCrm("1234");
 		coop.setDocumento(docPF);
 		coop.setEndereco(end);
-		coop.setNome("ANTONIO FREITAS");
-		return coop;
+		coop.setNome("ANTONIO FREITAS");		
+	}
+	
+	
+	
+	@Test
+	@DisplayName("Deve salvar uma admissão válida")
+	public void deveSalvarAdmissaoValida() {
+		AdmissaoCooperado adm = novaAdmissao();
+		AdmissaoCooperado admSalva = novaAdmissao();
+		admSalva.setId(1L);
+		Mockito.when(cooperadoService.ativarCooperado(coop)).thenReturn(true);
+		Mockito.when(repository.save(adm)).thenReturn(admSalva);
+		
+		service.salvar(adm);
+		
+		Assertions.assertThat(admSalva.getId()).isNotNull();
+		Assertions.assertThat(admSalva.getRegistro()).isEqualTo(adm.getRegistro());
+		Assertions.assertThat(admSalva.getAtivo()).isTrue();
+		Mockito.verify(repository, Mockito.times(1)).save(adm);
+	}
+	
+
+	private AdmissaoCooperado novaAdmissao() {
+		AdmissaoCooperado adm = new AdmissaoCooperado();
+		adm.setCooperado(coop);
+		adm.setRegistro("001");
+		adm.setCodigo("131001");
+		adm.setAtivo(true);
+		adm.setData(LocalDate.of(2020, 04, 05));
+		return adm;
 	}
 	
 }

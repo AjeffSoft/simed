@@ -2,8 +2,6 @@ package com.ajeff.simed.cooperado.service;
 
 import javax.persistence.PersistenceException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,9 +17,7 @@ import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
 @Service
 public class DemissaoService {
 
-	@SuppressWarnings("unused")
-	private static final Logger LOG = LoggerFactory.getLogger(DemissaoService.class);	
-	
+
 	@Autowired
 	private DemissoesRepository repository;
 	@Autowired
@@ -58,7 +54,7 @@ public class DemissaoService {
 			repository.delete(demissao);
 			repository.flush();
 		} catch (PersistenceException e) {
-			throw new ImpossivelExcluirEntidade("Não foi possivel cancelar a demissão!"); 
+			throw new ImpossivelExcluirEntidade("Não foi possivel excluir a demissão!"); 
 		}
 		
 	}
