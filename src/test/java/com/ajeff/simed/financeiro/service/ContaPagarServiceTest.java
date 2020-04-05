@@ -3,14 +3,14 @@ package com.ajeff.simed.financeiro.service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import org.junit.jupiter.api.Assertions;
+import org.assertj.core.api.Assertions;
+//import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -22,8 +22,6 @@ import com.ajeff.simed.financeiro.model.ContaPagar;
 import com.ajeff.simed.financeiro.model.Fornecedor;
 import com.ajeff.simed.financeiro.model.PlanoConta;
 import com.ajeff.simed.financeiro.model.PlanoContaSecundaria;
-import com.ajeff.simed.financeiro.service.exception.DataForaMovimentacaoAbertaException;
-import com.ajeff.simed.financeiro.service.exception.VencimentoMenorEmissaoException;
 import com.ajeff.simed.geral.model.Cidade;
 import com.ajeff.simed.geral.model.Empresa;
 import com.ajeff.simed.geral.model.Endereco;
@@ -33,6 +31,7 @@ import com.ajeff.simed.geral.model.Estado;
 @TestInstance(Lifecycle.PER_CLASS)
 @ContextConfiguration(classes = {AppInitializer.class}) 
 public class ContaPagarServiceTest {
+	
 	
 	
 	@Mock
@@ -56,39 +55,39 @@ public class ContaPagarServiceTest {
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		
-		es = new Estado();
+		es = Mockito.mock(Estado.class);
 		es.setNome("ESTADO TESTE");
 		es.setUf("TE");
 		
-		c = new Cidade();
+		c = Mockito.mock(Cidade.class);
 		c.setNome("CIDADE TESTE");
 		c.setUf("TE");
 		c.setCapital(true);
 		c.setEstado(es);
 		
-		end = new Endereco();
+		end = Mockito.mock(Endereco.class);
 		end.setBairro("BAIRRO TESTE");
 		end.setCep("63500000");
 		end.setCidade(c);
 		
-		pc = new PlanoConta();
+		pc = Mockito.mock(PlanoConta.class);
 		pc.setNome("PLANO DE CONTA TESTE");
 		pc.setSituacao(true);
 		pc.setTipo("DÉBITO");
 		
-		pcs = new PlanoContaSecundaria();
+		pcs = Mockito.mock(PlanoContaSecundaria.class);
 		pcs.setNome("PLANO DE CONTA SECUNDÁRIA TESTE");
 		pcs.setSituacao(true);
 		pcs.setTipo("VARIÁVEL");
 		pcs.setPlanoConta(pc);
 		
-		e = new Empresa();
+		e = Mockito.mock(Empresa.class);
 		e.setNome("EMPRESA TESTE LTDA");
 		e.setFantasia("EMPRESA TESTE");
 		e.setSigla("EMPTESTE");
 		e.setEndereco(end);
 		
-		f = new Fornecedor();
+		f = Mockito.mock(Fornecedor.class);
 		f.setNome("FORNECEDOR TESTE LTDA");
 		f.setFantasia("FORNECEDOR TESTE");
 		f.setSigla("FORTESTE");
@@ -96,6 +95,8 @@ public class ContaPagarServiceTest {
 		f.setEndereco(end);
 		
 	}
+	
+
 	
 	
 	@Test
@@ -119,7 +120,7 @@ public class ContaPagarServiceTest {
 	
 	
 	@Test
-	@DisplayName("Deve dar erro da data de vencimento menor que a data emissão")
+	@DisplayName("Erro ao informar a data de vencimento menor que a data de emissão")
 	public void contaPagar2() {
 		
 		ContaPagar cp = Mockito.mock(ContaPagar.class);
@@ -129,17 +130,30 @@ public class ContaPagarServiceTest {
 		cp.setVencimento(vencimento);
 		cp.setValor(new BigDecimal(1000));
 		cp.setNotaFiscal("0001");
+		cp.setTotalParcela(2);
 		cp.setPlanoContaSecundaria(pcs);
-		cp.setFornecedor(f);
+		service.salvar(cp);
 		
-//		try {
-//			service.salvar(cp);
-//		} catch (VencimentoMenorEmissaoException e) {
-//			Assertions.assertEquals("", e.getMessage());
-//		}
-//		
+		Mockito.verify(service).salvar(cp);
+		Assertions.assertThat(cp.getTotalParcela()).isEqualTo(1);
+		
+		
+//		Assertions.assertThat(emissao).isAfter(vencimento);
+		
+//	    Exception exception = Assertions.assertThrows(VencimentoMenorEmissaoException.class, () -> {
+//	    	service.salvar(cp);
+////	    	service.testeVencimentoMaiorEmissao(cp);
+//	    });
+//	    
+//	    Assertions.assertTrue(exception.getMessage().contains("A data de vencimento não pode ser menor que a emissão"));
+	    
+	    
+		
 //		Mockito.doThrow(VencimentoMenorEmissaoException.class).when(service).salvar(cp);
-//		Mockito.verify(service, Mockito.times(1)).salvar(cp);
+//		service.salvar(cp);
+//		
+//		Assertions.assertThrows(VencimentoMenorEmissaoException.class, () -> service.salvar(cp));
+		
 	}	
 	
 }

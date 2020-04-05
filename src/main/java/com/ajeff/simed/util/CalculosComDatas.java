@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 
 import com.ajeff.simed.exceptions.DataNaoInformadaException;
+import com.ajeff.simed.financeiro.service.exception.VencimentoMenorEmissaoException;
 
 public class CalculosComDatas {
 	
@@ -36,12 +37,17 @@ public class CalculosComDatas {
 		return data.getDayOfWeek().getValue();
 	}
 	
-	public static Boolean emissaoMaiorVancimento(LocalDate emissao, LocalDate vencimento) {
+	
+	public static Boolean emissaoMenorIgualVencimento(LocalDate emissao, LocalDate vencimento) {
 		if (emissao == null || vencimento == null) {
-			throw new DataNaoInformadaException("Uma das datas não foi informada!");
+			throw new DataNaoInformadaException("A data de emissão e/ou vencimento não foi informada!");
 		}
-		return emissao.isAfter(vencimento);
+		if (emissao.isAfter(vencimento)) {
+			throw new VencimentoMenorEmissaoException("A data de vencimento não pode ser menor que a data de emissão");
+		}	
+		return emissao.isEqual(vencimento) || emissao.isBefore(vencimento);
 	}
+	
 	
 	public static LocalDate setarVencimento(LocalDate emissao, Integer parcela, Integer dias) {
 		if (emissao == null) {

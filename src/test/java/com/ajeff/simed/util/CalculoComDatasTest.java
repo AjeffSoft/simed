@@ -8,7 +8,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import com.ajeff.simed.exceptions.DataNaoInformadaException;
+import com.ajeff.simed.financeiro.service.exception.VencimentoMenorEmissaoException;
 
 public class CalculoComDatasTest {
 
@@ -48,26 +53,63 @@ public class CalculoComDatasTest {
 		assertFalse(dia);
 	}
 	
+
+	
+	
+	
 	@Test
+	@DisplayName("Deve retornar VERDADEIRO se a data de emissão for menor que a data do vencimento")
 	public void dataEmissaoMenorDataVencimento() {
 		LocalDate emissao = LocalDate.of(2019, 11, 19);
 		LocalDate vencimento = LocalDate.of(2019, 11, 20);
-		assertFalse(CalculosComDatas.emissaoMaiorVancimento(emissao, vencimento));
+		assertTrue(CalculosComDatas.emissaoMenorIgualVencimento(emissao, vencimento));
 	}
 
 	@Test
+	@DisplayName("Deve dar ERRO quando a data de emissão é maior que a data de vencimento")
 	public void dataEmissaoMaiorDataVencimento() {
 		LocalDate emissao = LocalDate.of(2019, 11, 20);
 		LocalDate vencimento = LocalDate.of(2019, 11, 19);
-		assertTrue(CalculosComDatas.emissaoMaiorVancimento(emissao, vencimento));
+		Assertions.assertThrows(VencimentoMenorEmissaoException.class, 
+				() -> CalculosComDatas.emissaoMenorIgualVencimento(emissao, vencimento));
 	}
+	
+	@Test
+	@DisplayName("Deve dar ERRO quando a data de emissão e a data de vencimento não é informada")
+	public void dataEmissaoEVencimentoNulo() {
+		LocalDate emissao = null;
+		LocalDate vencimento = null;
+		Assertions.assertThrows(DataNaoInformadaException.class, 
+				() -> CalculosComDatas.emissaoMenorIgualVencimento(emissao, vencimento));
+	}	
+	
+	@Test
+	@DisplayName("Deve dar ERRO quando a data de emissão não for informada")
+	public void dataEmissaoNula() {
+		LocalDate emissao = null;
+		LocalDate vencimento = LocalDate.of(2019, 11, 19);
+		Assertions.assertThrows(DataNaoInformadaException.class, 
+				() -> CalculosComDatas.emissaoMenorIgualVencimento(emissao, vencimento));
+	}	
+	
+	@Test
+	@DisplayName("Deve dar ERRO quando a data de emissão não for informada")
+	public void dataVencimentoNula() {
+		LocalDate emissao = LocalDate.of(2019, 11, 19);
+		LocalDate vencimento = null;
+		Assertions.assertThrows(DataNaoInformadaException.class, 
+				() -> CalculosComDatas.emissaoMenorIgualVencimento(emissao, vencimento));
+	}	
 
 	@Test
+	@DisplayName("Deve retornar VERDADEIRO quando a data de emissão for igual a data de vencimento")
 	public void dataEmissaoIgualDataVencimento() {
 		LocalDate emissao = LocalDate.of(2019, 11, 19);
 		LocalDate vencimento = LocalDate.of(2019, 11, 19);
-		assertFalse(CalculosComDatas.emissaoMaiorVancimento(emissao, vencimento));
+		assertTrue(CalculosComDatas.emissaoMenorIgualVencimento(emissao, vencimento));
 	}
+	
+	
 
 	@Test
 	public void setarVencimentoCincoDiasAposEmissaoEUmaParcela() {

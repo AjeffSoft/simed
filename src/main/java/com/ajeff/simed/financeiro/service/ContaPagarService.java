@@ -38,6 +38,7 @@ import com.ajeff.simed.financeiro.service.exception.DocumentoEFornecedorJaCadast
 import com.ajeff.simed.financeiro.service.exception.RegistroNaoCadastradoException;
 import com.ajeff.simed.financeiro.service.exception.VencimentoMenorEmissaoException;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
+import com.ajeff.simed.util.CalculosComDatas;
 
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -66,7 +67,7 @@ public class ContaPagarService {
 				List<ContaPagar> contas = gerarContasPagar(contaPagar);
 				repository.save(contas);
 			}else {
-				testeVencimentoMaiorEmissao(contaPagar);
+				CalculosComDatas.emissaoMenorIgualVencimento(contaPagar.getDataEmissao(), contaPagar.getVencimento());
 				testeRegistroJaCadastrado(contaPagar);
 				repository.save(contaPagar);
 			}
@@ -107,7 +108,8 @@ public class ContaPagarService {
 				cp.setValor(contaPagar.getValor().divide(new BigDecimal(contaPagar.getTotalParcela()),
 						MathContext.DECIMAL32));		
 				setarHistoricoDaContaPagar(contaPagar, cp);
-				testeVencimentoMaiorEmissao(cp);
+				
+				CalculosComDatas.emissaoMenorIgualVencimento(cp.getDataEmissao(), cp.getVencimento());
 				testeRegistroJaCadastrado(cp);
 				contas.add(cp);
 			}
@@ -150,16 +152,6 @@ public class ContaPagarService {
 	}	
 
 
-	private void testeVencimentoMaiorEmissao(ContaPagar contaPagar) {
-		if(contaPagar.getDataEmissao() != null) {
-			if(!contaPagar.isVencimentoMaiorEmissao()) {
-				throw new VencimentoMenorEmissaoException("A data de vencimento não pode ser menor que a emissão");
-			}
-		}
-	}
-		
-
-	
 	private void testeRegistroJaCadastrado(ContaPagar contaPagar) {
 		if(contaPagar.getFornecedor().getId() == null) {
 			throw new TransientObjectException ("O fornecedor não foi selecionado");

@@ -325,10 +325,6 @@ public class ContaPagar implements Serializable{
 		return this.id == null;
 	}
 	
-	public boolean isVencimentoMaiorEmissao() {
-		return this.vencimento.isEqual(this.dataEmissao) || this.vencimento.isAfter(this.dataEmissao);
-	}
-	
 	public boolean isAberto() {
 		return this.status.equals("ABERTO");
 	}
