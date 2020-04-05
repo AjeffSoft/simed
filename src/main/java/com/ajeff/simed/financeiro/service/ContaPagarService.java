@@ -31,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ajeff.simed.financeiro.dto.PeriodoRelatorio;
 import com.ajeff.simed.financeiro.model.ContaPagar;
 import com.ajeff.simed.financeiro.model.Fornecedor;
+import com.ajeff.simed.financeiro.model.Imposto;
 import com.ajeff.simed.financeiro.model.PlanoContaSecundaria;
 import com.ajeff.simed.financeiro.repository.ContasPagarRepository;
 import com.ajeff.simed.financeiro.repository.filter.ContaPagarFilter;
@@ -61,76 +62,110 @@ public class ContaPagarService {
 	
 	
 	@Transactional
-	public void salvar(ContaPagar contaPagar) {
-		try {
-			if (contaPagar.isNovo()) {
-				List<ContaPagar> contas = gerarContasPagar(contaPagar);
-				repository.save(contas);
-			}else {
-				CalculosComDatas.emissaoMenorIgualVencimento(contaPagar.getDataEmissao(), contaPagar.getVencimento());
-				testeRegistroJaCadastrado(contaPagar);
-				repository.save(contaPagar);
-			}
-		} catch (RegistroNaoCadastradoException e) {
-			e.printStackTrace();
-			throw new RegistroNaoCadastradoException("Algo deu errado! Conta não cadastrada.");
+	public List<ContaPagar> salvar(ContaPagar contaPagar) {
+		List<ContaPagar> contas = new ArrayList<ContaPagar>();
+
+		if (contaPagar.isNovo()) {
+			contas = gerarContasPagar(contaPagar);
+			return repository.save(contas);
+		}else {
+			contas.add(contaPagar);
+			regrasAlteracao(contas);
+			return repository.save(contas);
 		}
+
 	}
 	
+
+	private void regrasAlteracao(List<ContaPagar> contas) {
+		contas.forEach(c -> CalculosComDatas.emissaoMenorIgualVencimento(c.getDataEmissao(), c.getVencimento()));
+		contas.forEach(c -> testeRegistroJaCadastrado(c));
+	}
+
 
 	private List<ContaPagar> gerarContasPagar(ContaPagar contaPagar) {
 		List<ContaPagar> contas = new ArrayList<>();
 		
-		if (contaPagar.getTotalParcela() == null || contaPagar.getTotalParcela() <=0) {
-			contaPagar.setTotalParcela(1);
-		}
-		
+		testeSeTotalParcelaNulo(contaPagar);
 		Long days = calculoDiasDataEmissaoParaVencimento(contaPagar);
 	
-		try {
-			for(int i = 1; i <= contaPagar.getTotalParcela(); i++) {
-		
-
-				ContaPagar cp = new ContaPagar();
-				cp.setDataEmissao(contaPagar.getDataEmissao());
-				cp.setVencimento(contaPagar.getDataEmissao().plusDays(days * i));
-				cp.setEmpresa(contaPagar.getEmpresa());
-				cp.setStatus("ABERTO");
-				cp.setDocumento(contaPagar.getFornecedor().getSigla() + contaPagar.getNotaFiscal() +"-"+i);
-				cp.setParcela(i);
-				cp.setRecibo(contaPagar.getRecibo());
-				cp.setTemNota(contaPagar.getTemNota());
-				cp.setNotaFiscal(contaPagar.getNotaFiscal());
-				cp.setTotalParcela(contaPagar.getTotalParcela());
-				cp.setPlanoContaSecundaria(contaPagar.getPlanoContaSecundaria());
-				cp.setFornecedor(contaPagar.getFornecedor());
-				retencaoDeImpostos(contaPagar, cp);
-				cp.setValor(contaPagar.getValor().divide(new BigDecimal(contaPagar.getTotalParcela()),
-						MathContext.DECIMAL32));		
-				setarHistoricoDaContaPagar(contaPagar, cp);
-				
-				CalculosComDatas.emissaoMenorIgualVencimento(cp.getDataEmissao(), cp.getVencimento());
-				testeRegistroJaCadastrado(cp);
-				contas.add(cp);
-			}
-		} catch (RegistroNaoCadastradoException e) {
-			throw new RegistroNaoCadastradoException("Algo deu errado! Conta não cadastrada.");
+		for(int i = 1; i <= contaPagar.getTotalParcela(); i++) {
+			contas.add(novaContaPagar(contaPagar, days, i));
 		}
 		
 		return contas;
 	}
-	
-	
-	/*
-	 * Salvar os impostos somente na primeira parcela
-	 */
-	private void retencaoDeImpostos(ContaPagar contaPagar, ContaPagar cp) {
-		if(cp.getParcela() ==1) {
-			cp.setImpostos(impostoService.retencaoImpostos(contaPagar, cp));
-			BigDecimal impostos = cp.getImpostos().stream().map(i -> i.getValor()).reduce(BigDecimal.ZERO, BigDecimal::add);
-			contaPagar.setValor(contaPagar.getValor().subtract(impostos));		
+
+
+	private ContaPagar novaContaPagar(ContaPagar contaPagar, Long days, int i) {
+		ContaPagar cp = new ContaPagar();
+		cp.setDataEmissao(contaPagar.getDataEmissao());
+		cp.setVencimento(contaPagar.getDataEmissao().plusDays(days * i));
+		cp.setEmpresa(contaPagar.getEmpresa());
+		cp.setStatus("ABERTO");
+		cp.setDocumento(contaPagar.getFornecedor().getSigla() + contaPagar.getNotaFiscal() +"-"+i);
+		cp.setParcela(i);
+		cp.setRecibo(contaPagar.getRecibo());
+		cp.setTemNota(contaPagar.getTemNota());
+		cp.setNotaFiscal(contaPagar.getNotaFiscal());
+		cp.setTotalParcela(contaPagar.getTotalParcela());
+		cp.setPlanoContaSecundaria(contaPagar.getPlanoContaSecundaria());
+		cp.setFornecedor(contaPagar.getFornecedor());
+		BigDecimal valorImpostos = regraRetencaoDeImpostos(contaPagar, cp);
+		cp.setValor(contaPagar.getValor().subtract(valorImpostos).divide(new BigDecimal(contaPagar.getTotalParcela()),
+				MathContext.DECIMAL32));		
+		setarHistoricoDaContaPagar(contaPagar, cp);
+		
+		CalculosComDatas.emissaoMenorIgualVencimento(cp.getDataEmissao(), cp.getVencimento());
+		testeRegistroJaCadastrado(cp);
+		return cp;
+	}
+
+
+	private void testeSeTotalParcelaNulo(ContaPagar contaPagar) {
+		if (contaPagar.getTotalParcela() == null || contaPagar.getTotalParcela() <=0) {
+			contaPagar.setTotalParcela(1);
 		}
 	}
+
+	private BigDecimal regraRetencaoDeImpostos(ContaPagar contaPagar, ContaPagar cp) {
+		if(contaPagar.isTemImpostoRetido() && cp.getParcela() ==1) {
+			cp.setImpostos(retencaoImpostosPorTipo(contaPagar, cp));
+			return cp.getImpostos().stream().map(i -> i.getValor()).reduce(BigDecimal.ZERO, BigDecimal::add);
+		}else {
+			return BigDecimal.ZERO;
+		}
+	}	
+	
+	private List<Imposto> retencaoImpostosPorTipo(ContaPagar contaPagar, ContaPagar cp) {
+		List<Imposto> impostos = new ArrayList<>();
+
+		if (contaPagar.getReterINSS()) {
+			impostos.add(impostoService.novoImposto(contaPagar, "INSS", cp));
+		}
+
+		if (contaPagar.getReterIR()) {
+			impostos.add(impostoService.novoImposto(contaPagar, "IRRF", cp));
+		}
+
+		if (contaPagar.getReterCOFINS() && contaPagar.getFornecedor().getTipo().equals("J")) {
+			impostos.add(impostoService.novoImposto(contaPagar, "PCCS", cp));
+		}
+
+		if (contaPagar.getIssPorcentagem() != null) {
+			impostos.add(impostoService.novoImposto(contaPagar, "ISS", cp));
+		}
+		return impostos;
+	}
+
+
+//	private void retencaoDeImpostos(ContaPagar contaPagar, ContaPagar cp) {
+//		if(cp.getParcela() ==1) {
+//			cp.setImpostos(impostoService.retencaoImpostos(contaPagar, cp));
+//			BigDecimal impostos = cp.getImpostos().stream().map(i -> i.getValor()).reduce(BigDecimal.ZERO, BigDecimal::add);
+//			contaPagar.setValor(contaPagar.getValor().subtract(impostos));		
+//		}
+//	}
 
 
 	private Long calculoDiasDataEmissaoParaVencimento(ContaPagar contaPagar) {

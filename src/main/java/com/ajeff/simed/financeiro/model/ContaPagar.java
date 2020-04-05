@@ -348,4 +348,11 @@ public class ContaPagar implements Serializable{
 	public boolean isPendencia () {
 		return this.recibo.equals(false) || this.temNota.equals(false);
 	}
+	
+	public boolean isTemImpostoRetido() {
+		return this.reterCOFINS.equals(true) 
+				|| this.reterINSS.equals(true) 
+				|| this.reterIR.equals(true) 
+				|| this.issPorcentagem.compareTo(BigDecimal.ZERO) == 1;
+	}
 }

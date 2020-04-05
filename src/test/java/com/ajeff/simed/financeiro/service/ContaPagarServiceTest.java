@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -22,6 +23,7 @@ import com.ajeff.simed.financeiro.model.ContaPagar;
 import com.ajeff.simed.financeiro.model.Fornecedor;
 import com.ajeff.simed.financeiro.model.PlanoConta;
 import com.ajeff.simed.financeiro.model.PlanoContaSecundaria;
+import com.ajeff.simed.financeiro.repository.ContasPagarRepository;
 import com.ajeff.simed.geral.model.Cidade;
 import com.ajeff.simed.geral.model.Empresa;
 import com.ajeff.simed.geral.model.Endereco;
@@ -34,8 +36,11 @@ public class ContaPagarServiceTest {
 	
 	
 	
-	@Mock
+	@InjectMocks
 	private ContaPagarService service;
+	
+	@Mock
+	private ContasPagarRepository repository;
 	@Mock
 	private PlanoConta pc;
 	@Mock
@@ -101,59 +106,33 @@ public class ContaPagarServiceTest {
 	
 	@Test
 	@DisplayName("Deve salvar um conta a pagar sem parcela e sem impostos")
-	public void contaPagar1() {
+	public void salvarContaPagarSimples() {
 		
-		ContaPagar cp = Mockito.mock(ContaPagar.class);
-		LocalDate emissao = LocalDate.of(2020, 3, 20);
-		LocalDate vencimento = LocalDate.of(2020, 3, 25);
-		cp.setDataEmissao(emissao);
-		cp.setVencimento(vencimento);
+		ContaPagar cp = contaNova();
+		ContaPagar cpSalva = contaNova();
+		cpSalva.setId(1l);
+		Mockito.when(repository.save(cp)).thenReturn(cpSalva);
+		
+		service.salvar(cp);
+		
+		Assertions.assertThat(cpSalva.getId()).isNotNull();
+//		Mockito.verify(service, Mockito.times(1)).salvar(cp);
+	}
+
+
+
+
+	private ContaPagar contaNova() {
+		ContaPagar cp = new ContaPagar();
+		cp.setDataEmissao(LocalDate.of(2020, 3, 20));
+		cp.setVencimento(LocalDate.of(2020, 3, 25));
 		cp.setValor(new BigDecimal(1000));
 		cp.setNotaFiscal("0001");
+		cp.setTotalParcela(1);
 		cp.setPlanoContaSecundaria(pcs);
 		cp.setFornecedor(f);
-		service.salvar(cp);
-		
-		Mockito.doNothing().when(service).salvar(cp);
-		Mockito.verify(service, Mockito.times(1)).salvar(cp);
+		return cp;
 	}
-	
-	
-	@Test
-	@DisplayName("Erro ao informar a data de vencimento menor que a data de emissão")
-	public void contaPagar2() {
-		
-		ContaPagar cp = Mockito.mock(ContaPagar.class);
-		LocalDate emissao = LocalDate.of(2020, 3, 20);
-		LocalDate vencimento = LocalDate.of(2020, 3, 10);
-		cp.setDataEmissao(emissao);
-		cp.setVencimento(vencimento);
-		cp.setValor(new BigDecimal(1000));
-		cp.setNotaFiscal("0001");
-		cp.setTotalParcela(2);
-		cp.setPlanoContaSecundaria(pcs);
-		service.salvar(cp);
-		
-		Mockito.verify(service).salvar(cp);
-		Assertions.assertThat(cp.getTotalParcela()).isEqualTo(1);
-		
-		
-//		Assertions.assertThat(emissao).isAfter(vencimento);
-		
-//	    Exception exception = Assertions.assertThrows(VencimentoMenorEmissaoException.class, () -> {
-//	    	service.salvar(cp);
-////	    	service.testeVencimentoMaiorEmissao(cp);
-//	    });
-//	    
-//	    Assertions.assertTrue(exception.getMessage().contains("A data de vencimento não pode ser menor que a emissão"));
-	    
-	    
-		
-//		Mockito.doThrow(VencimentoMenorEmissaoException.class).when(service).salvar(cp);
-//		service.salvar(cp);
-//		
-//		Assertions.assertThrows(VencimentoMenorEmissaoException.class, () -> service.salvar(cp));
-		
-	}	
+
 	
 }
