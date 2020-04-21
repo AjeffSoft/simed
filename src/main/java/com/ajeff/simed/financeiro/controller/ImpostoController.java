@@ -27,8 +27,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ajeff.simed.financeiro.model.Imposto;
 import com.ajeff.simed.financeiro.repository.filter.ImpostoFilter;
-import com.ajeff.simed.financeiro.service.ContaPagarService;
 import com.ajeff.simed.financeiro.service.ImpostoService;
+import com.ajeff.simed.financeiro.service.contaPagarService.ContaPagarService;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.financeiro.service.exception.PagamentoNaoEfetuadoException;
 import com.ajeff.simed.financeiro.service.exception.VencimentoMenorEmissaoException;

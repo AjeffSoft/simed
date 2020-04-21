@@ -93,11 +93,11 @@
 							<td th:text="${cooperado.endereco.cidade.nome} +' /'+ ${cooperado.endereco.cidade.uf} "></td>
 							<td th:text="${cooperado.celular}"></td>
 							<td>
-								<th:block th:if="${cooperado.ativo}">
+								<th:block th:if="${cooperado.ativado}">
 									<span class="label  label-success">Ativo</span>
 								</th:block>
 
-								<th:block th:unless="${cooperado.ativo}">
+								<th:block th:unless="${cooperado.ativado}">
 									<span class="label  label-danger">Inativo</span>
 								</th:block>
 

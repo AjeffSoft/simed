@@ -1,13 +1,11 @@
-package com.ajeff.simed.financeiro.service;
+package com.ajeff.simed.financeiro.service.contaPagarService;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.sql.Connection;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,8 +18,6 @@ import javax.persistence.PersistenceException;
 import javax.sql.DataSource;
 
 import org.hibernate.TransientObjectException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,21 +31,19 @@ import com.ajeff.simed.financeiro.model.Imposto;
 import com.ajeff.simed.financeiro.model.PlanoContaSecundaria;
 import com.ajeff.simed.financeiro.repository.ContasPagarRepository;
 import com.ajeff.simed.financeiro.repository.filter.ContaPagarFilter;
+import com.ajeff.simed.financeiro.service.ImpostoService;
+import com.ajeff.simed.financeiro.service.PlanoContaSecundariaService;
 import com.ajeff.simed.financeiro.service.exception.DocumentoEFornecedorJaCadastradoException;
-import com.ajeff.simed.financeiro.service.exception.RegistroNaoCadastradoException;
-import com.ajeff.simed.financeiro.service.exception.VencimentoMenorEmissaoException;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.util.CalculosComDatas;
+import com.ajeff.simed.util.CalculosComValores;
 
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 
 @Service
-public class ContaPagarService {
-
-	@SuppressWarnings("unused")
-	private static final Logger LOG = LoggerFactory.getLogger(ContaPagarService.class);
+public class ContaPagarImprimirService {
 
 	@Autowired
 	DataSource dataSource;
@@ -85,25 +79,32 @@ public class ContaPagarService {
 
 	private List<ContaPagar> gerarContasPagar(ContaPagar contaPagar) {
 		List<ContaPagar> contas = new ArrayList<>();
+		List<Imposto> impostos = new ArrayList<>();
 		
 		testeSeTotalParcelaNulo(contaPagar);
-		Long days = calculoDiasDataEmissaoParaVencimento(contaPagar);
-	
+		Long days = CalculosComDatas.diferencaEntreDuasDatas(contaPagar.getDataEmissao(), contaPagar.getVencimento());
+		
+		
+		if (contaPagar.isTemImpostoRetido()) {
+			impostos = impostoService.calcularImpostos(contaPagar);
+		}
+		
+		
 		for(int i = 1; i <= contaPagar.getTotalParcela(); i++) {
-			contas.add(novaContaPagar(contaPagar, days, i));
+			contas.add(novaContaPagar(contaPagar, days, i, impostos));
 		}
 		
 		return contas;
 	}
 
 
-	private ContaPagar novaContaPagar(ContaPagar contaPagar, Long days, int i) {
+	private ContaPagar novaContaPagar(ContaPagar contaPagar, Long days, int i, List<Imposto> impostos) {
 		ContaPagar cp = new ContaPagar();
 		cp.setDataEmissao(contaPagar.getDataEmissao());
 		cp.setVencimento(contaPagar.getDataEmissao().plusDays(days * i));
 		cp.setEmpresa(contaPagar.getEmpresa());
 		cp.setStatus("ABERTO");
-		cp.setDocumento(contaPagar.getFornecedor().getSigla() + contaPagar.getNotaFiscal() +"-"+i);
+		cp.setDocumento(contaPagar.getNotaFiscal() +"-"+i);
 		cp.setParcela(i);
 		cp.setRecibo(contaPagar.getRecibo());
 		cp.setTemNota(contaPagar.getTemNota());
@@ -111,16 +112,25 @@ public class ContaPagarService {
 		cp.setTotalParcela(contaPagar.getTotalParcela());
 		cp.setPlanoContaSecundaria(contaPagar.getPlanoContaSecundaria());
 		cp.setFornecedor(contaPagar.getFornecedor());
-		BigDecimal valorImpostos = regraRetencaoDeImpostos(contaPagar, cp);
-		cp.setValor(contaPagar.getValor().subtract(valorImpostos).divide(new BigDecimal(contaPagar.getTotalParcela()),
-				MathContext.DECIMAL32));		
 		setarHistoricoDaContaPagar(contaPagar, cp);
-		
 		CalculosComDatas.emissaoMenorIgualVencimento(cp.getDataEmissao(), cp.getVencimento());
 		testeRegistroJaCadastrado(cp);
+		calcularValorTotal(contaPagar, cp, impostos);
 		return cp;
 	}
 
+
+	private void calcularValorTotal(ContaPagar contaPagar, ContaPagar cp, List<Imposto> impostos) {
+		BigDecimal valorImpostos = BigDecimal.ZERO;
+		
+		if(!impostos.isEmpty()) {
+			valorImpostos = impostos.stream().map( i -> i.getValor()).reduce(BigDecimal.ZERO, BigDecimal::add);
+			cp.setImpostos(impostos);
+		}
+		cp.setValor(CalculosComValores.setarValorTotalPositivo(contaPagar.getValor(), valorImpostos, BigDecimal.ZERO, contaPagar.getTotalParcela()));
+	}
+
+	
 
 	private void testeSeTotalParcelaNulo(ContaPagar contaPagar) {
 		if (contaPagar.getTotalParcela() == null || contaPagar.getTotalParcela() <=0) {
@@ -128,49 +138,6 @@ public class ContaPagarService {
 		}
 	}
 
-	private BigDecimal regraRetencaoDeImpostos(ContaPagar contaPagar, ContaPagar cp) {
-		if(contaPagar.isTemImpostoRetido() && cp.getParcela() ==1) {
-			cp.setImpostos(retencaoImpostosPorTipo(contaPagar, cp));
-			return cp.getImpostos().stream().map(i -> i.getValor()).reduce(BigDecimal.ZERO, BigDecimal::add);
-		}else {
-			return BigDecimal.ZERO;
-		}
-	}	
-	
-	private List<Imposto> retencaoImpostosPorTipo(ContaPagar contaPagar, ContaPagar cp) {
-		List<Imposto> impostos = new ArrayList<>();
-
-		if (contaPagar.getReterINSS()) {
-			impostos.add(impostoService.novoImposto(contaPagar, "INSS", cp));
-		}
-
-		if (contaPagar.getReterIR()) {
-			impostos.add(impostoService.novoImposto(contaPagar, "IRRF", cp));
-		}
-
-		if (contaPagar.getReterCOFINS() && contaPagar.getFornecedor().getTipo().equals("J")) {
-			impostos.add(impostoService.novoImposto(contaPagar, "PCCS", cp));
-		}
-
-		if (contaPagar.getIssPorcentagem() != null) {
-			impostos.add(impostoService.novoImposto(contaPagar, "ISS", cp));
-		}
-		return impostos;
-	}
-
-
-//	private void retencaoDeImpostos(ContaPagar contaPagar, ContaPagar cp) {
-//		if(cp.getParcela() ==1) {
-//			cp.setImpostos(impostoService.retencaoImpostos(contaPagar, cp));
-//			BigDecimal impostos = cp.getImpostos().stream().map(i -> i.getValor()).reduce(BigDecimal.ZERO, BigDecimal::add);
-//			contaPagar.setValor(contaPagar.getValor().subtract(impostos));		
-//		}
-//	}
-
-
-	private Long calculoDiasDataEmissaoParaVencimento(ContaPagar contaPagar) {
-		return ChronoUnit.DAYS.between(contaPagar.getDataEmissao(), contaPagar.getVencimento());
-	}
 
 
 	private void setarHistoricoDaContaPagar(ContaPagar contaPagar, ContaPagar cp) {
@@ -187,7 +154,7 @@ public class ContaPagarService {
 	}	
 
 
-	private void testeRegistroJaCadastrado(ContaPagar contaPagar) {
+	public void testeRegistroJaCadastrado(ContaPagar contaPagar) {
 		if(contaPagar.getFornecedor().getId() == null) {
 			throw new TransientObjectException ("O fornecedor não foi selecionado");
 		}else {
@@ -268,7 +235,7 @@ public class ContaPagarService {
 
 	
 	
-	
+	////////RELATÓRIOS
 	
 	public byte[] imprimirRelatorio(PeriodoRelatorio periodoRelatorio) throws Exception {
 		Map<String, Object> map = new HashMap<>();

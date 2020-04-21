@@ -2,13 +2,48 @@ package com.ajeff.simed.util;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 
 import com.ajeff.simed.exceptions.DataNaoInformadaException;
+import com.ajeff.simed.financeiro.model.ContaPagar;
 import com.ajeff.simed.financeiro.service.exception.VencimentoMenorEmissaoException;
 
 public class CalculosComDatas {
 	
+	
+	public static LocalDate setarDataSomandoDiasNoInicioMes(LocalDate data, Integer dias, Boolean diaUtil, Boolean antecipar) {
+		LocalDate result = LocalDate.MIN;
+		if (data != null && dias != null) {
+			result = data.with(TemporalAdjusters.firstDayOfMonth());
+			result = result.plusDays(dias -1);
+
+			if (diaUtil) {
+				if(dataFinalSemana(result)) {
+					if(antecipar) {
+						if (dataDomingo(result)) {
+							result = result.minusDays(2); 
+						}else {
+							result = result.minusDays(1);
+						}
+					}else {
+						if (dataDomingo(result)) {
+							result = result.plusDays(1);
+						}else {
+							result = result.plusDays(2);
+						}
+					}
+				}
+			}
+		}
+			return result;
+	}
+	
+	
+	
+	public static LocalDate setarParaUltimoDiaMes(LocalDate data) {
+		return data.minusMonths(0).with(TemporalAdjusters.lastDayOfMonth());
+	}
 	
 	
 	public static Boolean dataFinalSemana(LocalDate data) {
@@ -28,10 +63,7 @@ public class CalculosComDatas {
 	}
 	
 	
-	public static LocalDate sumDays(LocalDate data, Integer dias) {
-		data.with(TemporalAdjusters.firstDayOfMonth());
-		return data.plusDays(dias);
-	}
+
 	
 	public static int numeroDiaSemana(LocalDate data) {
 		return data.getDayOfWeek().getValue();
@@ -49,11 +81,21 @@ public class CalculosComDatas {
 	}
 	
 	
-	public static LocalDate setarVencimento(LocalDate emissao, Integer parcela, Integer dias) {
+	public static LocalDate setarVencimentoXTotalParcelas(LocalDate emissao, Integer parcela, Integer dias) {
 		if (emissao == null) {
 			throw new DataNaoInformadaException("Data de emissão não informada!");
 		}
 		return emissao.plusDays(dias * parcela);
+	}
+	
+	
+	public static Long diferencaEntreDuasDatas(LocalDate dataInicio, LocalDate dataFinal) {
+		Long dias = 0L;
+		if(dataInicio == null || dataFinal == null) {
+			throw new DataNaoInformadaException("Data não informada!");
+		}
+		dias = ChronoUnit.DAYS.between(dataInicio, dataFinal);
+		return dias >= 0 ? dias : 0L;
 	}
 
 }

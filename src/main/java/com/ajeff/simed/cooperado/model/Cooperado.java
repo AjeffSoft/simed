@@ -220,7 +220,7 @@ public class Cooperado implements Serializable{
 		return this.id == null;
 	}
 	
-	public boolean isAtivo() {
+	public boolean isAtivado() {
 		return this.ativo == true;
 	}
 }

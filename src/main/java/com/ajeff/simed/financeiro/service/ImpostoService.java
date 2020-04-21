@@ -3,7 +3,6 @@ package com.ajeff.simed.financeiro.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,14 +31,10 @@ import com.ajeff.simed.financeiro.service.calculos.CalculoINSS;
 import com.ajeff.simed.financeiro.service.calculos.CalculoImpostoRenda;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.financeiro.service.exception.PagamentoNaoEfetuadoException;
-import com.ajeff.simed.financeiro.service.exception.RegistroNaoCadastradoException;
 import com.ajeff.simed.util.CalculosComDatas;
 
 @Service
 public class ImpostoService {
-
-	@SuppressWarnings("unused")
-	private static final Logger LOG = LoggerFactory.getLogger(ImpostoService.class);
 
 	@Autowired
 	private ImpostosRepository repository;
@@ -50,6 +45,8 @@ public class ImpostoService {
 	@Autowired
 	private ContasPagarRepository contaPagarRepository;
 
+	
+	
 	// TODO: Disponibilizar valor desconto dependente em banco de dados
 	private static final BigDecimal DEP_VALOR = new BigDecimal(189.59);
 	private static final BigDecimal TETO_INSS = new BigDecimal(6101.05);
@@ -58,33 +55,37 @@ public class ImpostoService {
 	private static final BigDecimal ALIQUOTA_INSS = new BigDecimal(11);
 
 	
-	public List<Imposto> retencaoImpostos(ContaPagar contaPagar, ContaPagar cp) {
-
+	
+	public List<Imposto> calcularImpostos(ContaPagar contaPagar) {
+		return retencaoImpostosPorTipo(contaPagar);
+	}	
+	
+	
+	private List<Imposto> retencaoImpostosPorTipo(ContaPagar contaPagar) {
 		List<Imposto> impostos = new ArrayList<>();
 
-		if (contaPagar.getReterINSS()) {
-			impostos.add(imposto(contaPagar, "INSS", cp));
+		if (contaPagar.getReterINSS() && contaPagar.getFornecedor().getTipo().equals("F")) {
+			impostos.add(novoImposto(contaPagar, "INSS"));
 		}
 
 		if (contaPagar.getReterIR()) {
-			impostos.add(imposto(contaPagar, "IRRF", cp));
+			impostos.add(novoImposto(contaPagar, "IRRF"));
 		}
 
 		if (contaPagar.getReterCOFINS() && contaPagar.getFornecedor().getTipo().equals("J")) {
-			impostos.add(imposto(contaPagar, "PCCS", cp));
+			impostos.add(novoImposto(contaPagar, "PCCS"));
 		}
 
-		if (contaPagar.getIssPorcentagem() != null) {
-			impostos.add(imposto(contaPagar, "ISS", cp));
+		if (contaPagar.getIssPorcentagem() != null && contaPagar.getIssPorcentagem().compareTo(BigDecimal.ZERO) == 1) {
+			impostos.add(novoImposto(contaPagar, "ISS"));
 		}
 		return impostos;
-
-
 	}
-
-	public Imposto novoImposto(ContaPagar contaPagar, String tipoImposto, ContaPagar cp) {
+	
+	
+	public Imposto novoImposto(ContaPagar contaPagar, String tipoImposto) {
 		Imposto imp = new Imposto();
-		imp.setApuracao(contaPagar.getDataEmissao().minusMonths(0).with(TemporalAdjusters.lastDayOfMonth()));
+		imp.setApuracao(CalculosComDatas.setarParaUltimoDiaMes(contaPagar.getDataEmissao()));
 		imp.setJuros(BigDecimal.ZERO);
 		imp.setMulta(BigDecimal.ZERO);
 		imp.setValorNF(contaPagar.getValor());
@@ -93,9 +94,8 @@ public class ImpostoService {
 		imp.setEmissaoNF(contaPagar.getDataEmissao());
 		imp.setNome(tipoImposto);
 		imp.setHistorico(imp.getNome() + " - " + contaPagar.getFornecedor().getFantasia() + " - " + imp.getNumeroNF());
-		imp.setContaPagar(cp);
 		imp.setVencimento(setarDataVencimentoPorTipoImposto(imp.getApuracao(), tipoImposto));
-		calcularImpostoPorTipo(contaPagar, tipoImposto, imp);
+		imp.setValor(setarValorImpostoPorTipo(contaPagar));
 		imp.setTotal(imp.getValor());
 		return imp;
 	}
@@ -103,45 +103,44 @@ public class ImpostoService {
 	
 	private LocalDate setarDataVencimentoPorTipoImposto(LocalDate data, String tipoImposto) {
 		if (tipoImposto.equals("INSS")) {
-			return setarVencimentoSomarDiasEDiaUtil(data, 15);
+			return CalculosComDatas.setarDataSomandoDiasNoInicioMes(data.plusMonths(1), 15, true, true);
 
 		} else if (tipoImposto.equals("IRRF") || tipoImposto.equals("PCCS")) {
-			return setarVencimentoSomarDiasEDiaUtil(data, 20);
+			return CalculosComDatas.setarDataSomandoDiasNoInicioMes(data, 20, true, true);
 
 		} else {
-			return setarVencimentoSomarDiasEDiaUtil(data, 10);
+			return CalculosComDatas.setarDataSomandoDiasNoInicioMes(data, 15, true, false);
 		}
 	}	
 	
 
-	private BigDecimal setarValorImpostoPorTipo(BigDecimal valor, String tipoImposto, String tipoFornecedor, BigDecimal iss) {
+	private  BigDecimal setarValorImpostoPorTipo(ContaPagar contaPagar) {
 
-		if (tipoImposto.equals("INSS")) {
-			return CalculoINSS.calculoINSS(valor, TETO_INSS, ALIQUOTA_INSS);
+		if (contaPagar.getReterINSS()) {
+			return CalculoINSS.calculoINSS(contaPagar.getValor(), TETO_INSS, ALIQUOTA_INSS);
 
-		} else if (tipoImposto.equals("IRRF")) {
-			return regrasParaIRRFPorTipoFornecedor(valor, tipoFornecedor);
+		} else if (contaPagar.getReterIR()) {
+			return regrasParaIRRFPorTipoFornecedor(contaPagar);
 			
-		} else if (tipoImposto.equals("PCCS") && tipoFornecedor.equals("J")) {
+		} else if (contaPagar.getReterCOFINS() && contaPagar.getFornecedor().getTipo().equals("J")) {
 			TabelaIRPJ tabela = tabelaIRPJRepository.findOne(1L);
-			return CalculoImpostoRenda.calculoPCCS(valor, tabela.getAliquotaPIS(), tabela.getAliquotaCOFINS(), tabela.getAliquotaCSLL()));
+			return CalculoImpostoRenda.calculoPCCS(contaPagar.getValor(), tabela.getAliquotaPIS(), tabela.getAliquotaCOFINS(), tabela.getAliquotaCSLL());
 		} else {
-			return valor.multiply(iss).divide(new BigDecimal(100).setScale(2, RoundingMode.HALF_UP));
+			return contaPagar.getValor().multiply(contaPagar.getIssPorcentagem()).divide(new BigDecimal(100).setScale(2, RoundingMode.HALF_UP));
 		}
 	}
 	
 
-	private BigDecimal regrasParaIRRFPorTipoFornecedor(BigDecimal valor String tipoFornecedor) {
-		if (tipoFornecedor.equals("F")) {
-			BigDecimal valorBase = contaPagar.getValor();
-			imp.setValor(regraRetencaoIRRFPessoaFisica(contaPagar, valorBase));
+	private BigDecimal regrasParaIRRFPorTipoFornecedor(ContaPagar contaPagar) {
+		if (contaPagar.getFornecedor().getTipo().equals("F")) {
+			return regraRetencaoIRRFPessoaFisica(contaPagar);
 		} else {
-			imp.setValor(regraRetencaoIRRFPessoaJuridica(contaPagar));
+			return regraRetencaoIRRFPessoaJuridica(contaPagar);
 		}
-		return null;
 	}
 
-	private BigDecimal regraRetencaoIRRFPessoaFisica(ContaPagar contaPagar, BigDecimal valorBase) {
+	private BigDecimal regraRetencaoIRRFPessoaFisica(ContaPagar contaPagar) {
+		BigDecimal valorBase = contaPagar.getValor();
 		if (contaPagar.getReterINSS()) {
 			valorBase = valorBase.subtract(CalculoINSS.calculoINSS(contaPagar.getValor(), TETO_INSS, ALIQUOTA_INSS));
 		}
@@ -149,6 +148,7 @@ public class ImpostoService {
 				.calculoTotalDescontoDependente(contaPagar.getFornecedor().getDependente(), DEP_VALOR));
 		return setarAFaixaRetencaoIRRF(valorBase);
 	}
+	
 
 	private BigDecimal regraRetencaoIRRFPessoaJuridica(ContaPagar contaPagar) {
 		TabelaIRPJ tabela = tabelaIRPJRepository.findOne(1L);
@@ -175,15 +175,6 @@ public class ImpostoService {
 			return CalculoImpostoRenda.calculoIRRF(valorBase, faixa.getAliquota(), faixa.getDeducao());
 		} else {
 			return BigDecimal.ZERO;
-		}
-	}
-
-	private LocalDate setarVencimentoSomarDiasEDiaUtil(LocalDate dataBase, Integer dias) {
-		LocalDate data = (CalculosComDatas.sumDays(dataBase, dias));
-		if (CalculosComDatas.dataFinalSemana(data)) {
-			return CalculosComDatas.dataDomingo(data) ? data.minusDays(2) : data.minusDays(1);
-		} else {
-			return data;
 		}
 	}
 
@@ -301,6 +292,9 @@ public class ImpostoService {
 	public List<Imposto> findByContaPagar(ContaPagar contaPagar) {
 		return repository.findByContaPagar(contaPagar);
 	}
+
+
+
 
 
 }
