@@ -28,7 +28,9 @@ public class CooperadoService {
 	@Transactional
 	public void salvar(Cooperado cooperado) {
 		testeRegistroJaCadastrado(cooperado);
-		cooperado.setAtivo(true);
+		if (cooperado.isNovo()) {
+			cooperado.setAtivo(false);
+		}
 		repository.save(cooperado);
 	}
 	
@@ -89,6 +91,10 @@ public class CooperadoService {
 
 	public List<Cooperado> findByCooperadoAtivoTrue() {
 		return repository.findByAtivoTrue();
+	}
+
+	public Cooperado findOne(Long id) {
+		return repository.findOne(id);
 	}
 
 }

@@ -22,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.ajeff.simed.cooperado.model.Cooperado;
 import com.ajeff.simed.cooperado.repository.filter.CooperadoFilter;
 import com.ajeff.simed.cooperado.service.CooperadoService;
+import com.ajeff.simed.financeiro.model.ContaPagar;
 import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoException;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
 import com.ajeff.simed.geral.service.AgenciaService;
@@ -91,6 +92,14 @@ public class CooperadoController {
 	public ModelAndView alterar(@PathVariable Long id, Cooperado cooperado) {
 		cooperado = service.buscarComCidadeEstado(id);
 		ModelAndView mv = novo(cooperado);
+		mv.addObject(cooperado);
+		return mv;
+	}
+	
+	@GetMapping("/detalhe/{id}")
+	public ModelAndView detalhe(@PathVariable Long id, Cooperado cooperado) {
+		ModelAndView mv = new ModelAndView("Cooperado/cooperado/DetalheCooperado");
+		cooperado = service.findOne(id);
 		mv.addObject(cooperado);
 		return mv;
 	}

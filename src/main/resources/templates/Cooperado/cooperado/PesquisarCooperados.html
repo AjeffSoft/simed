@@ -20,7 +20,7 @@
 						<h1>Pesquisar cooperados</h1>
 					</div>
 					
-					<div class="col-sm-2">
+					<div class="col-sm-2" sec:authorize-url="/cooperado/cooperado/novo">
 						<div class="aw-page-header-controls">
 							<a class="btn  btn-warning" th:href="@{/cooperado/cooperado/novo}">
 								<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Cadastrar</span>
@@ -104,16 +104,16 @@
 							</td>							
 							<td class="text-center">
 								
-								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes"
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes" sec:authorize-url="/cooperado/cooperado/detalhe/**"
 									th:href="@{/cooperado/cooperado/detalhe/{id}(id=${cooperado.id})}"> 
 									<i class="glyphicon glyphicon-eye-open"></i>
 								</a>							
 								
-								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar"
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar" sec:authorize-url="/cooperado/cooperado/alterar/**"
 										th:href="@{/cooperado/cooperado/alterar/{id}(id=${cooperado.id})}"> 
 									<i class="glyphicon glyphicon-pencil"></i>
 								</a>
-								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir"
+								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir" sec:authorize-url="/cooperado/cooperado/excluir/**"
 									data:url="@{/cooperado/cooperado/excluir/{id}(id=${cooperado.id})}"	data:objeto="${cooperado.nome}">
 									<i class="glyphicon glyphicon-trash"></i>
 								</a>

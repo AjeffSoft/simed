@@ -49,7 +49,7 @@ public class ImpostoService {
 	
 	// TODO: Disponibilizar valor desconto dependente em banco de dados
 	private static final BigDecimal DEP_VALOR = new BigDecimal(189.59);
-	private static final BigDecimal TETO_INSS = new BigDecimal(6101.05);
+	private static final BigDecimal TETO_INSS = new BigDecimal(6101.06);
 
 	// TODO: Criar tabela para calculos INSS (Pessoa Fisica e futuros funcionários)
 	private static final BigDecimal ALIQUOTA_INSS = new BigDecimal(11);
@@ -106,10 +106,10 @@ public class ImpostoService {
 			return CalculosComDatas.setarDataSomandoDiasNoInicioMes(data.plusMonths(1), 15, true, true);
 
 		} else if (tipoImposto.equals("IRRF") || tipoImposto.equals("PCCS")) {
-			return CalculosComDatas.setarDataSomandoDiasNoInicioMes(data, 20, true, true);
+			return CalculosComDatas.setarDataSomandoDiasNoInicioMes(data.plusMonths(1), 20, true, true);
 
 		} else {
-			return CalculosComDatas.setarDataSomandoDiasNoInicioMes(data, 15, true, false);
+			return CalculosComDatas.setarDataSomandoDiasNoInicioMes(data.plusMonths(1), 10, true, false);
 		}
 	}	
 	
@@ -126,7 +126,7 @@ public class ImpostoService {
 			TabelaIRPJ tabela = tabelaIRPJRepository.findOne(1L);
 			return CalculoImpostoRenda.calculoPCCS(contaPagar.getValor(), tabela.getAliquotaPIS(), tabela.getAliquotaCOFINS(), tabela.getAliquotaCSLL());
 		} else {
-			return contaPagar.getValor().multiply(contaPagar.getIssPorcentagem()).divide(new BigDecimal(100).setScale(2, RoundingMode.HALF_UP));
+			return contaPagar.getValor().multiply(contaPagar.getIssPorcentagem()).divide(new BigDecimal(100)).setScale(2, RoundingMode.HALF_UP);
 		}
 	}
 	

@@ -58,7 +58,7 @@ public class CooperadosRepositoryImpl implements CooperadosRepositoryQueries{
 			}
 
 			if(!StringUtils.isEmpty(filtro.getCrm())){
-				criteria.add(Restrictions.eq("crm", filtro.getCpf()));
+				criteria.add(Restrictions.eq("crm", filtro.getCrm()));
 			}
 			
 			if (isCidadePresente(filtro)){
