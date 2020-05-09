@@ -11,13 +11,17 @@ import com.ajeff.simed.cooperado.repository.helper.cooperado.CooperadosRepositor
 
 public interface CooperadosRepository extends JpaRepository<Cooperado, Long>, CooperadosRepositoryQueries{
 
-	Optional<Cooperado> findByDocumentoCpf(String cpf);
+	Optional<Cooperado> findByRegistroIgnoreCase(String registro);
 
-	@Query("select c from Cooperado c order by c.nome asc")
-	List<Cooperado> listarCooperados();
+	@Query("select c from Cooperado c where c.ativo = true")
+	List<Cooperado> findByAdmissaoCooperadoAtivoTrue();
 
-	List<Cooperado> findByAtivoFalse();
+	@Query("select c from Cooperado c where c.ativo = true order by c.medico.nome")
+	List<Cooperado> findByAdmissaoOrdenadoPorCooperado();
 
-	List<Cooperado> findByAtivoTrue();
+	@Query("select c from Cooperado c where c.ativo = false")
+	List<Cooperado> findByAdmissaoCooperadoAtivoFalse();
+
+
 
 }

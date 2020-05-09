@@ -5,11 +5,9 @@ import javax.persistence.PersistenceContext;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.sql.JoinType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -35,7 +33,7 @@ public class CooperadosRepositoryImpl implements CooperadosRepositoryQueries{
 		Criteria criteria = manager.unwrap(Session.class).createCriteria(Cooperado.class);
 		paginacaoUtil.prepararPaginacao(criteria, pageable);		
 		adicionarFiltro(filtro, criteria);
-		criteria.addOrder(Order.asc("nome"));
+		criteria.add(Restrictions.eq("ativo", true)).addOrder(Order.asc("data"));
 		return new PageImpl<>(criteria.list(), pageable, total(filtro));
 	}
 
@@ -49,39 +47,27 @@ public class CooperadosRepositoryImpl implements CooperadosRepositoryQueries{
 	
 	private void adicionarFiltro(CooperadoFilter filtro, Criteria criteria) {
 		if (filtro !=null){
-			if(!StringUtils.isEmpty(filtro.getNome())){
-				criteria.add(Restrictions.ilike("nome", filtro.getNome(), MatchMode.ANYWHERE));
+			if(!StringUtils.isEmpty(filtro.getRegistro())){
+				criteria.add(Restrictions.ilike("registro", filtro.getRegistro()));
 			}			
 
-			if(!StringUtils.isEmpty(filtro.getCpf())){
-				criteria.add(Restrictions.eq("documento.cpf", filtro.getCpf()));
-			}
-
-			if(!StringUtils.isEmpty(filtro.getCrm())){
-				criteria.add(Restrictions.eq("crm", filtro.getCrm()));
+			if(filtro.getDataInicio() != null) {
+				criteria.add(Restrictions.ge("data", filtro.getDataInicio()));
 			}
 			
-			if (isCidadePresente(filtro)){
-				criteria.add(Restrictions.eq("endereco.cidade", filtro.getCidade()));
+			if(filtro.getDataFim() != null) {
+				criteria.add(Restrictions.le("data", filtro.getDataFim()));
+			}			
+			
+			if (isMedicoCooperadoPresente(filtro)){
+				criteria.add(Restrictions.eq("medico", filtro.getMedicoCooperado()));
 			}
-
 		}
 	}
 	
-	@Override
-	@Transactional(readOnly = true)
-	public Cooperado buscarComCidadeEstado(Long id) {
-		Criteria criteria = manager.unwrap(Session.class).createCriteria(Cooperado.class);
-		criteria.createAlias("endereco.cidade", "c", JoinType.LEFT_OUTER_JOIN);
-		criteria.createAlias("c.estado", "e", JoinType.LEFT_OUTER_JOIN);
-		criteria.add(Restrictions.eq("id", id));
-		return (Cooperado) criteria.uniqueResult();
-	}
 	
-	
-	
-	private boolean isCidadePresente(CooperadoFilter filtro) {
-		return filtro.getCidade() != null && filtro.getCidade().getId() != null;
+	private boolean isMedicoCooperadoPresente(CooperadoFilter filtro) {
+		return filtro.getMedicoCooperado() != null && filtro.getMedicoCooperado().getId() != null;
 	}
 	
 

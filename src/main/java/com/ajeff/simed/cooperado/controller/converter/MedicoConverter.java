@@ -3,14 +3,14 @@ package com.ajeff.simed.cooperado.controller.converter;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.util.StringUtils;
 
-import com.ajeff.simed.cooperado.model.Cooperado;
+import com.ajeff.simed.cooperado.model.Medico;
 
-public class CooperadoConverter implements Converter<String, Cooperado>{
+public class MedicoConverter implements Converter<String, Medico>{
 
 	@Override
-	public Cooperado convert(String id) {
+	public Medico convert(String id) {
 		if (!StringUtils.isEmpty(id)){ 
-			Cooperado cooperado = new Cooperado();
+			Medico cooperado = new Medico();
 			cooperado.setId(Long.valueOf(id));
 			return cooperado;
 		}

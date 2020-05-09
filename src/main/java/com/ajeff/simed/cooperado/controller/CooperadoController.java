@@ -20,14 +20,13 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ajeff.simed.cooperado.model.Cooperado;
+import com.ajeff.simed.cooperado.model.enums.TipoRecebimentoProducao;
 import com.ajeff.simed.cooperado.repository.filter.CooperadoFilter;
 import com.ajeff.simed.cooperado.service.CooperadoService;
-import com.ajeff.simed.financeiro.model.ContaPagar;
-import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoException;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
-import com.ajeff.simed.geral.service.AgenciaService;
-import com.ajeff.simed.geral.service.EstadoService;
+import com.ajeff.simed.geral.service.PessoaService;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
+import com.ajeff.simed.geral.service.exception.RegistroJaCadastradoException;
 
 @Controller
 @RequestMapping("/cooperado/cooperado")
@@ -36,16 +35,19 @@ public class CooperadoController {
 	@Autowired
 	private CooperadoService service;
 	@Autowired
-	private AgenciaService agenciaService;
-	@Autowired
-	private EstadoService estadoService;
+	private PessoaService serviceMedico;
 
 	
 	@GetMapping("/novo")
 	public ModelAndView novo(Cooperado cooperado) {
 		ModelAndView mv = new ModelAndView("Cooperado/cooperado/CadastroCooperado");
-		mv.addObject("estados", estadoService.findTodosOrderByNome());
-		mv.addObject("agencias", agenciaService.findAllOrderByAgencia());
+		
+		if(cooperado.isNovo()) {
+			mv.addObject("medicos", serviceMedico.findByAtivoFalseOrderByNome());
+		}else {
+			mv.addObject("medicos", serviceMedico.findByAtivoTrueOrderByNome());
+		}
+		mv.addObject("tiposRecebimento", TipoRecebimentoProducao.values());
 		return mv;
 	}
 	
@@ -59,10 +61,10 @@ public class CooperadoController {
 		try {
 			service.salvar(cooperado);
 		} catch (RegistroJaCadastradoException e) {
-			result.rejectValue("nome", e.getMessage(), e.getMessage());
+			result.rejectValue("registro", e.getMessage(), e.getMessage());
 			return novo(cooperado);
 		}
-		attributes.addFlashAttribute("mensagem", "Cooperado " + cooperado.getNome() + " salvo com sucesso");
+		attributes.addFlashAttribute("mensagem", "Cooperado n° " + cooperado.getRegistro() + " salvo com sucesso");
 		return new ModelAndView("redirect:/cooperado/cooperado/novo");
 	}
 	
@@ -71,6 +73,7 @@ public class CooperadoController {
 	public ModelAndView pesquisar(CooperadoFilter cooperadoFilter, BindingResult result, @PageableDefault(size=100) Pageable pageable,
 										HttpServletRequest httpServletRequest) {
 		ModelAndView mv = new ModelAndView("Cooperado/cooperado/PesquisarCooperados");
+		mv.addObject("medicos", serviceMedico.findByAtivoTrueOrderByNome());
 
 		PageWrapper<Cooperado> paginaWrapper = new PageWrapper<>(service.filtrar(cooperadoFilter, pageable), httpServletRequest);
 		mv.addObject("pagina", paginaWrapper);
@@ -88,21 +91,14 @@ public class CooperadoController {
 		return ResponseEntity.ok().build();
 	}
 	
+	
 	@GetMapping("/alterar/{id}")
 	public ModelAndView alterar(@PathVariable Long id, Cooperado cooperado) {
-		cooperado = service.buscarComCidadeEstado(id);
+		cooperado = service.findOne(id);
 		ModelAndView mv = novo(cooperado);
 		mv.addObject(cooperado);
 		return mv;
 	}
 	
-	@GetMapping("/detalhe/{id}")
-	public ModelAndView detalhe(@PathVariable Long id, Cooperado cooperado) {
-		ModelAndView mv = new ModelAndView("Cooperado/cooperado/DetalheCooperado");
-		cooperado = service.findOne(id);
-		mv.addObject(cooperado);
-		return mv;
-	}
-	
-	
+
 }

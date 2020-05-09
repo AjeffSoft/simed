@@ -16,8 +16,8 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.ajeff.simed.cooperado.model.Cooperado;
-import com.ajeff.simed.cooperado.repository.CooperadosRepository;
+import com.ajeff.simed.cooperado.model.Medico;
+import com.ajeff.simed.cooperado.repository.MedicosRepository;
 import com.ajeff.simed.financeiro.model.Fornecedor;
 import com.ajeff.simed.financeiro.repository.FornecedoresRepository;
 import com.ajeff.simed.geral.model.ContaEmpresa;
@@ -30,7 +30,7 @@ import com.ajeff.simed.satisfacao.repository.PesquisasRepository;
 @EnableJpaRepositories(basePackageClasses = {UsuariosRepository.class, 
 											FornecedoresRepository.class, 
 											PesquisasRepository.class,
-											CooperadosRepository.class},
+											MedicosRepository.class},
 											enableDefaultTransactions=false )
 @ComponentScan("com.ajeff.simed")
 @EnableTransactionManagement
@@ -62,7 +62,7 @@ public class JPAConfig {
 		factory.setJpaVendorAdapter(jpaVendorAdapter);
 		factory.setPackagesToScan(Usuario.class.getPackage().getName(), 
 				Fornecedor.class.getPackage().getName(),
-				Cooperado.class.getPackage().getName(),
+				Medico.class.getPackage().getName(),
 				ContaEmpresa.class.getPackage().getName(),
 				Pesquisa.class.getPackage().getName());
 		//factory.setMappingResources("sql/consultas-nativas.xml");

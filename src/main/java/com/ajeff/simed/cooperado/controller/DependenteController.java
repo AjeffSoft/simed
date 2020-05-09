@@ -21,9 +21,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ajeff.simed.cooperado.model.Dependente;
 import com.ajeff.simed.cooperado.repository.filter.DependenteFilter;
-import com.ajeff.simed.cooperado.service.CooperadoService;
 import com.ajeff.simed.cooperado.service.DependenteService;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
+import com.ajeff.simed.geral.service.PessoaService;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.geral.service.exception.RegistroJaCadastradoException;
 
@@ -34,13 +34,13 @@ public class DependenteController {
 	@Autowired
 	private DependenteService service;
 	@Autowired
-	private CooperadoService serviceCooperado;
+	private PessoaService serviceCooperado;
 
 	
 	@GetMapping("/novo")
 	public ModelAndView novo(Dependente dependente) {
 		ModelAndView mv = new ModelAndView("Cooperado/dependente/CadastroDependente");
-		mv.addObject("cooperados", serviceCooperado.listarCooperados());
+		mv.addObject("cooperados", serviceCooperado.findByNomeOrderByNome());
 		return mv;
 	}
 	
@@ -66,7 +66,7 @@ public class DependenteController {
 	public ModelAndView pesquisar(DependenteFilter dependenteFilter, BindingResult result, @PageableDefault(size=100) Pageable pageable,
 										HttpServletRequest httpServletRequest) {
 		ModelAndView mv = new ModelAndView("Cooperado/dependente/PesquisarDependentes");
-		mv.addObject("cooperados", serviceCooperado.listarCooperados());
+		mv.addObject("cooperados", serviceCooperado.findByNomeOrderByNome());
 
 		PageWrapper<Dependente> paginaWrapper = new PageWrapper<>(service.filtrar(dependenteFilter, pageable), httpServletRequest);
 		mv.addObject("pagina", paginaWrapper);

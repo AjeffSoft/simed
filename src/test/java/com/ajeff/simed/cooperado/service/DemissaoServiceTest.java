@@ -17,9 +17,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.ajeff.simed.config.init.AppInitializer;
-import com.ajeff.simed.cooperado.model.AdmissaoCooperado;
 import com.ajeff.simed.cooperado.model.Cooperado;
 import com.ajeff.simed.cooperado.model.DemissaoCooperado;
+import com.ajeff.simed.cooperado.model.Medico;
 import com.ajeff.simed.cooperado.repository.DemissoesRepository;
 import com.ajeff.simed.geral.model.Cidade;
 import com.ajeff.simed.geral.model.DocumentoPF;
@@ -38,9 +38,9 @@ public class DemissaoServiceTest {
 	@Mock
 	private DemissoesRepository repository;
 	@Mock
-	private AdmissaoService admissaoService;	
+	private CooperadoService admissaoService;	
 	@Mock
-	private AdmissaoCooperado adm;
+	private Cooperado adm;
 	@Mock
 	private Cidade c;
 	@Mock
@@ -48,9 +48,7 @@ public class DemissaoServiceTest {
 	@Mock
 	private Endereco end;	
 	@Mock
-	private DocumentoPF docPF;	
-	@Mock
-	private Cooperado coop;		
+	private Medico coop;		
 	
 	@BeforeAll
 	public void setUp() {
@@ -74,14 +72,14 @@ public class DemissaoServiceTest {
 		docPF = Mockito.mock(DocumentoPF.class);
 		docPF.setCpf("97996599300");
 		
-		coop = new Cooperado();
+		coop = new Medico();
 		coop.setAtivo(false);
 		coop.setCrm("1234");
 		coop.setDocumento(docPF);
 		coop.setEndereco(end);
 		coop.setNome("ANTONIO FREITAS");
 		
-		adm = new AdmissaoCooperado();
+		adm = new Cooperado();
 		adm.setCooperado(coop);
 		adm.setRegistro("001");
 		adm.setCodigo("131001");

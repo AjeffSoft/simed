@@ -14,8 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ajeff.simed.cooperado.model.Cooperado;
 import com.ajeff.simed.cooperado.repository.CooperadosRepository;
 import com.ajeff.simed.cooperado.repository.filter.CooperadoFilter;
-import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoException;
-import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
+import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
+import com.ajeff.simed.geral.service.exception.RegistroJaCadastradoException;
 
 @Service
 public class CooperadoService {
@@ -23,78 +23,69 @@ public class CooperadoService {
 	
 	@Autowired
 	private CooperadosRepository repository;
+	@Autowired
+	private MedicoService medicoService;
 	
 	
 	@Transactional
 	public void salvar(Cooperado cooperado) {
-		testeRegistroJaCadastrado(cooperado);
+		testeRegistroJaCadastrado(cooperado);		
 		if (cooperado.isNovo()) {
-			cooperado.setAtivo(false);
-		}
-		repository.save(cooperado);
-	}
-	
-	@Transactional
-	public Boolean ativarCooperado(Cooperado cooperado) {
-		cooperado.setAtivo(true);		
-		repository.save(cooperado);
-		return true;
-	}
-	
-	@Transactional
-	public Boolean desativarCooperado(Cooperado cooperado) {
-		cooperado.setAtivo(false);		
-		repository.save(cooperado);
-		return false;
-	}
-
-	
-	public Page<Cooperado> filtrar(CooperadoFilter cooperadoFilter, Pageable pageable) {
-		return repository.filtrar(cooperadoFilter, pageable);
-	}
-	
-	
-	@Transactional
-	public void excluir(Long id) {
-		String tipo = "o(a) cooperado(a)";
-
-		try {
-			repository.delete(id);
-			repository.flush();
-		} catch (PersistenceException e) {
-			throw new ImpossivelExcluirEntidade("Não foi possivel excluir " + tipo +". Exclua primeiro o(s) relacionamento(s) com outra(s) tabela(s)!"); 
+			cooperado.setAtivo(true);
+			ativarDesativarMedico(repository.save(cooperado));
+		}else {
+			repository.save(cooperado);
 		}
 		
 	}
+	
+	
 
-
-	private void testeRegistroJaCadastrado(Cooperado cooperado) {
-		Optional<Cooperado> optional = repository.findByDocumentoCpf(cooperado.getDocumento().getCpf());
-		
-		if(optional.isPresent() && !optional.get().equals(cooperado)) {
-			throw new RegistroJaCadastradoException("CPF do cooperado já cadastrado!");
-		}
+	private void ativarDesativarMedico(Cooperado cooperado) {
+		medicoService.ativarDesativarCooperado(cooperado.getMedico());
 	}
 
 
-	public Cooperado buscarComCidadeEstado(Long id) {
-		return repository.buscarComCidadeEstado(id);
-	}
-
-	public List<Cooperado> listarCooperados() {
-		return repository.listarCooperados();
-	}
-
-	public List<Cooperado> findByCooperadoAtivoFalse() {
-		return repository.findByAtivoFalse();
-	}
-
-	public List<Cooperado> findByCooperadoAtivoTrue() {
-		return repository.findByAtivoTrue();
-	}
 
 	public Cooperado findOne(Long id) {
 		return repository.findOne(id);
+	}
+	
+	public Page<Cooperado> filtrar(CooperadoFilter admissaoFilter, Pageable pageable) {
+		return repository.filtrar(admissaoFilter, pageable);
+	}
+	
+	@Transactional
+	public void excluir(Long id) {
+		Cooperado cooperado = repository.findOne(id);
+		try {
+			ativarDesativarMedico(cooperado);
+			repository.delete(cooperado);
+			repository.flush();
+		} catch (PersistenceException e) {
+			throw new ImpossivelExcluirEntidade("Não foi possivel excluir o(a) cooperado(a)!"); 
+		}
+		
+	}
+
+	private void testeRegistroJaCadastrado(Cooperado cooperado) {
+		Optional<Cooperado> optional = repository.findByRegistroIgnoreCase(cooperado.getRegistro());
+		
+		if(optional.isPresent() && !optional.get().equals(cooperado)) {
+			throw new RegistroJaCadastradoException("Registro de cooperado já cadastrado!");
+		}
+	}
+	
+	public List<Cooperado> findByAdmissaoCooperadoAtivoTrue() {
+		return repository.findByAdmissaoCooperadoAtivoTrue();
+	}
+
+	public List<Cooperado> findByAdmissaoCooperadoAtivoFalse() {
+		return repository.findByAdmissaoCooperadoAtivoFalse();
+	}
+	
+	public List<Cooperado> findByAdmissaoOrdenadoPorCooperado() {
+		return repository.findByAdmissaoOrdenadoPorCooperado();
 	}
 
 }

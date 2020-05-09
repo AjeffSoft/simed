@@ -1,27 +1,23 @@
 package com.ajeff.simed.cooperado.model;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
-import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
-import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
-import com.ajeff.simed.geral.model.Agencia;
-import com.ajeff.simed.geral.model.DocumentoPF;
-import com.ajeff.simed.geral.model.Endereco;
-import com.ajeff.simed.geral.model.InformacaoPessoal;
+import com.ajeff.simed.cooperado.model.enums.TipoRecebimentoProducao;
 
 @Entity
 @Table(name = "cooperado")
@@ -33,49 +29,27 @@ public class Cooperado implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotBlank(message="Informe o nome")
-	private String nome;
+	@NotBlank(message="Informe o numero de registro")
+	private String registro;
 	
-	@NotBlank(message = "Informe o CRM")
-	private String crm;
+	@NotBlank(message = "Informe o código")
+	private String codigo;
 
-	@Valid
-	@Embedded
-	private Endereco endereco;
-	
-	@Valid
-	@Embedded
-	private DocumentoPF documento;
-	
-	@Embedded
-	private InformacaoPessoal informacaoPessoal;
-	
-	private String telefone;
-	
-	private String celular;
-	
-	@Email
-	private String email;
+	@NotNull(message = "Informe a data")
+	private LocalDate data;
 
 	private Boolean ativo;
 	
-	private String conta;
-
-	@Column(name = "tipo_conta")
-	private String tipoConta;
-
-	@ManyToOne
-	@JoinColumn(name = "id_agencia")
-	private Agencia agencia;
-
 	private String anotacao;
 	
-	@PrePersist
-	@PreUpdate
-	public void prePersistUpdate() {
-		nome = nome.toUpperCase();
-		email = email.toLowerCase();
-	}
+	@Column(name = "tipo_recebimento")
+	@Enumerated(EnumType.STRING)
+	private TipoRecebimentoProducao tipoRecebimento;
+	
+	@NotNull(message = "Informe o medico")
+	@ManyToOne
+	@JoinColumn(name = "id_medico")
+	private Medico medico;
 	
 	
 	public Long getId() {
@@ -84,86 +58,6 @@ public class Cooperado implements Serializable{
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public Endereco getEndereco() {
-		return endereco;
-	}
-
-	public void setEndereco(Endereco endereco) {
-		this.endereco = endereco;
-	}
-
-	public String getTelefone() {
-		return telefone;
-	}
-
-	public void setTelefone(String telefone) {
-		this.telefone = telefone;
-	}
-
-	public String getCelular() {
-		return celular;
-	}
-
-	public void setCelular(String celular) {
-		this.celular = celular;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getConta() {
-		return conta;
-	}
-
-	public void setConta(String conta) {
-		this.conta = conta;
-	}
-
-	public Agencia getAgencia() {
-		return agencia;
-	}
-
-	public void setAgencia(Agencia agencia) {
-		this.agencia = agencia;
-	}
-
-	public String getTipoConta() {
-		return tipoConta;
-	}
-
-	public void setTipoConta(String tipoConta) {
-		this.tipoConta = tipoConta;
-	}
-
-	public String getCrm() {
-		return crm;
-	}
-
-	public void setCrm(String crm) {
-		this.crm = crm;
-	}
-
-	public DocumentoPF getDocumento() {
-		return documento;
-	}
-
-	public void setDocumento(DocumentoPF documento) {
-		this.documento = documento;
 	}
 
 	public Boolean getAtivo() {
@@ -182,14 +76,45 @@ public class Cooperado implements Serializable{
 		this.anotacao = anotacao;
 	}
 
-	public InformacaoPessoal getInformacaoPessoal() {
-		return informacaoPessoal;
+	public String getRegistro() {
+		return registro;
 	}
 
-	public void setInformacaoPessoal(InformacaoPessoal informacaoPessoal) {
-		this.informacaoPessoal = informacaoPessoal;
+	public void setRegistro(String registro) {
+		this.registro = registro;
 	}
 
+	public String getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
+	}
+
+	public LocalDate getData() {
+		return data;
+	}
+
+	public void setData(LocalDate data) {
+		this.data = data;
+	}
+
+	public TipoRecebimentoProducao getTipoRecebimento() {
+		return tipoRecebimento;
+	}
+
+	public void setTipoRecebimento(TipoRecebimentoProducao tipoRecebimento) {
+		this.tipoRecebimento = tipoRecebimento;
+	}
+
+	public Medico getMedico() {
+		return medico;
+	}
+
+	public void setMedico(Medico medico) {
+		this.medico = medico;
+	}
 
 	@Override
 	public int hashCode() {

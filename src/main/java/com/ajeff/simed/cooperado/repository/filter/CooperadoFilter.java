@@ -1,50 +1,39 @@
 package com.ajeff.simed.cooperado.repository.filter;
 
-import com.ajeff.simed.geral.model.Cidade;
+import java.time.LocalDate;
+
+import com.ajeff.simed.cooperado.model.Medico;
 
 public class CooperadoFilter {
+
+	private Medico medicoCooperado;
+	private String registro;
+	private LocalDate dataInicio;
+	private LocalDate dataFim;
 	
-	private String nome;
+	public Medico getMedicoCooperado() {
+		return medicoCooperado;
+	}
+	public void setMedicoCooperado(Medico medicoCooperado) {
+		this.medicoCooperado = medicoCooperado;
+	}
+	public String getRegistro() {
+		return registro;
+	}
+	public void setRegistro(String registro) {
+		this.registro = registro;
+	}
+	public LocalDate getDataInicio() {
+		return dataInicio;
+	}
+	public void setDataInicio(LocalDate dataInicio) {
+		this.dataInicio = dataInicio;
+	}
+	public LocalDate getDataFim() {
+		return dataFim;
+	}
+	public void setDataFim(LocalDate dataFim) {
+		this.dataFim = dataFim;
+	}
 	
-	private String cpf;
-	
-	private String crm;
-	
-	private Cidade cidade;
-
-	
-	
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public Cidade getCidade() {
-		return cidade;
-	}
-
-	public void setCidade(Cidade cidade) {
-		this.cidade = cidade;
-	}
-
-	public String getCpf() {
-		return cpf;
-	}
-
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
-	}
-
-	public String getCrm() {
-		return crm;
-	}
-
-	public void setCrm(String crm) {
-		this.crm = crm;
-	}
-
-
 }

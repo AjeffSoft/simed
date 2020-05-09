@@ -21,7 +21,7 @@ public class DemissaoService {
 	@Autowired
 	private DemissoesRepository repository;
 	@Autowired
-	private AdmissaoService admissaoService;
+	private CooperadoService admissaoService;
 	
 	
 	@Transactional

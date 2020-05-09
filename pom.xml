@@ -85,6 +85,9 @@
 
 		<!-- Mockito -->
 		<mockito.version>3.2.4</mockito.version>
+		
+		<!-- Lombok -->
+		<lombok.version>1.16.20</lombok.version>
 
 	</properties>
 
@@ -419,7 +422,15 @@
 		  <artifactId>assertj-core</artifactId>
 		  <version>3.11.1</version>
 		  <scope>test</scope>
-		</dependency>		
+		</dependency>
+		
+		<!-- Lombok -->
+		<dependency>
+		    <groupId>org.projectlombok</groupId>
+		    <artifactId>lombok</artifactId>
+		    <version>${lombok.version}</version>
+		    <scope>provided</scope>
+		</dependency>				
 
 	</dependencies>
 

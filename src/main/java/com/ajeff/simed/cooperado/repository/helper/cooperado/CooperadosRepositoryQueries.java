@@ -10,7 +10,6 @@ public interface CooperadosRepositoryQueries {
 	
 	Page<Cooperado> filtrar(CooperadoFilter filtro, Pageable pageable);
 	
-	public Cooperado buscarComCidadeEstado(Long id);
-	
+
 	
 }

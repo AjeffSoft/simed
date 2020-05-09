@@ -41,7 +41,7 @@ public class IntegralizacaoCooperado implements Serializable{
 	
 	@ManyToOne
 	@JoinColumn(name = "id_admissao")
-	private AdmissaoCooperado admissao;
+	private Cooperado admissao;
 	
 	
 	public Long getId() {
@@ -101,11 +101,11 @@ public class IntegralizacaoCooperado implements Serializable{
 		this.valor = valor;
 	}
 
-	public AdmissaoCooperado getAdmissao() {
+	public Cooperado getAdmissao() {
 		return admissao;
 	}
 
-	public void setAdmissao(AdmissaoCooperado admissao) {
+	public void setAdmissao(Cooperado admissao) {
 		this.admissao = admissao;
 	}
 

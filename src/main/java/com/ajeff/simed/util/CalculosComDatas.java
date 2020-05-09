@@ -6,7 +6,6 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 
 import com.ajeff.simed.exceptions.DataNaoInformadaException;
-import com.ajeff.simed.financeiro.model.ContaPagar;
 import com.ajeff.simed.financeiro.service.exception.VencimentoMenorEmissaoException;
 
 public class CalculosComDatas {

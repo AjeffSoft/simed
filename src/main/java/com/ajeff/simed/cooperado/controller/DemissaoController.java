@@ -22,7 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.ajeff.simed.cooperado.model.DemissaoCooperado;
 import com.ajeff.simed.cooperado.model.enums.TipoDemissaoCooperado;
 import com.ajeff.simed.cooperado.repository.filter.DemissaoFilter;
-import com.ajeff.simed.cooperado.service.AdmissaoService;
+import com.ajeff.simed.cooperado.service.CooperadoService;
 import com.ajeff.simed.cooperado.service.DemissaoService;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
 import com.ajeff.simed.geral.service.exception.DataAtualPosteriorDataReferenciaException;
@@ -35,7 +35,7 @@ public class DemissaoController {
 	@Autowired
 	private DemissaoService service;
 	@Autowired
-	private AdmissaoService admissaoService;
+	private CooperadoService admissaoService;
 
 	
 	@GetMapping("/novo")

@@ -18,18 +18,18 @@
 
 				<li class="aw-menu__item">
           			<a href="#">
-            			<i class="fa  fa-fw  fa-university"></i><span>Médicos</span>
+            			<i class="fa  fa-user-md"></i><span>Médicos</span>
             			<i class="aw-menu__navigation-icon  fa"></i>
           			</a>
       
           			<ul class="aw-menu__list  aw-menu__list--sublist">
-			            <li class="aw-menu__item  aw-menu__item--link" simed:menu="@{/cooperado}">
-			            	<a th:href="@{/cooperado/cooperado/pesquisar}">Médico</a>
+			            <li class="aw-menu__item  aw-menu__item--link" simed:menu="@{/cooperado/medico}">
+			            	<a th:href="@{/cooperado/medico/pesquisar}">Médico</a>
 			            </li>
           			</ul>
           			<ul class="aw-menu__list  aw-menu__list--sublist">
-			            <li class="aw-menu__item  aw-menu__item--link" simed:menu="@{/dependente}">
-			            	<a th:href="@{/cooperado/dependente/pesquisar}">Dependentes</a>
+			            <li class="aw-menu__item  aw-menu__item--link" simed:menu="@{/cooperado/medico}">
+			            	<a th:href="@{/cooperado/medico/dependente/pesquisar}">Dependentes</a>
 			            </li>
           			</ul>
 
@@ -37,19 +37,19 @@
           		
 				<li class="aw-menu__item">
           			<a href="#">
-            			<i class="fa  fa-fw  fa-university"></i><span>Cooperado</span>
+            			<i class="fa  fa-heartbeat"></i><span>Cooperado</span>
             			<i class="aw-menu__navigation-icon  fa"></i>
           			</a>
       
           			<ul class="aw-menu__list  aw-menu__list--sublist">
-			            <li class="aw-menu__item  aw-menu__item--link" simed:menu="@{/admissao}">
-			            	<a th:href="@{/cooperado/admissao/pesquisar}">Admissão</a>
+			            <li class="aw-menu__item  aw-menu__item--link" simed:menu="@{/cooperado/cooperado}">
+			            	<a th:href="@{/cooperado/cooperado/pesquisar}">Cooperados</a>
 			            </li>
           			</ul>
 
           			<ul class="aw-menu__list  aw-menu__list--sublist">
-			            <li class="aw-menu__item  aw-menu__item--link" simed:menu="@{/demissao}">
-			            	<a th:href="@{/cooperado/demissao/pesquisar}">Demissão</a>
+			            <li class="aw-menu__item  aw-menu__item--link" simed:menu="@{/cooperado/cooperado}">
+			            	<a th:href="@{/cooperado/cooperado/cancelamento/pesquisar}">Cancelamentos</a>
 			            </li>
           			</ul>
 

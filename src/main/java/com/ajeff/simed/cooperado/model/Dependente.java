@@ -18,8 +18,8 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
-import com.ajeff.simed.geral.model.DocumentoPF;
 import com.ajeff.simed.geral.model.InformacaoPessoal;
+import com.ajeff.simed.geral.model.OutrosDocumentos;
 
 @Entity
 @Table(name = "dependente_cooperado")
@@ -35,7 +35,7 @@ public class Dependente implements Serializable{
 	private String nome;
 	
 	@Embedded
-	private DocumentoPF documento;
+	private OutrosDocumentos documento;
 	
 	@Embedded
 	private InformacaoPessoal informacaoPessoal;
@@ -54,7 +54,7 @@ public class Dependente implements Serializable{
 	@NotNull(message = "Informe o cooperado")
 	@ManyToOne
 	@JoinColumn(name ="id_cooperado")
-	private Cooperado cooperado;
+	private Medico cooperado;
 
 	@PrePersist
 	@PreUpdate
@@ -96,11 +96,11 @@ public class Dependente implements Serializable{
 		this.email = email;
 	}
 
-	public DocumentoPF getDocumento() {
+	public OutrosDocumentos getDocumento() {
 		return documento;
 	}
 
-	public void setDocumento(DocumentoPF documento) {
+	public void setDocumento(OutrosDocumentos documento) {
 		this.documento = documento;
 	}
 
@@ -128,11 +128,11 @@ public class Dependente implements Serializable{
 		this.parentesco = parentesco;
 	}
 
-	public Cooperado getCooperado() {
+	public Medico getCooperado() {
 		return cooperado;
 	}
 
-	public void setCooperado(Cooperado cooperado) {
+	public void setCooperado(Medico cooperado) {
 		this.cooperado = cooperado;
 	}
 

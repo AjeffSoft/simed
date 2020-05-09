@@ -8,7 +8,7 @@
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 	
 <head>
-	<title>Pesquisar Cooperados</title>
+	<title>Pesquisar cooperados</title>
 </head>
 
 <body>
@@ -17,16 +17,17 @@
 			<div class="container-fluid">
 				<div class="row">
 					<div class="col-xs-10">
-						<h1>Pesquisar cooperados</h1>
+						<h1>Pesquisar médicos(as) cooperados</h1>
 					</div>
-					
-					<div class="col-sm-2" sec:authorize-url="/cooperado/cooperado/novo">
+
+					<div class="col-sm-2" >
 						<div class="aw-page-header-controls">
 							<a class="btn  btn-warning" th:href="@{/cooperado/cooperado/novo}">
 								<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Cadastrar</span>
 							</a>
 						</div>
 					</div>
+					
 				</div>
 			</div>
 		</div>
@@ -34,52 +35,58 @@
 		<div class="container-fluid">
 			<form method="GET" th:object="${cooperadoFilter}">
 				<div class="row">
-					<div class="form-group  col-sm-8">
-						<label class="control-label" for="nome">Nome</label>
-						<input type="search" class="form-control" id="nome" th:field="*{nome}" autofocus="autofocus" maxlength="60"/>
-					</div>
-
-
+				
 					<div class="form-group  col-sm-2">
-						<label class="control-label" for="cpf">CPF</label>
-						<input type="text" class="form-control" id="documento1" th:field="*{cpf}" maxlength="20"/>
+						<label class="control-label" for="registro">Registro</label>
+						<input type="text" class="form-control" id="registro"  autofocus="autofocus" th:field="*{registro}" maxlength="20"/>
 					</div>
+										
+					<div class="col-sm-6  form-group">
+						<label for="cooperado" class="control-label">Cooperado*</label>
+						<select id="cooperado" class="form-control" th:field="*{medicoCooperado}">
+							<option value="">Selecione um médico cooperado</option>
+							<option th:each="medico : ${medicos}" th:value="${medico.id}" th:text="${medico.nome}"></option>
+						</select>
+					</div>						
 
-					<div class="form-group  col-sm-2">
-						<label class="control-label" for="cpf">CRM</label>
-						<input type="text" class="form-control" id="crm" th:field="*{crm}" maxlength="10"/>
-					</div>
+					<div class="form-group  col-sm-4">
+						<label for="vencimentoInicio">Data</label>
+						<div class="form-inline">
+							<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="vencimentoInicio" 
+								th:field="*{dataInicio}" autocomplete="off" placeholder="Data Inicial"/>
+							<label for="vencimentoFim" class="aw-form-label-between">até</label>
+							<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="vencimentoFim" 
+								th:field="*{dataFim}" autocomplete="off" placeholder="Data Final"/>
+						</div>
+					</div>					
+				</div>
+				
+					
 
-				</div>	
-			
 				<div class="form-group">
-					<button type="submit" class="btn  btn-primary">Pesquisar</button>
-				</div>			
+					<button class="btn  btn-primary" type="submit">Pesquisar</button>
+				</div>
 			</form>
-		
-			<br>
 			
 			<div class="table-responsive  bw-tabela-simples">
-				<table class="table  table-hover">
+				<table class="table  table-hover" th:with="total=0">
 					<thead>
 						<tr>
-							<th class="table-col-pequeno">
-								<simed:order page="${pagina}" field="crm" text="CRM"/>
+							<th class="table-col-minima">
+								<simed:order page="${pagina}" field="registro" text="Registro"/>
 							</th>
+
+							<th class="table-col-minima">
+								<simed:order page="${pagina}" field="codigo" text="Código"/>
+							</th>
+
+							<th class="table-col-minima">Cooperado</th>
 
 							<th class="table-col-grande">
-								<simed:order page="${pagina}" field="nome" text="Nome"/>
+								<simed:order page="${pagina}" field="data" text="Data"/>
 							</th>
-
-							<th class="table-col-pequeno">
-								<simed:order page="${pagina}" field="documento.cpf" text="CPF"/>
-							</th>
-							<th class="table-col-grande">
-								<simed:order page="${pagina}" field="endereco.cidade" text="Cidade"/>
-							</th>
-							<th class="table-col-grande">Celular</th>
-
-							<th class="table-col-pequeno">Status</th>
+	
+							<th class="table-col-grande">Status</th>
 
 							<th class="table-agencia-col-acoes"></th>
 						</tr>
@@ -87,52 +94,52 @@
 					
 					<tbody>
 						<tr th:each="cooperado : ${pagina.conteudo}">
-							<td th:text="${cooperado.crm}"></td>
-							<td th:text="${cooperado.nome}"></td>
-							<td th:text="${cooperado.documento.cpf}"></td>
-							<td th:text="${cooperado.endereco.cidade.nome} +' /'+ ${cooperado.endereco.cidade.uf} "></td>
-							<td th:text="${cooperado.celular}"></td>
+							<td th:text="${cooperado.registro}"></td>
+							<td th:text="${cooperado.codigo}"></td>
+							<td th:text="${cooperado.medico.nome}"></td>
+							<td th:text="${{cooperado.data}}"></td>
+
 							<td>
-								<th:block th:if="${cooperado.ativado}">
+								<th:block th:if="${cooperado.ativo}">
 									<span class="label  label-success">Ativo</span>
 								</th:block>
 
-								<th:block th:unless="${cooperado.ativado}">
+								<th:block th:unless="${cooperado.ativo}">
 									<span class="label  label-danger">Inativo</span>
 								</th:block>
+							</td>
 
-							</td>							
 							<td class="text-center">
-								
 								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes" sec:authorize-url="/cooperado/cooperado/detalhe/**"
-									th:href="@{/cooperado/cooperado/detalhe/{id}(id=${cooperado.id})}"> 
+										th:href="@{/cooperado/cooperado/detalhe/{id}(id=${cooperado.id})}"> 
 									<i class="glyphicon glyphicon-eye-open"></i>
-								</a>							
-								
-								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar" sec:authorize-url="/cooperado/cooperado/alterar/**"
-										th:href="@{/cooperado/cooperado/alterar/{id}(id=${cooperado.id})}"> 
+								</a>
+
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar" th:href="@{/cooperado/cooperado/alterar/{id}(id=${cooperado.id})}" th:if="${cooperado.ativado}"> 
 									<i class="glyphicon glyphicon-pencil"></i>
 								</a>
-								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir" sec:authorize-url="/cooperado/cooperado/excluir/**"
-									data:url="@{/cooperado/cooperado/excluir/{id}(id=${cooperado.id})}"	data:objeto="${cooperado.nome}">
+
+								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir"	data:url="@{/cooperado/cooperado/excluir/{id}(id=${cooperado.id})}"
+									data:objeto="${cooperado.registro}" th:if="${cooperado.ativado}">
 									<i class="glyphicon glyphicon-trash"></i>
 								</a>
 							</td>
 						</tr>
 						
 						<tr th:if="${pagina.vazia}">
-							<td colspan="7"> Nenhum cooperado encontrado</td>
+							<td colspan="6"> Nenhum cooperado encontrado</td>
 						</tr>
-						
-						
+
 					</tbody>
 				</table>
 			</div>
 
-			<!-- COMPONENTE THYMELEAF PARA PAGINAÇÃO -->	
 			<simed:pagination page="${pagina}"/>						
 
 		</div>		
 	</section>
+	
+<th:block layout:fragment="javascript-extra">
+</th:block>	
 </body>
 </html>

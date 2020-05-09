@@ -2,7 +2,7 @@
 <html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{Financeiro/LayoutFinanceiro}"
+	layout:decorate="~{Cooperado/LayoutCooperado}"
 	xmlns:sinte="http://sintecoop.ajeffsoft.com"
 	xmlns:data="http://www.thymeleaf.org/extras/data"	
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
@@ -34,8 +34,6 @@
 					<div class="form-group  col-lg-12">
 						<ul class="nav nav-tabs  js-abas">
 						  <li role="presentation" class="active"><a href="#dados">Cadastro</a></li>
-						  <li role="presentation" ><a href="#historico">Histórico</a></li>
-						  <li role="presentation" ><a href="#recebimentos">Recebimentos</a></li>
 						</ul>
 					</div>
 				</div>			
@@ -91,56 +89,23 @@
 						</div>				
 
 						<div class="row">
-							<div class="col-sm-7  form-group">
+							<div class="col-sm-3  form-group">
 								<label for="doc" class="label label-default">CPF</label>
 								<h3 id="doc" th:text="${medico.documento1}"></h3>
 							</div>
 
-							<div class="col-sm-5  form-group">
+							<div class="col-sm-3  form-group">
 								<label for="doc1" class="label label-default">PIS/IE</label>
-								<h3 id="doc1" th:text="${medico.documento.rg}"></h3>
+								<h3 id="doc1" th:text="${medico.documento2}"></h3>
+							</div>
+
+							<div class="col-sm-3  form-group">
+								<label for="rg" class="label label-default">R.G</label>
+								<h3 id="rg" th:text="${medico.documento.rg}"></h3>
 							</div>
 						</div>				
 						
 					</div>
-					
-					<div class="tab-pane" id="historico">
-						<div class="table-responsive  bw-tabela-simples">
-							<table class="table  table-hover" th:with="total=0">
-								<thead>
-									<tr>
-										
-									</tr>
-								</thead>
-								
-								<tbody>
-									
-									<tr >
-										<td colspan="8">Nenhum histórico encontrado</td>
-									</tr>									
-								</tbody>
-							</table>
-						</div>
-					</div>
-					
-					
-					<div class="tab-pane" id="recebimentos">
-						<div class="table-responsive  bw-tabela-simples">
-							<table class="table  table-hover" th:with="total=0">
-								<thead>
-									
-								</thead>
-								
-								<tbody>
-									
-									<tr>
-										<td colspan="12">Nenhum recebimento encontrado</td>
-									</tr>									
-								</tbody>
-							</table>
-						</div>
-					</div>					
-					
 				</div>
 				
 				<br>

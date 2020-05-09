@@ -7,9 +7,7 @@ import org.hibernate.TransientObjectException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -180,11 +178,11 @@ public class ContaPagarController {
 	}	
 	
 	
-	@PostMapping("/relatorio")
-	public ResponseEntity<byte[]> gerarRelatorio(PeriodoRelatorio periodoRelatorio) throws Exception{
-		byte[] relatorio = service.imprimirRelatorio(periodoRelatorio);
-		return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
-				.body(relatorio);
-	}
+//	@PostMapping("/relatorio")
+//	public ResponseEntity<byte[]> gerarRelatorio(PeriodoRelatorio periodoRelatorio) throws Exception{
+//		byte[] relatorio = service.imprimirRelatorio(periodoRelatorio);
+//		return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
+//				.body(relatorio);
+//	}
 
 }

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Cooperado/LayoutCooperado}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"		
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+	<link rel="stylesheet" type="text/css" th:href="@{/stylesheets/vendors/bootstrap-toggle.min.css}"/>
+	<title>Cadastro de medico</title>
+
+</head>
+
+
+	<section layout:fragment="conteudo">
+
+		<!-- CABEÇALHO DO CADASTRO -->
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1 th:if="${medico.novo}">Cadastro de medico(a)</h1>
+						<h1 th:unless="${medico.novo}">Alterar o(a) medico(a) - [[${medico.nome}]]</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+
+
+			<form method="POST" th:object="${medico}" class="form-vertical  js-form-loading" 
+				th:action="${medico.novo} ? @{/cooperado/medico/novo} : @{/cooperado/medico/{id}(id=${medico.id})}">
+			
+				<simed:message/>
+			
+				<input type="hidden" th:field="*{id}">
+				<input type="hidden" th:field="*{endereco.complemento}"/>
+				<input type="hidden" th:field="*{ativo}"/>
+
+				
+				<div class="row">
+					<div class="form-group  col-lg-12">
+						<ul class="nav nav-tabs  js-abas">
+						  <li role="presentation" class="active"><a href="#dados">Cadastro</a></li>
+						  <li role="presentation" ><a href="#documentos">Documentos</a></li>
+						  <li role="presentation" ><a href="#pessoais">Dados Pessoais</a></li>
+						</ul>
+					</div>
+				</div>	
+				
+				<div class="tab-content">
+					<div class="tab-pane active" id="dados">				
+				
+						<div class="row">
+							<div class="col-sm-5  form-group"  simed:classforerror="nome">
+								<label for="nome" class="control-label">Nome*</label>
+								<input id="nome" type="text" class="form-control" th:field="*{nome}" autofocus="autofocus" maxlength="60">
+							</div>
+		
+							<div class="col-sm-5  form-group"  simed:classforerror="fantasia">
+								<label for="fantasia" class="control-label">Apelido*</label>
+								<input id="fantasia" type="text" class="form-control" th:field="*{fantasia}" maxlength="60">
+							</div>
+		
+							<div class="col-sm-2  form-group"  simed:classforerror="sigla">
+								<label for="sigla" class="control-label">Sigla*</label>
+								<input id="sigla" type="text" class="form-control" th:field="*{sigla}" maxlength="10">
+							</div>
+						</div>
+				
+						<div class="row">
+							<div class="col-sm-6  form-group">
+								<label for="logradouro" class="control-label">Endereço</label>
+								<input id="logradouro" type="text" class="form-control" th:field="*{endereco.logradouro}" maxlength="60"/>
+							</div>
+		
+							<div class="col-sm-4  form-group  bw-required">
+								<label for="estado" class="control-label">Estado</label>
+								<select id="estado" class="form-control" th:field = "*{endereco.estado}">
+									<option value="">Selecione um estado</option>
+									<option th:each="estado : ${estados}" th:value="${estado.id}" th:text="${estado.nome}"></option>
+								</select>
+							</div>
+		
+		 					<div class="col-sm-2  form-group  bw-required"  th:classappend="${#fields.hasErrors('endereco.cidade')} ? has-error">
+								<label for="cidade" class="control-label">Cidade</label>
+								<div class="bw-field-action">
+									<input type = "hidden" id="inputHiddenCidadeSelecionada" th:value = "*{endereco.cidade} !=null ? *{endereco.cidade.id}">
+									<select id="cidade" class="form-control" data:url="@{/cidade}" th:field="*{endereco.cidade}">
+									</select>
+		
+									<div class="bw-field-action__icon  js-img-loading" style="display: none">
+										<img th:src="@{/images/mini-loading.gif}"/>
+									</div>
+								</div>  
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-sm-4  form-group" simed:classforerror="email">
+								<label for="email" class="control-label" >E-mail</label>
+								<input id="email" type="text" class="form-control" th:field="*{email}" maxlength="100"/>
+							</div>
+		
+							<div class="col-sm-2  form-group">
+								<label for="bairro" class="control-label">Bairro</label>
+								<input id="bairro" type="text" class="form-control" th:field="*{endereco.bairro}" maxlength="30" />
+							</div>
+							
+							<div class="col-sm-2  form-group">
+								<label for="cep" class="control-label">CEP</label>
+								<input id="cep" type="text" class="form-control  js-cep" th:field="*{endereco.cep}"/>
+							</div>
+		
+							<div class="col-sm-2  form-group">
+								<label for="telefone" class="control-label">Telefone</label>
+								<input id="tel" type="text" class="form-control  js-phone" placeholder="(99)9999-9999" th:field="*{telefone}"/>
+							</div>
+		
+							<div class="col-sm-2  form-group">
+								<label for="cel1" class="control-label">Celular</label>
+								<input id="cel1" type="text" class="form-control  js-phone" placeholder="(99)9999-9999" th:field="*{celular}"/>
+							</div>
+		
+						</div>
+
+						<div class="row">
+							<div class="col-sm-2  form-group">
+								<label for="conta">Conta nº</label>
+								<input id="conta" type="text" class="form-control" th:field="*{conta}" maxlength="15"/>
+							</div>
+							
+							<div class="col-sm-4  form-group">
+								<label for="tipo">Tipo</label>
+								<select id="tipo" class="form-control" th:field="*{tipoConta}" >
+									<option value="">Selecione uma opção</option>
+									<option th:each= "conta : ${contas}" th:value="conta" th:text="conta"></option>
+								</select>
+							</div>					
+							
+							<div class="col-sm-6  form-group">
+								<label for="comboAgencia" class="control-label">Agencia/Banco</label>
+								<select id="comboAgencia" class="form-control" th:field="*{agencia}">
+									<option value="">Selecione uma agencia...</option>
+									<option th:each="agencia : ${agencias}" th:value="${agencia.id}" th:text="${agencia.agencia}+ ' - ' + ${agencia.banco.nome}"></option>
+								</select>
+							</div>
+						</div>				
+					</div>
+					
+					<div class="tab-pane" id="documentos">
+						<div class="row">
+							<div class="col-sm-2  form-group">
+								<label for="tutulo" class="control-label">Tit. Eleitor</label>
+								<input id="titulo" type="text" class="form-control" th:field="*{documento.tituloEleitor}" maxlength="20">
+							</div>
+							<div class="col-sm-1  form-group">
+								<label for="sessao" class="control-label">Sessão</label>
+								<input id="sessao" type="text" class="form-control" th:field="*{documento.tituloSessao}" maxlength="4">
+							</div>
+							<div class="col-sm-1  form-group">
+								<label for="zona" class="control-label">Zona</label>
+								<input id="zona" type="text" class="form-control" th:field="*{documento.tituloZona}" maxlength="4">
+							</div>
+							<div class="col-sm-2  form-group" simed:classforerror="documento.dataEleitor">
+								<label for="emissaoTit" class="control-label">Data Titulo</label>
+								<input id="emissaoTit" type="text" class="form-control  js-date" th:field = "*{documento.dataEleitor}" autocomplete="off"/>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="ctps" class="control-label">CTPS/Série</label>
+								<input id="ctps" type="text" class="form-control" th:field="*{documento.ctps}" maxlength="20">
+							</div>
+							<div class="col-sm-2  form-group" simed:classforerror="documento.dataCtps">
+								<label for="emissaoCtps" class="control-label">Data CTPS</label>
+								<input id="emissaoCtps" type="text" class="form-control  js-date" th:field = "*{documento.dataCtps}" autocomplete="off"/>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="pis" class="control-label">PIS</label>
+								<input id="pis" type="text" class="form-control" th:field="*{documento2}" maxlength="20">
+							</div>
+						</div>	
+						
+						<div class="row">
+							<div class="col-sm-2  form-group" simed:classforerror="documento1">
+								<label for="cpf" class="control-label">CPF</label>
+								<input id="cpf" type="text" class="form-control js-cpf" th:field="*{documento1}">
+							</div>
+
+							<div class="col-sm-4  form-group">
+								<label for="rg" class="control-label">RG/Org. Emissão</label>
+								<input id="rg" type="text" class="form-control" th:field="*{documento.rg}" maxlength="40">
+							</div>
+							<div class="col-sm-2  form-group" simed:classforerror="documento.dataRG">
+								<label for="emissaoRg" class="control-label">Data RG</label>
+								<input id="emissaoRg" type="text" class="form-control  js-date" th:field = "*{documento.dataRG}" autocomplete="off"/>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="habilitacao" class="control-label">Habilitação/Categ</label>
+								<input id="habilitacao" type="text" class="form-control" th:field="*{documento.habilitacao}" maxlength="20">
+							</div>
+							<div class="col-sm-2  form-group" simed:classforerror="documento.dataHabilitacao">
+								<label for="emissaoHab" class="control-label">Data Habilit.</label>
+								<input id="emissaoHab" type="text" class="form-control  js-date" th:field = "*{documento.dataHabilitacao}" autocomplete="off"/>
+							</div>
+						</div>	
+						
+						<div class="row">
+							<div class="col-sm-2  form-group">
+								<label for="reservista" class="control-label">Reservista</label>
+								<input id="reservista" type="text" class="form-control" th:field="*{documento.reservista}">
+							</div>
+
+							<div class="col-sm-2  form-group" simed:classforerror="documento.dataReservista">
+								<label for="emissaoReser" class="control-label">Data Reservista</label>
+								<input id="emissaoReser" type="text" class="form-control  js-date" th:field = "*{documento.dataReservista}" autocomplete="off"/>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="certidao" class="control-label">Certidão</label>
+								<input id="certidao" type="text" class="form-control" th:field="*{documento.certidao}" maxlength="20">
+							</div>
+
+							<div class="col-sm-4  form-group">
+								<label for="tipoCert">Tipo</label>
+								<select id="tipoCert" class="form-control" th:field="*{documento.tipoCertidao}">
+									<option value="">Selecione uma opção</option>
+									<option value="NASCIMENTO">Nascimento</option>
+									<option value="CASAMENTO">Casamento</option>
+									<option value="OUTRA">Outras</option>
+								</select>
+							</div>	
+
+							<div class="col-sm-2  form-group" simed:classforerror="documento.dataCertidao">
+								<label for="emissaoCert" class="control-label">Data Certidão</label>
+								<input id="emissaoCert" type="text" class="form-control  js-date" th:field = "*{documento.dataCertidao}" autocomplete="off"/>
+							</div>
+						</div>							
+					</div>	
+					
+					
+					<div class="tab-pane" id="pessoais">
+						<div class="row">
+							<div class="col-sm-6  form-group">
+								<label for="pai" class="control-label">Pai</label>
+								<input id="pai" type="text" class="form-control" th:field="*{informacaoPessoal.pai}" maxlength="60">
+							</div>
+
+							<div class="col-sm-6  form-group">
+								<label for="mae" class="control-label">Mãe</label>
+								<input id="mae" type="text" class="form-control" th:field="*{informacaoPessoal.mae}" maxlength="60">
+							</div>
+						</div>	
+						
+						<div class="row">
+							<div class="col-sm-2  form-group">
+								<label for="natural" class="control-label">Natural</label>
+								<input id="natural" type="text" class="form-control" th:field="*{informacaoPessoal.cidadeNatal}" maxlength="40">
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="nacionalidade" class="control-label">Nacionalidade</label>
+								<input id="nacionalidade" type="text" class="form-control" th:field="*{informacaoPessoal.nacionalidade}" maxlength="40">
+							</div>
+							<div class="col-sm-2  form-group" simed:classforerror="informacaoPessoal.dataNascimento">
+								<label for="dataNasc" class="control-label">Nascimento</label>
+								<input id="dataNasc" type="text" class="form-control  js-date" th:field = "*{informacaoPessoal.dataNascimento}" autocomplete="off"/>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="sexo">Gênero</label>
+								<select id="sexo" class="form-control" th:field="*{informacaoPessoal.sexo}">
+									<option value="">Selecione...</option>
+									<option th:each=" genero : ${generos}" th:value="genero" th:text="gereno"></option>
+								</select>
+							</div>
+							
+							<div class="col-sm-4  form-group">
+								<label for="estadoCivil">Estado Civil</label>
+								<select id="estadoCivil" class="form-control" th:field="*{informacaoPessoal.estadoCivil}">
+									<option value="">Selecione...</option>
+									<option th:each= "estadoCivil : ${estadoCivil}" th:value="estadoCivil" th:text="estadoCivil"></option>									
+								</select>
+							</div>							
+						</div>	
+						
+						<div class="row">
+							<div class="col-sm-12  form-group">
+								<label for="anotacao" class="control-label">Anotações</label>
+								<textarea id="anotacao" class="form-control" th:field = "*{anotacao}" rows="3" maxlength="200"></textarea>
+							</div>
+						</div>							
+					</div>					
+				</div>
+				<br>
+
+				<div class="form-group">
+					<button class="btn  btn-primary" type="submit">Salvar</button>
+					<a class="btn  btn-danger" sec:authorize-url="/cooperado/medico/pesquisar" th:href="@{/cooperado/medico/pesquisar}"> Voltar	</a>
+				</div>
+			</form>
+		</div>
+	</section>
+	
+	<th:block layout:fragment="javascript-extra">
+		<script th:src="@{/javascripts/simed.combo-estado-cidade.js}"></script>	
+		<script th:src="@{/javascripts/vendors/bootstrap-toggle.min.js}"></script>
+		
+		<script>
+			$(function() {
+				$('.js-abas a').click(function (e) {
+					e.preventDefault();
+					$(this).tab('show');
+				});
+			});
+		</script>		
+	</th:block>	
+</html>

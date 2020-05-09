@@ -37,7 +37,7 @@ import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
-import com.ajeff.simed.cooperado.controller.CooperadoController;
+import com.ajeff.simed.cooperado.controller.MedicoController;
 import com.ajeff.simed.financeiro.controller.FornecedorController;
 import com.ajeff.simed.geral.controller.UsuarioController;
 import com.ajeff.simed.geral.controller.converter.CidadeConverter;
@@ -53,7 +53,7 @@ import nz.net.ultraq.thymeleaf.LayoutDialect;
 @ComponentScan(basePackageClasses= {UsuarioController.class, 
 									FornecedorController.class, 
 									PesquisaController.class,
-									CooperadoController.class})
+									MedicoController.class})
 @EnableWebMvc
 @EnableSpringDataWebSupport
 @EnableAsync

@@ -1,6 +1,6 @@
 package com.ajeff.simed.cooperado.repository.filter;
 
-import com.ajeff.simed.cooperado.model.Cooperado;
+import com.ajeff.simed.cooperado.model.Medico;
 
 public class DependenteFilter {
 	
@@ -8,7 +8,7 @@ public class DependenteFilter {
 	
 	private String cpf;
 	
-	private Cooperado cooperado;
+	private Medico cooperado;
 
 	
 	
@@ -28,11 +28,11 @@ public class DependenteFilter {
 		this.cpf = cpf;
 	}
 
-	public Cooperado getCooperado() {
+	public Medico getCooperado() {
 		return cooperado;
 	}
 
-	public void setCooperado(Cooperado cooperado) {
+	public void setCooperado(Medico cooperado) {
 		this.cooperado = cooperado;
 	}
 

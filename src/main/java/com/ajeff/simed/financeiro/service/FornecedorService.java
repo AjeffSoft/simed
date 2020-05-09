@@ -19,17 +19,19 @@ import com.ajeff.simed.financeiro.repository.FornecedoresRepository;
 import com.ajeff.simed.financeiro.repository.filter.FornecedorFilter;
 import com.ajeff.simed.financeiro.service.exception.CpfCnpjInvalidoException;
 import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoException;
+import com.ajeff.simed.geral.service.PessoaService;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.util.CpfCnpjUtils;
 
 @Service
 public class FornecedorService {
 
-	@SuppressWarnings("unused")
-	private static final Logger LOG = LoggerFactory.getLogger(FornecedorService.class);	
 	
 	@Autowired
 	private FornecedoresRepository repository;
+	@Autowired
+	private PessoaService pessoaService;
+
 	
 	
 	@Transactional
@@ -37,12 +39,7 @@ public class FornecedorService {
 		try {
 			fornecedor.setClifor(true);
 			testeRegistroJaCadastrado(fornecedor);
-			
-			if(!fornecedor.getDocumento1().equals("")) {
-				String docSemMascara = removerMascaraDocumento(fornecedor.getDocumento1());
-				testeValidarCpfCnpj(docSemMascara);
-			}
-			
+			pessoaService.testeCpfCnpjValido(fornecedor);
 			return repository.save(fornecedor);
 		} catch (NonUniqueResultException e) {
 			throw new RegistroJaCadastradoException("Mais de um registro com o mesmo documento para validação!");
@@ -99,17 +96,5 @@ public class FornecedorService {
 	public List<Fornecedor> listarTodosFornecedores() {
 		return repository.listarTodosFornecedores();
 	}
-	
-	private String removerMascaraDocumento(String documento1) {
-		return documento1.replaceAll("\\D", "");
-	}
-
-
-	private void testeValidarCpfCnpj(String documento1) {
-		Boolean valido = CpfCnpjUtils.isValid(documento1);
-		if(!valido) {
-			throw new CpfCnpjInvalidoException("CNPJ/CPF inválido, favor verifique!");
-		}
-	}	
 
 }

@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.ajeff.simed.cooperado.model.Cooperado;
+import com.ajeff.simed.cooperado.model.Medico;
 import com.ajeff.simed.cooperado.model.Dependente;
 import com.ajeff.simed.cooperado.repository.helper.dependente.DependentesRepositoryQueries;
 
@@ -13,7 +13,7 @@ public interface DependentesRepository extends JpaRepository<Dependente, Long>, 
 
 	Optional<Dependente> findByNomeIgnoreCase(String nome);
 
-	List<Dependente> findByCooperado(Cooperado cooperado);
+	List<Dependente> findByCooperado(Medico cooperado);
 
 
 }

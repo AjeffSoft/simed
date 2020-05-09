@@ -1,5 +1,7 @@
 package com.ajeff.simed.cooperado.service;
 
+import java.time.LocalDate;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.ajeff.simed.config.init.AppInitializer;
 import com.ajeff.simed.cooperado.model.Cooperado;
+import com.ajeff.simed.cooperado.model.Medico;
 import com.ajeff.simed.cooperado.repository.CooperadosRepository;
 import com.ajeff.simed.geral.model.Cidade;
 import com.ajeff.simed.geral.model.DocumentoPF;
@@ -29,6 +32,8 @@ public class CooperadoServiceTest {
 	
 	@InjectMocks
 	private CooperadoService service;
+	@Mock
+	private MedicoService medicoService;
 	
 	@Mock
 	private CooperadosRepository repository;
@@ -39,8 +44,7 @@ public class CooperadoServiceTest {
 	@Mock
 	private Endereco end;	
 	@Mock
-	private DocumentoPF docPF;	
-	
+	private Medico coop;		
 	
 	@BeforeAll
 	public void setUp() {
@@ -61,65 +65,62 @@ public class CooperadoServiceTest {
 		end.setCep("63500000");
 		end.setCidade(c);
 		
-		docPF = Mockito.mock(DocumentoPF.class);
-		docPF.setCpf("97996599300");
-
-	}
 	
-	
-	
-	@Test
-	@DisplayName("Deve salvar um cooperado válido")
-	public void deveSalvarCooperadoValido() {
-		Cooperado coop = novoCooperado();
-		Cooperado coopSalvo = novoCooperado();
-		coopSalvo.setId(1L);
-		
-		Mockito.when(repository.save(coop)).thenReturn(coopSalvo);
-		
-		service.salvar(coop);
-		
-		Assertions.assertThat(coopSalvo.getId()).isNotNull();
-		Assertions.assertThat(coopSalvo.getNome()).isEqualTo(coop.getNome());
-		Assertions.assertThat(coopSalvo.getAtivo()).isFalse();
-		Mockito.verify(repository, Mockito.times(1)).save(coop);
-	}
-	
-	
-	@Test
-	@DisplayName("Deve ativar um cooperado desativado")
-	public void deveAtivarCooperadoDesativado() {
-		Cooperado coopSalvo = novoCooperado();
-		coopSalvo.setId(1L);
-		coopSalvo.setAtivo(false);
-		
-		service.ativarCooperado(coopSalvo);
-		
-		Assertions.assertThat(coopSalvo.getAtivo()).isTrue();
-	}
-	
-	
-	@Test
-	@DisplayName("Deve desativar um cooperado ativado")
-	public void deveDesativarCooperadoAtivado() {
-		Cooperado coopSalvo = novoCooperado();
-		coopSalvo.setId(1L);
-		coopSalvo.setAtivo(true);
-		
-		service.desativarCooperado(coopSalvo);
-		
-		Assertions.assertThat(coopSalvo.getAtivo()).isFalse();
-	}	
-	
-
-	private Cooperado novoCooperado() {
-		Cooperado coop = new Cooperado();
+		coop = new Medico();
 		coop.setAtivo(false);
-		coop.setCrm("1234");
-		coop.setDocumento(docPF);
+		coop.setSigla("1234");
+		coop.setDocumento1("97996599300");
 		coop.setEndereco(end);
-		coop.setNome("ANTONIO FREITAS");
-		return coop;
+		coop.setNome("ANTONIO FREITAS");		
+	}
+	
+	
+	
+	@Test
+	@DisplayName("Deve salvar uma admissão válida")
+	public void deveSalvarAdmissaoValida() {
+		Cooperado adm = novaAdmissao();
+		Cooperado admSalva = novaAdmissao();
+		admSalva.setId(1L);
+		Mockito.doNothing().when(medicoService).ativarDesativarCooperado(coop);
+		Mockito.when(repository.save(adm)).thenReturn(admSalva);
+		
+		service.salvar(adm);
+		
+		Assertions.assertThat(admSalva.getId()).isNotNull();
+		Assertions.assertThat(admSalva.getRegistro()).isEqualTo(adm.getRegistro());
+		Assertions.assertThat(admSalva.getAtivo()).isTrue();
+		Mockito.verify(repository, Mockito.times(1)).save(adm);
+	}
+	
+	
+//	@Test
+//	@DisplayName("Deve ativar uma admissao e o cooperado")
+//	public void deveDesativarAdmissaoValida() {
+//		Cooperado adm = novaAdmissao();
+//		adm.setId(1L);
+//		adm.setAtivo(false);
+//		coop.setAtivo(false);
+//		coop.setId(1l);
+////		Mockito.when(cooperadoService.ativarCooperado(coop)).thenReturn(true);
+//		
+//		service.ativarAdmissao(adm);
+//		
+//		Assertions.assertThat(adm.getId()).isNotNull();
+//		Assertions.assertThat(adm.getAtivo()).isTrue();
+//		Assertions.assertThat(coop.getAtivo()).isTrue();
+//		Mockito.verify(repository, Mockito.times(1)).save(adm);
+//	}	
+//	
+
+	private Cooperado novaAdmissao() {
+		Cooperado adm = new Cooperado();
+		adm.setMedico(coop);
+		adm.setRegistro("001");
+		adm.setCodigo("131001");
+		adm.setAtivo(true);
+		adm.setData(LocalDate.of(2020, 04, 05));
+		return adm;
 	}
 	
 }

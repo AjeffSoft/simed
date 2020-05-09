@@ -42,7 +42,7 @@ public class DemissaoCooperado implements Serializable{
 	@NotNull(message = "Informe o cooperado")
 	@ManyToOne
 	@JoinColumn(name = "id_admissao")
-	private AdmissaoCooperado admissao;
+	private Cooperado admissao;
 	
 	
 	public Long getId() {
@@ -77,11 +77,11 @@ public class DemissaoCooperado implements Serializable{
 		this.tipoDemissao = tipoDemissao;
 	}
 
-	public AdmissaoCooperado getAdmissao() {
+	public Cooperado getAdmissao() {
 		return admissao;
 	}
 
-	public void setAdmissao(AdmissaoCooperado admissao) {
+	public void setAdmissao(Cooperado admissao) {
 		this.admissao = admissao;
 	}
 
