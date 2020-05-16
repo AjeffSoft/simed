@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Cooperado/LayoutCooperado}"
+	xmlns:sinte="http://sintecoop.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+	<title>Detalhe do cooperado</title> 
+</head>
+
+	<section layout:fragment="conteudo">
+
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Detalhe de: [[${cooperado.medico.nome}]]</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid" >
+			<form id="form" method="GET" th:object="${cooperado}" class="form-vertical  js-form-loading"
+				th:action="@{/cooperado/cooperado/detalhe/{id}(id=${cooperado.id})}"  enctype="multpart/form-data">
+			
+			<input type="hidden" th:field="*{id}">
+			
+			
+				<div class="row">
+					<div class="form-group  col-lg-12">
+						<ul class="nav nav-tabs  js-abas">
+						  <li role="presentation" class="active"><a href="#dados">Cadastro</a></li>
+						</ul>
+					</div>
+				</div>			
+
+				<div class="tab-content">
+					<div class="tab-pane active" id="dados">
+						<div class="row">
+							<div class="col-sm-3  form-group">
+								<label for="data" class="label label-default">Data</label>
+								<h3 id="data" th:text="${{cooperado.data}}"></h3>
+							</div>
+
+							<div class="col-sm-3  form-group">
+								<label for="registro" class="label label-default">Registro nº</label>
+								<h3 id="registro" th:text="${cooperado.registro}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="codigo" class="label label-default">Código</label>
+								<h3 id="codigo" th:text="${cooperado.codigo}"></h3>
+							</div>
+
+							<div class="col-sm-4  form-group">
+								<label for="recebimento" class="label label-default">Recebimento</label>
+								<h3 id="recebimento" th:text="${cooperado.tipoRecebimento}"></h3>
+							</div>
+
+						</div>
+
+						<div class="row">
+							<div class="col-sm-8  form-group">
+								<label for="nome" class="label label-default">Nome</label>
+								<h3 id="nome" th:text="${cooperado.medico.nome}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="doc" class="label label-default">CPF</label>
+								<h3 id="doc" th:text="${cooperado.medico.documento1}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="crm" class="label label-default">CRM</label>
+								<h3 id="crm" th:text="${cooperado.medico.sigla}"></h3>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<br>
+														
+				<div class="form-group">
+					<a target="'_blank'" class="btn  btn-info" href="#">Imprimir</a>
+					<a class="btn  btn-default" href="javascript:history.back(1);">Voltar</a>
+				</div>
+			</form>
+		</div>
+	</section>
+
+	<th:block layout:fragment="javascript-extra">
+
+	<script>
+		$(function() {
+			$('.js-abas a').click(function (e) {
+				e.preventDefault();
+				$(this).tab('show');
+			});
+		});
+	</script>
+	</th:block>	
+</html>

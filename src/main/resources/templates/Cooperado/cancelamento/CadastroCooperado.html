@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Cooperado/LayoutCooperado}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"		
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+	<link rel="stylesheet" type="text/css" th:href="@{/stylesheets/vendors/bootstrap-toggle.min.css}"/>
+	<title>Cadastro de cooperados</title>
+
+</head>
+
+
+	<section layout:fragment="conteudo">
+		
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1 th:if="${cooperado.novo}">Cadastro de cooperado</h1>
+						<h1 th:unless="${cooperado.novo}">Alterar o cooperado n° - [[${cooperado.registro}]]</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+
+
+			<form method="POST" th:object="${cooperado}" class="form-vertical  js-form-loading" 
+				th:action="${cooperado.novo} ? @{/cooperado/cooperado/novo} : @{/cooperado/cooperado/{id}(id=${cooperado.id})}">
+			
+				<simed:message/>
+			
+				<input type="hidden" th:field="*{id}">
+				<input type="hidden" th:field="*{ativo}">
+
+				
+				<div class="row">
+					<div class="col-sm-3  form-group" simed:classforerror="data">
+						<label for="data" class="control-label">Data*</label>
+						<input id="data" type="text" class="form-control  js-date" th:field = "*{data}" autocomplete="off"/>
+					</div>
+
+					<div class="col-sm-3  form-group"  simed:classforerror="registro">
+						<label for="registro" class="control-label">Registro*</label>
+						<input id="registro" type="text" class="form-control" th:field="*{registro}" maxlength="20">
+					</div>
+
+					<div class="col-sm-3  form-group"  simed:classforerror="codigo">
+						<label for="codigo" class="control-label">Código*</label>
+						<input id="codigo" type="text" class="form-control" th:field="*{codigo}" maxlength="20">
+					</div>
+
+					<div class="col-sm-3  form-group">
+						<label for="tipoRecebimento" class="control-label">Recebimento*</label>
+						<select id="tipoRecebimento" class="form-control" th:field="*{tipoRecebimento}">
+							<option th:each="tipo : ${tiposRecebimento}" th:value="${tipo}" th:text="${tipo.descricao}"></option>
+						</select>
+					</div>						
+				</div>
+
+				<div class="row" th:if="${cooperado.novo}">
+					<div class="col-sm-12  form-group"  simed:classforerror="medico">
+						<label for="medico" class="control-label">Médicos*</label>
+						<select id="medico" class="form-control" th:field="*{medico}">
+							<option value="">Selecione um medico</option>
+							<option th:each="medico : ${medicos}" th:value="${medico.id}" th:text="${medico.nome}"></option>
+						</select>
+					</div>							
+				</div>
+
+
+						
+				<div class="row">
+					<div class="col-sm-12  form-group">
+						<label for="anotacao" class="control-label">Anotações</label>
+						<textarea id="anotacao" class="form-control" th:field="*{anotacao}" rows="5" maxlength="200"></textarea>
+					</div>
+
+				</div>
+
+
+				<div class="form-group">
+					<button class="btn  btn-primary" type="submit">Salvar</button>
+					<a class="btn  btn-danger" th:href="@{/cooperado/cooperado/pesquisar}"> Voltar	</a>
+				</div>
+			</form>
+		</div>
+	</section>
+	
+	<th:block layout:fragment="javascript-extra">
+
+	</th:block>	
+</html>
