@@ -63,7 +63,7 @@
 					</div>						
 				</div>
 
-				<div class="row">
+				<div class="row" th:if="${cooperado.novo}">
 					<div class="col-sm-12  form-group"  simed:classforerror="medico">
 						<label for="medico" class="control-label">Médicos*</label>
 						<select id="medico" class="form-control" th:field="*{medico}">

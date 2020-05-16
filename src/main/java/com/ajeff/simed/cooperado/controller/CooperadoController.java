@@ -100,5 +100,13 @@ public class CooperadoController {
 		return mv;
 	}
 	
+	@GetMapping("/detalhe/{id}")
+	public ModelAndView detalhe(@PathVariable long id, Cooperado cooperado) {
+		ModelAndView mv = new ModelAndView("Cooperado/cooperado/DetalheCooperado");
+		cooperado = service.findOne(id);
+		mv.addObject(cooperado);
+		return mv;
+	}
+	
 
 }

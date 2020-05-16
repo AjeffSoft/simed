@@ -2,13 +2,13 @@
 <html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{Financeiro/LayoutFinanceiro}"
+	layout:decorate="~{Cooperado/LayoutCooperado}"
 	xmlns:sinte="http://sintecoop.ajeffsoft.com"
 	xmlns:data="http://www.thymeleaf.org/extras/data"	
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 
 <head>
-	<title>Detalhe do médico</title> 
+	<title>Detalhe do cooperado</title> 
 </head>
 
 	<section layout:fragment="conteudo">
@@ -17,15 +17,15 @@
 			<div class="container-fluid">
 				<div class="row">
 					<div class="col-xs-10">
-						<h1>Detalhe de: [[${medico.nome}]]</h1>
+						<h1>Detalhe de: [[${cooperado.medico.nome}]]</h1>
 					</div>
 				</div>
 			</div>
 		</div>
 
 		<div class="container-fluid" >
-			<form id="form" method="GET" th:object="${medico}" class="form-vertical  js-form-loading"
-				th:action="@{/cooperado/medico/detalhe/{id}(id=${medico.id})}"  enctype="multpart/form-data">
+			<form id="form" method="GET" th:object="${cooperado}" class="form-vertical  js-form-loading"
+				th:action="@{/cooperado/cooperado/detalhe/{id}(id=${cooperado.id})}"  enctype="multpart/form-data">
 			
 			<input type="hidden" th:field="*{id}">
 			
@@ -34,8 +34,6 @@
 					<div class="form-group  col-lg-12">
 						<ul class="nav nav-tabs  js-abas">
 						  <li role="presentation" class="active"><a href="#dados">Cadastro</a></li>
-						  <li role="presentation" ><a href="#historico">Histórico</a></li>
-						  <li role="presentation" ><a href="#recebimentos">Recebimentos</a></li>
 						</ul>
 					</div>
 				</div>			
@@ -43,104 +41,45 @@
 				<div class="tab-content">
 					<div class="tab-pane active" id="dados">
 						<div class="row">
-							<div class="col-sm-10  form-group">
-								<label for="nome" class="label label-default">Nome</label>
-								<h3 id="nome" th:text="${medico.nome}"></h3>
+							<div class="col-sm-3  form-group">
+								<label for="data" class="label label-default">Data</label>
+								<h3 id="data" th:text="${{cooperado.data}}"></h3>
 							</div>
 
+							<div class="col-sm-3  form-group">
+								<label for="registro" class="label label-default">Registro nº</label>
+								<h3 id="registro" th:text="${cooperado.registro}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="codigo" class="label label-default">Código</label>
+								<h3 id="codigo" th:text="${cooperado.codigo}"></h3>
+							</div>
+
+							<div class="col-sm-4  form-group">
+								<label for="recebimento" class="label label-default">Recebimento</label>
+								<h3 id="recebimento" th:text="${cooperado.tipoRecebimento}"></h3>
+							</div>
+
+						</div>
+
+						<div class="row">
+							<div class="col-sm-8  form-group">
+								<label for="nome" class="label label-default">Nome</label>
+								<h3 id="nome" th:text="${cooperado.medico.nome}"></h3>
+							</div>
+
+							<div class="col-sm-2  form-group">
+								<label for="doc" class="label label-default">CPF</label>
+								<h3 id="doc" th:text="${cooperado.medico.documento1}"></h3>
+							</div>
 
 							<div class="col-sm-2  form-group">
 								<label for="crm" class="label label-default">CRM</label>
-								<h3 id="crm" th:text="${medico.sigla}"></h3>
+								<h3 id="crm" th:text="${cooperado.medico.sigla}"></h3>
 							</div>
-
-						</div>
-						
-						<div class="row">
-							<div class="col-sm-7  form-group">
-								<label for="endereco" class="label label-default">Endereço</label>
-								<h3 id="endereco" th:text="${medico.endereco.logradouro}"></h3>
-							</div>
-
-							<div class="col-sm-3  form-group">
-								<label for="bairro" class="label label-default">Bairro</label>
-								<h3 id="bairro" th:text="${medico.endereco.bairro}"></h3>
-							</div>
-
-							<div class="col-sm-2  form-group">
-								<label for="cep" class="label label-default">CEP</label>
-								<h3 id="cep" th:text="${medico.endereco.cep}"></h3>
-							</div>
-						</div>
-
-						<div class="row">
-							<div class="col-sm-7  form-group">
-								<label for="cidade" class="label label-default">Cidade/UF</label>
-								<h3 id="cidade" th:text="${medico.endereco.cidade.nome} +'/'+${medico.endereco.cidade.uf}"></h3>
-							</div>
-
-							<div class="col-sm-3  form-group">
-								<label for="telefone" class="label label-default">Telefone</label>
-								<h3 id="telefone" th:text="${medico.telefone}"></h3>
-							</div>
-
-							<div class="col-sm-2  form-group">
-								<label for="celular" class="label label-default">Celular</label>
-								<h3 id="celular" th:text="${medico.celular}"></h3>
-							</div>
-						</div>				
-
-						<div class="row">
-							<div class="col-sm-7  form-group">
-								<label for="doc" class="label label-default">CPF</label>
-								<h3 id="doc" th:text="${medico.documento1}"></h3>
-							</div>
-
-							<div class="col-sm-5  form-group">
-								<label for="doc1" class="label label-default">PIS/IE</label>
-								<h3 id="doc1" th:text="${medico.documento.rg}"></h3>
-							</div>
-						</div>				
-						
-					</div>
-					
-					<div class="tab-pane" id="historico">
-						<div class="table-responsive  bw-tabela-simples">
-							<table class="table  table-hover" th:with="total=0">
-								<thead>
-									<tr>
-										
-									</tr>
-								</thead>
-								
-								<tbody>
-									
-									<tr >
-										<td colspan="8">Nenhum histórico encontrado</td>
-									</tr>									
-								</tbody>
-							</table>
 						</div>
 					</div>
-					
-					
-					<div class="tab-pane" id="recebimentos">
-						<div class="table-responsive  bw-tabela-simples">
-							<table class="table  table-hover" th:with="total=0">
-								<thead>
-									
-								</thead>
-								
-								<tbody>
-									
-									<tr>
-										<td colspan="12">Nenhum recebimento encontrado</td>
-									</tr>									
-								</tbody>
-							</table>
-						</div>
-					</div>					
-					
 				</div>
 				
 				<br>
