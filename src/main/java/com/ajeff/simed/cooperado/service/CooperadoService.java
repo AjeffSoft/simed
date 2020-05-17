@@ -41,7 +41,7 @@ public class CooperadoService {
 	
 	
 
-	private void ativarDesativarMedico(Cooperado cooperado) {
+	public void ativarDesativarMedico(Cooperado cooperado) {
 		medicoService.ativarDesativarCooperado(cooperado.getMedico());
 	}
 

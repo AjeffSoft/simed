@@ -37,6 +37,11 @@
 			
 				<input type="hidden" th:field="*{id}">
 				<input type="hidden" th:field="*{ativo}">
+				<input type="hidden" th:field="*{dataCancelamento}">
+				<input type="hidden" th:field="*{motivo}">
+				<input type="hidden" th:field="*{tipoCancelamento}">
+				<input type="hidden" th:field="*{medico}" th:unless="${cooperado.novo}">
+				
 
 				
 				<div class="row">
@@ -60,7 +65,12 @@
 						<select id="tipoRecebimento" class="form-control" th:field="*{tipoRecebimento}">
 							<option th:each="tipo : ${tiposRecebimento}" th:value="${tipo}" th:text="${tipo.descricao}"></option>
 						</select>
-					</div>						
+					</div>
+					
+					<div class="col-sm-2  form-group">
+						<label for="motivo">Motivo</label>
+						<input id="motivo" type="text" class="form-control" th:field="*{motivo}" maxlength="200"/>
+					</div>							
 				</div>
 
 				<div class="row" th:if="${cooperado.novo}">

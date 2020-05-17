@@ -14,9 +14,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
 
+import com.ajeff.simed.cooperado.model.enums.TipoDescooperar;
 import com.ajeff.simed.cooperado.model.enums.TipoRecebimentoProducao;
 
 @Entity
@@ -41,6 +43,15 @@ public class Cooperado implements Serializable{
 	private Boolean ativo;
 	
 	private String anotacao;
+	
+	@Column(name = "data_cancelamento")
+	private LocalDate dataCancelamento;
+	
+	@Size(max = 200, message = "O motivo deverá conter no máximo 200 caracteres!")
+	private String motivo;
+	
+	@Column(name = "tipo_cancelamento")
+	private TipoDescooperar tipoCancelamento;
 	
 	@Column(name = "tipo_recebimento")
 	@Enumerated(EnumType.STRING)
@@ -114,6 +125,30 @@ public class Cooperado implements Serializable{
 
 	public void setMedico(Medico medico) {
 		this.medico = medico;
+	}
+
+	public LocalDate getDataCancelamento() {
+		return dataCancelamento;
+	}
+
+	public void setDataCancelamento(LocalDate dataCancelamento) {
+		this.dataCancelamento = dataCancelamento;
+	}
+
+	public String getMotivo() {
+		return motivo;
+	}
+
+	public void setMotivo(String motivo) {
+		this.motivo = motivo;
+	}
+
+	public TipoDescooperar getTipoCancelamento() {
+		return tipoCancelamento;
+	}
+
+	public void setTipoCancelamento(TipoDescooperar tipoCancelamento) {
+		this.tipoCancelamento = tipoCancelamento;
 	}
 
 	@Override

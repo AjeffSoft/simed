@@ -36,7 +36,7 @@
 						<label for="cooperado" class="control-label">Cooperado*</label>
 						<select id="cooperado" class="form-control" th:field="*{cooperado}">
 							<option value="">Selecione um médico cooperado</option>
-							<option th:each="medico : ${medicos}" th:value="${medico.id}" th:text="${medico.nome}"></option>
+							<option th:each="cooperado : ${medicos}" th:value="${cooperado.id}" th:text="${cooperado.medico.nome}"></option>
 						</select>
 					</div>						
 
@@ -93,6 +93,7 @@
 							<td th:text="${cooperado.codigo}"></td>
 							<td th:text="${cooperado.medico.nome}"></td>
 							<td th:text="${{cooperado.data}}"></td>
+							<td th:text="${{cooperado.dataCancelamento}}"></td>
 
 							<td>
 								<th:block th:if="${cooperado.ativo}">

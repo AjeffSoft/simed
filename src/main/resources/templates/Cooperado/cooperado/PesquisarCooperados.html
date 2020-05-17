@@ -115,6 +115,11 @@
 									<i class="glyphicon glyphicon-eye-open"></i>
 								</a>
 
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Cancelar" sec:authorize-url="/cooperado/cooperado/cancelamento/descooperar/**"
+										th:href="@{/cooperado/cooperado/cancelamento/descooperar/{id}(id=${cooperado.id})}"> 
+									<i class="glyphicon glyphicon-remove"></i>
+								</a>
+
 								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar" th:href="@{/cooperado/cooperado/alterar/{id}(id=${cooperado.id})}" th:if="${cooperado.ativado}"> 
 									<i class="glyphicon glyphicon-pencil"></i>
 								</a>
