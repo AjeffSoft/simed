@@ -6,8 +6,6 @@ import java.util.Optional;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,8 +23,6 @@ import com.ajeff.simed.util.CpfCnpjUtils;
 @Service
 public class ClienteService {
 
-	@SuppressWarnings("unused")
-	private static final Logger LOG = LoggerFactory.getLogger(ClienteService.class);	
 	
 	@Autowired
 	private ClientesRepository repository;

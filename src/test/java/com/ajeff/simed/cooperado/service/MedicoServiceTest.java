@@ -81,12 +81,15 @@ public class MedicoServiceTest {
 		Assertions.assertThat(coopSalvo.getAtivo()).isFalse();
 		Mockito.verify(repository, Mockito.times(1)).save(coop);
 	}
+
+	
+	
 	
 	private Medico novoCooperado() {
 		Medico coop = new Medico();
 		coop.setAtivo(false);
 		coop.setSigla("1234");
-		coop.setDocumento1("467.984.440-08");
+		coop.setDocumento1("111.111.111-11");
 		coop.setEndereco(end);
 		coop.setNome("ANTONIO FREITAS");
 		return coop;

@@ -19,7 +19,7 @@ import com.ajeff.simed.financeiro.model.MovimentacaoItem;
 import com.ajeff.simed.financeiro.model.Pagamento;
 import com.ajeff.simed.financeiro.repository.PagamentosRepository;
 import com.ajeff.simed.financeiro.repository.filter.PagamentoFilter;
-import com.ajeff.simed.financeiro.service.contaPagarService.ContaPagarService;
+import com.ajeff.simed.financeiro.service.contaPagar.ContaPagarService;
 import com.ajeff.simed.financeiro.service.exception.DataInformadaMenorDataEmissaoException;
 import com.ajeff.simed.financeiro.service.exception.ErroAoFecharMovimentacaoException;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;

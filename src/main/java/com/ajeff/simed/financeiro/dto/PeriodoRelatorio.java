@@ -3,9 +3,9 @@ package com.ajeff.simed.financeiro.dto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.ajeff.simed.financeiro.model.Fornecedor;
 import com.ajeff.simed.financeiro.model.PlanoConta;
 import com.ajeff.simed.geral.model.Empresa;
+import com.ajeff.simed.geral.model.Pessoa;
 
 public class PeriodoRelatorio {
 	
@@ -17,7 +17,7 @@ public class PeriodoRelatorio {
 	private BigDecimal valorInicio;
 	private BigDecimal valorFim;
 	private Empresa empresa;
-	private Fornecedor fornecedor;
+	private Pessoa pessoa;
 	private String status;
 	private Boolean pendente;
 	private String nome;
@@ -50,11 +50,11 @@ public class PeriodoRelatorio {
 	public void setEmpresa(Empresa empresa) {
 		this.empresa = empresa;
 	}
-	public Fornecedor getFornecedor() {
-		return fornecedor;
+	public Pessoa getPessoa() {
+		return pessoa;
 	}
-	public void setFornecedor(Fornecedor fornecedor) {
-		this.fornecedor = fornecedor;
+	public void setPessoa(Pessoa pessoa) {
+		this.pessoa = pessoa;
 	}
 	public String getStatus() {
 		return status;

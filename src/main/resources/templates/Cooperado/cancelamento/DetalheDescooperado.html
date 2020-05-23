@@ -8,7 +8,7 @@
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 
 <head>
-	<title>Detalhe do cooperado</title> 
+	<title>Detalhe do cancelamento</title> 
 </head>
 
 	<section layout:fragment="conteudo">
@@ -17,7 +17,7 @@
 			<div class="container-fluid">
 				<div class="row">
 					<div class="col-xs-10">
-						<h1>Detalhe de: [[${cooperado.medico.nome}]]</h1>
+						<h1>Detalhe do cancelamento: [[${cooperado.medico.nome}]]</h1>
 					</div>
 				</div>
 			</div>
@@ -25,7 +25,7 @@
 
 		<div class="container-fluid" >
 			<form id="form" method="GET" th:object="${cooperado}" class="form-vertical  js-form-loading"
-				th:action="@{/cooperado/cooperado/detalhe/{id}(id=${cooperado.id})}"  enctype="multpart/form-data">
+				th:action="@{/cooperado/cooperado/cancelamento/detalhe/{id}(id=${cooperado.id})}"  enctype="multpart/form-data">
 			
 			<input type="hidden" th:field="*{id}">
 			
@@ -63,22 +63,24 @@
 
 						</div>
 
+						
 						<div class="row">
 							<div class="col-sm-8  form-group">
-								<label for="nome" class="label label-default">Nome</label>
-								<h3 id="nome" th:text="${cooperado.medico.nome}"></h3>
+								<label for="motivo" class="label label-default">Motivo</label>
+								<h3 id="motivo" th:text="${cooperado.motivo}"></h3>
 							</div>
 
 							<div class="col-sm-2  form-group">
-								<label for="doc" class="label label-default">CPF</label>
-								<h3 id="doc" th:text="${cooperado.medico.documento1}"></h3>
+								<label for="dataCancelamento" class="label label-default">Cancelamento</label>
+								<h3 id="dataCancelamento" th:text="${{cooperado.dataCancelamento}}"></h3>
 							</div>
 
 							<div class="col-sm-2  form-group">
-								<label for="crm" class="label label-default">CRM</label>
-								<h3 id="crm" th:text="${cooperado.medico.sigla}"></h3>
+								<label for="tipo" class="label label-default">Tipo</label>
+								<h3 id="tipo" th:text="${cooperado.tipoCancelamento}"></h3>
 							</div>
 						</div>
+
 					</div>
 				</div>
 				

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Cooperado/LayoutCooperado}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"		
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+	<link rel="stylesheet" type="text/css" th:href="@{/stylesheets/vendors/bootstrap-toggle.min.css}"/>
+	<title>Cancelar cooperado</title>
+
+</head>
+
+
+	<section layout:fragment="conteudo">
+		
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1 th:unless="${cooperado.novo}">Cancelar cooperado - [[${cooperado.medico.nome}]]</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+
+
+			<form method="POST" th:object="${cooperado}" class="form-vertical  js-form-loading" 
+				th:action="${cooperado.novo} ? @{/cooperado/cooperado/novo} : @{/cooperado/cooperado/descooperar{id}(id=${cooperado.id})}">
+			
+				<simed:message/>
+			
+			<input type="hidden" th:field="*{id}">
+			<input type="hidden" th:field="*{data}">
+			<input type="hidden" th:field="*{registro}">
+			<input type="hidden" th:field="*{codigo}">
+			<input type="hidden" th:field="*{tipoRecebimento}">
+			<input type="hidden" th:field="*{anotacao}">
+			<input type="hidden" th:field="*{medico}">
+				
+
+				
+				<div class="row">
+						<div class="col-sm-2  form-group" simed:classforerror="dataCancelamento">
+							<label for="dataCancelamento" class="control-label">Data*</label>
+							<input id="dataCancelamento" type="text" class="form-control  js-date" th:field = "*{dataCancelamento}" autocomplete="off"/>
+						</div>				
+					
+						<div class="col-sm-2  form-group">
+							<label for="tipoCancelamento">Tipo*</label>
+							<select id="tipoCancelamento" class="form-control" th:field="*{tipoCancelamento}">
+								<option th:each = "tipo : ${tipos}" th:value="${tipo}" th:text = "${tipo.descricao}"></option>
+							</select>
+						</div>	
+						
+						<div class="col-sm-8  form-group">
+							<label for="motivo">Motivo</label>
+							<input id="motivo" type="text" class="form-control" th:field="*{motivo}" maxlength="200"/>
+						</div>					
+				</div>
+						
+				
+
+				<div class="form-group">
+					<button class="btn  btn-primary" type="submit">Salvar</button>
+					<a class="btn  btn-danger" th:href="@{/cooperado/cooperado/pesquisar}"> Voltar	</a>
+				</div>
+			</form>
+		</div>
+	</section>
+	
+	<th:block layout:fragment="javascript-extra">
+
+	</th:block>	
+</html>

@@ -142,9 +142,17 @@
 								</div>
 							</div>
 
-							<div class="col-sm-4  form-group" th:if="${contaPagar.novo}">
+							<div class="col-sm-2  form-group" th:if="${contaPagar.novo}">
 								<label for="parcelaNum" class="control-label">Parcelas nº</label>
 								<input id="parcelaNum" type="number" class="form-control" th:field = "*{totalParcela}">
+							</div>
+							
+							<div class="form-group  col-sm-2">
+								<label class="control-label">F/V</label>
+								<div>	
+									<input id="fixoVariavel" type="checkbox" checked data-toggle="toggle" class="form-control"  data-size="small"
+									 data-on="Fixo" data-off="Variável" data-onstyle="primary" data-offstyle="default" th:field="*{fixo}"/>
+								</div>
 							</div>
 
 						</div>

@@ -1,4 +1,4 @@
-package com.ajeff.simed.financeiro.controller;
+package com.ajeff.simed.financeiro.controller.contaPagar;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -30,7 +30,7 @@ import com.ajeff.simed.financeiro.repository.filter.ContaPagarFilter;
 import com.ajeff.simed.financeiro.service.FornecedorService;
 import com.ajeff.simed.financeiro.service.ImpostoService;
 import com.ajeff.simed.financeiro.service.PlanoContaService;
-import com.ajeff.simed.financeiro.service.contaPagarService.ContaPagarService;
+import com.ajeff.simed.financeiro.service.contaPagar.ContaPagarService;
 import com.ajeff.simed.financeiro.service.exception.DocumentoEFornecedorJaCadastradoException;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.financeiro.service.exception.RegistroNaoCadastradoException;
@@ -173,7 +173,7 @@ public class ContaPagarController {
 		ModelAndView mv = new ModelAndView("Financeiro/contaPagar/RelatorioContaPagar");
 		mv.addObject(new PeriodoRelatorio());
 		mv.addObject("empresas", empresaService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
-		mv.addObject("fornecedores", fornecedorService.listarTodosFornecedores());
+//		mv.addObject("fornecedores", fornecedorService.listarTodosFornecedores());
 		return mv;
 	}	
 	

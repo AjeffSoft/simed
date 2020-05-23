@@ -6,8 +6,6 @@ import java.util.Optional;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,11 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ajeff.simed.financeiro.model.Fornecedor;
 import com.ajeff.simed.financeiro.repository.FornecedoresRepository;
 import com.ajeff.simed.financeiro.repository.filter.FornecedorFilter;
-import com.ajeff.simed.financeiro.service.exception.CpfCnpjInvalidoException;
 import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoException;
-import com.ajeff.simed.geral.service.PessoaService;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
-import com.ajeff.simed.util.CpfCnpjUtils;
 
 @Service
 public class FornecedorService {
@@ -29,8 +24,7 @@ public class FornecedorService {
 	
 	@Autowired
 	private FornecedoresRepository repository;
-	@Autowired
-	private PessoaService pessoaService;
+
 
 	
 	
@@ -39,7 +33,6 @@ public class FornecedorService {
 		try {
 			fornecedor.setClifor(true);
 			testeRegistroJaCadastrado(fornecedor);
-			pessoaService.testeCpfCnpjValido(fornecedor);
 			return repository.save(fornecedor);
 		} catch (NonUniqueResultException e) {
 			throw new RegistroJaCadastradoException("Mais de um registro com o mesmo documento para validação!");

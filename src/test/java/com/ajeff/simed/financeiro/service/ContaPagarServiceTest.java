@@ -28,7 +28,7 @@ import com.ajeff.simed.financeiro.model.PlanoConta;
 import com.ajeff.simed.financeiro.model.PlanoContaSecundaria;
 import com.ajeff.simed.financeiro.repository.ContasPagarRepository;
 import com.ajeff.simed.financeiro.repository.FornecedoresRepository;
-import com.ajeff.simed.financeiro.service.contaPagarService.ContaPagarService;
+import com.ajeff.simed.financeiro.service.contaPagar.ContaPagarService;
 import com.ajeff.simed.financeiro.service.exception.DocumentoEFornecedorJaCadastradoException;
 import com.ajeff.simed.geral.model.Cidade;
 import com.ajeff.simed.geral.model.Empresa;

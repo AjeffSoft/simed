@@ -28,8 +28,7 @@ public class MovimentacaoItensService {
 	private TransferenciaService transferenciaService;
 	@Autowired
 	private PagamentoService pagamentoService;
-	@Autowired
-	private ExtratoService extratoService;		
+
 	
 	
 	

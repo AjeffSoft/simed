@@ -1,21 +1,11 @@
-package com.ajeff.simed.financeiro.service.contaPagarService;
+package com.ajeff.simed.financeiro.service.contaPagar;
 
-import java.io.InputStream;
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.persistence.PersistenceException;
-import javax.sql.DataSource;
 
 import org.hibernate.TransientObjectException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ajeff.simed.financeiro.dto.PeriodoRelatorio;
 import com.ajeff.simed.financeiro.model.ContaPagar;
 import com.ajeff.simed.financeiro.model.Fornecedor;
 import com.ajeff.simed.financeiro.model.Imposto;
@@ -38,15 +27,9 @@ import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.util.CalculosComDatas;
 import com.ajeff.simed.util.CalculosComValores;
 
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-
 @Service
-public class ContaPagarImprimirService {
+public class ContaPagarService {
 
-	@Autowired
-	DataSource dataSource;
 	@Autowired
 	private ContasPagarRepository repository;
 	@Autowired
@@ -83,18 +66,20 @@ public class ContaPagarImprimirService {
 		
 		testeSeTotalParcelaNulo(contaPagar);
 		Long days = CalculosComDatas.diferencaEntreDuasDatas(contaPagar.getDataEmissao(), contaPagar.getVencimento());
-		
-		
-		if (contaPagar.isTemImpostoRetido()) {
-			impostos = impostoService.calcularImpostos(contaPagar);
-		}
-		
-		
+		impostos = verificarRetencaoImpostos(contaPagar, impostos);
 		for(int i = 1; i <= contaPagar.getTotalParcela(); i++) {
 			contas.add(novaContaPagar(contaPagar, days, i, impostos));
 		}
 		
 		return contas;
+	}
+
+
+	public List<Imposto> verificarRetencaoImpostos(ContaPagar contaPagar, List<Imposto> impostos) {
+		if (contaPagar.isTemImpostoRetido()) {
+			impostos = impostoService.calcularImpostos(contaPagar);
+		}
+		return impostos;
 	}
 
 
@@ -231,54 +216,5 @@ public class ContaPagarImprimirService {
 		contaPagar.setStatus("ABERTO");
 		repository.save(contaPagar);
 	}
-
-
-	
-	
-	////////RELATÓRIOS
-	
-	public byte[] imprimirRelatorio(PeriodoRelatorio periodoRelatorio) throws Exception {
-		Map<String, Object> map = new HashMap<>();
-		map.put("format", "pdf");
-		map.put("REPORT_LOCALE", new Locale("pt", "BR"));
-		
-		if (periodoRelatorio.getEmpresa() != null) {
-			map.put("id_empresa", periodoRelatorio.getEmpresa().getId());
-		}
-		
-		if(periodoRelatorio.getFornecedor() != null) {
-			map.put("id_fornecedor", periodoRelatorio.getFornecedor().getId());
-		}
-
-		if(periodoRelatorio.getStatus() != "") {
-			map.put("status", periodoRelatorio.getStatus());
-		}
-		
-		Date dataInicio = null;
-		Date dataFim = null;
-		
-		if(periodoRelatorio.getDataInicio() != null && periodoRelatorio.getDataFim() != null){
-			dataInicio = Date.from(LocalDateTime.of(periodoRelatorio.getEmissaoInicio(), LocalTime.of(0, 0, 0))
-					.atZone(ZoneId.systemDefault()).toInstant());
-			dataFim = Date.from(LocalDateTime.of(periodoRelatorio.getEmissaoFim(), LocalTime.of(23, 59, 59))
-					.atZone(ZoneId.systemDefault()).toInstant());
-			
-			map.put("emissao_inicio", dataInicio);
-			map.put("emissao_final", dataFim);
-
-		}
-		
-		InputStream inputStream = null;
-
-		inputStream = this.getClass().getResourceAsStream("/relatorios/rel_Financeiro_ContaPagar_Pendencias.jasper");
-		Connection con = this.dataSource.getConnection();
-		try {
-			JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, map, con);
-			return JasperExportManager.exportReportToPdf(jasperPrint);
-		} finally {
-			con.close();
-		}
-	}
-
 }
 

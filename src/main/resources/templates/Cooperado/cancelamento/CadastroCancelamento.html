@@ -28,7 +28,7 @@
 
 		<div class="container-fluid" >
 			<form id="form" method="POST" th:object="${cooperado}" class="form-vertical  js-form-loading" 
-				th:action="${cooperado.novo} ? @{/cooperado/cooperado/novo} : @{/cooperado/cooperado/cancelamento/novo/{id}(id=${cooperado.id})}">
+				th:action="@{/cooperado/cooperado/cancelamento/{id}(id=${cooperado.id})}">
 			
 			<simed:message/>
 

@@ -27,20 +27,13 @@
 			<form method="GET" th:object="${cancelamentoFilter}">
 				<div class="row">
 				
-					<div class="form-group  col-sm-2">
+					<div class="form-group  col-sm-6">
 						<label class="control-label" for="registro">Registro</label>
 						<input type="text" class="form-control" id="registro"  autofocus="autofocus" th:field="*{registro}" maxlength="20"/>
 					</div>
-										
-					<div class="col-sm-6  form-group">
-						<label for="cooperado" class="control-label">Cooperado*</label>
-						<select id="cooperado" class="form-control" th:field="*{cooperado}">
-							<option value="">Selecione um médico cooperado</option>
-							<option th:each="cooperado : ${medicos}" th:value="${cooperado.id}" th:text="${cooperado.medico.nome}"></option>
-						</select>
-					</div>						
+			
 
-					<div class="form-group  col-sm-4">
+					<div class="form-group  col-sm-6">
 						<label for="vencimentoInicio">Data</label>
 						<div class="form-inline">
 							<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="vencimentoInicio" 
@@ -74,11 +67,10 @@
 							<th class="table-col-minima">Cooperado</th>
 
 							<th class="table-col-grande">
-								<simed:order page="${pagina}" field="data" text="Data"/>
+								<simed:order page="${pagina}" field="data" text="Cancelado"/>
 							</th>
 
-							<th class="table-col-grande">
-								<simed:order page="${pagina}" field="data" text="Cancelado"/>
+							<th class="table-col-grande">Tipo
 							</th>
 	
 							<th class="table-col-grande">Status</th>
@@ -92,8 +84,8 @@
 							<td th:text="${cooperado.registro}"></td>
 							<td th:text="${cooperado.codigo}"></td>
 							<td th:text="${cooperado.medico.nome}"></td>
-							<td th:text="${{cooperado.data}}"></td>
 							<td th:text="${{cooperado.dataCancelamento}}"></td>
+							<td th:text="${cooperado.tipoCancelamento.descricao}"></td>
 
 							<td>
 								<th:block th:if="${cooperado.ativo}">
@@ -106,14 +98,8 @@
 							</td>
 
 							<td class="text-center">
-								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes" sec:authorize-url="/cooperado/cooperado/detalhe/**"
-										th:href="@{/cooperado/cooperado/detalhe/{id}(id=${cooperado.id})}"> 
+								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes" th:href="@{/cooperado/cooperado/cancelamento/detalhe/{id}(id=${cooperado.id})}"> 
 									<i class="glyphicon glyphicon-eye-open"></i>
-								</a>
-
-								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir"	data:url="@{/cooperado/cooperado/excluir/{id}(id=${cooperado.id})}"
-									data:objeto="${cooperado.registro}" th:if="${cooperado.ativado}">
-									<i class="glyphicon glyphicon-trash"></i>
 								</a>
 							</td>
 						</tr>

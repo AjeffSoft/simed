@@ -51,6 +51,7 @@ public class Cooperado implements Serializable{
 	private String motivo;
 	
 	@Column(name = "tipo_cancelamento")
+	@Enumerated(EnumType.STRING)
 	private TipoDescooperar tipoCancelamento;
 	
 	@Column(name = "tipo_recebimento")

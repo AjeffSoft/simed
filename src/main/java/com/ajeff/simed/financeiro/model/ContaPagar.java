@@ -64,6 +64,8 @@ public class ContaPagar implements Serializable{
 	
 	@Column(name = "total_parcela")
 	private Integer totalParcela;
+	
+	private Boolean fixo;
 
 	@JsonIgnore
 	@NotNull(message = "Informe o plano de contas")
@@ -294,6 +296,14 @@ public class ContaPagar implements Serializable{
 
 	public void setImpostos(List<Imposto> impostos) {
 		this.impostos = impostos;
+	}
+
+	public Boolean getFixo() {
+		return fixo;
+	}
+
+	public void setFixo(Boolean fixo) {
+		this.fixo = fixo;
 	}
 
 	@Override

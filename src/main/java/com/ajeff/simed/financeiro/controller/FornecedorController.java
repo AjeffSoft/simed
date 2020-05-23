@@ -28,7 +28,7 @@ import com.ajeff.simed.financeiro.model.Fornecedor;
 import com.ajeff.simed.financeiro.model.enums.TipoConta;
 import com.ajeff.simed.financeiro.repository.filter.FornecedorFilter;
 import com.ajeff.simed.financeiro.service.FornecedorService;
-import com.ajeff.simed.financeiro.service.contaPagarService.ContaPagarService;
+import com.ajeff.simed.financeiro.service.contaPagar.ContaPagarService;
 import com.ajeff.simed.financeiro.service.exception.CpfCnpjInvalidoException;
 import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoException;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
