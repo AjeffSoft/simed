@@ -2,8 +2,10 @@ package com.ajeff.simed.util;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
+import java.util.Date;
 
 import com.ajeff.simed.exceptions.DataNaoInformadaException;
 import com.ajeff.simed.financeiro.service.exception.VencimentoMenorEmissaoException;
@@ -95,6 +97,17 @@ public class CalculosComDatas {
 		}
 		dias = ChronoUnit.DAYS.between(dataInicio, dataFinal);
 		return dias >= 0 ? dias : 0L;
+	}
+	
+	
+	public static Date convertLocalDateInDate(LocalDate dataOrigin) {
+		if(dataOrigin.equals(null)) {
+			throw new DataNaoInformadaException("Não foi informado a data de origem para conversão");
+		}else {
+			ZoneId zone = ZoneId.systemDefault();
+			return Date.from(dataOrigin.atStartOfDay(zone).toInstant());			
+		}
+
 	}
 
 }

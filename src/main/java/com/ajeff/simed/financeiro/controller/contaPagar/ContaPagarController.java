@@ -173,16 +173,8 @@ public class ContaPagarController {
 		ModelAndView mv = new ModelAndView("Financeiro/contaPagar/RelatorioContaPagar");
 		mv.addObject(new PeriodoRelatorio());
 		mv.addObject("empresas", empresaService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
-//		mv.addObject("fornecedores", fornecedorService.listarTodosFornecedores());
+		mv.addObject("fornecedores", fornecedorService.listarTodosFornecedores());
 		return mv;
 	}	
 	
-	
-//	@PostMapping("/relatorio")
-//	public ResponseEntity<byte[]> gerarRelatorio(PeriodoRelatorio periodoRelatorio) throws Exception{
-//		byte[] relatorio = service.imprimirRelatorio(periodoRelatorio);
-//		return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
-//				.body(relatorio);
-//	}
-
 }
