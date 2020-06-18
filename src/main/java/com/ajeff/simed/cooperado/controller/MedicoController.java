@@ -102,13 +102,13 @@ public class MedicoController {
 	}	
 	
 
-//	@GetMapping("/alterar/{id}")
-//	public ModelAndView alterar(@PathVariable Long id, Pessoa medico) {
-//		medico = pessoaService.buscarComCidadeEstado(id);
-//		ModelAndView mv = novo(medico);
-//		mv.addObject(medico);
-//		return mv;
-//	}
+	@GetMapping("/alterar/{id}")
+	public ModelAndView alterar(@PathVariable Long id, Medico medico) {
+		medico = (Medico) pessoaService.buscarComCidadeEstado(id);
+		ModelAndView mv = novo(medico);
+		mv.addObject(medico);
+		return mv;
+	}
 	
 	@GetMapping("/detalhe/{id}")
 	public ModelAndView detalhe(@PathVariable Long id) {
