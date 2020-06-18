@@ -15,7 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@DiscriminatorValue("COOPERADO")
+@DiscriminatorValue("MEDICO")
 @Entity
 @Getter
 @Setter
