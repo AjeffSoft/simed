@@ -40,7 +40,13 @@
             			<i class="fa  fa-heartbeat"></i><span>Cooperado</span>
             			<i class="aw-menu__navigation-icon  fa"></i>
           			</a>
-      
+
+          			<ul class="aw-menu__list  aw-menu__list--sublist">
+			            <li class="aw-menu__item  aw-menu__item--link" simed:menu="@{/cooperado/assembleia}">
+			            	<a th:href="@{/cooperado/assembleia/pesquisar}">Assembléias</a>
+			            </li>
+          			</ul>
+          			      
           			<ul class="aw-menu__list  aw-menu__list--sublist">
 			            <li class="aw-menu__item  aw-menu__item--link" simed:menu="@{/cooperado/cooperado}">
 			            	<a th:href="@{/cooperado/cooperado/pesquisar}">Cooperados</a>

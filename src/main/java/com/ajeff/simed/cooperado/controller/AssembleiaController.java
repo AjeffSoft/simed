@@ -1,9 +1,12 @@
 package com.ajeff.simed.cooperado.controller;
 
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +17,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ajeff.simed.cooperado.model.Assembleia;
 import com.ajeff.simed.cooperado.model.enums.TipoAssembleia;
+import com.ajeff.simed.cooperado.repository.filter.AssembleiaFilter;
 import com.ajeff.simed.cooperado.service.AssembleiaService;
 import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoException;
+import com.ajeff.simed.geral.controller.page.PageWrapper;
 
 @Controller
 @RequestMapping("/cooperado/assembleia")
@@ -51,17 +56,18 @@ public class AssembleiaController {
 	}
 	
 
-//	@GetMapping("/pesquisar")
-//	public ModelAndView pesquisar(MedicoFilter medicoFilter, BindingResult result, @PageableDefault(size=100) Pageable pageable,
-//										HttpServletRequest httpServletRequest) {
-//		ModelAndView mv = new ModelAndView("Cooperado/medico/PesquisarMedicos");
-//
-//		PageWrapper<Medico> paginaWrapper = new PageWrapper<>(service.filtrar(medicoFilter, pageable), httpServletRequest);
-//		mv.addObject("pagina", paginaWrapper);
-//		return mv;
-//	}	
-//
-//	
+	@GetMapping("/pesquisar")
+	public ModelAndView pesquisar(AssembleiaFilter assembleiaFilter, BindingResult result, @PageableDefault(size=100) Pageable pageable,
+										HttpServletRequest httpServletRequest) {
+		ModelAndView mv = new ModelAndView("Cooperado/assembleia/PesquisarAssembleias");
+		mv.addObject("tipos", TipoAssembleia.values());
+
+		PageWrapper<Assembleia> paginaWrapper = new PageWrapper<>(service.filtrar(assembleiaFilter, pageable), httpServletRequest);
+		mv.addObject("pagina", paginaWrapper);
+		return mv;
+	}	
+
+	
 //	@DeleteMapping("/excluir/{id}")
 //	public @ResponseBody ResponseEntity<?> excluir (@PathVariable Long id){
 //		try {
