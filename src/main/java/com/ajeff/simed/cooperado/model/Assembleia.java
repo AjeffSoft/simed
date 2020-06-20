@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -49,11 +50,16 @@ public class Assembleia implements Serializable{
 	private Boolean eleicao;
 	
 	@Enumerated(EnumType.STRING)
+	@Column(name = "tipo_assembleia")
 	private TipoAssembleia tipoAssembleia;
 
 	@OneToMany
 	@JoinColumn(name = "id_cooperado")
 	private List<Cooperado> presentes = new ArrayList<>();
+	
+	public boolean isNovo() {
+		return this.id == null;
+	}
 	
 	
 }

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Cooperado/LayoutCooperado}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"		
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+	<link rel="stylesheet" type="text/css" th:href="@{/stylesheets/vendors/bootstrap-toggle.min.css}"/>
+	<title>Cadastro de assembléia</title>
+
+</head>
+
+
+	<section layout:fragment="conteudo">
+
+		<!-- CABEÇALHO DO CADASTRO -->
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1 th:if="${assembleia.novo}">Cadastro de assembléia</h1>
+						<h1 th:unless="${assembleia.novo}">Alterar a assembléia nº - [[${assembleia.id}]]</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+
+
+			<form method="POST" th:object="${assembleia}" class="form-vertical  js-form-loading" 
+				th:action="${assembleia.novo} ? @{/cooperado/assembleia/novo} : @{/cooperado/assembleia/{id}(id=${assembleia.id})}">
+			
+				<simed:message/>
+			
+				<input type="hidden" th:field="*{id}">
+				<input type="hidden" th:field="*{eleicao}"/>
+
+				<div class="row">
+					<div class="col-sm-2  form-group" simed:classforerror="data">
+						<label for="data" class="control-label">Data/Hora*</label>
+						<input id="data" type="text" class="form-control  js-date" autocomplete="off"/>
+					</div>
+					
+					<div class="col-sm-2  form-group" simed:classforerror="tipoAssembleia">
+						<label for="tipo" class="control-label">Tipo*</label>
+						<select id="tipo" class="form-control">
+<!-- 								<option th:each="planoConta : ${planosConta}" th:value="${planoConta.id}" th:text="${planoConta.nome}"></option> -->
+						</select>
+					</div>					
+					
+					<div class="col-sm-8  form-group"  simed:classforerror="descricao">
+						<label for="descricao" class="control-label">Descrição*</label>
+						<input id="descricao" type="text" class="form-control" maxlength="100">
+					</div>
+				</div>
+
+				<div class="row">
+					<div>
+						<div class="col-sm-12  form-group">
+							<label for="resumo" class="control-label">Resumo*</label>
+							<textarea id="resumo" class="form-control" rows="20" maxlength="5000"
+								placeholder="Deixe um resumo da assembléia."></textarea>
+						</div>
+					</div>				
+				</div>
+								
+				<div class="form-group">
+					<button class="btn  btn-primary" type="submit">Salvar</button>
+					<a class="btn  btn-danger" th:href="@{/cooperado/assembleia/pesquisar}"> Voltar	</a>
+				</div>
+			</form>
+		</div>
+	</section>
+	
+	<th:block layout:fragment="javascript-extra">
+	</th:block>	
+</html>
