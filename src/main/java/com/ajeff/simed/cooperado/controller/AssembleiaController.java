@@ -33,7 +33,7 @@ public class AssembleiaController {
 	}
 	
 	
-	@PostMapping(value = {"/novo", "{\\d}"})
+	@PostMapping(value = {"/nova", "{\\d}"})
 	public ModelAndView salvar(@Valid Assembleia assembleia, BindingResult result, RedirectAttributes attributes) {
 		if (result.hasErrors()) {
 			return novo(assembleia);

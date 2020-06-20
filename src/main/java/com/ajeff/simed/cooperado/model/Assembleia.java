@@ -1,7 +1,7 @@
 package com.ajeff.simed.cooperado.model;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class Assembleia implements Serializable{
 	private Long id;
 	
 	@NotNull(message = "Informe a data da assembléia")
-	private LocalDateTime data;
+	private LocalDate data;
 	
 	private String descricao;
 

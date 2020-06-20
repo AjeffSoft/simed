@@ -42,19 +42,19 @@
 				<div class="row">
 					<div class="col-sm-2  form-group" simed:classforerror="data">
 						<label for="data" class="control-label">Data/Hora*</label>
-						<input id="data" type="text" class="form-control  js-date" autocomplete="off"/>
+						<input id="data" type="text" class="form-control  js-date" th:field= "*{data}" autocomplete="off"/>
 					</div>
 					
 					<div class="col-sm-2  form-group" simed:classforerror="tipoAssembleia">
 						<label for="tipo" class="control-label">Tipo*</label>
-						<select id="tipo" class="form-control">
+						<select id="tipo" class="form-control" th:field= "*{tipoAssembleia}">
 <!-- 								<option th:each="planoConta : ${planosConta}" th:value="${planoConta.id}" th:text="${planoConta.nome}"></option> -->
 						</select>
 					</div>					
 					
 					<div class="col-sm-8  form-group"  simed:classforerror="descricao">
 						<label for="descricao" class="control-label">Descrição*</label>
-						<input id="descricao" type="text" class="form-control" maxlength="100">
+						<input id="descricao" type="text" class="form-control" th:field= "*{descricao}" maxlength="100">
 					</div>
 				</div>
 
@@ -62,7 +62,7 @@
 					<div>
 						<div class="col-sm-12  form-group">
 							<label for="resumo" class="control-label">Resumo*</label>
-							<textarea id="resumo" class="form-control" rows="20" maxlength="5000"
+							<textarea id="resumo" class="form-control" rows="20" th:field= "*{resumo}" maxlength="5000"
 								placeholder="Deixe um resumo da assembléia."></textarea>
 						</div>
 					</div>				
