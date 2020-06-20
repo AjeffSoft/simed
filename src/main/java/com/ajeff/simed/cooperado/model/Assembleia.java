@@ -40,6 +40,7 @@ public class Assembleia implements Serializable{
 	@NotNull(message = "Informe a data da assembléia")
 	private LocalDate data;
 	
+	@NotBlank(message = "Informe uma descrição para a assembléia")
 	private String descricao;
 
 	@NotBlank(message = "Informe um resumo para a assembléia")

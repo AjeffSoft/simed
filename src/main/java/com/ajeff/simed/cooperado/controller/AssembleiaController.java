@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ajeff.simed.cooperado.model.Assembleia;
+import com.ajeff.simed.cooperado.model.enums.TipoAssembleia;
 import com.ajeff.simed.cooperado.service.AssembleiaService;
 import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoException;
 
@@ -28,7 +29,7 @@ public class AssembleiaController {
 	@GetMapping("/nova")
 	public ModelAndView novo(Assembleia assembleia) {
 		ModelAndView mv = new ModelAndView("Cooperado/assembleia/CadastroAssembleia");
-//		mv.addObject("agencias", agenciaService.findAllOrderByAgencia());
+		mv.addObject("tipos", TipoAssembleia.values());
 		return mv;
 	}
 	
