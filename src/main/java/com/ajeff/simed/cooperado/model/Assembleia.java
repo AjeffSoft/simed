@@ -13,7 +13,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
@@ -54,8 +55,8 @@ public class Assembleia implements Serializable{
 	@Column(name = "tipo_assembleia")
 	private TipoAssembleia tipoAssembleia;
 
-	@OneToMany
-	@JoinColumn(name = "id_cooperado")
+	@ManyToMany
+	@JoinTable(name = "assembleia_presente", joinColumns = @JoinColumn(name= "id_assembleia"), inverseJoinColumns = @JoinColumn(name="id_presente"))
 	private List<Cooperado> presentes = new ArrayList<>();
 	
 	public boolean isNovo() {

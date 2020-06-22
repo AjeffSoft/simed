@@ -44,15 +44,15 @@ public class Cooperado implements Serializable{
 	
 	private String anotacao;
 	
-	@Column(name = "data_cancelamento")
-	private LocalDate dataCancelamento;
-	
-	@Size(max = 200, message = "O motivo deverá conter no máximo 200 caracteres!")
-	private String motivo;
-	
-	@Column(name = "tipo_cancelamento")
-	@Enumerated(EnumType.STRING)
-	private TipoDescooperar tipoCancelamento;
+//	@Column(name = "data_cancelamento")
+//	private LocalDate dataCancelamento;
+//	
+//	@Size(max = 200, message = "O motivo deverá conter no máximo 200 caracteres!")
+//	private String motivo;
+//	
+//	@Column(name = "tipo_cancelamento")
+//	@Enumerated(EnumType.STRING)
+//	private TipoDescooperar tipoCancelamento;
 	
 	@Column(name = "tipo_recebimento")
 	@Enumerated(EnumType.STRING)
@@ -128,29 +128,29 @@ public class Cooperado implements Serializable{
 		this.medico = medico;
 	}
 
-	public LocalDate getDataCancelamento() {
-		return dataCancelamento;
-	}
-
-	public void setDataCancelamento(LocalDate dataCancelamento) {
-		this.dataCancelamento = dataCancelamento;
-	}
-
-	public String getMotivo() {
-		return motivo;
-	}
-
-	public void setMotivo(String motivo) {
-		this.motivo = motivo;
-	}
-
-	public TipoDescooperar getTipoCancelamento() {
-		return tipoCancelamento;
-	}
-
-	public void setTipoCancelamento(TipoDescooperar tipoCancelamento) {
-		this.tipoCancelamento = tipoCancelamento;
-	}
+//	public LocalDate getDataCancelamento() {
+//		return dataCancelamento;
+//	}
+//
+//	public void setDataCancelamento(LocalDate dataCancelamento) {
+//		this.dataCancelamento = dataCancelamento;
+//	}
+//
+//	public String getMotivo() {
+//		return motivo;
+//	}
+//
+//	public void setMotivo(String motivo) {
+//		this.motivo = motivo;
+//	}
+//
+//	public TipoDescooperar getTipoCancelamento() {
+//		return tipoCancelamento;
+//	}
+//
+//	public void setTipoCancelamento(TipoDescooperar tipoCancelamento) {
+//		this.tipoCancelamento = tipoCancelamento;
+//	}
 
 	@Override
 	public int hashCode() {

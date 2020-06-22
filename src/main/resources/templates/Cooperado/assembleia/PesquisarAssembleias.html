@@ -117,7 +117,9 @@
 <!-- 									th:href="@{/cooperado/medico/detalhe/{id}(id=${medico.id})}">  -->
 <!-- 									<i class="glyphicon glyphicon-eye-open"></i> -->
 <!-- 								</a>							 -->
-								
+ 								<a class="btn  btn-link  btn-xs  js-tooltip" title="Presentes" th:href="@{/cooperado/assembleia/presentes/{id}(id=${assembleia.id})}"> 
+ 									<i class="glyphicon glyphicon-plus"></i>
+ 								</a>								
 <!-- 								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar" sec:authorize-url="/cooperado/medico/alterar/**" -->
 <!-- 										th:href="@{/cooperado/medico/alterar/{id}(id=${medico.id})}">  -->
 <!-- 									<i class="glyphicon glyphicon-pencil"></i> -->
