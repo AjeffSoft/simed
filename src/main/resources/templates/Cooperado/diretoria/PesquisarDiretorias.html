@@ -8,7 +8,7 @@
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 	
 <head>
-	<title>Pesquisar Assembléias</title>
+	<title>Pesquisar Diretorias</title>
 </head>
 
 <body>
@@ -17,12 +17,12 @@
 			<div class="container-fluid">
 				<div class="row">
 					<div class="col-xs-10">
-						<h1>Pesquisar assembléias</h1>
+						<h1>Pesquisar diretorias</h1>
 					</div>
 					
-					<div class="col-sm-2" sec:authorize-url="/cooperado/assembleia/nova">
+					<div class="col-sm-2" sec:authorize-url="/cooperado/diretoria/nova">
 						<div class="aw-page-header-controls">
-							<a class="btn  btn-warning" th:href="@{/cooperado/assembleia/nova}">
+							<a class="btn  btn-warning" th:href="@{/cooperado/diretoria/nova}">
 								<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Cadastrar</span>
 							</a>
 						</div>
@@ -32,40 +32,18 @@
 		</div>
 
 		<div class="container-fluid">
-			<form method="GET" th:object="${assembleiaFilter}">
+			<form method="GET" th:object="${diretoriaFilter}">
 				<div class="row">
-					<div class="form-group  col-sm-6">
+					<div class="form-group  col-sm-10">
 						<label class="control-label" for="descricao">Descrição</label>
 						<input type="search" class="form-control" id="descricao" th:field="*{descricao}" autofocus="autofocus" maxlength="60"/>
 					</div>
 
-					<div class="form-group  col-sm-6">
-						<label class="control-label" for="resumo">Resumo</label>
-						<input type="search" class="form-control" id="resumo" th:field="*{resumo}" autofocus="autofocus" maxlength="100"/>
+					<div class="form-group  col-sm-2">
+						<label class="control-label" for="chapa">Chapa</label>
+						<input type="search" class="form-control" id="chapa" th:field="*{chapa}" maxlength="100"/>
 					</div>
 				</div>	
-
-				<div class="row">
-					<div class="form-group  col-sm-6">
-						<label for="dataInicio">Data</label>
-						<div class="form-inline">
-							<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="dataInicio" 
-								th:field="*{dataInicio}" autocomplete="off" placeholder="Data Inicial"/>
-							<label for="dataFim" class="aw-form-label-between">até</label>
-							<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="dataFim" 
-								th:field="*{dataFim}" autocomplete="off" placeholder="Data Final"/>
-						</div>
-					</div>	
-					
-					<div class="col-sm-6  form-group">
-						<label for="tipo" class="control-label">Tipo</label>
-						<select id="tipo" class="form-control" th:field= "*{tipoAssembleia}">
-							<option value="">Todos os tipos</option>
-							<option th:each="tipo : ${tipos}" th:value="${tipo}" th:text="${tipo.descricao}"></option>
-						</select>
-					</div>					
-					
-				</div>				
 				
 				<div class="form-group">
 					<button type="submit" class="btn  btn-primary">Pesquisar</button>
@@ -79,7 +57,7 @@
 					<thead>
 						<tr>
 							<th class="table-col-pequeno">
-								<simed:order page="${pagina}" field="id" text="Código"/>
+								<simed:order page="${pagina}" field="chapa" text="Chapa"/>
 							</th>
 
 							<th class="table-col-grande">
@@ -87,26 +65,26 @@
 							</th>
 
 							<th class="table-col-grande">
-								<simed:order page="${pagina}" field="data" text="Data"/>
+								<simed:order page="${pagina}" field="dataFim" text="Final"/>
 							</th>
 
-							<th class="table-col-pequeno">Eleição</th>
+							<th class="table-col-pequeno">Vencedor</th>
 
 							<th class="table-agencia-col-acoes"></th>
 						</tr>
 					</thead>
 					
 					<tbody>
-						<tr th:each="assembleia : ${pagina.conteudo}">
-							<td th:text="${assembleia.id}"></td>
-							<td th:text="${assembleia.descricao}"></td>
-							<td th:text="${{assembleia.data}}"></td>
+						<tr th:each="diretoria : ${pagina.conteudo}">
+							<td th:text="${diretoria.chapa}"></td>
+							<td th:text="${diretoria.descricao}"></td>
+							<td th:text="${{diretoria.dataFim}}"></td>
 							<td>
-								<th:block th:if="${assembleia.eleicao}">
+								<th:block th:if="${diretoria.novo}">
 									<span class="label  label-primary">Sim</span>
 								</th:block>
 
-								<th:block th:unless="${assembleia.eleicao}">
+								<th:block th:unless="${diretoria.novo}">
 									<span class="label  label-info">Não</span>
 								</th:block>
 
@@ -117,9 +95,9 @@
 <!-- 									th:href="@{/cooperado/medico/detalhe/{id}(id=${medico.id})}">  -->
 <!-- 									<i class="glyphicon glyphicon-eye-open"></i> -->
 <!-- 								</a>							 -->
- 								<a class="btn  btn-link  btn-xs  js-tooltip" title="Presentes" th:href="@{/cooperado/assembleia/presentes/{id}(id=${assembleia.id})}"> 
- 									<i class="glyphicon glyphicon-plus"></i>
- 								</a>								
+<!--  								<a class="btn  btn-link  btn-xs  js-tooltip" title="Presentes" th:href="@{/cooperado/assembleia/presentes/{id}(id=${assembleia.id})}">  -->
+<!--  									<i class="glyphicon glyphicon-plus"></i> -->
+<!--  								</a>								 -->
 <!-- 								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar" sec:authorize-url="/cooperado/medico/alterar/**" -->
 <!-- 										th:href="@{/cooperado/medico/alterar/{id}(id=${medico.id})}">  -->
 <!-- 									<i class="glyphicon glyphicon-pencil"></i> -->
