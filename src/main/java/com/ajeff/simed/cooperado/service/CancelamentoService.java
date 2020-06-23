@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ajeff.simed.cooperado.model.Cooperado;
 import com.ajeff.simed.cooperado.repository.CancelamentosRepository;
 import com.ajeff.simed.cooperado.repository.filter.CancelamentoFilter;
-import com.ajeff.simed.util.CalculosComDatas;
 
 @Service
 public class CancelamentoService {
@@ -24,7 +23,7 @@ public class CancelamentoService {
 	public void descooperar(Cooperado cooperado) {
 		cooperado.setAtivo(false);
 		cooperadoService.ativarDesativarMedico(cooperado);
-		CalculosComDatas.emissaoMenorIgualVencimento(cooperado.getData(), cooperado.getDataCancelamento());
+//		CalculosComDatas.emissaoMenorIgualVencimento(cooperado.getData(), cooperado.getDataCancelamento());
 		repository.save(cooperado);
 	}	
 	

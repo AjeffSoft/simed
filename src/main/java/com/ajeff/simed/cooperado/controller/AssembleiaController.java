@@ -57,7 +57,7 @@ public class AssembleiaController {
 			return novo(assembleia);
 		}
 		attributes.addFlashAttribute("mensagem", "Assembléia cadastrada com sucesso");
-		return new ModelAndView("redirect:/cooperado/assembleia/presentes/novo");
+		return new ModelAndView("redirect:/cooperado/assembleia/pesquisar");
 	}
 	
 

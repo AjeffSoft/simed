@@ -93,7 +93,7 @@
 								<label class="control-label">Lista de Presentes</label> 
 								<div>
 									<th:block th:each="presente : ${presentes}">
-				  						<div class="checkbox  checkbox-inline"> 
+				  						<div class="checkbox"> 
 					    					<input type="checkbox" th:value="${presente.id}" th:field="*{presentes}"/>
 					    					<label th:text="${presente.medico.nome}" th:for="${#ids.prev('presentes')}">Fulano de Tal</label>
 				    					</div>
