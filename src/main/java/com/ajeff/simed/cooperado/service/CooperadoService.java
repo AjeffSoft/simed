@@ -88,4 +88,10 @@ public class CooperadoService {
 		return repository.findByAdmissaoOrdenadoPorCooperado();
 	}
 
+
+
+	public List<Cooperado> findAllAtivoTrueOrderByMedicoNome() {
+		return repository.findAllAtivoTrueOrderByMedicoNome();
+	}
+
 }

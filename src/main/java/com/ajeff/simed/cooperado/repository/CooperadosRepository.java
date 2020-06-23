@@ -22,6 +22,9 @@ public interface CooperadosRepository extends JpaRepository<Cooperado, Long>, Co
 	@Query("select c from Cooperado c where c.ativo = false")
 	List<Cooperado> findByAdmissaoCooperadoAtivoFalse();
 
+	@Query("select c from Cooperado c where c.ativo = true")
+	List<Cooperado> findAllAtivoTrueOrderByMedicoNome();
+
 
 
 }

@@ -19,6 +19,7 @@ import com.ajeff.simed.cooperado.model.Assembleia;
 import com.ajeff.simed.cooperado.model.enums.TipoAssembleia;
 import com.ajeff.simed.cooperado.repository.filter.AssembleiaFilter;
 import com.ajeff.simed.cooperado.service.AssembleiaService;
+import com.ajeff.simed.cooperado.service.CooperadoService;
 import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoException;
 import com.ajeff.simed.geral.controller.page.PageWrapper;
 
@@ -28,6 +29,8 @@ public class AssembleiaController {
 
 	@Autowired
 	private AssembleiaService service;
+	@Autowired
+	private CooperadoService cooperadoService;
 
 
 	
@@ -35,6 +38,8 @@ public class AssembleiaController {
 	public ModelAndView novo(Assembleia assembleia) {
 		ModelAndView mv = new ModelAndView("Cooperado/assembleia/CadastroAssembleia");
 		mv.addObject("tipos", TipoAssembleia.values());
+		mv.addObject("presentes", cooperadoService.findAllAtivoTrueOrderByMedicoNome());
+
 		return mv;
 	}
 	
