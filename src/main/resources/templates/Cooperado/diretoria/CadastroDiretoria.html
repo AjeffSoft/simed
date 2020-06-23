@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Cooperado/LayoutCooperado}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"		
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+<head>
+	<link rel="stylesheet" type="text/css" th:href="@{/stylesheets/vendors/bootstrap-toggle.min.css}"/>
+	<title>Cadastro de diretoria</title>
+
+</head>
+
+
+	<section layout:fragment="conteudo">
+
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1 th:if="${diretoria.novo}">Cadastro de diretoria</h1>
+						<h1 th:unless="${diretoria.novo}">Alterar a diretoria chapa nº - [[${diretoria.chapa}]]</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+
+
+			<form method="POST" th:object="${diretoria}" class="form-vertical  js-form-loading" 
+				th:action="${diretoria.novo} ? @{/cooperado/diretoria/nova} : @{/cooperado/diretoria/nova/{id}(id=${diretoria.id})}">
+			
+				<simed:message/>
+			
+				<input type="hidden" th:field="*{id}">
+				<input type="hidden" th:field="*{dataFinal}"/>
+
+				<div class="row">
+					<div class="col-sm-2  form-group">
+						<label for="chapa" class="control-label">Chapa*</label>
+						<input id="chapa" type="text" class="form-control" th:field= "*{chapa}"/>
+					</div>
+					
+			
+					<div class="col-sm-10  form-group"  simed:classforerror="descricao">
+						<label for="descricao" class="control-label">Descrição*</label>
+						<input id="descricao" type="text" class="form-control" th:field= "*{descricao}" maxlength="200">
+					</div>
+				</div>
+
+				<div class="row">
+					<div>
+						<div class="col-sm-12  form-group">
+							<label for="anotacao" class="control-label">Anotações</label>
+						<input id="anotacao" type="text" class="form-control" th:field= "*{anotacao}" maxlength="200">
+
+						</div>
+					</div>				
+				</div>
+					
+				<div class="form-group">
+					<button class="btn  btn-primary" type="submit">Salvar</button>
+					<a class="btn  btn-danger" th:href="@{/cooperado/assembleia/pesquisar}"> Voltar	</a>
+				</div>
+			</form>
+		</div>
+	</section>
+	
+	<th:block layout:fragment="javascript-extra">
+	</th:block>	
+</html>

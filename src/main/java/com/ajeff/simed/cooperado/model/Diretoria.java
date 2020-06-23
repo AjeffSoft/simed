@@ -41,5 +41,9 @@ public class Diretoria implements Serializable{
 	private Boolean ativo;
 	
 	private String anotacao;
+	
+	public boolean isNovo() {
+		return this.id == null;
+	}
 
 }

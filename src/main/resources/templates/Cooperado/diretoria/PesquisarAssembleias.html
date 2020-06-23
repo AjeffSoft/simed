@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{Cooperado/LayoutCooperado}"
+	xmlns:simed="http://simed.ajeffsoft.com"
+	xmlns:data="http://www.thymeleaf.org/extras/data"	
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+<head>
+	<title>Pesquisar Assembléias</title>
+</head>
+
+<body>
+	<section layout:fragment="conteudo">
+		<div class="page-header">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-10">
+						<h1>Pesquisar assembléias</h1>
+					</div>
+					
+					<div class="col-sm-2" sec:authorize-url="/cooperado/assembleia/nova">
+						<div class="aw-page-header-controls">
+							<a class="btn  btn-warning" th:href="@{/cooperado/assembleia/nova}">
+								<i class="glyphicon  glyphicon-plus-sign"></i> <span class="hidden-xs  hidden-sm">Cadastrar</span>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid">
+			<form method="GET" th:object="${assembleiaFilter}">
+				<div class="row">
+					<div class="form-group  col-sm-6">
+						<label class="control-label" for="descricao">Descrição</label>
+						<input type="search" class="form-control" id="descricao" th:field="*{descricao}" autofocus="autofocus" maxlength="60"/>
+					</div>
+
+					<div class="form-group  col-sm-6">
+						<label class="control-label" for="resumo">Resumo</label>
+						<input type="search" class="form-control" id="resumo" th:field="*{resumo}" autofocus="autofocus" maxlength="100"/>
+					</div>
+				</div>	
+
+				<div class="row">
+					<div class="form-group  col-sm-6">
+						<label for="dataInicio">Data</label>
+						<div class="form-inline">
+							<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="dataInicio" 
+								th:field="*{dataInicio}" autocomplete="off" placeholder="Data Inicial"/>
+							<label for="dataFim" class="aw-form-label-between">até</label>
+							<input type="text" class="form-control  aw-form-control-inline-sm  js-date" id="dataFim" 
+								th:field="*{dataFim}" autocomplete="off" placeholder="Data Final"/>
+						</div>
+					</div>	
+					
+					<div class="col-sm-6  form-group">
+						<label for="tipo" class="control-label">Tipo</label>
+						<select id="tipo" class="form-control" th:field= "*{tipoAssembleia}">
+							<option value="">Todos os tipos</option>
+							<option th:each="tipo : ${tipos}" th:value="${tipo}" th:text="${tipo.descricao}"></option>
+						</select>
+					</div>					
+					
+				</div>				
+				
+				<div class="form-group">
+					<button type="submit" class="btn  btn-primary">Pesquisar</button>
+				</div>			
+			</form>
+		
+			<br>
+			
+			<div class="table-responsive  bw-tabela-simples">
+				<table class="table  table-hover">
+					<thead>
+						<tr>
+							<th class="table-col-pequeno">
+								<simed:order page="${pagina}" field="id" text="Código"/>
+							</th>
+
+							<th class="table-col-grande">
+								<simed:order page="${pagina}" field="descricao" text="Descrição"/>
+							</th>
+
+							<th class="table-col-grande">
+								<simed:order page="${pagina}" field="data" text="Data"/>
+							</th>
+
+							<th class="table-col-pequeno">Eleição</th>
+
+							<th class="table-agencia-col-acoes"></th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						<tr th:each="assembleia : ${pagina.conteudo}">
+							<td th:text="${assembleia.id}"></td>
+							<td th:text="${assembleia.descricao}"></td>
+							<td th:text="${{assembleia.data}}"></td>
+							<td>
+								<th:block th:if="${assembleia.eleicao}">
+									<span class="label  label-primary">Sim</span>
+								</th:block>
+
+								<th:block th:unless="${assembleia.eleicao}">
+									<span class="label  label-info">Não</span>
+								</th:block>
+
+							</td>							
+							<td class="text-center">
+								
+<!-- 								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes" sec:authorize-url="/cooperado/medico/detalhe/**" -->
+<!-- 									th:href="@{/cooperado/medico/detalhe/{id}(id=${medico.id})}">  -->
+<!-- 									<i class="glyphicon glyphicon-eye-open"></i> -->
+<!-- 								</a>							 -->
+ 								<a class="btn  btn-link  btn-xs  js-tooltip" title="Presentes" th:href="@{/cooperado/assembleia/presentes/{id}(id=${assembleia.id})}"> 
+ 									<i class="glyphicon glyphicon-plus"></i>
+ 								</a>								
+<!-- 								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar" sec:authorize-url="/cooperado/medico/alterar/**" -->
+<!-- 										th:href="@{/cooperado/medico/alterar/{id}(id=${medico.id})}">  -->
+<!-- 									<i class="glyphicon glyphicon-pencil"></i> -->
+<!-- 								</a> -->
+<!-- 								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir" sec:authorize-url="/cooperado/medico/excluir/**" -->
+<!-- 									data:url="@{/cooperado/medico/excluir/{id}(id=${medico.id})}" data:objeto="${medico.nome}" th:unless="${medico.ativo}"> -->
+<!-- 									<i class="glyphicon glyphicon-trash"></i> -->
+<!-- 								</a> -->
+							</td>
+						</tr>
+						
+						<tr th:if="${pagina.vazia}">
+							<td colspan="5"> Nenhuma assembléia encontrada</td>
+						</tr>
+						
+						
+					</tbody>
+				</table>
+			</div>
+
+			<simed:pagination page="${pagina}"/>						
+
+		</div>		
+	</section>
+</body>
+</html>
