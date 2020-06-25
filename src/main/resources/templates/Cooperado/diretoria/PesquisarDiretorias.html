@@ -65,7 +65,7 @@
 							</th>
 
 							<th class="table-col-grande">
-								<simed:order page="${pagina}" field="dataFim" text="Final"/>
+								<simed:order page="${pagina}" field="dataFinal" text="Final"/>
 							</th>
 
 							<th class="table-col-pequeno">Vencedor</th>
@@ -78,7 +78,7 @@
 						<tr th:each="diretoria : ${pagina.conteudo}">
 							<td th:text="${diretoria.chapa}"></td>
 							<td th:text="${diretoria.descricao}"></td>
-							<td th:text="${{diretoria.dataFim}}"></td>
+							<td th:text="${{diretoria.dataFinal}}"></td>
 							<td>
 								<th:block th:if="${diretoria.novo}">
 									<span class="label  label-primary">Sim</span>
@@ -91,6 +91,11 @@
 							</td>							
 							<td class="text-center">
 								
+
+ 								<a class="btn  btn-link  btn-xs  js-tooltip" title="Candidatos" th:href="@{/cooperado/diretoria/candidatos/{id}(id=${diretoria.id})}"> 
+ 									<i class="glyphicon glyphicon-plus"></i>
+ 								</a>								
+
 <!-- 								<a class="btn  btn-link  btn-xs  js-tooltip" title="Detalhes" sec:authorize-url="/cooperado/medico/detalhe/**" -->
 <!-- 									th:href="@{/cooperado/medico/detalhe/{id}(id=${medico.id})}">  -->
 <!-- 									<i class="glyphicon glyphicon-eye-open"></i> -->

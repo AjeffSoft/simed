@@ -1,11 +1,14 @@
 package com.ajeff.simed.cooperado.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ajeff.simed.cooperado.model.Diretoria;
 import com.ajeff.simed.cooperado.repository.DiretoriasRepository;
+import com.ajeff.simed.cooperado.repository.filter.DiretoriaFilter;
 
 @Service
 public class DiretoriaService {
@@ -20,8 +23,8 @@ public class DiretoriaService {
 		repository.save(diretoria);
 	}
 
-//	public Page<Assembleia> filtrar(AssembleiaFilter assembleiaFilter, Pageable pageable) {
-//		return repository.filtrar(assembleiaFilter, pageable);
-//	}
+	public Page<Diretoria> filtrar(DiretoriaFilter diretoriaFilter, Pageable pageable) {
+		return repository.filtrar(diretoriaFilter, pageable);
+	}
 
 }
