@@ -1,6 +1,6 @@
 package com.ajeff.simed.cooperado.model.enums;
 
-public enum TipoCargo {
+public enum TipoCargoDiretor {
 	
 
 	PRESIDENTE("Presidente"),
@@ -12,7 +12,7 @@ public enum TipoCargo {
 	
 	private String descricao;
 	
-	private TipoCargo(String descricao) {
+	private TipoCargoDiretor(String descricao) {
 		this.descricao = descricao;
 	}
 
