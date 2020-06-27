@@ -29,7 +29,7 @@
 
 		<div class="container-fluid" >
 			<form id="form" method="POST" th:object="${candidato}" class="form-vertical  js-form-loading"
-				th:action="@{/cooperado/diretoria/candidato/novo}">
+				th:action="${candidato.novo} ? @{/cooperado/diretoria/candidato/novo} : @{/cooperado/diretoria/candidato/novo/{id}(id=${candidato.id})}">
 			
 			<Simed:message/>
 
@@ -80,44 +80,34 @@
 				<table class="table  table-hover">
 					<thead>
 						<tr>
-							<th class="table-col-pequena"> Conta</th>
- 							<th class="table-col-pequena"> Nome</th>
- 							<th class="table-col-pequena"> Tipo Conta</th>
-							<th class="table-col-pequena"> Agencia/ Banco</th>
-							<th class="table-col-grande">Situação</th>
+							<th class="table-col-pequena">Cooperado</th>
+ 							<th class="table-col-pequena">Cargo</th>
+ 							<th class="table-col-pequena"> Tipo</th>
+							<th class="table-col-pequena">Anotações</th>
 							<th class="table-agencia-col-acoes"></th>
 						</tr>
 					</thead>
 					
 					<tbody>
-						<tr th:each="conta : ${contas}">
-							<td th:text="${conta.conta}"></td>
-							<td th:text="${conta.nome}"></td>
-							<td th:text="${conta.tipo}"></td>
-							<td th:text="${conta.agencia.agencia} + ' / ' + ${conta.agencia.banco.nome}"></td>
-							<td>
-								<th:block th:if="${conta.situacao}">
-									<span class="label  label-success">Ativo</span>
-								</th:block>
-
-								<th:block th:unless="${conta.situacao}">
-									<span class="label  label-danger">Inativo</span>
-								</th:block>
-							</td>
-							
-							<td class="text-center">
- 								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar" th:href="@{/contaEmpresa/alterar/{id}(id=${conta.id})}"
- 										sec:authorize-url="/empresa/alterar/**">  
- 									<i class="glyphicon glyphicon-pencil"></i> 
- 								</a> 
-								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir" href="#" sec:authorize-url="/empresa/excluir/**"
-									data:url="@{/contaEmpresa/excluir/{id}(id=${conta.id})}" data:objeto="${conta.conta}" >
-									<i class="glyphicon glyphicon-trash"></i>
-								</a>
-							</td>
+						<tr th:each="candidato : ${candidatos}">
+							<td th:text="${candidato.cooperado.medico.nome}"></td>
+							<td th:text="${candidato.cargoDiretor.descricao}"></td>
+							<td th:text="${candidato.tipoDiretor.descricao}"></td>
+							<td th:text="${candidato.anotacao}"></td>
+						
+<!-- 							<td class="text-center"> -->
+<!--  								<a class="btn  btn-link  btn-xs  js-tooltip" title="Alterar" th:href="@{/contaEmpresa/alterar/{id}(id=${conta.id})}" -->
+<!--  										sec:authorize-url="/empresa/alterar/**">   -->
+<!--  									<i class="glyphicon glyphicon-pencil"></i>  -->
+<!--  								</a>  -->
+<!-- 								<a class="btn  btn-link  btn-xs js-tooltip  js-excluir-btn" title="Excluir" href="#" sec:authorize-url="/empresa/excluir/**" -->
+<!-- 									data:url="@{/contaEmpresa/excluir/{id}(id=${conta.id})}" data:objeto="${conta.conta}" > -->
+<!-- 									<i class="glyphicon glyphicon-trash"></i> -->
+<!-- 								</a> -->
+<!-- 							</td> -->
 						</tr>
-						<tr th:if="${#lists.isEmpty(contas)}">
-							<td colspan="5">Nenhuma conta encontrada</td>
+						<tr th:if="${#lists.isEmpty(candidatos)}">
+							<td colspan="5">Nenhum registro encontrado</td>
 						</tr>
 					</tbody>
 				</table>

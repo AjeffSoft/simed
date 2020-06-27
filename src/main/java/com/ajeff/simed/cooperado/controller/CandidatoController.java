@@ -35,14 +35,15 @@ public class CandidatoController {
 	
 
 	
-	@GetMapping(value = "/novo/{id}")
-	public ModelAndView novo(@PathVariable("id") Long id, Candidato candidato){
+	@GetMapping(value = "/novo/{idDiretoria}")
+	public ModelAndView novo(@PathVariable("idDiretoria") Long id, Candidato candidato){
 		ModelAndView mv = new ModelAndView("Cooperado/candidato/CadastroCandidatos");
 		mv.addObject(diretoriaService.findOne(id));
 		mv.addObject("idDiretoria", id);
 		mv.addObject("tipos", TipoDiretor.values());
 		mv.addObject("cargos", TipoCargoDiretor.values());
 		mv.addObject("cooperados", cooperadoService.findAllAtivoTrueOrderByMedicoNome());
+		mv.addObject("candidatos", service.findAll());
 		return mv;
 	}
 
