@@ -68,6 +68,8 @@
 								<simed:order page="${pagina}" field="dataFinal" text="Final"/>
 							</th>
 
+							<th class="table-col-pequeno">Status</th>
+
 							<th class="table-col-pequeno">Vencedor</th>
 
 							<th class="table-agencia-col-acoes"></th>
@@ -79,12 +81,24 @@
 							<td th:text="${diretoria.chapa}"></td>
 							<td th:text="${diretoria.descricao}"></td>
 							<td th:text="${{diretoria.dataFinal}}"></td>
+
 							<td>
-								<th:block th:if="${diretoria.novo}">
+								<th:block th:if="${diretoria.ativo}">
+									<span class="label  label-success">Ativo</span>
+								</th:block>
+
+								<th:block th:unless="${diretoria.ativo}">
+									<span class="label  label-danger">Inativo</span>
+								</th:block>
+
+							</td>
+							
+							<td>
+								<th:block th:if="${diretoria.vencedor}">
 									<span class="label  label-primary">Sim</span>
 								</th:block>
 
-								<th:block th:unless="${diretoria.novo}">
+								<th:block th:unless="${diretoria.vencedor}">
 									<span class="label  label-info">Não</span>
 								</th:block>
 

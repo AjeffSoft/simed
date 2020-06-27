@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
@@ -54,6 +55,10 @@ public class Assembleia implements Serializable{
 	@Enumerated(EnumType.STRING)
 	@Column(name = "tipo_assembleia")
 	private TipoAssembleia tipoAssembleia;
+	
+	@ManyToOne
+	@JoinColumn(name = "id_diretoria")
+	private Diretoria diretoria;
 
 	@ManyToMany
 	@JoinTable(name = "assembleia_presente", joinColumns = @JoinColumn(name= "id_assembleia"), inverseJoinColumns = @JoinColumn(name="id_presente"))

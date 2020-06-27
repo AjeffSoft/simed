@@ -85,6 +85,20 @@
 					</div>
 					
 					<div class="tab-pane" id="diretoria">
+
+						<div class="row">
+							<div class="form-group  col-sm-5">
+								<div>
+									<th:block th:each="diretoria : ${diretorias}">
+				  						<div class="checkbox"> 
+					    					<input type="checkbox" th:value="${diretoria.id}"/>
+					    					<label th:text="${diretoria.chapa}"></label>
+				    					</div>
+									</th:block>
+								</div>
+							</div>
+						</div>	
+
 					</div>
 					
 					<div class="tab-pane" id="presentes">
