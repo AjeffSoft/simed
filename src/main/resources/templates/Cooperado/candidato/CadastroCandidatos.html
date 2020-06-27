@@ -28,7 +28,7 @@
 		</div>
 
 		<div class="container-fluid" >
-			<form id="form" method="POST" th:object="${candidato}" class="form-vertical  js-form-loading"
+			<form id="form" method="POST" th:object="${candidato}" class="form-vertical  js-form-loading" sec:authorize-url="/empresa/nova"
 				th:action="${candidato.novo} ? @{/cooperados/diretoria/candidato/novo} : @{/cooperados/diretoria/candidato/novo/{id}(id=${candidato.id})}">
 			
 			<Simed:message/>
@@ -112,6 +112,11 @@
 
 	<th:block layout:fragment="javascript-extra">
 		<script th:src="@{/javascripts/validate/contaEmpresa.validate.js}"></script>			
+		<script th:src="@{/javascripts/vendors/bootstrap-toggle.min.js}"></script>
+
+		<script>
+			$('#situacao').bootstrapToggle();	
+		</script>
 	
 		<script type="text/javascript">
  			$(function (){

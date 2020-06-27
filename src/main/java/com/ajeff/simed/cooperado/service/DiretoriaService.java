@@ -27,4 +27,8 @@ public class DiretoriaService {
 		return repository.filtrar(diretoriaFilter, pageable);
 	}
 
+	public Diretoria findOne(Long id) {
+		return repository.findOne(id);
+	}
+
 }
