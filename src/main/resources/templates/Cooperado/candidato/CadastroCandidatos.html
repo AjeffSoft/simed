@@ -2,14 +2,14 @@
 <html lang="pt" xmlns="http://www.w3.org/1999/xhtml" 
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{Geral/LayoutGeral}"
+	layout:decorate="~{Cooperado/LayoutCooperado}"
 	xmlns:Simed="http://Simed.ajeffsoft.com"
 	xmlns:data="http://www.thymeleaf.org/extras/data"	
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 
 <head>
 	
-	<title>Contas de Empresa</title> 
+	<title>Cadastro de Candidatos</title> 
 </head>
 
 
@@ -28,8 +28,8 @@
 		</div>
 
 		<div class="container-fluid" >
-			<form id="form" method="POST" th:object="${candidato}" class="form-vertical  js-form-loading" sec:authorize-url="/empresa/nova"
-				th:action="${candidato.novo} ? @{/cooperados/diretoria/candidato/novo} : @{/cooperados/diretoria/candidato/novo/{id}(id=${candidato.id})}">
+			<form id="form" method="POST" th:object="${candidato}" class="form-vertical  js-form-loading"
+				th:action="@{/cooperado/diretoria/candidato/novo}">
 			
 			<Simed:message/>
 
@@ -37,18 +37,33 @@
 			<input type="hidden" th:field="*{id}">
 
 				<div class="row">
+
+					<div class="col-sm-6  form-group">
+						<label for="cooperado" class="control-label">Cooperado*</label>
+						<select id="cooperado" class="form-control" th:field="*{cooperado}">
+							<option value="">Selecione um cooperado</option>
+							<option th:each="coop : ${cooperados}" th:value="${coop.id}" th:text="${coop.medico.nome}"></option>
+						</select>
+					</div>							
+
+					<div class="col-sm-2  form-group">
+						<label for="tipo" class="control-label">Tipo*</label>
+						<select id="tipo" class="form-control" th:field="*{tipoDiretor}">
+							<option th:each="tipo : ${tipos}" th:value="${tipo}" th:text="${tipo.descricao}"></option>
+						</select>
+					</div>	
+
+					<div class="col-sm-2  form-group">
+						<label for="cargo" class="control-label">Cargo*</label>
+						<select id="cargo" class="form-control" th:field="*{cargoDiretor}">
+							<option th:each="cargo : ${cargos}" th:value="${cargo}" th:text="${cargo.descricao}"></option>
+						</select>
+					</div>	
+
 					<div class="col-sm-2  form-group">
 						<label for="anotacao">Anotação</label>
 						<input id="anotacao" type="text" class="form-control" th:field="*{anotacao}" maxlength="15"/>
 					</div>
-										
-					<div class="col-sm-2  form-group">
-						<label for="tipo">Tipo*</label>
-						<select id="tipo" class="form-control">
-						</select>
-					</div>					
-					
-
 									
 				</div>
 				
@@ -112,11 +127,6 @@
 
 	<th:block layout:fragment="javascript-extra">
 		<script th:src="@{/javascripts/validate/contaEmpresa.validate.js}"></script>			
-		<script th:src="@{/javascripts/vendors/bootstrap-toggle.min.js}"></script>
-
-		<script>
-			$('#situacao').bootstrapToggle();	
-		</script>
 	
 		<script type="text/javascript">
  			$(function (){

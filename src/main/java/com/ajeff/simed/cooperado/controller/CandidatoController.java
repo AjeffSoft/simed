@@ -1,15 +1,26 @@
 package com.ajeff.simed.cooperado.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ajeff.simed.cooperado.model.Candidato;
+import com.ajeff.simed.cooperado.model.Diretoria;
+import com.ajeff.simed.cooperado.model.enums.TipoCargoDiretor;
+import com.ajeff.simed.cooperado.model.enums.TipoDiretor;
 import com.ajeff.simed.cooperado.service.CandidatoService;
+import com.ajeff.simed.cooperado.service.CooperadoService;
 import com.ajeff.simed.cooperado.service.DiretoriaService;
+import com.ajeff.simed.financeiro.service.exception.RegistroJaCadastradoException;
 
 @Controller
 @RequestMapping("/cooperado/diretoria/candidato")
@@ -19,36 +30,42 @@ public class CandidatoController {
 	private CandidatoService service;
 	@Autowired
 	private DiretoriaService diretoriaService;
-
+	@Autowired
+	private CooperadoService cooperadoService;
+	
 
 	
 	@GetMapping(value = "/novo/{id}")
 	public ModelAndView novo(@PathVariable("id") Long id, Candidato candidato){
 		ModelAndView mv = new ModelAndView("Cooperado/candidato/CadastroCandidatos");
 		mv.addObject(diretoriaService.findOne(id));
+		mv.addObject("idDiretoria", id);
+		mv.addObject("tipos", TipoDiretor.values());
+		mv.addObject("cargos", TipoCargoDiretor.values());
+		mv.addObject("cooperados", cooperadoService.findAllAtivoTrueOrderByMedicoNome());
 		return mv;
 	}
 
 	
-//	@PostMapping(value = {"/nova", "{\\d+}"})
-//	public ModelAndView cadastrar(@Valid ContaEmpresa contaEmpresa, @Valid @RequestParam("idEmpresa") Long id, BindingResult result, RedirectAttributes attributes) {
-//		
-//		Empresa empresa = empresaService.findOne(id);
-//		
-//		if (result.hasErrors()) {
-//			return nova(id, contaEmpresa);
-//		}
-//		
-//		try {
-//			contaEmpresa.setEmpresa(empresa);
-//			service.salvar(contaEmpresa);
-//		} catch (RegistroJaCadastradoException e) {
-//			result.rejectValue("conta", e.getMessage(), e.getMessage());
-//			return nova(id, contaEmpresa);
-//		}		
-//		attributes.addFlashAttribute("mensagem", "Conta bancária nº " + contaEmpresa.getConta() + " salva com sucesso!");
-//		return new ModelAndView("redirect:/contaEmpresa/nova/" + empresa.getId());
-//	}
+	@PostMapping(value = {"/novo", "{\\d+}"})
+	public ModelAndView cadastrar(@Valid Candidato candidato, @Valid @RequestParam("idDiretoria") Long id, BindingResult result, RedirectAttributes attributes) {
+		
+		Diretoria diretoria = diretoriaService.findOne(id);
+		
+		if (result.hasErrors()) {
+			return novo(id, candidato);
+		}
+		
+		try {
+			candidato.setDiretoria(diretoria);
+			service.salvar(candidato);
+		} catch (RegistroJaCadastradoException e) {
+			result.rejectValue("conta", e.getMessage(), e.getMessage());
+			return novo(id, candidato);
+		}		
+		attributes.addFlashAttribute("mensagem", "Salvo com sucesso!");
+		return new ModelAndView("redirect:/cooperado/diretoria/candidato/novo/" + id);
+	}
 //	
 //	@DeleteMapping("/excluir/{id}")
 //	public @ResponseBody ResponseEntity<?> excluir(@PathVariable("id") Long id){

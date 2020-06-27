@@ -49,6 +49,10 @@ public class Candidato implements Serializable{
 	@JoinColumn(name = "id_cooperado")
 	private Cooperado cooperado;
 	
+	@ManyToOne
+	@JoinColumn(name = "id_diretoria")
+	private Diretoria diretoria;
+	
 	public boolean isNovo() {
 		return this.id == null;
 	}
