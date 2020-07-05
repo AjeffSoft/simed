@@ -6,6 +6,9 @@
 	xmlns:data="http://www.thymeleaf.org/extras/data"	
 	xmlns:simed="http://simed.ajeffsoft.com"
 	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	
+	<link rel="stylesheet" th:href="@{/stylesheets/vendors/upload.min.css}"/>
+	
 
 <head>
 	<title>Cadastro de conta a pagar</title>
@@ -206,6 +209,27 @@
 						
 					</div>
 				</div>
+				
+				
+				<div class="row">
+					<div class="form-group  col-sm-12">
+						<input type="hidden" th:field="*{upload}"/>
+						<input type="hidden" th:field="*{contentType}"/>
+						<label class="control-label">Foto</label>
+						
+						<div class="js-container-upload">
+						
+							<div id="upload-drop" class="bw-upload">
+								<i class="glyphicon  glyphicon-cloud-upload"></i>
+								<span>Arraste o arquivo aqui ou </span>
+								<a class="bw-upload-form-file">selecione <input id="upload-select" type="file" accept=".pdf,.png"/></a>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				
+
 
 				<div class="form-group">
 					<button class="btn  btn-success" type="submit">Salvar</button>
@@ -215,6 +239,8 @@
 	</div>
 	
 	<th:block th:replace = "Financeiro/fornecedor/PesquisaRapidaFornecedor :: pesquisaRapidaFornecedor"></th:block>
+	<th:block th:replace="hbs/uploadContaPagar"></th:block>
+	
 	
 </section>
 
@@ -224,6 +250,9 @@
 	<script th:src="@{/javascripts/pesquisaRapida/fornecedor.pesquisa-rapida.js}"></script>
 	<script th:src="@{/javascripts/contaPagar.combo-planoConta.js}"></script>
 	<script th:src="@{/javascripts/vendors/bootstrap-toggle.min.js}"></script>
+	<script th:src="@{/javascripts/vendors/uikit.min.js}"></script>
+	<script th:src="@{/javascripts/vendors/upload.min.js}"></script>
+	<script th:src="@{/javascripts/vendors/handlebars.min.js}"></script>
 
 
 	<script>
@@ -234,6 +263,51 @@
 			});
 		});
 	</script>
+	
+	
+	
+	<script>
+	$(function() {
+		var settings = {
+				type: 'json',
+				filelimit: 1,
+				allow: '*.(pdf|png)',
+				action: '/simed/financeiro/contasPagar/upload',
+				complete: function(resposta){
+					
+					
+					var inputNome = $('input[name=upload]');
+					var inputContentType = $('input[name=contentType]');
+					
+					var htmlUploadTemplate = $('#upload-contapagar').html();
+					var template = Handlebars.compile(htmlUploadTemplate);
+					var htmlUpload = template({nomeUpload: resposta.nome});
+					
+					var containerUpload = $('.js-container-upload');
+					
+					var uploadDrop = $('#upload-drop');
+					
+					inputNome.val(resposta.nome);
+					inputContentType.val(resposta.contentType);
+					
+					uploadDrop.addClass('hidden');
+					containerUpload.append(htmlUpload);
+					
+					$('.js-remove-upload').on('click', function() {
+						$('.pload-contapagar').remove();
+						uploadDrop.removeClass('hidden');
+						inputNome.val('');
+						inputContentType.val('');
+					});					
+					
+				}
+		};
+		
+		UIkit.uploadSelect($('#upload-select'), settings);
+		UIkit.uploadDrop($('#upload-drop'), settings);
+	});
+	</script>
+	
 	
 </th:block>
 

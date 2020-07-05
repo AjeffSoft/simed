@@ -66,6 +66,11 @@ public class ContaPagar implements Serializable{
 	private Integer totalParcela;
 	
 	private Boolean fixo;
+	
+	private String upload;
+	
+	@Column(name = "content_type")
+	private String contentType;
 
 	@JsonIgnore
 	@NotNull(message = "Informe o plano de contas")
@@ -83,11 +88,13 @@ public class ContaPagar implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "id_fornecedor")
 	private Fornecedor fornecedor;
-	
+
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "id_pagamento")
 	private Pagamento pagamento;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "contaPagar", cascade = CascadeType.ALL)
 	private List<Imposto> impostos;
 	
@@ -304,6 +311,22 @@ public class ContaPagar implements Serializable{
 
 	public void setFixo(Boolean fixo) {
 		this.fixo = fixo;
+	}
+
+	public String getUpload() {
+		return upload;
+	}
+
+	public void setUpload(String upload) {
+		this.upload = upload;
+	}
+
+	public String getContentType() {
+		return contentType;
+	}
+
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
 	}
 
 	@Override
