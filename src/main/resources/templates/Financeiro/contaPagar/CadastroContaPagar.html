@@ -40,87 +40,78 @@
 				<input type="hidden" th:field="*{status}">
 				<input type="hidden" th:field="*{parcela}">
 				<input type="hidden" th:field="*{documento}">
+				<input type="hidden" th:field="*{upload}"/>
+				<input type="hidden" th:field="*{contentType}"/>				
 				
 				<div th:unless="${contaPagar.novo}">
 					<input type="hidden" th:field="*{totalParcela}">
 				</div>
-
-				<div class="row">
-				
-					<div class="col-sm-3  form-group"  simed:classforerror="empresa">
-						<label for="empresa" class="control-label">Empresa*</label>
-						<select id="empresa" class="form-control" th:field="*{empresa}">
-							<option value="">Selecione uma empresa</option>
-							<option th:each="empresa : ${empresas}" th:value="${empresa.id}" th:text="${empresa.fantasia}"></option>
-						</select>
-					</div>
-				
-					<div class="form-group  col-sm-7" simed:classforerror="fornecedor" >
-						<label class="control-label" for="nomeFornecedor">Fornecedor*</label>
-						<div class="input-group">
-					      <input id="nomeFornecedor" type="text" readonly="readonly" class="form-control" th:field="*{fornecedor.nome}"
-					      			placeholder="Clique na lupa para pesquisar o fornecedor"/>
-					      <input id="codigoFornecedor" type="hidden" th:field="*{fornecedor}"/>
-					      <span class="input-group-btn">
-					        <button class="btn  btn-default  js-tooltip" type="button" title="Pesquisa avançada"
-					        		data-toggle="modal" data-target="#pesquisaRapidaFornecedor">
-					        	<i class="glyphicon  glyphicon-search"></i>
-					        </button>
-					      </span>
-					    </div>
-					</div>
-					
-					<div class="col-sm-2  form-group">
-						<label for="nomeFantasia" class="control-label">Nome Fantasia</label>
-						<input id="nomeFantasia" type="text" class="form-control" disabled="disabled"/>
-					</div>
-				</div>
-				
-				<div class="row">	
-					<div class="col-sm-3  form-group">
-						<label for="planoConta" class="control-label">Conta Primária*</label>
-						<select id="planoConta" class="form-control" th:field="*{planoContaSecundaria.planoConta}">
-								<option th:each="planoConta : ${planosConta}" th:value="${planoConta.id}" th:text="${planoConta.nome}"></option>
-						</select>
-					</div>
-					
- 					<div class="col-sm-9  form-group" simed:classforerror="planoContaSecundaria">
-						<label for="subPlanoConta" class="control-label">Conta Secundária*</label>
-						<div class="bw-field-action">
-							<input type = "hidden" id="inputHiddenSubPlanoContaSelecionado" th:value="*{planoContaSecundaria} != null ? *{planoContaSecundaria.id}">
-							<select id="subPlanoConta" class="form-control" data:url="@{/financeiro/planoContaSecundaria}" th:field="*{planoContaSecundaria}">
-							</select>
-
-							<div class="bw-field-action__icon  js-img-loading" style="display: none">
-								<img th:src="@{/images/mini-loading.gif}"/>
-							</div>
-						</div>  
-					</div>
-				</div>				
-				
-				<div class="row">
-					<div>
-						<div class="col-sm-12  form-group">
-							<label for="historico" class="control-label">Histórico*</label>
-							<textarea id="historico" class="form-control" th:field = "*{historico}" rows="3" maxlength="200"
-								placeholder="Deixe em branco para o histórico ser igual ao plano de conta secundária."></textarea>
-						</div>
-					</div>				
-				</div>				
-				
-				
-				
 				
 				<div class="row">
 					<div class="form-group  col-lg-12">
 						<ul class="nav nav-tabs  js-abas">
-						  <li role="presentation" class="active"><a href="#dados">Dados</a></li>
+						  <li role="presentation" class="active"><a href="#dados">Dados Conta</a></li>
+						  <li role="presentation"><a href="#anexo">Upload Anexo</a></li>
 						</ul>
 					</div>
 				</div>
-			
+				
+				
 				<div class="tab-content">
-					<div class="tab-pane active" id="dados">
+					<div class="tab-pane active" id="dados">				
+		
+						<div class="row">
+						
+							<div class="col-sm-3  form-group"  simed:classforerror="empresa">
+								<label for="empresa" class="control-label">Empresa*</label>
+								<select id="empresa" class="form-control" th:field="*{empresa}">
+									<option value="">Selecione uma empresa</option>
+									<option th:each="empresa : ${empresas}" th:value="${empresa.id}" th:text="${empresa.fantasia}"></option>
+								</select>
+							</div>
+						
+							<div class="col-sm-9  form-group"  simed:classforerror="fornecedor">
+								<label for="fornecedor" class="control-label">Fornecedor*</label>
+								<select id="fornecedor" class="form-control" th:field="*{fornecedor}">
+									<option value="">Selecione um forncedor</option>
+									<option th:each="forn : ${fornecedores}" th:value="${forn.id}" th:text="${forn.nome}"></option>
+								</select>
+							</div>
+						</div>
+						
+						<div class="row">	
+							<div class="col-sm-3  form-group">
+								<label for="planoConta" class="control-label">Conta Primária*</label>
+								<select id="planoConta" class="form-control" th:field="*{planoContaSecundaria.planoConta}">
+										<option th:each="planoConta : ${planosConta}" th:value="${planoConta.id}" th:text="${planoConta.nome}"></option>
+								</select>
+							</div>
+							
+		 					<div class="col-sm-9  form-group" simed:classforerror="planoContaSecundaria">
+								<label for="subPlanoConta" class="control-label">Conta Secundária*</label>
+								<div class="bw-field-action">
+									<input type = "hidden" id="inputHiddenSubPlanoContaSelecionado" th:value="*{planoContaSecundaria} != null ? *{planoContaSecundaria.id}">
+									<select id="subPlanoConta" class="form-control" data:url="@{/financeiro/planoContaSecundaria}" th:field="*{planoContaSecundaria}">
+									</select>
+		
+									<div class="bw-field-action__icon  js-img-loading" style="display: none">
+										<img th:src="@{/images/mini-loading.gif}"/>
+									</div>
+								</div>  
+							</div>
+						</div>				
+						
+						<div class="row">
+							<div>
+								<div class="col-sm-12  form-group">
+									<label for="historico" class="control-label">Histórico*</label>
+									<textarea id="historico" class="form-control" th:field = "*{historico}" rows="3" maxlength="200"
+										placeholder="Deixe em branco para o histórico ser igual ao plano de conta secundária."></textarea>
+								</div>
+							</div>				
+						</div>				
+				
+
 						<div class="row">
 							<div class="col-sm-2  form-group" simed:classforerror="notaFiscal">
 								<label for="notaNum" class="control-label">Nº NF</label>
@@ -208,28 +199,24 @@
 						</div>
 						
 					</div>
-				</div>
-				
-				
-				<div class="row">
-					<div class="form-group  col-sm-12">
-						<input type="hidden" th:field="*{upload}"/>
-						<input type="hidden" th:field="*{contentType}"/>
-						<label class="control-label">Foto</label>
-						
-						<div class="js-container-upload">
-						
-							<div id="upload-drop" class="bw-upload">
-								<i class="glyphicon  glyphicon-cloud-upload"></i>
-								<span>Arraste o arquivo aqui ou </span>
-								<a class="bw-upload-form-file">selecione <input id="upload-select" type="file" accept=".pdf,.png"/></a>
+					
+					<div class="tab-pane" id="anexo">
+						<div class="row">
+							<div class="form-group  col-sm-12">
+
+								
+								<div class="js-container-upload">
+								
+									<div id="upload-drop" class="bw-upload">
+										<i class="glyphicon  glyphicon-cloud-upload"></i>
+										<span>Arraste o arquivo aqui ou </span>
+										<a class="bw-upload-form-file">selecione <input id="upload-select" type="file" accept=".pdf"/></a>
+									</div>
+								</div>
 							</div>
 						</div>
-					</div>
+					</div>					
 				</div>
-				
-				
-
 
 				<div class="form-group">
 					<button class="btn  btn-success" type="submit">Salvar</button>
@@ -271,7 +258,7 @@
 		var settings = {
 				type: 'json',
 				filelimit: 1,
-				allow: '*.(pdf|png)',
+				allow: '*.(pdf)',
 				action: '/simed/financeiro/contasPagar/upload',
 				complete: function(resposta){
 					
@@ -294,7 +281,7 @@
 					containerUpload.append(htmlUpload);
 					
 					$('.js-remove-upload').on('click', function() {
-						$('.pload-contapagar').remove();
+						$('.js-upload-contapagar').remove();
 						uploadDrop.removeClass('hidden');
 						inputNome.val('');
 						inputContentType.val('');

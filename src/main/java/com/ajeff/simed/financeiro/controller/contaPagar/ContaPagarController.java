@@ -60,6 +60,7 @@ public class ContaPagarController {
 	public ModelAndView nova(ContaPagar contaPagar, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
 		ModelAndView mv = new ModelAndView("Financeiro/contaPagar/CadastroContaPagar");
 		mv.addObject("empresas", empresaService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
+		mv.addObject("fornecedores", fornecedorService.listarTodosFornecedores());
 		mv.addObject("planosConta", planoContaService.listarTodosPlanosContaDebito());
 		return mv;
 	}

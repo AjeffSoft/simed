@@ -76,10 +76,10 @@ public class ContaPagarService {
 
 
 	public List<Imposto> verificarRetencaoImpostos(ContaPagar contaPagar, List<Imposto> impostos) {
-		if (contaPagar.isTemImpostoRetido()) {
-			impostos = impostoService.calcularImpostos(contaPagar);
-		}
-		return impostos;
+//		if (contaPagar.isTemImpostoRetido()) {
+//			impostos = impostoService.calcularImpostos(contaPagar);
+//		}
+		return null;
 	}
 
 
@@ -97,6 +97,8 @@ public class ContaPagarService {
 		cp.setTotalParcela(contaPagar.getTotalParcela());
 		cp.setPlanoContaSecundaria(contaPagar.getPlanoContaSecundaria());
 		cp.setFornecedor(contaPagar.getFornecedor());
+		cp.setUpload(contaPagar.getUpload());
+		cp.setContentType(contaPagar.getContentType());
 		setarHistoricoDaContaPagar(contaPagar, cp);
 		CalculosComDatas.emissaoMenorIgualVencimento(cp.getDataEmissao(), cp.getVencimento());
 		testeRegistroJaCadastrado(cp);
@@ -108,10 +110,10 @@ public class ContaPagarService {
 	private void calcularValorTotal(ContaPagar contaPagar, ContaPagar cp, List<Imposto> impostos) {
 		BigDecimal valorImpostos = BigDecimal.ZERO;
 		
-		if(!impostos.isEmpty()) {
-			valorImpostos = impostos.stream().map( i -> i.getValor()).reduce(BigDecimal.ZERO, BigDecimal::add);
-			cp.setImpostos(impostos);
-		}
+//		if(!impostos.isEmpty()) {
+//			valorImpostos = impostos.stream().map( i -> i.getValor()).reduce(BigDecimal.ZERO, BigDecimal::add);
+//			cp.setImpostos(impostos);
+//		}
 		cp.setValor(CalculosComValores.setarValorTotalPositivo(contaPagar.getValor(), valorImpostos, BigDecimal.ZERO, contaPagar.getTotalParcela()));
 	}
 
