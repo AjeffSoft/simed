@@ -64,6 +64,15 @@ public class UploadStorageLocal implements UploadStorage {
 			throw new RuntimeException("Erro ao ler o arquivo upload. ", e);
 		}
 	}
+
+	@Override
+	public void salvar(String upload) {
+		try {
+			Files.move(this.localTemporario.resolve(upload), this.local.resolve(upload));
+		} catch (IOException e) {
+			throw new RuntimeException("Erro ao mover o upload para o destino final " + e);
+		}
+	}
 	
 	
 }

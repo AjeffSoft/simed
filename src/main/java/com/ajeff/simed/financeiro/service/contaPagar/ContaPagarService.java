@@ -9,6 +9,7 @@ import javax.persistence.PersistenceException;
 
 import org.hibernate.TransientObjectException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -34,21 +35,24 @@ public class ContaPagarService {
 	private ContasPagarRepository repository;
 	@Autowired
 	private PlanoContaSecundariaService contaSecundariaService;
+//	@Autowired
+//	private ImpostoService impostoService;
 	@Autowired
-	private ImpostoService impostoService;
+	private ApplicationEventPublisher publisher;
 	
 	
 	@Transactional
-	public List<ContaPagar> salvar(ContaPagar contaPagar) {
+	public void salvar(ContaPagar contaPagar) {
 		List<ContaPagar> contas = new ArrayList<ContaPagar>();
 
 		if (contaPagar.isNovo()) {
 			contas = gerarContasPagar(contaPagar);
-			return repository.save(contas);
+			repository.save(contas);
+			publisher.publishEvent(new ContaPagarSalvaEvent(contas));
 		}else {
 			contas.add(contaPagar);
 			regrasAlteracao(contas);
-			return repository.save(contas);
+			repository.save(contas);
 		}
 
 	}
