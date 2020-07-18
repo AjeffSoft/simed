@@ -240,6 +240,7 @@
 	<script th:src="@{/javascripts/vendors/uikit.min.js}"></script>
 	<script th:src="@{/javascripts/vendors/upload.min.js}"></script>
 	<script th:src="@{/javascripts/vendors/handlebars.min.js}"></script>
+	<script th:src="@{/javascripts/contaPagar.upload.js}"></script>
 
 
 	<script>
@@ -250,52 +251,6 @@
 			});
 		});
 	</script>
-	
-	
-	
-	<script>
-	$(function() {
-		var settings = {
-				type: 'json',
-				filelimit: 1,
-				allow: '*.(pdf)',
-				action: '/simed/financeiro/contasPagar/upload',
-				complete: function(resposta){
-					
-					
-					var inputNome = $('input[name=upload]');
-					var inputContentType = $('input[name=contentType]');
-					
-					var htmlUploadTemplate = $('#upload-contapagar').html();
-					var template = Handlebars.compile(htmlUploadTemplate);
-					var htmlUpload = template({nomeUpload: resposta.nome});
-					
-					var containerUpload = $('.js-container-upload');
-					
-					var uploadDrop = $('#upload-drop');
-					
-					inputNome.val(resposta.nome);
-					inputContentType.val(resposta.contentType);
-					
-					uploadDrop.addClass('hidden');
-					containerUpload.append(htmlUpload);
-					
-					$('.js-remove-upload').on('click', function() {
-						$('.js-upload-contapagar').remove();
-						uploadDrop.removeClass('hidden');
-						inputNome.val('');
-						inputContentType.val('');
-					});					
-					
-				}
-		};
-		
-		UIkit.uploadSelect($('#upload-select'), settings);
-		UIkit.uploadDrop($('#upload-drop'), settings);
-	});
-	</script>
-	
-	
 </th:block>
 
 </html>
