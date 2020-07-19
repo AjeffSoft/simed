@@ -74,5 +74,14 @@ public class UploadStorageLocal implements UploadStorage {
 		}
 	}
 	
+	@Override
+	public byte[] recuperarUpload(String nome) {
+		try {
+			return Files.readAllBytes(this.local.resolve(nome));
+		} catch (IOException e) {
+			throw new RuntimeException("Erro lendo a foto", e);
+		}
+	}	
+	
 	
 }

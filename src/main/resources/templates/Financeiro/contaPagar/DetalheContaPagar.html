@@ -38,6 +38,8 @@
 			
 			<input type="hidden" th:value="${idContaPagar}" name="idContaPagar"/>
 			<input type="hidden" th:field="*{id}">
+			<input type="hidden" th:field="*{upload}"/>
+			<input type="hidden" th:field="*{contentType}"/>		
 			
 			
 				<div class="row">
@@ -45,6 +47,8 @@
 						<ul class="nav nav-tabs  js-abas">
 						  <li role="presentation" class="active"><a href="#dados">Cadastro</a></li>
 						  <li role="presentation" ><a href="#imposto">Impostos</a></li>
+						  <li role="presentation" ><a href="#upload">Upload</a></li>
+
 						  <li role="presentation" th:if="${contaPagar.pagoOuEmitido}" ><a href="#pagamento">Pagamento</a></li>
 						</ul>
 					</div>
@@ -169,6 +173,23 @@
 							</table>
 						</div>
 					</div>
+					
+					
+					<div class="tab-pane" id="upload">
+						<div class="row">
+							<div class="row  js-upload-contapagar">
+								<div class="col-md-12  text-center">
+									<a href="#" class="thumbnail">
+										<iframe th:src="@{/financeiro/contasPagar/upload/upload" style="width:600px; height:600px;"></iframe>
+									</a>
+									<button type="button" class="btn  btn-link  js-remove-upload"><span class="glyphicon  glyphicon-remove"></span></button>
+								</div>
+							</div>
+						</div>
+					</div>					
+					
+					
+					
 					
 			
 			<!-- DADOS DO PAGAMENTO -->

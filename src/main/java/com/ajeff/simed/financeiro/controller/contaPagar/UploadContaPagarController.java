@@ -34,4 +34,9 @@ public class UploadContaPagarController {
 	public byte[] recuperarUpload(@PathVariable String nome) {
 		return uploadStorage.recuperarUploadTemporaria(nome);
 	}
+	
+	@GetMapping("/{nome:.*}")
+	public byte[] recuperar(@PathVariable String nome) {
+		return uploadStorage.recuperarUpload(nome);
+	}	
 }

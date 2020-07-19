@@ -8,6 +8,8 @@ public interface UploadStorage {
 
 	byte[] recuperarUploadTemporaria(String nome);
 
+	byte[] recuperarUpload(String nome);
+
 	void salvar(String upload);
 
 }
