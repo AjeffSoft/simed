@@ -86,8 +86,8 @@ public class FornecedorService {
 	}
 
 
-	public List<Fornecedor> listarTodosFornecedores() {
-		return repository.listarTodosFornecedores();
+	public List<Fornecedor> buscarTodosFornecedores() {
+		return repository.buscarTodosFornecedores();
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.ajeff.simed.financeiro.repository.helper.fornecedor;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -72,6 +74,19 @@ public class FornecedoresRepositoryImpl implements FornecedoresRepositoryQueries
 		criteria.createAlias("c.estado", "e", JoinType.LEFT_OUTER_JOIN);
 		criteria.add(Restrictions.eq("id", id));
 		return (Fornecedor) criteria.uniqueResult();
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@Transactional(readOnly = true)
+	public List<Fornecedor> buscarTodosFornecedores() {
+		Criteria criteria = manager.unwrap(Session.class).createCriteria(Fornecedor.class);
+		criteria.createAlias("endereco.cidade", "c", JoinType.LEFT_OUTER_JOIN);
+		criteria.createAlias("c.estado", "e", JoinType.LEFT_OUTER_JOIN);
+		criteria.add(Restrictions.eq("clifor", true));
+		criteria.addOrder(Order.asc("nome"));
+		return criteria.list();
 	}
 
 }

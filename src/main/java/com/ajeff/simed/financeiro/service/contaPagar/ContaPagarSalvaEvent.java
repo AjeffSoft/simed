@@ -1,23 +1,23 @@
 package com.ajeff.simed.financeiro.service.contaPagar;
 
-import java.util.List;
+import org.springframework.util.StringUtils;
 
 import com.ajeff.simed.financeiro.model.ContaPagar;
 
 public class ContaPagarSalvaEvent {
 	
-	private List<ContaPagar> contas;
+	private ContaPagar conta;
 
-	public ContaPagarSalvaEvent(List<ContaPagar> contas) {
-		this.contas = contas;
+	public ContaPagarSalvaEvent(ContaPagar conta) {
+		this.conta = conta;
 	}
 
-	public List<ContaPagar> getContaPagar() {
-		return contas;
+	public ContaPagar getContaPagar() {
+		return conta;
 	}
 	
 	public boolean isUpload() {
-		return contas.stream().filter(c -> c.getUpload() != null).count() > 0 ? true : false;
+		return !StringUtils.isEmpty(conta.getUpload());
 	}
 
 }

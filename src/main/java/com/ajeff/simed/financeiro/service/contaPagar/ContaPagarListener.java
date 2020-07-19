@@ -14,7 +14,7 @@ public class ContaPagarListener {
 
 	@EventListener(condition = "#event.upload")
 	public void contaPagarSalvo(ContaPagarSalvaEvent event) {
-		storage.salvar(event.getContaPagar().get(0).getUpload());
+		storage.salvar(event.getContaPagar().getUpload());
 	}
 	
 }

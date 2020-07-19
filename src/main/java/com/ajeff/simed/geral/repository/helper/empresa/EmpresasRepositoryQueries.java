@@ -1,5 +1,7 @@
 package com.ajeff.simed.geral.repository.helper.empresa;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -11,6 +13,9 @@ public interface EmpresasRepositoryQueries {
 	public Page<Empresa> filtrar(EmpresaFilter filtro, Pageable pageable);
 	
 	public Empresa buscarComCidadeEstado(Long id);
+	
+	public List<Empresa> buscarTodasEmpresas();
+	
 	
 
 }

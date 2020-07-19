@@ -44,7 +44,7 @@ public class ContaPagar implements Serializable{
 	@NotNull(message = "Informe a data de vencimento")	
 	private LocalDate vencimento;
 
-	@NotNull(message = "Informe o valor da conta")
+	@NotNull(message = "Informe o valor da conta a pagar")
 	private BigDecimal valor;
 	
 	private String documento;

@@ -9,11 +9,10 @@ import org.springframework.data.jpa.repository.Query;
 import com.ajeff.simed.financeiro.model.ContaPagar;
 import com.ajeff.simed.financeiro.model.Fornecedor;
 import com.ajeff.simed.financeiro.repository.helper.contaPagar.ContasPagarRepositoryQueries;
-import com.ajeff.simed.geral.model.Empresa;
 
 public interface ContasPagarRepository extends JpaRepository<ContaPagar, Long>, ContasPagarRepositoryQueries{
 
-	Optional<ContaPagar> findByDocumentoAndFornecedorAndEmpresa(String documento, Fornecedor fornecedor, Empresa empresa);
+	Optional<ContaPagar> findByNotaFiscalAndFornecedor(String nota, Fornecedor fornecedor);
 
 	@Query("select c from ContaPagar c where c.status like 'AUTORIZADO' order by c.valor desc")
 	List<ContaPagar> buscarTodasContasAutorizadas();

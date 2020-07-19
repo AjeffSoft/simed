@@ -18,8 +18,8 @@ public interface FornecedoresRepository extends JpaRepository<Fornecedor, Long>,
 	@Query("select p from Pessoa p where lower(p.nome) like upper(?1) and p.clifor = true order by p.nome")
 	List<Fornecedor> findByNomeContainingIgnoreCase(String nome);
 
-	@Query("select f from Pessoa f where f.clifor = true order by nome asc")
-	List<Fornecedor> listarTodosFornecedores();
+//	@Query("select f, c from Pessoa f inner join Cidade c on f.Cidade = c.id where f.clifor = true order by nome asc")
+//	List<Fornecedor> listarTodosFornecedores();
 
 
 }

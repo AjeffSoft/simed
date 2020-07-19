@@ -1,5 +1,7 @@
 package com.ajeff.simed.geral.repository.helper.empresa;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -71,6 +73,13 @@ public class EmpresasRepositoryImpl implements EmpresasRepositoryQueries{
 		criteria.createAlias("c.estado", "e", JoinType.LEFT_OUTER_JOIN);
 		criteria.add(Restrictions.eq("id", id));
 		return (Empresa) criteria.uniqueResult();
+	}
+
+	@Override
+	public List<Empresa> buscarTodasEmpresas() {
+		Criteria criteria = manager.unwrap(Session.class).createCriteria(Empresa.class);
+		criteria.addOrder(Order.asc("nome"));
+		return criteria.list();
 	}	
 	
 }

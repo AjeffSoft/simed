@@ -11,7 +11,7 @@
 	
 
 <head>
-	<title>Cadastro de conta a pagar</title>
+	<title>Contas a pagar</title>
 </head>
 
 
@@ -51,7 +51,9 @@
 					<div class="form-group  col-lg-12">
 						<ul class="nav nav-tabs  js-abas">
 						  <li role="presentation" class="active"><a href="#dados">Dados Conta</a></li>
-						  <li role="presentation"><a href="#anexo">Upload Anexo</a></li>
+						  <li role="presentation"><a href="#imposto">Imposto</a></li>
+						  <li role="presentation"><a href="#parcelamento">Parcelamento</a></li>
+						  <li role="presentation"><a href="#anexo">Anexar Nota</a></li>
 						</ul>
 					</div>
 				</div>
@@ -136,21 +138,38 @@
 								</div>
 							</div>
 
-							<div class="col-sm-2  form-group" th:if="${contaPagar.novo}">
-								<label for="parcelaNum" class="control-label">Parcelas nº</label>
-								<input id="parcelaNum" type="number" class="form-control" th:field = "*{totalParcela}">
-							</div>
-							
-							<div class="form-group  col-sm-2">
+				
+							<div class="form-group  col-sm-1">
 								<label class="control-label">F/V</label>
 								<div>	
 									<input id="fixoVariavel" type="checkbox" checked data-toggle="toggle" class="form-control"  data-size="small"
-									 data-on="Fixo" data-off="Variável" data-onstyle="primary" data-offstyle="default" th:field="*{fixo}"/>
+									 data-on="F" data-off="V" data-onstyle="primary" data-offstyle="default" th:field="*{fixo}"/>
+								</div>
+							</div>
+							
+							
+							<div class="form-group  col-sm-3">
+								<label class="control-label">Auditoria</label> 
+								<div>
+			  						<div class="checkbox  checkbox-inline"> 
+				    					<input type="checkbox" id="cNota" th:field="*{temNota}"/>
+				    					<label for="cNota">NF</label>
+			    					</div>
+			  						<div class="checkbox  checkbox-inline"> 
+				    					<input type="checkbox" id="cRecibo" th:field="*{recibo}"/>
+				    					<label for="cRecibo">Recibo</label>
+			    					</div>
+	
 								</div>
 							</div>
 
 						</div>
+			
 						
+					</div>
+					
+					
+					<div class="tab-pane" id="imposto">				
 						<div class="row">
 							<div class="form-group  col-sm-2" th:if="${contaPagar.novo}">
 								<label class="control-label">IRRF</label>
@@ -181,24 +200,11 @@
 								<input id="issPorcentagem" type="text" class="form-control  js-decimal" maxlength="20" th:field="*{issPorcentagem}">
 							</div>
 
-							<div class="form-group  col-sm-4">
-							<label class="control-label">Auditoria</label> 
-							<div>
-		  						<div class="checkbox  checkbox-inline"> 
-			    					<input type="checkbox" id="cNota" th:field="*{temNota}"/>
-			    					<label for="cNota">Com Nota Fiscal</label>
-		    					</div>
-		  						<div class="checkbox  checkbox-inline"> 
-			    					<input type="checkbox" id="cRecibo" th:field="*{recibo}"/>
-			    					<label for="cRecibo">Com Recibo</label>
-		    					</div>
-
-							</div>
-							</div>
-
 						</div>
 						
-					</div>
+					</div>					
+					
+					
 					
 					<div class="tab-pane" id="anexo">
 						<div class="row">

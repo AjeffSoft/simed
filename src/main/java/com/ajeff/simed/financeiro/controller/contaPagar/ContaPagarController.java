@@ -60,7 +60,7 @@ public class ContaPagarController {
 	public ModelAndView nova(ContaPagar contaPagar, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
 		ModelAndView mv = new ModelAndView("Financeiro/contaPagar/CadastroContaPagar");
 		mv.addObject("empresas", empresaService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
-		mv.addObject("fornecedores", fornecedorService.listarTodosFornecedores());
+		mv.addObject("fornecedores", fornecedorService.buscarTodosFornecedores());
 		mv.addObject("planosConta", planoContaService.listarTodosPlanosContaDebito());
 		return mv;
 	}
@@ -96,7 +96,7 @@ public class ContaPagarController {
 										HttpServletRequest httpServletRequest, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
 		ModelAndView mv = new ModelAndView("Financeiro/contaPagar/PesquisarContasPagar");
 		mv.addObject("empresas", empresaService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
-		mv.addObject("total", service.total(contaPagarFilter));
+//		mv.addObject("total", service.total(contaPagarFilter));
 		
 		PageWrapper<ContaPagar> paginaWrapper = new PageWrapper<>(service.filtrar(contaPagarFilter, pageable), httpServletRequest);
 		mv.addObject("pagina", paginaWrapper);
