@@ -174,7 +174,7 @@ public class ContaPagarController {
 		ModelAndView mv = new ModelAndView("Financeiro/contaPagar/RelatorioContaPagar");
 		mv.addObject(new PeriodoRelatorio());
 		mv.addObject("empresas", empresaService.buscarEmpresaPorUsuario(usuarioSistema.getUsuario().getId()));
-		mv.addObject("fornecedores", fornecedorService.listarTodosFornecedores());
+		mv.addObject("fornecedores", fornecedorService.buscarTodosFornecedores());
 		return mv;
 	}	
 	

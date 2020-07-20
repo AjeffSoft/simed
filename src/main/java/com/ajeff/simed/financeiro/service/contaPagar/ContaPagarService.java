@@ -33,9 +33,17 @@ public class ContaPagarService {
 	
 	@Transactional
 	public void salvar(ContaPagar contaPagar) {
+		testeRegistroJaCadastrado(contaPagar);
 		repository.save(contaPagar);
 		publisher.publishEvent(new ContaPagarSalvaEvent(contaPagar));
 	}
+	
+	private void testeRegistroJaCadastrado(ContaPagar contaPagar) {
+		Optional<ContaPagar> optional = repository.findByNotaFiscalAndFornecedor(contaPagar.getNotaFiscal(), contaPagar.getFornecedor());
+		if (optional.isPresent() && !optional.get().equals(contaPagar)) {
+			throw new DocumentoEFornecedorJaCadastradoException("Já existe uma conta cadastrada com esta nota fiscal para esse fornecedor!");
+		}
+	}	
 	
 //
 //	private void regrasAlteracao(List<ContaPagar> contas) {
@@ -125,12 +133,7 @@ public class ContaPagarService {
 //	}	
 //
 
-	public void testeRegistroJaCadastrado(ContaPagar contaPagar) {
-		Optional<ContaPagar> optional = repository.findByNotaFiscalAndFornecedor(contaPagar.getNotaFiscal(), contaPagar.getFornecedor());
-		if (optional.isPresent() && !optional.get().equals(contaPagar)) {
-			throw new DocumentoEFornecedorJaCadastradoException("Já existe uma conta cadastrada com esta nota fiscal para esse fornecedor!");
-		}
-	}	
+	
 	
 	
 	@Transactional
