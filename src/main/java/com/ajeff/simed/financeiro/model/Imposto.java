@@ -6,6 +6,8 @@ import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,6 +22,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
 
+import com.ajeff.simed.financeiro.model.enums.StatusContaPagar;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -57,7 +60,8 @@ public class Imposto implements Serializable {
 	@Column(name = "emissao_nf")
 	private LocalDate emissaoNF;
 
-	private String status;
+	@Enumerated(EnumType.STRING)
+	private StatusContaPagar status;
 	
 	@Transient
 	private Boolean gerarDarf;
@@ -161,11 +165,11 @@ public class Imposto implements Serializable {
 		this.emissaoNF = emissaoNF;
 	}
 
-	public String getStatus() {
+	public StatusContaPagar getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(StatusContaPagar status) {
 		this.status = status;
 	}
 
@@ -240,15 +244,15 @@ public class Imposto implements Serializable {
 	}
 
 	public boolean isAberto() {
-		return this.status.equals("ABERTO");
+		return this.status.equals(StatusContaPagar.ABERTO);
 	}
 
-	public boolean isGerado() {
-		return this.status.equals("GERADO");
+	public boolean isEmitido() {
+		return this.status.equals(StatusContaPagar.EMITIDO);
 	}
 	
 	public boolean isPago() {
-		return this.status.equals("PAGO");
+		return this.status.equals(StatusContaPagar.PAGO);
 	}
 	
 }

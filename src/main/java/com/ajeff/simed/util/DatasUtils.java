@@ -9,6 +9,7 @@ import java.util.Date;
 
 import com.ajeff.simed.exceptions.DataNaoInformadaException;
 import com.ajeff.simed.financeiro.service.exception.VencimentoMenorEmissaoException;
+import com.ajeff.simed.util.model.Feriado;
 
 public class DatasUtils {
 	
@@ -25,47 +26,83 @@ public class DatasUtils {
 	}
 	
 	
-	
-	
-	
-	public static LocalDate setarDataSomandoDiasNoInicioMes(LocalDate data, Integer dias, Boolean diaUtil, Boolean antecipar) {
-		LocalDate result = LocalDate.MIN;
-		if (data != null && dias != null) {
-			result = data.with(TemporalAdjusters.firstDayOfMonth());
-			result = result.plusDays(dias -1);
-
-			if (diaUtil) {
-				if(dataFinalSemana(result)) {
-					if(antecipar) {
-						if (dataDomingo(result)) {
-							result = result.minusDays(2); 
-						}else {
-							result = result.minusDays(1);
-						}
-					}else {
-						if (dataDomingo(result)) {
-							result = result.plusDays(1);
-						}else {
-							result = result.plusDays(2);
-						}
-					}
-				}
-			}
-		}
-			return result;
-	}
-	
-	
-	
 	public static LocalDate setarParaUltimoDiaMes(LocalDate data) {
+		if (data == null) {
+			throw new DataNaoInformadaException("A data não foi informada!");
+		}
 		return data.minusMonths(0).with(TemporalAdjusters.lastDayOfMonth());
-	}
+	}	
 	
-	
+
 	public static Boolean dataFinalSemana(LocalDate data) {
+		if (data == null) {
+			throw new DataNaoInformadaException("A data não foi informada!");
+		}
 		DayOfWeek day = data.getDayOfWeek();
 		return (day.getValue() == 6 || day.getValue() == 7)? true: false;
+	}	
+	
+	
+	
+	public static boolean diaUtil(LocalDate data) {
+		if (data == null) {
+			throw new DataNaoInformadaException("A data não foi informada!");
+		}
+		
+		if(dataFinalSemana(data)) {
+			return false;
+		}
+		
+		if(diaFeriado(data)) {
+			return false;
+		}
+		
+		return true;
 	}
+	
+	
+	public static boolean diaFeriado(LocalDate data) {
+		if (data == null) {
+			throw new DataNaoInformadaException("A data não foi informada!");
+		}
+		
+		Feriado feriado = new Feriado();
+		Integer dia = data.getDayOfMonth();
+		Integer mes = data.getMonthValue();
+		
+		long count = feriado.getFeriados().stream()
+			.filter(d -> d.getDayOfMonth() == dia && d.getMonth().getValue() == mes).count();
+		
+		return count > 0 ? true : false;
+	}
+	
+	
+	public static LocalDate somarDiasNoInicioMesRetornandoDataUtil(LocalDate data, Integer dias) {
+		LocalDate result = data;
+		
+		if (data == null) {
+			throw new DataNaoInformadaException("A data não foi informada!");
+		}
+		
+		if (dias != null) {
+			result = data.with(TemporalAdjusters.firstDayOfMonth()).plusDays(dias -1);
+		}
+
+		do {
+			if(!diaUtil(result)) {
+				result = result.minusDays(1);
+			}
+		}while(diaUtil(result));
+		
+		return result;
+	}
+	
+	
+	
+
+	
+	
+
 	
 
 	public static Boolean dataSabado(LocalDate data) {

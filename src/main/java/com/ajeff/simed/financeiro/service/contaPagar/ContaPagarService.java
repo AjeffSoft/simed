@@ -1,6 +1,7 @@
 package com.ajeff.simed.financeiro.service.contaPagar;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,10 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ajeff.simed.financeiro.model.ContaPagar;
 import com.ajeff.simed.financeiro.model.Fornecedor;
+import com.ajeff.simed.financeiro.model.Imposto;
 import com.ajeff.simed.financeiro.model.enums.StatusContaPagar;
 import com.ajeff.simed.financeiro.repository.ContasPagarRepository;
 import com.ajeff.simed.financeiro.repository.filter.ContaPagarFilter;
 import com.ajeff.simed.financeiro.service.exception.DocumentoEFornecedorJaCadastradoException;
+import com.ajeff.simed.financeiro.service.imposto.CalculoImpostoIss;
+import com.ajeff.simed.financeiro.service.imposto.ImpostoService;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.util.DatasUtils;
 
@@ -27,6 +31,8 @@ public class ContaPagarService {
 
 	@Autowired
 	private ContasPagarRepository repository;
+	@Autowired
+	private ImpostoService impostoService;
 //	@Autowired
 //	private PlanoContaSecundariaService contaSecundariaService;
 	@Autowired
@@ -35,17 +41,32 @@ public class ContaPagarService {
 	
 	@Transactional
 	public void salvar(ContaPagar contaPagar) {
+		testeRegistroJaCadastrado(contaPagar);
+		DatasUtils.emissaoMenorOuIgualVencimento(contaPagar.getDataEmissao(), contaPagar.getVencimento());
 		
 		if(contaPagar.isNovo()) {
 			contaPagar.setStatus(StatusContaPagar.ABERTO);
+			contaPagar.setImpostos(impostosDaConta(contaPagar));
 		}
 		
-		testeRegistroJaCadastrado(contaPagar);
-		DatasUtils.emissaoMenorOuIgualVencimento(contaPagar.getDataEmissao(), contaPagar.getVencimento());
 		repository.save(contaPagar);
 		publisher.publishEvent(new ContaPagarSalvaEvent(contaPagar));
 	}
 	
+	
+	private List<Imposto> impostosDaConta(ContaPagar contaPagar) {
+		List<Imposto> impostos = new ArrayList<>();
+		if (contaPagar.getIssPorcentagem().compareTo(BigDecimal.ZERO) == 1) {
+			Imposto iss = impostoService.novoImposto(contaPagar, "ISS");
+			iss.setValor(CalculoImpostoIss.calculo(contaPagar.getValor()));
+			iss.setTotal(iss.getValor());
+
+			impostos.add(iss);
+		}
+		return null;
+	}
+
+
 	private void testeRegistroJaCadastrado(ContaPagar contaPagar) {
 		Optional<ContaPagar> optional = repository.findByNotaFiscalAndFornecedor(contaPagar.getNotaFiscal(), contaPagar.getFornecedor());
 		if (optional.isPresent() && !optional.get().equals(contaPagar)) {

@@ -1,6 +1,6 @@
 package com.ajeff.simed.util;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
@@ -12,6 +12,157 @@ import com.ajeff.simed.exceptions.DataNaoInformadaException;
 import com.ajeff.simed.financeiro.service.exception.VencimentoMenorEmissaoException;
 
 public class DatasUtilsTest {
+
+	
+	
+//	@Test
+//	@DisplayName("Deve retornar data do dia útil somando dias informados a partir inicio mês")
+//	public void deveRetornarDataDiaUtil() {
+//		LocalDate data = LocalDate.of(2020, 7, 21);
+//		
+//		LocalDate result = DatasUtils.somarDiasNoInicioMesRetornandoDataUtil(data, 20);
+//
+//		assertThat(result).isEqualTo(LocalDate.of(2020, 7, 20));
+//	}		
+
+	@Test
+	@DisplayName("Deve retornar data do dia útil somando dias informados a partir inicio mês caindo em um final semana")
+	public void deveRetornarDataDiaUtilParandoFeriadoEAntecipando() {
+		LocalDate data = LocalDate.of(2020, 7, 5);
+		
+		LocalDate result = DatasUtils.somarDiasNoInicioMesRetornandoDataUtil(data, 20);
+		
+		assertThat(result).isEqualTo(LocalDate.of(2020, 7, 30));
+	}		
+	
+
+	@Test
+	@DisplayName("Deve retornar TRUE se a data informada for util")
+	public void deveRetornarTrueSeDiaUtil() {
+		LocalDate data = LocalDate.of(2020, 7, 21);
+		
+		boolean result = DatasUtils.diaUtil(data);
+
+		assertThat(result).isTrue();
+	}		
+
+	@Test
+	@DisplayName("Deve retornar FALSE, pois a data é um final de semana")
+	public void deveRetornarFalsePoisDataFinalSemanaNaoUtil() {
+		LocalDate data = LocalDate.of(2020, 7, 25);
+		
+		boolean result = DatasUtils.diaUtil(data);
+		
+		assertThat(result).isFalse();
+	}		
+
+	@Test
+	@DisplayName("Deve retornar FALSE, pois a data é um feriado")
+	public void deveRetornarFalsePoisDataFeriadoNaoUtil() {
+		LocalDate data = LocalDate.of(2020, 10, 12);
+		
+		boolean result = DatasUtils.diaUtil(data);
+		
+		assertThat(result).isFalse();
+	}
+	
+	
+	@Test
+	@DisplayName("Deve lançar erro quando a data do dia útil não for informada ")
+	public void deveLancarErroQuandoNaoInformadoDataDiaUtil() {
+		LocalDate data = null;
+		
+		Throwable result = assertThrows(DataNaoInformadaException.class, () -> DatasUtils.diaUtil(data));
+
+		assertThat(result).isInstanceOf(DataNaoInformadaException.class).hasMessage("A data não foi informada!");		
+	}		
+	
+	
+	
+	@Test
+	@DisplayName("Deve retornar TRUE se a data informada for feriado")
+	public void deveRetornarTrueSeFeriado() {
+		LocalDate data = LocalDate.of(2019, 10, 12);
+		
+		boolean result = DatasUtils.diaFeriado(data);
+
+		assertThat(result).isTrue();
+	}	
+
+	
+	@Test
+	@DisplayName("Deve retornar FALSE se a data informada não for feriado")
+	public void deveRetornarFalseSeNaoFeriado() {
+		LocalDate data = LocalDate.of(2019, 1, 2);
+		
+		boolean result = DatasUtils.diaFeriado(data);
+		
+		assertThat(result).isFalse();
+	}
+	
+	
+	@Test
+	@DisplayName("Deve lançar erro quando a data do feriado não for informada ")
+	public void deveLancarErroQuandoNaoInformadoDataFeriado() {
+		LocalDate data = null;
+		
+		Throwable result = assertThrows(DataNaoInformadaException.class, () -> DatasUtils.diaFeriado(data));
+
+		assertThat(result).isInstanceOf(DataNaoInformadaException.class).hasMessage("A data não foi informada!");		
+	}		
+	
+	
+	@Test
+	@DisplayName("Deve retornar TRUE se a data informada for final de semana")
+	public void deveRetornarTrueSeFinalSemana() {
+		LocalDate data = LocalDate.of(2019, 11, 17);
+		Boolean dia = DatasUtils.dataFinalSemana(data);
+		assertThat(dia).isTrue();
+	}
+	
+	
+	@Test
+	@DisplayName("Deve retornar FALSE se a data informada não for final de semana")
+	public void deveRetornarFalseSeNaoForFinalSemana() {
+		LocalDate data = LocalDate.of(2019, 11, 19);
+		Boolean dia = DatasUtils.dataFinalSemana(data);
+		assertThat(dia).isFalse();
+	}	
+
+	@Test
+	@DisplayName("Deve lançar erro quando a data não for informada")
+	public void deveLancarErroQuandoNaoInformadoDataFinalSemana() {
+		LocalDate data = null;
+		
+		Throwable result = assertThrows(DataNaoInformadaException.class, () -> DatasUtils.dataFinalSemana(data));
+
+		assertThat(result).isInstanceOf(DataNaoInformadaException.class).hasMessage("A data não foi informada!");		
+	}	
+	
+	
+	
+	@Test
+	@DisplayName("Deve retornar a data com no ultimo dia do mês da data informada")
+	public void ultimoDiaMesTest() {
+		LocalDate data = LocalDate.of(2020, 4, 18);
+		
+		LocalDate result = DatasUtils.setarParaUltimoDiaMes(data);
+		
+		assertThat(result).isNotNull();
+		assertThat(result).isAfter(data);
+		assertThat(result).isEqualTo(LocalDate.of(2020, 4, 30));
+	}	
+	
+
+	@Test
+	@DisplayName("Deve lançar erro quando a data não for informada para calculo do último dia do mês")
+	public void naoInformadoDataParaUltimoDiaMesTest() {
+		LocalDate data = null;
+		
+		Throwable resul = assertThrows(DataNaoInformadaException.class, () -> DatasUtils.setarParaUltimoDiaMes(data));
+		
+		assertThat(resul).isInstanceOf(DataNaoInformadaException.class).hasMessage("A data não foi informada!");
+	}	
 	
 	
 	@Test
@@ -127,17 +278,7 @@ public class DatasUtilsTest {
 //	 * setarParaUltimoDiaMes
 //	 * 
 //	 */	
-//	@Test
-//	@DisplayName("Deve retornar a data com o ultimo dia do mês da data informada")
-//	public void ultimoDiaMesTest() {
-//		LocalDate data = LocalDate.of(2020, 4, 18);
-//		
-//		LocalDate result = CalculosComDatas.setarParaUltimoDiaMes(data);
-//		
-//		org.assertj.core.api.Assertions.assertThat(result).isNotNull();
-//		org.assertj.core.api.Assertions.assertThat(result).isAfter(data);
-//		org.assertj.core.api.Assertions.assertThat(result).isEqualTo(LocalDate.of(2020, 4, 30));
-//	}
+
 //
 //
 //	
@@ -247,19 +388,7 @@ public class DatasUtilsTest {
 //	/*
 //	 * dataFinalSemana
 //	 */
-//	@Test
-//	public void deveRetornarTrueSeFinalSemana() {
-//		LocalDate data = LocalDate.of(2019, 11, 17);
-//		Boolean dia = CalculosComDatas.dataFinalSemana(data);
-//		assertTrue(dia);
-//	}
-//	
-//	@Test
-//	public void deveRetornarFalseSeNaoForFinalSemana() {
-//		LocalDate data = LocalDate.of(2019, 11, 19);
-//		Boolean dia = CalculosComDatas.dataFinalSemana(data);
-//		assertFalse(dia);
-//	}
+
 //	
 //
 //	@Test

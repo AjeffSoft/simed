@@ -75,6 +75,7 @@ public class ContaPagarServiceTest {
 		
 		Assertions.assertThat(contaSalva.getId()).isNotNull();
 		Assertions.assertThat(contaSalva.getStatus()).isEqualTo(StatusContaPagar.ABERTO);
+		Assertions.assertThat(contaSalva.getValor()).isEqualTo(BigDecimal.valueOf(1000));
 		Mockito.verify(repository, Mockito.times(1)).save(conta);
 	}
 	

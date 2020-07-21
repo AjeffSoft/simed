@@ -30,6 +30,7 @@ import com.ajeff.simed.financeiro.repository.FornecedoresRepository;
 import com.ajeff.simed.financeiro.repository.TabelasIrpfRepository;
 import com.ajeff.simed.financeiro.repository.TabelasIrpjRepository;
 import com.ajeff.simed.financeiro.service.contaPagar.ContaPagarService;
+import com.ajeff.simed.financeiro.service.imposto.ImpostoService;
 import com.ajeff.simed.geral.model.Cidade;
 import com.ajeff.simed.geral.model.Empresa;
 import com.ajeff.simed.geral.model.Endereco;

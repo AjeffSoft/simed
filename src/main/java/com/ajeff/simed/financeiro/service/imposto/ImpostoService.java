@@ -1,4 +1,4 @@
-package com.ajeff.simed.financeiro.service;
+package com.ajeff.simed.financeiro.service.imposto;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -20,6 +20,7 @@ import com.ajeff.simed.financeiro.model.Imposto;
 import com.ajeff.simed.financeiro.model.PlanoContaSecundaria;
 import com.ajeff.simed.financeiro.model.TabelaIRPF;
 import com.ajeff.simed.financeiro.model.TabelaIRPJ;
+import com.ajeff.simed.financeiro.model.enums.StatusContaPagar;
 import com.ajeff.simed.financeiro.repository.ContasPagarRepository;
 import com.ajeff.simed.financeiro.repository.ImpostosRepository;
 import com.ajeff.simed.financeiro.repository.TabelasIrpfRepository;
@@ -88,13 +89,11 @@ public class ImpostoService {
 		imp.setMulta(BigDecimal.ZERO);
 		imp.setValorNF(contaPagar.getValor());
 		imp.setNumeroNF(contaPagar.getNotaFiscal());
-		imp.setStatus("ABERTO");
+		imp.setStatus(StatusContaPagar.ABERTO);
 		imp.setEmissaoNF(contaPagar.getDataEmissao());
 		imp.setNome(tipoImposto);
 		imp.setHistorico(imp.getNome() + " - " + contaPagar.getFornecedor().getFantasia() + " - " + imp.getNumeroNF());
 		imp.setVencimento(setarDataVencimentoPorTipoImposto(imp.getApuracao(), tipoImposto));
-		imp.setValor(setarValorImpostoPorTipo(contaPagar));
-		imp.setTotal(imp.getValor());
 		return imp;
 	}
 	
