@@ -105,7 +105,7 @@
 						
 						<div class="row">
 							<div>
-								<div class="col-sm-12  form-group">
+								<div class="col-sm-12  form-group" simed:classforerror="historico">
 									<label for="historico" class="control-label">Histórico*</label>
 									<textarea id="historico" class="form-control" th:field = "*{historico}" rows="3" maxlength="200"
 										placeholder="Deixe em branco para o histórico ser igual ao plano de conta secundária."></textarea>
@@ -116,7 +116,7 @@
 
 						<div class="row">
 							<div class="col-sm-2  form-group" simed:classforerror="notaFiscal">
-								<label for="notaNum" class="control-label">Nº NF</label>
+								<label for="notaNum" class="control-label">Nº NF*</label>
 								<input id="notaNum" type="text" class="form-control" maxlength="12" th:field = "*{notaFiscal}">
 							</div>
 						

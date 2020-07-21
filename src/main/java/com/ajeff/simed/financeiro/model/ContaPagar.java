@@ -8,6 +8,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,6 +24,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotBlank;
 
+import com.ajeff.simed.financeiro.model.enums.StatusContaPagar;
 import com.ajeff.simed.geral.model.Empresa;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -35,6 +38,7 @@ public class ContaPagar implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@NotBlank(message = "Informe uma descrição para o movimento")
 	private String historico;
 	
 	@NotNull(message = "Informe a data de emissão")
@@ -49,7 +53,8 @@ public class ContaPagar implements Serializable{
 	
 	private String documento;
 	
-	private String status;
+	@Enumerated(EnumType.STRING)
+	private StatusContaPagar status;
 	
 	private Boolean recibo;
 	
@@ -170,11 +175,11 @@ public class ContaPagar implements Serializable{
 		this.documento = documento;
 	}
 
-	public String getStatus() {
+	public StatusContaPagar getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(StatusContaPagar status) {
 		this.status = status;
 	}
 
@@ -359,24 +364,25 @@ public class ContaPagar implements Serializable{
 	}
 	
 	public boolean isAberto() {
-		return this.status.equals("ABERTO");
+		return this.status.equals(StatusContaPagar.ABERTO);
 	}
 
 	public boolean isAutorizado() {
-		return this.status.equals("AUTORIZADO");
+		return this.status.equals(StatusContaPagar.AUTORIZADO);
 	}
 
 	public boolean isEmitido() {
-		return this.status.equals("EMITIDO");
+		return this.status.equals(StatusContaPagar.EMITIDO);
+	}
+
+	public boolean isPago() {
+		return this.status.equals(StatusContaPagar.PAGO);
 	}
 
 	public boolean isPagoOuEmitido() {
-		return this.status.equals("PAGO") || this.status.equals("EMITIDO");
+		return this.status.equals(StatusContaPagar.PAGO) || this.status.equals(StatusContaPagar.EMITIDO);
 	}
 	
-	public boolean isPago() {
-		return this.status.equals("PAGO");
-	}
 	
 	public boolean isPendencia () {
 		return this.recibo.equals(false) || this.temNota.equals(false);

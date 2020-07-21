@@ -10,7 +10,22 @@ import java.util.Date;
 import com.ajeff.simed.exceptions.DataNaoInformadaException;
 import com.ajeff.simed.financeiro.service.exception.VencimentoMenorEmissaoException;
 
-public class CalculosComDatas {
+public class DatasUtils {
+	
+	
+	
+	public static Boolean emissaoMenorOuIgualVencimento(LocalDate emissao, LocalDate vencimento) {
+		if (emissao == null || vencimento == null) {
+			throw new DataNaoInformadaException("A data de emissão e/ou vencimento não foi informada!");
+		}
+		if (emissao.isAfter(vencimento)) {
+			throw new VencimentoMenorEmissaoException("A data de vencimento não pode ser menor que a data de emissão!");
+		}	
+		return emissao.isEqual(vencimento) || emissao.isBefore(vencimento);
+	}
+	
+	
+	
 	
 	
 	public static LocalDate setarDataSomandoDiasNoInicioMes(LocalDate data, Integer dias, Boolean diaUtil, Boolean antecipar) {
@@ -71,15 +86,7 @@ public class CalculosComDatas {
 	}
 	
 	
-	public static Boolean emissaoMenorIgualVencimento(LocalDate emissao, LocalDate vencimento) {
-		if (emissao == null || vencimento == null) {
-			throw new DataNaoInformadaException("A data de emissão e/ou vencimento não foi informada!");
-		}
-		if (emissao.isAfter(vencimento)) {
-			throw new VencimentoMenorEmissaoException("A data de vencimento não pode ser menor que a data de emissão");
-		}	
-		return emissao.isEqual(vencimento) || emissao.isBefore(vencimento);
-	}
+
 	
 	
 	public static LocalDate setarVencimentoXTotalParcelas(LocalDate emissao, Integer parcela, Integer dias) {

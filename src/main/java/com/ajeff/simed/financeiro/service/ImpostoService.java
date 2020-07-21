@@ -29,7 +29,7 @@ import com.ajeff.simed.financeiro.service.calculos.CalculoINSS;
 import com.ajeff.simed.financeiro.service.calculos.CalculoImpostoRenda;
 import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.financeiro.service.exception.PagamentoNaoEfetuadoException;
-import com.ajeff.simed.util.CalculosComDatas;
+import com.ajeff.simed.util.DatasUtils;
 
 @Service
 public class ImpostoService {
@@ -83,7 +83,7 @@ public class ImpostoService {
 	
 	public Imposto novoImposto(ContaPagar contaPagar, String tipoImposto) {
 		Imposto imp = new Imposto();
-		imp.setApuracao(CalculosComDatas.setarParaUltimoDiaMes(contaPagar.getDataEmissao()));
+		imp.setApuracao(DatasUtils.setarParaUltimoDiaMes(contaPagar.getDataEmissao()));
 		imp.setJuros(BigDecimal.ZERO);
 		imp.setMulta(BigDecimal.ZERO);
 		imp.setValorNF(contaPagar.getValor());
@@ -101,13 +101,13 @@ public class ImpostoService {
 	
 	private LocalDate setarDataVencimentoPorTipoImposto(LocalDate data, String tipoImposto) {
 		if (tipoImposto.equals("INSS")) {
-			return CalculosComDatas.setarDataSomandoDiasNoInicioMes(data.plusMonths(1), 15, true, true);
+			return DatasUtils.setarDataSomandoDiasNoInicioMes(data.plusMonths(1), 15, true, true);
 
 		} else if (tipoImposto.equals("IRRF") || tipoImposto.equals("PCCS")) {
-			return CalculosComDatas.setarDataSomandoDiasNoInicioMes(data.plusMonths(1), 20, true, true);
+			return DatasUtils.setarDataSomandoDiasNoInicioMes(data.plusMonths(1), 20, true, true);
 
 		} else {
-			return CalculosComDatas.setarDataSomandoDiasNoInicioMes(data.plusMonths(1), 10, true, false);
+			return DatasUtils.setarDataSomandoDiasNoInicioMes(data.plusMonths(1), 10, true, false);
 		}
 	}	
 	

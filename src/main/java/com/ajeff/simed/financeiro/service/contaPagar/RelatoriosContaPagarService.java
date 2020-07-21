@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ajeff.simed.financeiro.dto.PeriodoRelatorio;
-import com.ajeff.simed.util.CalculosComDatas;
+import com.ajeff.simed.util.DatasUtils;
 
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -41,10 +41,10 @@ public class RelatoriosContaPagarService {
 		if(!periodoRelatorio.getStatus().isEmpty()) {
 			map.put("status", periodoRelatorio.getStatus());
 		}
-		map.put("vencimento_inicio", CalculosComDatas.convertLocalDateInDate(periodoRelatorio.getDataInicio()));			
-		map.put("vencimento_final", CalculosComDatas.convertLocalDateInDate(periodoRelatorio.getDataFim()));
-		map.put("emissao_inicio", CalculosComDatas.convertLocalDateInDate(periodoRelatorio.getEmissaoInicio()));			
-		map.put("emissao_final", CalculosComDatas.convertLocalDateInDate(periodoRelatorio.getEmissaoFim()));
+		map.put("vencimento_inicio", DatasUtils.convertLocalDateInDate(periodoRelatorio.getDataInicio()));			
+		map.put("vencimento_final", DatasUtils.convertLocalDateInDate(periodoRelatorio.getDataFim()));
+		map.put("emissao_inicio", DatasUtils.convertLocalDateInDate(periodoRelatorio.getEmissaoInicio()));			
+		map.put("emissao_final", DatasUtils.convertLocalDateInDate(periodoRelatorio.getEmissaoFim()));
 		map.put("valor_inicio", periodoRelatorio.getValorInicio());
 		map.put("valor_final", periodoRelatorio.getValorFim());
 		map.put("format", "pdf");

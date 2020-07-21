@@ -1,7 +1,8 @@
-package com.ajeff.simed.financeiro.service;
+package com.ajeff.simed.financeiro.service.contaPagar;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
 //import org.assertj.core.api.Assertions;
@@ -22,17 +23,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.ajeff.simed.config.init.AppInitializer;
 import com.ajeff.simed.financeiro.model.ContaPagar;
 import com.ajeff.simed.financeiro.model.Fornecedor;
-import com.ajeff.simed.financeiro.model.PlanoConta;
 import com.ajeff.simed.financeiro.model.PlanoContaSecundaria;
+import com.ajeff.simed.financeiro.model.enums.StatusContaPagar;
 import com.ajeff.simed.financeiro.repository.ContasPagarRepository;
 import com.ajeff.simed.financeiro.repository.FornecedoresRepository;
-import com.ajeff.simed.financeiro.service.contaPagar.ContaPagarSalvaEvent;
-import com.ajeff.simed.financeiro.service.contaPagar.ContaPagarService;
 import com.ajeff.simed.financeiro.service.exception.DocumentoEFornecedorJaCadastradoException;
-import com.ajeff.simed.geral.model.Cidade;
 import com.ajeff.simed.geral.model.Empresa;
 import com.ajeff.simed.geral.model.Endereco;
-import com.ajeff.simed.geral.model.Estado;
 
 @ExtendWith(SpringExtension.class)
 @TestInstance(Lifecycle.PER_CLASS)
@@ -51,80 +48,52 @@ public class ContaPagarServiceTest {
 	@Mock
 	private FornecedoresRepository fornecedorRepository;
 	@Mock
-	private PlanoConta pc;
-	@Mock
 	private PlanoContaSecundaria pcs;
 	@Mock
-	private Empresa e;
+	private Empresa empresa;
 	@Mock
-	private Cidade c;
-	@Mock
-	private Estado es;
-	@Mock
-	private Endereco end;	
+	private Endereco endereco;	
 
 	
 	@BeforeAll
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
-		
-		
-		es = Mockito.mock(Estado.class);
-		es.setNome("ESTADO TESTE");
-		es.setUf("TE");
-		
-		c = Mockito.mock(Cidade.class);
-		c.setNome("CIDADE TESTE");
-		c.setUf("TE");
-		c.setCapital(true);
-		c.setEstado(es);
-		
-		end = Mockito.mock(Endereco.class);
-		end.setBairro("BAIRRO TESTE");
-		end.setCep("63500000");
-		end.setCidade(c);
-		
-		pc = Mockito.mock(PlanoConta.class);
-		pc.setNome("PLANO DE CONTA TESTE");
-		pc.setSituacao(true);
-		pc.setTipo("DÉBITO");
-		
-		pcs = Mockito.mock(PlanoContaSecundaria.class);
-		pcs.setNome("PLANO DE CONTA SECUNDÁRIA TESTE");
-		pcs.setSituacao(true);
-		pcs.setTipo("VARIÁVEL");
-		pcs.setPlanoConta(pc);
-		
-		e = Mockito.mock(Empresa.class);
-		e.setNome("EMPRESA TESTE LTDA");
-		e.setFantasia("EMPRESA TESTE");
-		e.setSigla("EMPTESTE");
-		e.setEndereco(end);
-		
-
 	}
 	
 	
-
-
-	
-	
 	@Test
-	@DisplayName("Deve salvar uma conta a pagar SIMPLES, sem parcela e sem impostos")
-	public void salvarContaPagarSimples() {
+	@DisplayName("Deve salvar uma nova conta a pagar SIMPLES, sem parcela e sem impostos")
+	public void salvarNovaContaPagarSimples() {
 		ContaPagar conta = contaNova();
 		ContaPagar contaSalva = contaNova();
 		contaSalva.setId(1l);
-		Mockito.when(repository.save(conta)).thenReturn(contaSalva);
+		contaSalva.setStatus(StatusContaPagar.ABERTO);
+		Mockito.when(repository.save(Mockito.any(ContaPagar.class))).thenReturn(contaSalva);
 		Mockito.doNothing().when(publisher).publishEvent((new ContaPagarSalvaEvent(contaSalva)));
 		
 		service.salvar(conta);
 		
 		Assertions.assertThat(contaSalva.getId()).isNotNull();
+		Assertions.assertThat(contaSalva.getStatus()).isEqualTo(StatusContaPagar.ABERTO);
 		Mockito.verify(repository, Mockito.times(1)).save(conta);
 	}
 	
 	
+	@Test
+	@DisplayName("Deve lançar erro DUPLICIDADE ao salvar uma conta a pagar SIMPLES, sem parcela e sem impostos")
+	public void erroDuplicidadesalvarContaPagarSimples() {
+		ContaPagar contaDuplicada = contaNova();
+		ContaPagar conta = contaNova();
+		conta.setId(1l);
+		Mockito.when(repository.findByNotaFiscalAndFornecedor(Mockito.anyString(), Mockito.any(Fornecedor.class)))
+			.thenReturn(Optional.of(contaDuplicada));
+		
+		Throwable result = Assertions.catchThrowable(() -> service.salvar(conta));
+		
+		Assertions.assertThat(result).isInstanceOf(DocumentoEFornecedorJaCadastradoException.class)
+			.hasMessage("Já existe uma conta cadastrada com esta nota fiscal para esse fornecedor!");
+		Mockito.verify(repository, Mockito.never()).save(conta);
+	}
 
 
 	
@@ -260,7 +229,7 @@ public class ContaPagarServiceTest {
 		cp.setTotalParcela(1);
 		cp.setPlanoContaSecundaria(pcs);
 		cp.setFornecedor(novoFornecedor());
-		cp.setEmpresa(e);
+		cp.setEmpresa(empresa);
 		cp.setHistorico("TESTANDO A CONTA A PAGAR");
 		cp.setReterINSS(false);
 		cp.setReterCOFINS(false);
@@ -276,7 +245,7 @@ public class ContaPagarServiceTest {
 		fornecedor.setFantasia("FORNECEDOR TESTE");
 		fornecedor.setSigla("FORTESTE");
 		fornecedor.setClifor(true);
-		fornecedor.setEndereco(end);
+		fornecedor.setEndereco(endereco);
 		Mockito.when(fornecedorRepository.save(Mockito.any(Fornecedor.class))).thenReturn(fornecedor);
 		return fornecedor;
 	}	

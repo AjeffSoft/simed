@@ -15,10 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ajeff.simed.financeiro.model.ContaPagar;
 import com.ajeff.simed.financeiro.model.Fornecedor;
+import com.ajeff.simed.financeiro.model.enums.StatusContaPagar;
 import com.ajeff.simed.financeiro.repository.ContasPagarRepository;
 import com.ajeff.simed.financeiro.repository.filter.ContaPagarFilter;
 import com.ajeff.simed.financeiro.service.exception.DocumentoEFornecedorJaCadastradoException;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
+import com.ajeff.simed.util.DatasUtils;
 
 @Service
 public class ContaPagarService {
@@ -33,7 +35,13 @@ public class ContaPagarService {
 	
 	@Transactional
 	public void salvar(ContaPagar contaPagar) {
+		
+		if(contaPagar.isNovo()) {
+			contaPagar.setStatus(StatusContaPagar.ABERTO);
+		}
+		
 		testeRegistroJaCadastrado(contaPagar);
+		DatasUtils.emissaoMenorOuIgualVencimento(contaPagar.getDataEmissao(), contaPagar.getVencimento());
 		repository.save(contaPagar);
 		publisher.publishEvent(new ContaPagarSalvaEvent(contaPagar));
 	}
@@ -191,13 +199,13 @@ public class ContaPagarService {
 
 	@Transactional
 	public void autorizarPagamento(ContaPagar contaPagar) {
-		contaPagar.setStatus("AUTORIZADO");
+		contaPagar.setStatus(StatusContaPagar.AUTORIZADO);
 		repository.save(contaPagar);
 	}
 	
 	@Transactional	
 	public void cancelarAutorizarPagamento(ContaPagar contaPagar) {
-		contaPagar.setStatus("ABERTO");
+		contaPagar.setStatus(StatusContaPagar.ABERTO);
 		repository.save(contaPagar);
 	}
 
