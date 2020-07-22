@@ -3,6 +3,7 @@ package com.ajeff.simed.financeiro.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -101,7 +102,7 @@ public class ContaPagar implements Serializable{
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "contaPagar", cascade = CascadeType.ALL)
-	private List<Imposto> impostos;
+	private List<Imposto> impostos = new ArrayList<>();
 	
 	@Transient
 	private PlanoConta planoConta;

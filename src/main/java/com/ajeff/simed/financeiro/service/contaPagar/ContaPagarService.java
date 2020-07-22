@@ -21,7 +21,7 @@ import com.ajeff.simed.financeiro.model.enums.StatusContaPagar;
 import com.ajeff.simed.financeiro.repository.ContasPagarRepository;
 import com.ajeff.simed.financeiro.repository.filter.ContaPagarFilter;
 import com.ajeff.simed.financeiro.service.exception.DocumentoEFornecedorJaCadastradoException;
-import com.ajeff.simed.financeiro.service.imposto.CalculoImpostoIss;
+import com.ajeff.simed.financeiro.service.imposto.CalculoImpostoISS;
 import com.ajeff.simed.financeiro.service.imposto.ImpostoService;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.util.DatasUtils;
@@ -47,6 +47,7 @@ public class ContaPagarService {
 		if(contaPagar.isNovo()) {
 			contaPagar.setStatus(StatusContaPagar.ABERTO);
 			contaPagar.setImpostos(impostosDaConta(contaPagar));
+			contaPagar.setValor(contaPagar.getValor().subtract(calculoValorConta(contaPagar)));
 		}
 		
 		repository.save(contaPagar);
@@ -54,16 +55,24 @@ public class ContaPagarService {
 	}
 	
 	
+	private BigDecimal calculoValorConta(ContaPagar contaPagar) {
+		if(!contaPagar.getImpostos().isEmpty()) {
+			return contaPagar.getImpostos().stream().map(i -> i.getValor()).reduce(BigDecimal.ZERO, BigDecimal::add);
+		}else {
+			return contaPagar.getValor();
+		}
+	}
+
+
 	private List<Imposto> impostosDaConta(ContaPagar contaPagar) {
 		List<Imposto> impostos = new ArrayList<>();
 		if (contaPagar.getIssPorcentagem().compareTo(BigDecimal.ZERO) == 1) {
 			Imposto iss = impostoService.novoImposto(contaPagar, "ISS");
-			iss.setValor(CalculoImpostoIss.calculo(contaPagar.getValor()));
+			iss.setValor(CalculoImpostoISS.calculo(contaPagar.getValor(), contaPagar.getIssPorcentagem()));
 			iss.setTotal(iss.getValor());
-
 			impostos.add(iss);
 		}
-		return null;
+		return impostos;
 	}
 
 

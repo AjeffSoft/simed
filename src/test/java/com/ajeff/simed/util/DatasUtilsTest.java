@@ -15,15 +15,15 @@ public class DatasUtilsTest {
 
 	
 	
-//	@Test
-//	@DisplayName("Deve retornar data do dia útil somando dias informados a partir inicio mês")
-//	public void deveRetornarDataDiaUtil() {
-//		LocalDate data = LocalDate.of(2020, 7, 21);
-//		
-//		LocalDate result = DatasUtils.somarDiasNoInicioMesRetornandoDataUtil(data, 20);
-//
-//		assertThat(result).isEqualTo(LocalDate.of(2020, 7, 20));
-//	}		
+	@Test
+	@DisplayName("Deve retornar data do dia útil somando dias informados a partir inicio mês")
+	public void deveRetornarDataDiaUtil() {
+		LocalDate data = LocalDate.of(2020, 7, 21);
+		
+		LocalDate result = DatasUtils.somarDiasNoInicioMesRetornandoDataUtil(data, 20);
+
+		assertThat(result).isEqualTo(LocalDate.of(2020, 7, 20));
+	}		
 
 	@Test
 	@DisplayName("Deve retornar data do dia útil somando dias informados a partir inicio mês caindo em um final semana")

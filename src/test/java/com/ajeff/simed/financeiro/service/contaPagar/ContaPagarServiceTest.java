@@ -4,8 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import org.assertj.core.api.Assertions;
-//import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,11 +22,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.ajeff.simed.config.init.AppInitializer;
 import com.ajeff.simed.financeiro.model.ContaPagar;
 import com.ajeff.simed.financeiro.model.Fornecedor;
+import com.ajeff.simed.financeiro.model.Imposto;
 import com.ajeff.simed.financeiro.model.PlanoContaSecundaria;
 import com.ajeff.simed.financeiro.model.enums.StatusContaPagar;
 import com.ajeff.simed.financeiro.repository.ContasPagarRepository;
 import com.ajeff.simed.financeiro.repository.FornecedoresRepository;
 import com.ajeff.simed.financeiro.service.exception.DocumentoEFornecedorJaCadastradoException;
+import com.ajeff.simed.financeiro.service.imposto.ImpostoService;
 import com.ajeff.simed.geral.model.Empresa;
 import com.ajeff.simed.geral.model.Endereco;
 
@@ -43,6 +44,8 @@ public class ContaPagarServiceTest {
 	@Mock
 	private ApplicationEventPublisher publisher;
 	
+	@Mock
+	private ImpostoService impostoService;
 	@Mock
 	private ContasPagarRepository repository;
 	@Mock
@@ -73,9 +76,9 @@ public class ContaPagarServiceTest {
 		
 		service.salvar(conta);
 		
-		Assertions.assertThat(contaSalva.getId()).isNotNull();
-		Assertions.assertThat(contaSalva.getStatus()).isEqualTo(StatusContaPagar.ABERTO);
-		Assertions.assertThat(contaSalva.getValor()).isEqualTo(BigDecimal.valueOf(1000));
+		assertThat(contaSalva.getId()).isNotNull();
+		assertThat(contaSalva.getStatus()).isEqualTo(StatusContaPagar.ABERTO);
+		assertThat(contaSalva.getValor()).isEqualTo(BigDecimal.valueOf(1000));
 		Mockito.verify(repository, Mockito.times(1)).save(conta);
 	}
 	
@@ -89,12 +92,38 @@ public class ContaPagarServiceTest {
 		Mockito.when(repository.findByNotaFiscalAndFornecedor(Mockito.anyString(), Mockito.any(Fornecedor.class)))
 			.thenReturn(Optional.of(contaDuplicada));
 		
-		Throwable result = Assertions.catchThrowable(() -> service.salvar(conta));
+		Throwable result = catchThrowable(() -> service.salvar(conta));
 		
-		Assertions.assertThat(result).isInstanceOf(DocumentoEFornecedorJaCadastradoException.class)
+		assertThat(result).isInstanceOf(DocumentoEFornecedorJaCadastradoException.class)
 			.hasMessage("Já existe uma conta cadastrada com esta nota fiscal para esse fornecedor!");
 		Mockito.verify(repository, Mockito.never()).save(conta);
 	}
+	
+	
+	@Test
+	@DisplayName("Deve salvar uma nova conta a pagar com retenção de ISS")
+	public void salvarNovaContaPagarRetencaoIss() {
+		ContaPagar conta = contaNova();
+		conta.setIssPorcentagem(BigDecimal.valueOf(5));
+		ContaPagar contaSalva = contaNova();
+		Imposto imposto = novoImposto();
+		contaSalva.setId(1l);
+		contaSalva.setStatus(StatusContaPagar.ABERTO);
+		contaSalva.setValor(BigDecimal.valueOf(950));
+		contaSalva.getImpostos().add(imposto);
+		Mockito.when(impostoService.novoImposto(conta, "ISS")).thenReturn(imposto);
+		Mockito.when(repository.save(Mockito.any(ContaPagar.class))).thenReturn(contaSalva);
+		Mockito.doNothing().when(publisher).publishEvent((new ContaPagarSalvaEvent(contaSalva)));
+		
+		service.salvar(conta);
+		
+		assertThat(contaSalva.getId()).isNotNull();
+		assertThat(contaSalva.getStatus()).isEqualTo(StatusContaPagar.ABERTO);
+		assertThat(contaSalva.getValor()).isEqualTo(BigDecimal.valueOf(950));
+		assertThat(contaSalva.getImpostos()).isNotEmpty();
+		assertThat(contaSalva.getImpostos().size()).isEqualTo(1);
+		Mockito.verify(impostoService, Mockito.times(1)).novoImposto(conta, "ISS");
+	}	
 
 
 	
@@ -249,6 +278,22 @@ public class ContaPagarServiceTest {
 		fornecedor.setEndereco(endereco);
 		Mockito.when(fornecedorRepository.save(Mockito.any(Fornecedor.class))).thenReturn(fornecedor);
 		return fornecedor;
+	}	
+
+	private Imposto novoImposto() {
+		Imposto imp = new Imposto();
+		imp.setApuracao(LocalDate.of(2020, 7, 15));
+		imp.setJuros(BigDecimal.ZERO);
+		imp.setMulta(BigDecimal.ZERO);
+		imp.setValorNF(BigDecimal.valueOf(1000));
+		imp.setNumeroNF("123");
+		imp.setStatus(StatusContaPagar.ABERTO);
+		imp.setEmissaoNF(LocalDate.of(2020, 7, 15));
+		imp.setNome("ISS");
+		imp.setValor(BigDecimal.valueOf(50));
+		imp.setTotal(imp.getValor());
+		imp.setVencimento(LocalDate.of(2020, 7, 15));
+		return imp;
 	}	
 	
 }
