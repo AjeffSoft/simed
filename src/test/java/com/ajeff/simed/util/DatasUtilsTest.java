@@ -28,11 +28,11 @@ public class DatasUtilsTest {
 	@Test
 	@DisplayName("Deve retornar data do dia útil somando dias informados a partir inicio mês caindo em um final semana")
 	public void deveRetornarDataDiaUtilParandoFeriadoEAntecipando() {
-		LocalDate data = LocalDate.of(2020, 7, 5);
+		LocalDate data = LocalDate.of(2020, 5, 1);
 		
-		LocalDate result = DatasUtils.somarDiasNoInicioMesRetornandoDataUtil(data, 20);
+		LocalDate result = DatasUtils.somarDiasNoInicioMesRetornandoDataUtil(data, 10);
 		
-		assertThat(result).isEqualTo(LocalDate.of(2020, 7, 30));
+		assertThat(result).isEqualTo(LocalDate.of(2020, 5, 8));
 	}		
 	
 
