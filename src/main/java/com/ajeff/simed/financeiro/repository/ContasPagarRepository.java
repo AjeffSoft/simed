@@ -12,7 +12,6 @@ import com.ajeff.simed.financeiro.repository.helper.contaPagar.ContasPagarReposi
 
 public interface ContasPagarRepository extends JpaRepository<ContaPagar, Long>, ContasPagarRepositoryQueries{
 
-	Optional<ContaPagar> findByNotaFiscalAndFornecedor(String nota, Fornecedor fornecedor);
 
 	@Query("select c from ContaPagar c where c.status like 'AUTORIZADO' order by c.valor desc")
 	List<ContaPagar> buscarTodasContasAutorizadas();

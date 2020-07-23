@@ -1,6 +1,7 @@
 package com.ajeff.simed.financeiro.repository.helper.contaPagar;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.ajeff.simed.financeiro.model.ContaPagar;
+import com.ajeff.simed.financeiro.model.Fornecedor;
 import com.ajeff.simed.financeiro.repository.filter.ContaPagarFilter;
 import com.ajeff.simed.geral.repository.paginacao.PaginacaoUtil;
 
@@ -117,7 +119,15 @@ public class ContasPagarRepositoryImpl implements ContasPagarRepositoryQueries {
 		camposParaFiltro(filtro, criteria);
 	}	
 
-
+	@SuppressWarnings("unchecked")
+	@Override
+	public Optional<ContaPagar> findByNotaFiscalAndFornecedor(String nota, Fornecedor fornecedor) {
+		Criteria criteria = manager.unwrap(Session.class).createCriteria(ContaPagar.class);
+		criteria.add(Restrictions.eq("notaFiscal", nota));
+		criteria.add(Restrictions.eq("fornecedor", fornecedor));
+		return (Optional<ContaPagar>) criteria.uniqueResult();
+	}
+	
 	
 	@Override
 	@Transactional(readOnly = true)
@@ -189,5 +199,7 @@ public class ContasPagarRepositoryImpl implements ContasPagarRepositoryQueries {
 	private boolean isEmpresaPresente(ContaPagarFilter filtro) {
 		return filtro.getEmpresa() != null && filtro.getEmpresa().getId() != null;
 	}
+
+
 
 }

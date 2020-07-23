@@ -87,14 +87,16 @@ public class DatasUtils {
 		if (dias != null) {
 			result = data.with(TemporalAdjusters.firstDayOfMonth()).plusDays(dias -1);
 		}
-
-		do {
-			if(!diaUtil(result)) {
+		
+		
+		if(diaUtil(result)) {
+			return result;
+		}else {
+			while(diaUtil(result) != true) {
 				result = result.minusDays(1);
 			}
-		}while(diaUtil(result));
-		
-		return result;
+			return result;
+		}
 	}
 	
 	

@@ -1,14 +1,18 @@
 package com.ajeff.simed.financeiro.repository.helper.contaPagar;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.ajeff.simed.financeiro.model.ContaPagar;
+import com.ajeff.simed.financeiro.model.Fornecedor;
 import com.ajeff.simed.financeiro.repository.filter.ContaPagarFilter;
 
 public interface ContasPagarRepositoryQueries {
+	
+	Optional<ContaPagar> findByNotaFiscalAndFornecedor(String nota, Fornecedor fornecedor);
 
 	public Page<ContaPagar> filtrar(ContaPagarFilter filtro, Pageable pageable);
 
