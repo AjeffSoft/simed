@@ -16,6 +16,20 @@ public class TabelaIRPF implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	
+	public TabelaIRPF(Long id, String nome, BigDecimal valorInicial, BigDecimal valorFinal, BigDecimal aliquota,
+			BigDecimal deducao, BigDecimal dependente) {
+		this.id = id;
+		this.nome = nome;
+		this.valorInicial = valorInicial;
+		this.valorFinal = valorFinal;
+		this.aliquota = aliquota;
+		this.deducao = deducao;
+		this.dependente = dependente;
+	}
+
+	public TabelaIRPF() {};
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;

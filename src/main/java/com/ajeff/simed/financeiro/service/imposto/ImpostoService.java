@@ -2,14 +2,19 @@ package com.ajeff.simed.financeiro.service.imposto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ajeff.simed.financeiro.model.ContaPagar;
 import com.ajeff.simed.financeiro.model.Imposto;
+import com.ajeff.simed.financeiro.model.TabelaIRPF;
 import com.ajeff.simed.financeiro.model.TabelaIRPJ;
 import com.ajeff.simed.financeiro.model.enums.StatusContaPagar;
+import com.ajeff.simed.financeiro.repository.TabelasIrpfRepository;
 import com.ajeff.simed.financeiro.repository.TabelasIrpjRepository;
 import com.ajeff.simed.util.DatasUtils;
 
@@ -19,6 +24,8 @@ public class ImpostoService {
 	
 	@Autowired
 	private TabelasIrpjRepository tabelaIRPJRepository;
+	@Autowired
+	private TabelasIrpfRepository tabelaIRPFRepository;
 
 	
 	public Imposto novoImposto(ContaPagar contaPagar, String tipoImposto) {
@@ -44,16 +51,58 @@ public class ImpostoService {
 		return aliquota; 
 	}	
 	
+
+	public BigDecimal aliquotaIRPJ() {
+		TabelaIRPJ tabela = tabelaIRPJRepository.findOne(1l);
+		return tabela.getAliquotaIR(); 
+	}	
+
+	
+	public BigDecimal aliquotaIRPF(BigDecimal valor) {
+		TabelaIRPF tabela = retornaTabelaPFPorValor(valor);
+		return tabela.getAliquota();
+	}
+	
+
+	public BigDecimal deducaoIRPF(BigDecimal valor) {
+		TabelaIRPF tabela = retornaTabelaPFPorValor(valor);
+		return tabela.getDeducao();
+	}
+	
+	
+	private TabelaIRPF retornaTabelaPFPorValor(BigDecimal valor) {
+		List<TabelaIRPF> tabelas = tabelaIRPFRepository.findAll();
+
+		Predicate<TabelaIRPF> filtro = t -> {
+			return valor.compareTo(t.getValorInicial()) >=0 && valor.compareTo(t.getValorFinal()) <=0; 
+		};
+		
+		return tabelas.stream().filter(i -> filtro.test(i))	.findFirst().get();
+	}
 	
 	
 	private LocalDate setarDataVencimentoPorTipoImposto(LocalDate data, String tipoImposto) {
-		
 		return DatasUtils.somarDiasNoInicioMesRetornandoDataUtil(data.plusMonths(1), 10);
 	}	
 	
 	
 	
-
+//	private BigDecimal setarAFaixaRetencaoIRRF(BigDecimal valorBase) {
+//	List<TabelaIRPF> faixas = tabelaIRPFRepository.findByValorFinalGreaterThanEqual(valorBase);
+//	TabelaIRPF faixa = new TabelaIRPF();
+//
+//	for (TabelaIRPF f : faixas) {
+//		if (f.getValorInicial().compareTo(valorBase) == 0 || f.getValorInicial().compareTo(valorBase) == -1) {
+//			faixa = f;
+//		}
+//	}
+//
+//	if (faixa.getId() != null) {
+//		return CalculoImpostoRenda.calculoIRRF(valorBase, faixa.getAliquota(), faixa.getDeducao());
+//	} else {
+//		return BigDecimal.ZERO;
+//	}
+//}
 
 	
 //	@Autowired
@@ -167,22 +216,7 @@ public class ImpostoService {
 //
 //	}
 //
-//	private BigDecimal setarAFaixaRetencaoIRRF(BigDecimal valorBase) {
-//		List<TabelaIRPF> faixas = tabelaIRPFRepository.findByValorFinalGreaterThanEqual(valorBase);
-//		TabelaIRPF faixa = new TabelaIRPF();
-//
-//		for (TabelaIRPF f : faixas) {
-//			if (f.getValorInicial().compareTo(valorBase) == 0 || f.getValorInicial().compareTo(valorBase) == -1) {
-//				faixa = f;
-//			}
-//		}
-//
-//		if (faixa.getId() != null) {
-//			return CalculoImpostoRenda.calculoIRRF(valorBase, faixa.getAliquota(), faixa.getDeducao());
-//		} else {
-//			return BigDecimal.ZERO;
-//		}
-//	}
+
 //
 //	public Imposto findOne(Long id) {
 //		return repository.findOne(id);
