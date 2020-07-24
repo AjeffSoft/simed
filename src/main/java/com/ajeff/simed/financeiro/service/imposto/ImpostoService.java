@@ -3,16 +3,22 @@ package com.ajeff.simed.financeiro.service.imposto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ajeff.simed.financeiro.model.ContaPagar;
 import com.ajeff.simed.financeiro.model.Imposto;
+import com.ajeff.simed.financeiro.model.TabelaIRPJ;
 import com.ajeff.simed.financeiro.model.enums.StatusContaPagar;
+import com.ajeff.simed.financeiro.repository.TabelasIrpjRepository;
 import com.ajeff.simed.util.DatasUtils;
 
 @Service
 public class ImpostoService {
-
+	
+	
+	@Autowired
+	private TabelasIrpjRepository tabelaIRPJRepository;
 
 	
 	public Imposto novoImposto(ContaPagar contaPagar, String tipoImposto) {
@@ -31,10 +37,22 @@ public class ImpostoService {
 	}
 	
 	
+	public BigDecimal aliquotaPCCS() {
+		BigDecimal aliquota = BigDecimal.ZERO;
+		TabelaIRPJ tabela = tabelaIRPJRepository.findOne(1l);
+		aliquota = aliquota.add(tabela.getAliquotaCOFINS().add(tabela.getAliquotaCSLL().add(tabela.getAliquotaPIS())));
+		return aliquota; 
+	}	
+	
+	
+	
 	private LocalDate setarDataVencimentoPorTipoImposto(LocalDate data, String tipoImposto) {
 		
 		return DatasUtils.somarDiasNoInicioMesRetornandoDataUtil(data.plusMonths(1), 10);
-	}		
+	}	
+	
+	
+	
 
 
 	

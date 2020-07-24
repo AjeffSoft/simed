@@ -31,5 +31,13 @@ public class CalculoImpostoINSSTest {
 		BigDecimal inss = CalculoImpostoINSS.calculo(valor);
 		Assertions.assertEquals(new BigDecimal(671.11).setScale(2, BigDecimal.ROUND_DOWN), inss);
 	}
+
+	@Test
+	@DisplayName("Deverá retornar ZERO quando o valor for zerado")
+	public void calculoINSSZerado() {
+		BigDecimal valor = new BigDecimal(0);
+		BigDecimal inss = CalculoImpostoINSS.calculo(valor);
+		Assertions.assertEquals(new BigDecimal(0).setScale(2, BigDecimal.ROUND_DOWN), inss);
+	}
 	
 }

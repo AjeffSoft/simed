@@ -22,7 +22,9 @@ import com.ajeff.simed.financeiro.repository.ContasPagarRepository;
 import com.ajeff.simed.financeiro.repository.filter.ContaPagarFilter;
 import com.ajeff.simed.financeiro.service.exception.DocumentoEFornecedorJaCadastradoException;
 import com.ajeff.simed.financeiro.service.imposto.CalculoImpostoINSS;
+import com.ajeff.simed.financeiro.service.imposto.CalculoImpostoIRRF;
 import com.ajeff.simed.financeiro.service.imposto.CalculoImpostoISS;
+import com.ajeff.simed.financeiro.service.imposto.CalculoImpostoPCCS;
 import com.ajeff.simed.financeiro.service.imposto.ImpostoService;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.util.DatasUtils;
@@ -67,18 +69,36 @@ public class ContaPagarService {
 
 	private List<Imposto> impostosDaConta(ContaPagar contaPagar) {
 		List<Imposto> impostos = new ArrayList<>();
-		if (contaPagar.getIssPorcentagem() != null || contaPagar.getIssPorcentagem().compareTo(BigDecimal.ZERO) == 1) {
+		if (contaPagar.isIssRetido()) {
 			Imposto iss = impostoService.novoImposto(contaPagar, "ISS");
 			iss.setValor(CalculoImpostoISS.calculo(contaPagar.getValor(), contaPagar.getIssPorcentagem()));
 			iss.setTotal(iss.getValor());
 			impostos.add(iss);
 		}
 		
-		if(contaPagar.getReterINSS()) {
+		//SOMENTE PARA FORNECEDORES PESSOA FISICA
+		if(contaPagar.getReterINSS() && contaPagar.getFornecedor().getTipoPessoa().equals("F")) {
 			Imposto inss = impostoService.novoImposto(contaPagar, "INSS");
 			inss.setValor(CalculoImpostoINSS.calculo(contaPagar.getValor()));
 			inss.setTotal(inss.getValor());
 			impostos.add(inss);
+		}
+
+		//SOMENTE PARA FORNECEDORES PESSOA JURIDICA
+		if(contaPagar.getReterCOFINS() && contaPagar.getFornecedor().getTipo().equals("J")) {
+			Imposto pccs = impostoService.novoImposto(contaPagar, "PCCS");
+			pccs.setValor(CalculoImpostoPCCS.calculo(contaPagar.getValor(), impostoService.aliquotaPCCS()));
+			pccs.setTotal(pccs.getValor());
+			impostos.add(pccs);
+		}
+
+		
+		if(contaPagar.getReterIR()) {
+			Imposto ir = impostoService.novoImposto(contaPagar, "IRRF");
+			BigDecimal inss = impostos.stream().filter(i -> i.getNome().equals("INSS")).findFirst().get().getValor();
+			ir.setValor(CalculoImpostoIRRF.calculo(contaPagar.getValor(), contaPagar.getFornecedor().getTipo(), inss));
+			ir.setTotal(ir.getValor());
+			impostos.add(ir);
 		}
 		return impostos;
 	}

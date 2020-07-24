@@ -11,11 +11,13 @@ public class CalculoImpostoINSS {
 
 
 	public static BigDecimal calculo(BigDecimal valor) {
+		BigDecimal result = BigDecimal.ZERO;
 		if(valor.compareTo(TETO_INSS) == 1) {
-			return valorMaximoRetencao();
+			result = valorMaximoRetencao();
 		}else {
-			return valor.multiply(ALIQUOTA_INSS).setScale(2, RoundingMode.HALF_UP);
+			result = valor.multiply(ALIQUOTA_INSS).setScale(2, RoundingMode.HALF_UP);
 		}
+		return result;
 	}
 	
 	

@@ -117,7 +117,7 @@ public class ContaPagar implements Serializable{
 	private Boolean reterCOFINS;
 
 	@Transient
-	private BigDecimal issPorcentagem;
+	private BigDecimal issPorcentagem = BigDecimal.ZERO;
 
 	@PrePersist
 	@PreUpdate
@@ -395,4 +395,9 @@ public class ContaPagar implements Serializable{
 				|| this.reterIR.equals(true) 
 				|| this.issPorcentagem.compareTo(BigDecimal.ZERO) == 1;
 	}
+	
+	public boolean isIssRetido() {
+		return this.issPorcentagem != null || this.issPorcentagem.compareTo(BigDecimal.ZERO) ==1;
+	}
+
 }
