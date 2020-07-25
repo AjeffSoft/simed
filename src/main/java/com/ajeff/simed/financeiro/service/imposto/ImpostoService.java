@@ -3,7 +3,6 @@ package com.ajeff.simed.financeiro.service.imposto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,7 @@ import com.ajeff.simed.financeiro.model.TabelaIRPJ;
 import com.ajeff.simed.financeiro.model.enums.StatusContaPagar;
 import com.ajeff.simed.financeiro.repository.TabelasIrpfRepository;
 import com.ajeff.simed.financeiro.repository.TabelasIrpjRepository;
+import com.ajeff.simed.financeiro.service.exception.RegistroNaoCadastradoException;
 import com.ajeff.simed.util.DatasUtils;
 
 @Service
@@ -49,16 +49,27 @@ public class ImpostoService {
 		TabelaIRPJ tabela = tabelaIRPJRepository.findOne(1l);
 		aliquota = aliquota.add(tabela.getAliquotaCOFINS().add(tabela.getAliquotaCSLL().add(tabela.getAliquotaPIS())));
 		return aliquota; 
-	}	
+	}
+	
+	public BigDecimal aliquotaIRRF(BigDecimal valor, String tipo) {
+		if(tipo.contentEquals("J")) {
+			return aliquotaIRPJ();
+		}else {
+			return aliquotaIRPF(valor);
+		}
+	}
 	
 
-	public BigDecimal aliquotaIRPJ() {
+	private BigDecimal aliquotaIRPJ() {
 		TabelaIRPJ tabela = tabelaIRPJRepository.findOne(1l);
+		if(tabela == null || tabela.getId() == null) {
+			throw new RegistroNaoCadastradoException("Não localizado a tabela de aliquotas!");
+		}
 		return tabela.getAliquotaIR(); 
 	}	
 
 	
-	public BigDecimal aliquotaIRPF(BigDecimal valor) {
+	private BigDecimal aliquotaIRPF(BigDecimal valor) {
 		TabelaIRPF tabela = retornaTabelaPFPorValor(valor);
 		return tabela.getAliquota();
 	}
@@ -66,7 +77,7 @@ public class ImpostoService {
 
 	public BigDecimal deducaoIRPF(BigDecimal valor) {
 		TabelaIRPF tabela = retornaTabelaPFPorValor(valor);
-		return tabela.getDeducao();
+		return tabela.getDeducao().compareTo(BigDecimal.ZERO) == 1 ? tabela.getDeducao() : BigDecimal.ZERO;
 	}
 	
 	
@@ -77,7 +88,8 @@ public class ImpostoService {
 			return valor.compareTo(t.getValorInicial()) >=0 && valor.compareTo(t.getValorFinal()) <=0; 
 		};
 		
-		return tabelas.stream().filter(i -> filtro.test(i))	.findFirst().get();
+		return tabelas.stream().filter(i -> filtro.test(i)).findFirst()
+				.orElseThrow( () -> new RegistroNaoCadastradoException("Tabela de aliquotas não encontrado"));
 	}
 	
 	

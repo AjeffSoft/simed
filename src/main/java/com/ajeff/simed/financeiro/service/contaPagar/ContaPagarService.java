@@ -95,8 +95,9 @@ public class ContaPagarService {
 		
 		if(contaPagar.getReterIR()) {
 			Imposto ir = impostoService.novoImposto(contaPagar, "IRRF");
-			BigDecimal inss = impostos.stream().filter(i -> i.getNome().equals("INSS")).findFirst().get().getValor();
-			ir.setValor(CalculoImpostoIRRF.calculo(contaPagar.getValor(), contaPagar.getFornecedor().getTipo(), inss));
+			BigDecimal baseCalculo = contaPagar.getValor().subtract(CalculoImpostoINSS.calculo(contaPagar.getValor()));
+			//TODO : desconto de dependentes 
+			ir.setValor(CalculoImpostoIRRF.calculo(baseCalculo, impostoService.deducaoIRPF(baseCalculo), impostoService.aliquotaIRRF(baseCalculo, contaPagar.getFornecedor().getTipo()) ));
 			ir.setTotal(ir.getValor());
 			impostos.add(ir);
 		}

@@ -9,8 +9,6 @@ import java.math.RoundingMode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.ajeff.simed.financeiro.service.exception.ValorInformadoInvalidoException;
-
 
 public class CalculoImpostoISSTest {
 

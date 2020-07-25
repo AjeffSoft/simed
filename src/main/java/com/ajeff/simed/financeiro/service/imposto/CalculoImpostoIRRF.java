@@ -1,50 +1,33 @@
 package com.ajeff.simed.financeiro.service.imposto;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.math.RoundingMode;
 
-import com.ajeff.simed.financeiro.model.TabelaIRPF;
+import com.ajeff.simed.financeiro.service.exception.ValorInformadoInvalidoException;
 
 public class CalculoImpostoIRRF {
 
 
 
-	public static BigDecimal calculo(BigDecimal valor, String tipo, BigDecimal inss) {
-		
-		if(isPessoaJuridica(tipo)) {
-			//calculo para PJ
-			return BigDecimal.TEN;
-		}else {
-			//calculo para PF
-			return BigDecimal.ONE;
+	public static BigDecimal calculo(BigDecimal valor, BigDecimal aliquota, BigDecimal deducao) {
+		if( valorIsNotValido(valor) || aliquotaIsNotValido(aliquota)) {
+			throw new ValorInformadoInvalidoException("O valor base ou aliquota do imposto inválido!");
 		}
+		BigDecimal result = valor.multiply( ( aliquota.divide(BigDecimal.valueOf(100)) ));
+		result = result.subtract(deducao).setScale(2, RoundingMode.HALF_UP);
+		return result.compareTo(BigDecimal.ZERO) ==1 ? result : BigDecimal.ZERO;
 	}
 	
 	
-	private static boolean isPessoaJuridica(String tipo) {
-		return tipo.equals("J") ? true : false;
+	
+	private static boolean valorIsNotValido(BigDecimal valor) {
+		return valor == null || valor.compareTo(BigDecimal.ZERO) == 0 
+				|| valor.compareTo(BigDecimal.ZERO) == -1 ? true : false;
 	}
-	
-	
-	
-//	public BigDecimal aliquotaIRPF(BigDecimal valor) {
-//		List<TabelaIRPF> tabelas = tabelaIRPFRepository.findAll();
-//
-//		Function<TabelaIRPF, BigDecimal> calculo = a -> {
-//			return valor.multiply( (a.getAliquota().divide(BigDecimal.valueOf(100))) ).subtract(a.getDeducao());
-//		};
-//		
-//		Predicate<TabelaIRPF> filtro = t -> {
-//			return valor.compareTo(t.getValorInicial()) >=0 && valor.compareTo(t.getValorFinal()) <=0; 
-//		};
-//
-//		return tabelas.stream()
-//				.filter(i -> filtro.test(i))
-//				.map( i -> calculo.apply(i) )
-//				.findFirst().get();
-//	}	
-	
+
+	private static boolean aliquotaIsNotValido(BigDecimal aliquota) {
+		return aliquota == null || aliquota.compareTo(BigDecimal.ZERO) == 0 
+				|| aliquota.compareTo(BigDecimal.ZERO) == -1 ? true : false;
+	}
 
 }

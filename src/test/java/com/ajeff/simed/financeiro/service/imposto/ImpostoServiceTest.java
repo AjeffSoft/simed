@@ -1,5 +1,8 @@
 package com.ajeff.simed.financeiro.service.imposto;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +26,7 @@ import com.ajeff.simed.financeiro.model.TabelaIRPF;
 import com.ajeff.simed.financeiro.model.TabelaIRPJ;
 import com.ajeff.simed.financeiro.repository.TabelasIrpfRepository;
 import com.ajeff.simed.financeiro.repository.TabelasIrpjRepository;
+import com.ajeff.simed.financeiro.service.exception.RegistroNaoCadastradoException;
 
 @ExtendWith(SpringExtension.class)
 @TestInstance(Lifecycle.PER_CLASS)
@@ -52,7 +56,7 @@ public class ImpostoServiceTest {
 		
 		BigDecimal result = service.aliquotaPCCS();
 		
-		Assertions.assertThat(result).isEqualTo(BigDecimal.valueOf(4.65));
+		assertThat(result).isEqualTo(BigDecimal.valueOf(4.65));
 	}
 
 	
@@ -60,24 +64,69 @@ public class ImpostoServiceTest {
 	@DisplayName("Deve retornar a aliquota do imposto IRPJ")
 	public void deveRetornarAliquotaIRPJ() {
 		TabelaIRPJ tabela = tabelaPJ();
+		BigDecimal valor = BigDecimal.valueOf(5000);
+		String tipo = "J";
 		Mockito.when(tabelaRepository.findOne(1l)).thenReturn(tabela);
 		
-		BigDecimal result = service.aliquotaIRPJ();
+		BigDecimal result = service.aliquotaIRRF(valor, tipo);
 		
-		Assertions.assertThat(result).isEqualTo(BigDecimal.valueOf(1.5));
+		assertThat(result).isEqualTo(BigDecimal.valueOf(1.5));
+	}
+
+	
+	@Test
+	@DisplayName("Deve lancar erro ao não localizar a tabela de aliquotas")
+	public void deveRetornarErroTabelaAliquotaNaoLocalizado() {
+		BigDecimal valor = BigDecimal.valueOf(5000);
+		String tipo = "J";
+		Mockito.when(tabelaRepository.findOne(Mockito.anyLong())).thenReturn(null);
+		
+		Throwable result = assertThrows(RegistroNaoCadastradoException.class, ()-> service.aliquotaIRRF(valor, tipo));
+		
+		assertThat(result).isInstanceOf(RegistroNaoCadastradoException.class).hasMessage("Não localizado a tabela de aliquotas!");
 	}
 
 	
 	@Test
 	@DisplayName("Deve retornar a aliquota do imposto IRPF")
 	public void deveRetornarAliquotaIRPF() {
-		BigDecimal valor = BigDecimal.valueOf(3000);
-		TabelaIRPF tabela = tabelaPF();
-		Mockito.when(tabelaPFRepository.findOne(1l)).thenReturn(tabela);
+		BigDecimal valor = BigDecimal.valueOf(2500);
+		String tipo = "F";
+		List<TabelaIRPF> tabelas = new ArrayList<>();
+		tabelas.add(tabelaPF());
+		Mockito.when(tabelaPFRepository.findAll()).thenReturn(tabelas);
 		
-		BigDecimal result = service.aliquotaIRPF(valor);
+		BigDecimal result = service.aliquotaIRRF(valor, tipo);
 		
-		Assertions.assertThat(result).isEqualTo(BigDecimal.valueOf(7.5));
+		assertThat(result).isEqualTo(BigDecimal.valueOf(7.5));
+	}
+
+	
+	@Test
+	@DisplayName("Deve lancar erro ao não localizar a tabela de aliquotas PF")
+	public void deveRetornarErroTabelaAliquotaPFNaoLocalizado() {
+		BigDecimal valor = BigDecimal.valueOf(2500);
+		String tipo = "F";
+		List<TabelaIRPF> tabelas = new ArrayList<>();
+		Mockito.when(tabelaPFRepository.findAll()).thenReturn(tabelas);
+		
+		Throwable result = assertThrows(RegistroNaoCadastradoException.class, ()-> service.aliquotaIRRF(valor, tipo));
+		
+		assertThat(result).isInstanceOf(RegistroNaoCadastradoException.class).hasMessage("Tabela de aliquotas não encontrado");
+	}
+
+	
+	@Test
+	@DisplayName("Deve retornar a deducao do imposto IRPF")
+	public void deveRetornarDeducaoIRPF() {
+		BigDecimal valor = BigDecimal.valueOf(2300);
+		List<TabelaIRPF> tabelas = new ArrayList<>();
+		tabelas.add(tabelaPF());
+		Mockito.when(tabelaPFRepository.findAll()).thenReturn(tabelas);
+		
+		BigDecimal result = service.deducaoIRPF(valor);
+		
+		Assertions.assertThat(result).isEqualTo(BigDecimal.valueOf(142.80));
 	}
 	
 	

@@ -7,7 +7,8 @@ public class CalculoImpostoPCCS {
 
 
 	public static BigDecimal calculo(BigDecimal valor, BigDecimal aliquota) {
-		return valor.multiply(aliquota).setScale(2, RoundingMode.HALF_UP);
+		BigDecimal result = aliquota.divide(BigDecimal.valueOf(100));
+		return valor.multiply(result).setScale(2, RoundingMode.HALF_UP);
 	}
 	
 
