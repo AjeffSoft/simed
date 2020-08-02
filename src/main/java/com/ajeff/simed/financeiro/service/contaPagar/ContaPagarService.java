@@ -108,7 +108,7 @@ public class ContaPagarService {
 		
 		return impostos;
 	}
-
+ 
 
 	private void testeRegistroJaCadastrado(ContaPagar contaPagar) {
 		Optional<ContaPagar> optional = repository.findByNotaFiscalAndFornecedor(contaPagar.getNotaFiscal(), contaPagar.getFornecedor());

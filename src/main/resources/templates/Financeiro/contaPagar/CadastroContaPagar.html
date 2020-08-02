@@ -75,7 +75,7 @@
 							<div class="col-sm-9  form-group"  simed:classforerror="fornecedor">
 								<label for="fornecedor" class="control-label">Fornecedor*</label>
 								<select id="fornecedor" class="form-control" th:field="*{fornecedor}">
-									<option value="">Selecione um forncedor</option>
+									<option value="">Selecione um fornecedor</option>
 									<option th:each="forn : ${fornecedores}" th:value="${forn.id}" th:text="${forn.nome}"></option>
 								</select>
 							</div>
@@ -107,8 +107,7 @@
 							<div>
 								<div class="col-sm-12  form-group" simed:classforerror="historico">
 									<label for="historico" class="control-label">Histórico*</label>
-									<textarea id="historico" class="form-control" th:field = "*{historico}" rows="3" maxlength="200"
-										placeholder="Deixe em branco para o histórico ser igual ao plano de conta secundária."></textarea>
+									<textarea id="historico" class="form-control" th:field = "*{historico}" rows="3" maxlength="200"></textarea>
 								</div>
 							</div>				
 						</div>				
@@ -142,7 +141,7 @@
 							<div class="form-group  col-sm-1">
 								<label class="control-label">F/V</label>
 								<div>	
-									<input id="fixoVariavel" type="checkbox" checked data-toggle="toggle" class="form-control"  data-size="small"
+									<input id="fixoVariavel" type="checkbox" checked data-toggle="toggle" class="form-control  toggle"  data-size="small"
 									 data-on="F" data-off="V" data-onstyle="primary" data-offstyle="default" th:field="*{fixo}"/>
 								</div>
 							</div>
@@ -164,47 +163,70 @@
 							</div>
 
 						</div>
-			
 						
+						<div class="form-group">
+							<a class="btn  btn-info js-abas" href="#imposto">Próximo</a>
+							<a class="btn  btn-danger" sec:authorize-url="/financeiro/contaPagar/pesquisar" th:href="@{/financeiro/contaPagar/pesquisar}">Cancelar</a>
+						</div>
 					</div>
 					
 					
 					<div class="tab-pane" id="imposto">				
 						<div class="row">
-							<div class="form-group  col-sm-2" th:if="${contaPagar.novo}">
-								<label class="control-label">IRRF</label>
+							
+							<div class="form-group  col-sm-3">
 								<div>
-									<input id="impRenda" type="checkbox" checked data-toggle="toggle" class="form-control"  data-size="small"
-									 data-on="Retido" data-off="Sem Retenção" data-onstyle="primary" data-offstyle="default" th:field="*{reterIR}"/>
+			  						<div class="checkbox  checkbox-inline"> 
+				    					<input type="checkbox" id="cNota"/>
+				    					<label for="eNota">IRRF</label>
+			    					</div>
 								</div>
+								<div class="input-group">
+									<input id="valor2" type="text" class="form-control  js-decimal"/>
+									<div class="input-group-addon">R$</div>
+								</div>
+
 							</div>
-	
-							<div class="form-group  col-sm-2" th:if="${contaPagar.novo}">
+							
+							<div class="form-group  col-sm-3" th:if="${contaPagar.novo}">
 								<label class="control-label">PCCS</label>
 								<div>	
-									<input id="cofins" type="checkbox" checked data-toggle="toggle" class="form-control"  data-size="small"
+									<input id="cofins" type="checkbox" checked data-toggle="toggle" class="form-control  toggle"  data-size="small"
 									 data-on="Retido" data-off="Sem Retenção" data-onstyle="primary" data-offstyle="default" th:field="*{reterCOFINS}"/>
 								</div>
 							</div>
 	
-							<div class="form-group  col-sm-2" th:if="${contaPagar.novo}">
+							<div class="form-group  col-sm-3" th:if="${contaPagar.novo}">
 								<label class="control-label">INSS</label>
 								<div>	
-									<input id="impInss" type="checkbox" checked data-toggle="toggle" class="form-control"  data-size="small"
+									<input id="impInss" type="checkbox" checked data-toggle="toggle" class="form-control toggle"  data-size="small"
 									 data-on="Retido" data-off="Sem Retenção" data-onstyle="primary" data-offstyle="default" th:field="*{reterINSS}"/>
 								</div>
 							</div>
 							
-							<div class="col-sm-2  form-group" th:if="${contaPagar.novo}">
+							<div class="col-sm-3  form-group" th:if="${contaPagar.novo}">
 								<label for="issPorcentagem" class="control-label">ISS %</label>
-								<input id="issPorcentagem" type="text" class="form-control  js-decimal" maxlength="20" th:field="*{issPorcentagem}">
+								<input id="issPorcentagem" type="text" class="form-control  js-decimal " maxlength="20" th:field="*{issPorcentagem}">
 							</div>
 
 						</div>
 						
+						<div class="form-group">
+							<a class="btn  btn-info js-abas" href="#parcelamento">Próximo</a>
+							<a class="btn  btn-danger" sec:authorize-url="/financeiro/contaPagar/pesquisar" th:href="@{/financeiro/contaPagar/pesquisar}">Cancelar</a>
+						</div>						
+						
 					</div>					
 					
-					
+					<div class="tab-pane" id="parcelamento">
+						<div class="row">
+							
+							<div class="form-group">
+								<a class="btn  btn-info js-abas" href="#anexo">Próximo</a>
+								<a class="btn  btn-danger" sec:authorize-url="/financeiro/contaPagar/pesquisar" th:href="@{/financeiro/contaPagar/pesquisar}">Cancelar</a>
+							</div>						
+						</div>
+					</div>							
 					
 					<div class="tab-pane" id="anexo">
 						<div class="row">
@@ -221,12 +243,13 @@
 								</div>
 							</div>
 						</div>
+						<div class="form-group">
+							<button class="btn  btn-success" type="submit">Salvar</button>
+							<a class="btn  btn-danger" sec:authorize-url="/financeiro/contaPagar/pesquisar" th:href="@{/financeiro/contaPagar/pesquisar}">Cancelar</a>
+						</div>						
+						
+						
 					</div>					
-				</div>
-
-				<div class="form-group">
-					<button class="btn  btn-success" type="submit">Salvar</button>
-					<a class="btn  btn-danger" sec:authorize-url="/financeiro/contaPagar/pesquisar" th:href="@{/financeiro/contaPagar/pesquisar}">Voltar</a>
 				</div>
 		</form>
 	</div>
@@ -250,8 +273,12 @@
 
 
 	<script>
+		$('.toggle').bootstrapToggle();	
+	</script>
+
+	<script>
 		$(function() {
-			$('.js-abas a').click(function (e) {
+			$('.js-abas').click(function (e) {
 				e.preventDefault();
 				$(this).tab('show');
 			});
