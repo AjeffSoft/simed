@@ -6,18 +6,18 @@ import java.math.RoundingMode;
 import com.ajeff.simed.financeiro.service.exception.ValorInformadoInvalidoException;
 
 public class CalculoImpostoIRRF {
+	
+	private static final BigDecimal DESCONTO_DEPENDENTE = BigDecimal.valueOf(189.59);
 
 
 
-	public static BigDecimal calculo(BigDecimal valor, BigDecimal aliquota, BigDecimal deducao) {
+	public static BigDecimal calculo(BigDecimal valor, BigDecimal aliquota) {
 		if( valorIsNotValido(valor) || aliquotaIsNotValido(aliquota)) {
 			throw new ValorInformadoInvalidoException("O valor base ou aliquota do imposto inválido!");
 		}
-		BigDecimal result = valor.multiply( ( aliquota.divide(BigDecimal.valueOf(100)) ));
-		result = result.subtract(deducao).setScale(2, RoundingMode.HALF_UP);
+		BigDecimal result = valor.multiply( ( aliquota.divide(BigDecimal.valueOf(100)) )).setScale(2, RoundingMode.HALF_UP);
 		return result.compareTo(BigDecimal.ZERO) ==1 ? result : BigDecimal.ZERO;
-	}
-	
+	}	
 	
 	
 	private static boolean valorIsNotValido(BigDecimal valor) {
@@ -28,6 +28,17 @@ public class CalculoImpostoIRRF {
 	private static boolean aliquotaIsNotValido(BigDecimal aliquota) {
 		return aliquota == null || aliquota.compareTo(BigDecimal.ZERO) == 0 
 				|| aliquota.compareTo(BigDecimal.ZERO) == -1 ? true : false;
+	}
+
+
+
+	public static BigDecimal descontoDependente(Integer dependente, Boolean temDependente) {
+		if(temDependente) {
+			BigDecimal depend = BigDecimal.valueOf(dependente);
+			return DESCONTO_DEPENDENTE.multiply(depend);
+		}else {
+			return BigDecimal.ZERO;
+		}
 	}
 
 }

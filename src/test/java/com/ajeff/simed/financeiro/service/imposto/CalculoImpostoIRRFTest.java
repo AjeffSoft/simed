@@ -95,7 +95,34 @@ public class CalculoImpostoIRRFTest {
 		Throwable result = assertThrows(ValorInformadoInvalidoException.class, () -> CalculoImpostoIRRF.calculo(valor, aliquota, deducao));
 		
 		assertThat(result).isInstanceOf(ValorInformadoInvalidoException.class).hasMessage("O valor base ou aliquota do imposto inválido!");
+	}
+	
+	
+	@Test
+	@DisplayName("Deverá retornar o valor de um dependente")
+	public void valorUmDependente() {
+		BigDecimal result = CalculoImpostoIRRF.descontDependente(1, true);
+		Assertions.assertEquals(new BigDecimal(189.59).setScale(2, RoundingMode.HALF_UP), result);
 	}	
 
-	
+	@Test
+	@DisplayName("Deverá retornar o valor de dois dependentes")
+	public void valorDoisDependentes() {
+		BigDecimal result = CalculoImpostoIRRF.descontDependente(2, true);
+		Assertions.assertEquals(new BigDecimal(379.18).setScale(2, RoundingMode.HALF_UP), result);
+	}	
+
+	@Test
+	@DisplayName("Deverá retornar o valor de zero dependentes")
+	public void valorZeroDependentes() {
+		BigDecimal result = CalculoImpostoIRRF.descontDependente(0, true);
+		Assertions.assertEquals(new BigDecimal(0.00).setScale(2, RoundingMode.HALF_UP), result);
+	}	
+
+	@Test
+	@DisplayName("Deverá retornar o valor de zero quando o dependente for nulo")
+	public void valorZeroDependentesNulo() {
+		BigDecimal result = CalculoImpostoIRRF.descontDependente(2, false);
+		Assertions.assertEquals(new BigDecimal(0.00), result);
+	}	
 }

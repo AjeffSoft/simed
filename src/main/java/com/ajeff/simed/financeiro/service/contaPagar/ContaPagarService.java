@@ -21,10 +21,7 @@ import com.ajeff.simed.financeiro.model.enums.StatusContaPagar;
 import com.ajeff.simed.financeiro.repository.ContasPagarRepository;
 import com.ajeff.simed.financeiro.repository.filter.ContaPagarFilter;
 import com.ajeff.simed.financeiro.service.exception.DocumentoEFornecedorJaCadastradoException;
-import com.ajeff.simed.financeiro.service.imposto.CalculoImpostoINSS;
 import com.ajeff.simed.financeiro.service.imposto.CalculoImpostoIRRF;
-import com.ajeff.simed.financeiro.service.imposto.CalculoImpostoISS;
-import com.ajeff.simed.financeiro.service.imposto.CalculoImpostoPCCS;
 import com.ajeff.simed.financeiro.service.imposto.ImpostoService;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.util.DatasUtils;
@@ -49,7 +46,10 @@ public class ContaPagarService {
 		
 		if(contaPagar.isNovo()) {
 			contaPagar.setStatus(StatusContaPagar.ABERTO);
-			contaPagar.setImpostos(impostosDaConta(contaPagar));
+
+			if(contaPagar.isTemImpostoRetido()) {
+				contaPagar.setImpostos(impostosDaConta(contaPagar));
+			}
 			contaPagar.setValor(contaPagar.getValor().subtract(calculoValorConta(contaPagar)));
 		}
 		
@@ -62,32 +62,37 @@ public class ContaPagarService {
 		if(!contaPagar.getImpostos().isEmpty()) {
 			return contaPagar.getImpostos().stream().map(i -> i.getValor()).reduce(BigDecimal.ZERO, BigDecimal::add);
 		}else {
-			return contaPagar.getValor();
+			return BigDecimal.ZERO;
 		}
 	}
 
 
 	private List<Imposto> impostosDaConta(ContaPagar contaPagar) {
 		List<Imposto> impostos = new ArrayList<>();
+		BigDecimal inss = BigDecimal.ZERO;
+		
 		if (contaPagar.isIssRetido()) {
 			Imposto iss = impostoService.novoImposto(contaPagar, "ISS");
-			iss.setValor(CalculoImpostoISS.calculo(contaPagar.getValor(), contaPagar.getIssPorcentagem()));
+			iss.setValor(impostoService.valorISSRetido(contaPagar.getValor(), contaPagar.getIssPorcentagem()));
 			iss.setTotal(iss.getValor());
 			impostos.add(iss);
 		}
 		
+		
 		//SOMENTE PARA FORNECEDORES PESSOA FISICA
-		if(contaPagar.getReterINSS() && contaPagar.getFornecedor().getTipoPessoa().equals("F")) {
-			Imposto inss = impostoService.novoImposto(contaPagar, "INSS");
-			inss.setValor(CalculoImpostoINSS.calculo(contaPagar.getValor()));
-			inss.setTotal(inss.getValor());
-			impostos.add(inss);
+		if(contaPagar.getReterINSS() && contaPagar.getFornecedor().getTipo().equals("F")) {
+			Imposto imp = impostoService.novoImposto(contaPagar, "INSS");
+			imp.setValor(impostoService.valorINSSRetido(contaPagar.getValor()));
+			imp.setTotal(imp.getValor());
+			inss = imp.getValor();
+			impostos.add(imp);
 		}
+		
 
 		//SOMENTE PARA FORNECEDORES PESSOA JURIDICA
 		if(contaPagar.getReterCOFINS() && contaPagar.getFornecedor().getTipo().equals("J")) {
 			Imposto pccs = impostoService.novoImposto(contaPagar, "PCCS");
-			pccs.setValor(CalculoImpostoPCCS.calculo(contaPagar.getValor(), impostoService.aliquotaPCCS()));
+			pccs.setValor(impostoService.valorPCCSRetido(contaPagar.getValor()));
 			pccs.setTotal(pccs.getValor());
 			impostos.add(pccs);
 		}
@@ -95,12 +100,12 @@ public class ContaPagarService {
 		
 		if(contaPagar.getReterIR()) {
 			Imposto ir = impostoService.novoImposto(contaPagar, "IRRF");
-			BigDecimal baseCalculo = contaPagar.getValor().subtract(CalculoImpostoINSS.calculo(contaPagar.getValor()));
-			//TODO : desconto de dependentes 
-			ir.setValor(CalculoImpostoIRRF.calculo(baseCalculo, impostoService.deducaoIRPF(baseCalculo), impostoService.aliquotaIRRF(baseCalculo, contaPagar.getFornecedor().getTipo()) ));
+			BigDecimal dependente = CalculoImpostoIRRF.descontoDependente(contaPagar.getFornecedor().getDependente(), contaPagar.getFornecedor().isDependente()); 
+			ir.setValor(impostoService.valorIRRFRetido(contaPagar.getValor(), inss, dependente, contaPagar.getFornecedor().getTipo()));
 			ir.setTotal(ir.getValor());
 			impostos.add(ir);
 		}
+		
 		return impostos;
 	}
 

@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,6 +26,7 @@ import com.ajeff.simed.financeiro.model.TabelaIRPJ;
 import com.ajeff.simed.financeiro.repository.TabelasIrpfRepository;
 import com.ajeff.simed.financeiro.repository.TabelasIrpjRepository;
 import com.ajeff.simed.financeiro.service.exception.RegistroNaoCadastradoException;
+import com.ajeff.simed.financeiro.service.exception.ValorInformadoInvalidoException;
 
 @ExtendWith(SpringExtension.class)
 @TestInstance(Lifecycle.PER_CLASS)
@@ -48,86 +48,236 @@ public class ImpostoServiceTest {
 	}
 	
 	
+	
+	/*
+	 * PIS/COFINS/CSLL
+	 */
 	@Test
-	@DisplayName("Deve retornar a aliquota do imposto PCCS")
-	public void deveRetornarAliquotaPCCS() {
+	@DisplayName("Deve retornar o valor retenção do imposto PCCS")
+	public void deveRetornarValorPCCS() {
 		TabelaIRPJ tabela = tabelaPJ();
+		BigDecimal valor = BigDecimal.valueOf(2000);
 		Mockito.when(tabelaRepository.findOne(1l)).thenReturn(tabela);
 		
-		BigDecimal result = service.aliquotaPCCS();
+		BigDecimal result = service.valorPCCSRetido(valor);
 		
-		assertThat(result).isEqualTo(BigDecimal.valueOf(4.65));
+		assertThat(result).isEqualTo(BigDecimal.valueOf(93).setScale(2));
 	}
-
 	
 	@Test
-	@DisplayName("Deve retornar a aliquota do imposto IRPJ")
-	public void deveRetornarAliquotaIRPJ() {
+	@DisplayName("Deve retornar o valor zerado quando o valor vier zerado do imposto PCCS")
+	public void deveRetornarValorPCCSZerado() {
 		TabelaIRPJ tabela = tabelaPJ();
-		BigDecimal valor = BigDecimal.valueOf(5000);
+		BigDecimal valor = BigDecimal.valueOf(0);
+		Mockito.when(tabelaRepository.findOne(1l)).thenReturn(tabela);
+		
+		BigDecimal result = service.valorPCCSRetido(valor);
+		
+		assertThat(result).isEqualTo(BigDecimal.valueOf(0));
+	}
+	
+	
+
+	/*
+	 * ISS
+	 */
+	@Test
+	@DisplayName("Deve retornar o valor retenção do imposto ISS")
+	public void deveRetornarValorISS() {
+		BigDecimal issPorcentagem = BigDecimal.valueOf(10);
+		BigDecimal valor = BigDecimal.valueOf(2000);
+		
+		BigDecimal result = service.valorISSRetido(valor, issPorcentagem);
+		
+		assertThat(result).isEqualTo(BigDecimal.valueOf(200).setScale(2));
+	}
+
+	@Test
+	@DisplayName("Deve retornar zerado quando o valor passado for zerado do imposto ISS")
+	public void deveRetornarValorISSZerado() {
+		BigDecimal issPorcentagem = BigDecimal.valueOf(10);
+		BigDecimal valor = BigDecimal.valueOf(0);
+		
+		BigDecimal result = service.valorISSRetido(valor, issPorcentagem);
+		
+		assertThat(result).isEqualTo(BigDecimal.valueOf(0));
+	}
+	
+	
+	/*
+	 * INSS
+	 */
+	@Test
+	@DisplayName("Deve retornar o valor retenção do imposto INSS fixo a 11%")
+	public void deveRetornarValorINSS() {
+		BigDecimal valor = BigDecimal.valueOf(2000);
+		
+		BigDecimal result = service.valorINSSRetido(valor);
+		
+		assertThat(result).isEqualTo(BigDecimal.valueOf(220).setScale(2));
+	}
+
+	@Test
+	@DisplayName("Deve retornar o valor retenção do imposto INSS acima do teto máximo")
+	public void deveRetornarValorINSSTetoMaximo() {
+		BigDecimal valor = BigDecimal.valueOf(10000);
+		
+		BigDecimal result = service.valorINSSRetido(valor);
+		
+		assertThat(result).isEqualTo(BigDecimal.valueOf(671.11).setScale(2));
+	}
+
+	@Test
+	@DisplayName("Deve retornar zerado quando o valor passado for zerado do imposto INSS")
+	public void deveRetornarValorINSSZerado() {
+		BigDecimal valor = BigDecimal.valueOf(0);
+		
+		BigDecimal result = service.valorINSSRetido(valor);
+		
+		assertThat(result).isEqualTo(BigDecimal.valueOf(0));
+	}
+	
+	
+	/*
+	 * IRPJ - PESSOA JURIDICA
+	 */
+	@Test
+	@DisplayName("Deve retornar o valor do imposto IRPJ")
+	public void deveRetornarValorIRPJ() {
+		TabelaIRPJ tabela = tabelaPJ();
+		BigDecimal valor = BigDecimal.valueOf(1000);
+		BigDecimal inss = BigDecimal.valueOf(0);
+		BigDecimal dependente = BigDecimal.valueOf(0);
 		String tipo = "J";
 		Mockito.when(tabelaRepository.findOne(1l)).thenReturn(tabela);
 		
-		BigDecimal result = service.aliquotaIRRF(valor, tipo);
+		BigDecimal result = service.valorIRRFRetido(valor, inss, dependente, tipo);
 		
-		assertThat(result).isEqualTo(BigDecimal.valueOf(1.5));
+		assertThat(result).isEqualTo(BigDecimal.valueOf(15).setScale(2));
 	}
 
+	@Test
+	@DisplayName("Deve laçar erro quando o valor base for zerado do imposto IRPJ")
+	public void deveRetornarValorIRPJZerado() {
+		TabelaIRPJ tabela = tabelaPJ();
+		BigDecimal valor = BigDecimal.valueOf(0);
+		BigDecimal inss = BigDecimal.valueOf(0);
+		BigDecimal dependente = BigDecimal.valueOf(0);
+		String tipo = "J";
+		Mockito.when(tabelaRepository.findOne(1l)).thenReturn(tabela);
+		
+		Throwable result = assertThrows(ValorInformadoInvalidoException.class, () -> service.valorIRRFRetido(valor, inss, dependente, tipo));
+		
+		assertThat(result).isInstanceOf(ValorInformadoInvalidoException.class).hasMessage("O valor base ou aliquota do imposto inválido!");
+	}
 	
 	@Test
-	@DisplayName("Deve lancar erro ao não localizar a tabela de aliquotas")
+	@DisplayName("Deve lancar erro ao não localizar a tabela de aliquotas IRPJ")
 	public void deveRetornarErroTabelaAliquotaNaoLocalizado() {
 		BigDecimal valor = BigDecimal.valueOf(5000);
+		BigDecimal inss = BigDecimal.valueOf(0);
+		BigDecimal dependente = BigDecimal.valueOf(0);
 		String tipo = "J";
 		Mockito.when(tabelaRepository.findOne(Mockito.anyLong())).thenReturn(null);
 		
-		Throwable result = assertThrows(RegistroNaoCadastradoException.class, ()-> service.aliquotaIRRF(valor, tipo));
+		Throwable result = assertThrows(RegistroNaoCadastradoException.class, ()-> service.valorIRRFRetido(valor, inss, dependente, tipo));
 		
 		assertThat(result).isInstanceOf(RegistroNaoCadastradoException.class).hasMessage("Não localizado a tabela de aliquotas!");
 	}
-
 	
+	
+	
+	
+
+	/*
+	 * IRPF - PESSOA FISICA
+	 */
 	@Test
-	@DisplayName("Deve retornar a aliquota do imposto IRPF")
+	@DisplayName("Deve retornar o valor do imposto IRPF simples")
 	public void deveRetornarAliquotaIRPF() {
-		BigDecimal valor = BigDecimal.valueOf(2500);
+		BigDecimal valor = BigDecimal.valueOf(2000);
+		BigDecimal inss = BigDecimal.valueOf(0);
+		BigDecimal dependente = BigDecimal.valueOf(0);
 		String tipo = "F";
 		List<TabelaIRPF> tabelas = new ArrayList<>();
-		tabelas.add(tabelaPF());
+		TabelaIRPF tabela = tabelaPF();
+		tabelas.add(tabela);
 		Mockito.when(tabelaPFRepository.findAll()).thenReturn(tabelas);
+				
+		BigDecimal result = service.valorIRRFRetido(valor, inss, dependente, tipo);
 		
-		BigDecimal result = service.aliquotaIRRF(valor, tipo);
-		
-		assertThat(result).isEqualTo(BigDecimal.valueOf(7.5));
+		assertThat(result).isEqualTo(BigDecimal.valueOf(7.20).setScale(2));
 	}
 
-	
 	@Test
-	@DisplayName("Deve lancar erro ao não localizar a tabela de aliquotas PF")
-	public void deveRetornarErroTabelaAliquotaPFNaoLocalizado() {
+	@DisplayName("Deve retornar o valor do imposto IRPF com INSS retido")
+	public void deveRetornarAliquotaIRPFRetencaoINSS() {
 		BigDecimal valor = BigDecimal.valueOf(2500);
+		BigDecimal inss = BigDecimal.valueOf(275);
+		BigDecimal dependente = BigDecimal.valueOf(0);
 		String tipo = "F";
 		List<TabelaIRPF> tabelas = new ArrayList<>();
+		TabelaIRPF tabela = tabelaPF();
+		tabelas.add(tabela);
 		Mockito.when(tabelaPFRepository.findAll()).thenReturn(tabelas);
 		
-		Throwable result = assertThrows(RegistroNaoCadastradoException.class, ()-> service.aliquotaIRRF(valor, tipo));
+		BigDecimal result = service.valorIRRFRetido(valor, inss, dependente, tipo);
 		
-		assertThat(result).isInstanceOf(RegistroNaoCadastradoException.class).hasMessage("Tabela de aliquotas não encontrado");
+		assertThat(result).isEqualTo(BigDecimal.valueOf(24.08).setScale(2));
 	}
 
-	
 	@Test
-	@DisplayName("Deve retornar a deducao do imposto IRPF")
-	public void deveRetornarDeducaoIRPF() {
-		BigDecimal valor = BigDecimal.valueOf(2300);
+	@DisplayName("Deve retornar o valor do imposto IRPF com INSS retido e um dependente")
+	public void deveRetornarAliquotaIRPFRetencaoINSSUmDependente() {
+		BigDecimal valor = BigDecimal.valueOf(2800);
+		BigDecimal inss = BigDecimal.valueOf(308);
+		BigDecimal dependente = BigDecimal.valueOf(189.90);
+		String tipo = "F";
 		List<TabelaIRPF> tabelas = new ArrayList<>();
-		tabelas.add(tabelaPF());
+		TabelaIRPF tabela = tabelaPF();
+		tabelas.add(tabela);
 		Mockito.when(tabelaPFRepository.findAll()).thenReturn(tabelas);
 		
-		BigDecimal result = service.deducaoIRPF(valor);
+		BigDecimal result = service.valorIRRFRetido(valor, inss, dependente, tipo);
 		
-		Assertions.assertThat(result).isEqualTo(BigDecimal.valueOf(142.80));
+		assertThat(result).isEqualTo(BigDecimal.valueOf(29.86).setScale(2));
 	}
+	
+	
+	//TESTAR ERROS E VALORES ZERADOS
+	
+	
+	
+
+	
+//	@Test
+//	@DisplayName("Deve lancar erro ao não localizar a tabela de aliquotas PF")
+//	public void deveRetornarErroTabelaAliquotaPFNaoLocalizado() {
+//		BigDecimal valor = BigDecimal.valueOf(2500);
+//		BigDecimal inss = BigDecimal.valueOf(330);
+//		BigDecimal dependente = BigDecimal.valueOf(170);		
+//		String tipo = "F";
+//		List<TabelaIRPF> tabelas = new ArrayList<>();
+//		Mockito.when(tabelaPFRepository.findAll()).thenReturn(tabelas);
+//		
+//		Throwable result = assertThrows(RegistroNaoCadastradoException.class, ()-> service.aliquotaIRRF(valor, inss, dependente, tipo));
+//		
+//		assertThat(result).isInstanceOf(RegistroNaoCadastradoException.class).hasMessage("Tabela de aliquotas não encontrado");
+//	}
+//
+//	
+//	@Test
+//	@DisplayName("Deve retornar a deducao do imposto IRPF")
+//	public void deveRetornarDeducaoIRPF() {
+//		BigDecimal valor = BigDecimal.valueOf(2300);
+//		List<TabelaIRPF> tabelas = new ArrayList<>();
+//		tabelas.add(tabelaPF());
+//		Mockito.when(tabelaPFRepository.findAll()).thenReturn(tabelas);
+//		
+//		BigDecimal result = service.deducaoIRPF(valor);
+//		
+//		Assertions.assertThat(result).isEqualTo(BigDecimal.valueOf(142.80));
+//	}
 	
 	
 	private TabelaIRPJ tabelaPJ() {

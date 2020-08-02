@@ -1,5 +1,9 @@
 package com.ajeff.simed.financeiro.repository.helper.imposto;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.function.Predicate;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -17,7 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.ajeff.simed.financeiro.model.Imposto;
+import com.ajeff.simed.financeiro.model.TabelaIRPF;
+import com.ajeff.simed.financeiro.repository.TabelasIrpfRepository;
 import com.ajeff.simed.financeiro.repository.filter.ImpostoFilter;
+import com.ajeff.simed.financeiro.service.exception.RegistroNaoCadastradoException;
 import com.ajeff.simed.geral.repository.paginacao.PaginacaoUtil;
 
 public class ImpostosRepositoryImpl implements ImpostosRepositoryQueries {
@@ -26,6 +33,8 @@ public class ImpostosRepositoryImpl implements ImpostosRepositoryQueries {
 	private EntityManager manager;
 	@Autowired
 	private PaginacaoUtil paginacaoUtil;
+	@Autowired
+	private TabelasIrpfRepository tabelaRepository;
 	
 
 	@SuppressWarnings("unchecked")
@@ -93,6 +102,7 @@ public class ImpostosRepositoryImpl implements ImpostosRepositoryQueries {
 
 		}
 	}
+
 
 	
 }

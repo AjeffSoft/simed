@@ -44,22 +44,55 @@ public class ImpostoService {
 	}
 	
 	
-	public BigDecimal aliquotaPCCS() {
+	
+	/*
+	 * Calculo da aliquota e valor do imposto PIS/COFINS/CSLL retido
+	 */
+	public BigDecimal valorPCCSRetido(BigDecimal valor) {
+		return CalculoImpostoPCCS.calculo(valor, aliquotaPCCS());
+	}
+	
+	private BigDecimal aliquotaPCCS() {
 		BigDecimal aliquota = BigDecimal.ZERO;
 		TabelaIRPJ tabela = tabelaIRPJRepository.findOne(1l);
 		aliquota = aliquota.add(tabela.getAliquotaCOFINS().add(tabela.getAliquotaCSLL().add(tabela.getAliquotaPIS())));
 		return aliquota; 
 	}
 	
-	public BigDecimal aliquotaIRRF(BigDecimal valor, String tipo) {
-		if(tipo.contentEquals("J")) {
-			return aliquotaIRPJ();
-		}else {
-			return aliquotaIRPF(valor);
-		}
+	
+	/*
+	 * Calculo do valor do imposto ISS retido
+	 */
+	public BigDecimal valorISSRetido(BigDecimal valor, BigDecimal issPorcentagem) {
+		return CalculoImpostoISS.calculo(valor, issPorcentagem);
 	}
 	
 
+	
+	/*
+	 * Calculo do valor do imposto INSS retido - 11%
+	 */
+	public BigDecimal valorINSSRetido(BigDecimal valor) {
+		return CalculoImpostoINSS.calculo(valor);
+	}	
+	
+
+	
+	/*
+	 * Calculo da aliquota e do valor do imposto IRRF retido PF/PJ
+	 */
+	public BigDecimal valorIRRFRetido(BigDecimal valor, BigDecimal inss, BigDecimal dependente, String tipo) {
+
+		if(tipo.equals("J")) {
+			BigDecimal aliquota = aliquotaIRPJ();
+			return CalculoImpostoIRRF.calculo(valor, aliquota);
+		}else {
+			BigDecimal base = valor.subtract(inss).subtract(dependente).setScale(2);
+			TabelaIRPF tabela = retornaTabelaPFPorValor(base);
+			return CalculoImpostoIRRF.calculo(base, tabela.getAliquota()).subtract(tabela.getDeducao());
+		}
+	}
+	
 	private BigDecimal aliquotaIRPJ() {
 		TabelaIRPJ tabela = tabelaIRPJRepository.findOne(1l);
 		if(tabela == null || tabela.getId() == null) {
@@ -67,19 +100,6 @@ public class ImpostoService {
 		}
 		return tabela.getAliquotaIR(); 
 	}	
-
-	
-	private BigDecimal aliquotaIRPF(BigDecimal valor) {
-		TabelaIRPF tabela = retornaTabelaPFPorValor(valor);
-		return tabela.getAliquota();
-	}
-	
-
-	public BigDecimal deducaoIRPF(BigDecimal valor) {
-		TabelaIRPF tabela = retornaTabelaPFPorValor(valor);
-		return tabela.getDeducao().compareTo(BigDecimal.ZERO) == 1 ? tabela.getDeducao() : BigDecimal.ZERO;
-	}
-	
 	
 	private TabelaIRPF retornaTabelaPFPorValor(BigDecimal valor) {
 		List<TabelaIRPF> tabelas = tabelaIRPFRepository.findAll();
@@ -89,147 +109,37 @@ public class ImpostoService {
 		};
 		
 		return tabelas.stream().filter(i -> filtro.test(i)).findFirst()
-				.orElseThrow( () -> new RegistroNaoCadastradoException("Tabela de aliquotas não encontrado"));
+				.orElseThrow( () -> new RegistroNaoCadastradoException("Tabela de aliquotas não encontrada"));
 	}
 	
+
 	
+	
+	/*
+	 * Setar a data de vencimento conforme o tipo do imposto
+	 */
 	private LocalDate setarDataVencimentoPorTipoImposto(LocalDate data, String tipoImposto) {
-		return DatasUtils.somarDiasNoInicioMesRetornandoDataUtil(data.plusMonths(1), 10);
-	}	
-	
-	
-	
-//	private BigDecimal setarAFaixaRetencaoIRRF(BigDecimal valorBase) {
-//	List<TabelaIRPF> faixas = tabelaIRPFRepository.findByValorFinalGreaterThanEqual(valorBase);
-//	TabelaIRPF faixa = new TabelaIRPF();
-//
-//	for (TabelaIRPF f : faixas) {
-//		if (f.getValorInicial().compareTo(valorBase) == 0 || f.getValorInicial().compareTo(valorBase) == -1) {
-//			faixa = f;
-//		}
-//	}
-//
-//	if (faixa.getId() != null) {
-//		return CalculoImpostoRenda.calculoIRRF(valorBase, faixa.getAliquota(), faixa.getDeducao());
-//	} else {
-//		return BigDecimal.ZERO;
-//	}
-//}
+		if(tipoImposto.equals("ISS")) {
+			return DatasUtils.somarDiasNoInicioMesRetornandoDataUtil(data.plusMonths(1), 10);
+		}else if (tipoImposto.equals("INSS")) {
+			return DatasUtils.somarDiasNoInicioMesRetornandoDataUtil(data.plusMonths(1), 15);
+		}else {
+			return DatasUtils.somarDiasNoInicioMesRetornandoDataUtil(data.plusMonths(1), 20);
+		}
+	}
 
-	
-//	@Autowired
-//	private ImpostosRepository repository;
-//	@Autowired
-//	private TabelasIrpfRepository tabelaIRPFRepository;
-//	@Autowired
-//	private TabelasIrpjRepository tabelaIRPJRepository;
-//	@Autowired
-//	private ContasPagarRepository contaPagarRepository;	
-	
-	
-//	// TODO: Disponibilizar valor desconto dependente em banco de dados
-//	private static final BigDecimal DEP_VALOR = new BigDecimal(189.59);
-//	private static final BigDecimal TETO_INSS = new BigDecimal(6101.06);
-//
-//	// TODO: Criar tabela para calculos INSS (Pessoa Fisica e futuros funcionários)
-//	private static final BigDecimal ALIQUOTA_INSS = new BigDecimal(11);
-//
-//	
-//	
-//	public List<Imposto> calcularImpostos(ContaPagar contaPagar) {
-//		return retencaoImpostosPorTipo(contaPagar);
-//	}	
-//	
-//	
-//	private List<Imposto> retencaoImpostosPorTipo(ContaPagar contaPagar) {
-//		List<Imposto> impostos = new ArrayList<>();
-//
-//		if (contaPagar.getReterINSS() && contaPagar.getFornecedor().getTipo().equals("F")) {
-//			impostos.add(novoImposto(contaPagar, "INSS"));
-//		}
-//
-//		if (contaPagar.getReterIR()) {
-//			impostos.add(novoImposto(contaPagar, "IRRF"));
-//		}
-//
-//		if (contaPagar.getReterCOFINS() && contaPagar.getFornecedor().getTipo().equals("J")) {
-//			impostos.add(novoImposto(contaPagar, "PCCS"));
-//		}
-//
-//		if (contaPagar.getIssPorcentagem() != null && contaPagar.getIssPorcentagem().compareTo(BigDecimal.ZERO) == 1) {
-//			impostos.add(novoImposto(contaPagar, "ISS"));
-//		}
-//		return impostos;
-//	}
-//	
-//	
-//
-//	
-//	
-//	private LocalDate setarDataVencimentoPorTipoImposto(LocalDate data, String tipoImposto) {
-////		if (tipoImposto.equals("INSS")) {
-////			return DatasUtils.somarDiasNoInicioMesRetornandoDataUtil(data.plusMonths(1), 15, true, true);
-////
-////		} else if (tipoImposto.equals("IRRF") || tipoImposto.equals("PCCS")) {
-////			return DatasUtils.setarDataSomandoDiasNoInicioMes(data.plusMonths(1), 20, true, true);
-////
-////		} else {
-////			return DatasUtils.setarDataSomandoDiasNoInicioMes(data.plusMonths(1), 10, true, false);
-////		}
-//		return DatasUtils.somarDiasNoInicioMesRetornandoDataUtil(data.plusMonths(1), 10);
-//		
-//	}	
-//	
-//
-//	private  BigDecimal setarValorImpostoPorTipo(ContaPagar contaPagar) {
-//
-//		if (contaPagar.getReterINSS()) {
-//			return CalculoINSS.calculoINSS(contaPagar.getValor(), TETO_INSS, ALIQUOTA_INSS);
-//
-//		} else if (contaPagar.getReterIR()) {
-//			return regrasParaIRRFPorTipoFornecedor(contaPagar);
-//			
-//		} else if (contaPagar.getReterCOFINS() && contaPagar.getFornecedor().getTipo().equals("J")) {
-//			TabelaIRPJ tabela = tabelaIRPJRepository.findOne(1L);
-//			return CalculoImpostoRenda.calculoPCCS(contaPagar.getValor(), tabela.getAliquotaPIS(), tabela.getAliquotaCOFINS(), tabela.getAliquotaCSLL());
-//		} else {
-//			return contaPagar.getValor().multiply(contaPagar.getIssPorcentagem()).divide(new BigDecimal(100)).setScale(2, RoundingMode.HALF_UP);
-//		}
-//	}
-//	
-//
-//	private BigDecimal regrasParaIRRFPorTipoFornecedor(ContaPagar contaPagar) {
-//		if (contaPagar.getFornecedor().getTipo().equals("F")) {
-//			return regraRetencaoIRRFPessoaFisica(contaPagar);
-//		} else {
-//			return regraRetencaoIRRFPessoaJuridica(contaPagar);
-//		}
-//	}
-//
-//	private BigDecimal regraRetencaoIRRFPessoaFisica(ContaPagar contaPagar) {
-//		BigDecimal valorBase = contaPagar.getValor();
-//		if (contaPagar.getReterINSS()) {
-//			valorBase = valorBase.subtract(CalculoINSS.calculoINSS(contaPagar.getValor(), TETO_INSS, ALIQUOTA_INSS));
-//		}
-//		valorBase = valorBase.subtract(CalculoImpostoRenda
-//				.calculoTotalDescontoDependente(contaPagar.getFornecedor().getDependente(), DEP_VALOR));
-//		return setarAFaixaRetencaoIRRF(valorBase);
-//	}
-//	
-//
-//	private BigDecimal regraRetencaoIRRFPessoaJuridica(ContaPagar contaPagar) {
-//		TabelaIRPJ tabela = tabelaIRPJRepository.findOne(1L);
-//
-//		if (tabela.getId() != null) {
-//			return CalculoImpostoRenda.calculoIRPJ(contaPagar.getValor(), tabela.getAliquotaIR());
-//		} else {
-//			return BigDecimal.ZERO;
-//		}
-//
-//	}
-//
 
-//
+
+
+
+
+
+
+
+
+
+
+
 //	public Imposto findOne(Long id) {
 //		return repository.findOne(id);
 //	}
@@ -237,7 +147,7 @@ public class ImpostoService {
 //	public Page<Imposto> filtrar(ImpostoFilter impostoFilter, Pageable pageable) {
 //		return repository.filtrar(impostoFilter, pageable);
 //	}
-//
+
 //	@Transactional
 //	public void gerar(Imposto imposto) {
 //		

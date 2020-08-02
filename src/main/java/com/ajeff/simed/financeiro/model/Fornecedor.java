@@ -25,4 +25,12 @@ public class Fornecedor extends Pessoa{
 	@NotBlank(message = "Informe o tipo")
 	private String tipo;
 	
+	public boolean isDependente() {
+		if(getDependente() != null) {
+			return this.getDependente().compareTo(Integer.valueOf(0)) == 1;
+		}else {
+			return false;
+		}
+	}
+	
 }

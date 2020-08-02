@@ -17,7 +17,7 @@ public class CalculoImpostoINSS {
 		}else {
 			result = valor.multiply(ALIQUOTA_INSS).setScale(2, RoundingMode.HALF_UP);
 		}
-		return result;
+		return result.compareTo(BigDecimal.ZERO) == 1 ? result : BigDecimal.ZERO;
 	}
 	
 	

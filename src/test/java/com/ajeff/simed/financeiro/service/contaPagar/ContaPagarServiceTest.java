@@ -1,10 +1,12 @@
 package com.ajeff.simed.financeiro.service.contaPagar;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,6 +29,7 @@ import com.ajeff.simed.financeiro.model.PlanoContaSecundaria;
 import com.ajeff.simed.financeiro.model.enums.StatusContaPagar;
 import com.ajeff.simed.financeiro.repository.ContasPagarRepository;
 import com.ajeff.simed.financeiro.repository.FornecedoresRepository;
+import com.ajeff.simed.financeiro.repository.TabelasIrpjRepository;
 import com.ajeff.simed.financeiro.service.exception.DocumentoEFornecedorJaCadastradoException;
 import com.ajeff.simed.financeiro.service.imposto.ImpostoService;
 import com.ajeff.simed.geral.model.Empresa;
@@ -44,6 +47,7 @@ public class ContaPagarServiceTest {
 	@Mock
 	private ApplicationEventPublisher publisher;
 	
+
 	@Mock
 	private ImpostoService impostoService;
 	@Mock
@@ -79,7 +83,6 @@ public class ContaPagarServiceTest {
 		assertThat(contaSalva.getId()).isNotNull();
 		assertThat(contaSalva.getStatus()).isEqualTo(StatusContaPagar.ABERTO);
 		assertThat(contaSalva.getValor()).isEqualTo(BigDecimal.valueOf(1000));
-		Mockito.verify(repository, Mockito.times(1)).save(conta);
 	}
 	
 	
@@ -119,137 +122,306 @@ public class ContaPagarServiceTest {
 		
 		assertThat(contaSalva.getId()).isNotNull();
 		assertThat(contaSalva.getStatus()).isEqualTo(StatusContaPagar.ABERTO);
-		assertThat(contaSalva.getValor()).isEqualTo(BigDecimal.valueOf(950));
+		assertThat(contaSalva.getValor().setScale(2)).isEqualTo(conta.getValor());
 		assertThat(contaSalva.getImpostos()).isNotEmpty();
 		assertThat(contaSalva.getImpostos().size()).isEqualTo(1);
-		Mockito.verify(impostoService, Mockito.times(1)).novoImposto(conta, "ISS");
+		assertThat(contaSalva.getImpostos().get(0).getValor()).isEqualTo(BigDecimal.valueOf(50).setScale(2));
 	}	
 
+	
+	@Test
+	@DisplayName("Deve salvar uma nova conta a pagar com retenção de INSS")
+	public void salvarNovaContaPagarRetencaoInss() {
+		ContaPagar conta = contaNova();
+		conta.setReterINSS(true);
+		ContaPagar contaSalva = contaNova();
+		Imposto imposto = novoImposto();
+		imposto.setNome("INSS");
+		contaSalva.setId(1l);
+		contaSalva.setStatus(StatusContaPagar.ABERTO);
+		contaSalva.setValor(BigDecimal.valueOf(890));
+		contaSalva.getImpostos().add(imposto);
+		Mockito.when(impostoService.novoImposto(conta, "INSS")).thenReturn(imposto);
+		Mockito.when(repository.save(conta)).thenReturn(contaSalva);
+		Mockito.doNothing().when(publisher).publishEvent((new ContaPagarSalvaEvent(contaSalva)));
+		
+		service.salvar(conta);
+		
+		assertThat(contaSalva.getId()).isNotNull();
+		assertThat(contaSalva.getStatus()).isEqualTo(StatusContaPagar.ABERTO);
+		assertThat(contaSalva.getValor().setScale(2)).isEqualTo(conta.getValor());
+		assertThat(contaSalva.getImpostos()).isNotEmpty();
+		assertThat(contaSalva.getImpostos().size()).isEqualTo(1);
+		assertThat(contaSalva.getImpostos().get(0).getValor()).isEqualTo(BigDecimal.valueOf(110).setScale(2));
+	}	
+
+	@Test
+	@DisplayName("Deve salvar uma nova conta a pagar com retenção de PCCS")
+	public void salvarNovaContaPagarRetencaoPCCS() {
+		ContaPagar conta = contaNova();
+		conta.setReterCOFINS(true);
+		conta.getFornecedor().setTipo("J");
+		ContaPagar contaSalva = contaNova();
+		Imposto imposto = novoImposto();
+		imposto.setNome("PCCS");
+		contaSalva.setId(1l);
+		contaSalva.setValor(BigDecimal.valueOf(985));
+		contaSalva.setStatus(StatusContaPagar.ABERTO);
+		contaSalva.getImpostos().add(imposto);
+		Mockito.when(impostoService.novoImposto(conta, "PCCS")).thenReturn(imposto);
+		Mockito.when(impostoService.aliquotaPCCS()).thenReturn(BigDecimal.valueOf(1.5));
+		Mockito.when(repository.save(conta)).thenReturn(contaSalva);
+		Mockito.doNothing().when(publisher).publishEvent((new ContaPagarSalvaEvent(contaSalva)));
+		
+		service.salvar(conta);
+		
+		assertThat(contaSalva.getId()).isNotNull();
+		assertThat(contaSalva.getStatus()).isEqualTo(StatusContaPagar.ABERTO);
+		assertThat(contaSalva.getImpostos()).isNotEmpty();
+		assertThat(contaSalva.getImpostos().size()).isEqualTo(1);
+		assertThat(contaSalva.getValor().setScale(2)).isEqualTo(conta.getValor());
+		assertThat(contaSalva.getImpostos().get(0).getValor()).isEqualTo(BigDecimal.valueOf(15).setScale(2));
+	}	
 
 	
+	@Test
+	@DisplayName("Deve salvar uma nova conta a pagar com retenção de IRPJ")
+	public void salvarNovaContaPagarRetencaoIRPJ() {
+		ContaPagar conta = contaNova();
+		conta.setReterIR(true);
+		conta.getFornecedor().setTipo("J");
+		ContaPagar contaSalva = contaNova();
+		Imposto imposto = novoImposto();
+		imposto.setNome("IRRF");
+		contaSalva.setId(1l);
+		contaSalva.setStatus(StatusContaPagar.ABERTO);
+		contaSalva.setValor(BigDecimal.valueOf(985));
+		contaSalva.getImpostos().add(imposto);
+		Mockito.when(impostoService.novoImposto(conta, "IRRF")).thenReturn(imposto);
+		
+		Mockito.when(impostoService.aliquotaIRRF(conta.getValor(), "J")).thenReturn(BigDecimal.valueOf(1.5));
+		Mockito.when(impostoService.deducaoIRPF(conta.getValor())).thenReturn(BigDecimal.valueOf(0));
+		
+		Mockito.when(repository.save(conta)).thenReturn(contaSalva);
+		Mockito.doNothing().when(publisher).publishEvent((new ContaPagarSalvaEvent(contaSalva)));
+		
+		service.salvar(conta);
+		
+		assertThat(contaSalva.getId()).isNotNull();
+		assertThat(contaSalva.getStatus()).isEqualTo(StatusContaPagar.ABERTO);
+		assertThat(contaSalva.getValor().setScale(2)).isEqualTo(conta.getValor());
+		assertThat(contaSalva.getImpostos().get(0).getValor()).isEqualTo(BigDecimal.valueOf(15).setScale(2));
+		assertThat(contaSalva.getImpostos()).isNotEmpty();
+		assertThat(contaSalva.getImpostos().size()).isEqualTo(1);
+	}	
+
 	
-//	@Test
-//	@DisplayName("Deve salvar uma conta a pagar com 2 parcelas e sem impostos")
-//	public void salvarContaPagar2ParcelasSemImpostos() {
-//		
-//		List<ContaPagar> contasASalvar = new ArrayList<>();
-//		List<ContaPagar> contasSalvas = new ArrayList<>();
-//
-//		ContaPagar conta = contaNova();
-//		conta.setTotalParcela(2);
-//		contasASalvar.add(conta);
-//		
-//		
-//		for(int i = 0; i < conta.getTotalParcela(); i++) {
-//			ContaPagar c = contaNova();
-//			Long id = (long) (i+ 1);
-//			c.setId(id);
-//			c.setValor(CalculosComValores.setarValorTotalPositivo(conta.getValor(), BigDecimal.ZERO, BigDecimal.ZERO, conta.getTotalParcela()));
-//			contasSalvas.add(c);
-//		}
-//		
-//		Mockito.when( repository.findByDocumentoAndFornecedorAndEmpresa(
-//				conta.getDocumento(), conta.getFornecedor(), conta.getEmpresa())).thenReturn(Optional.empty());
-//		
-//		Mockito.when(repository.save(contasASalvar)).thenReturn(contasSalvas);
-//		
-//		service.salvar(conta);
-//		
-//		Assertions.assertThat(contasSalvas.size()).isNotNull();
-//		Assertions.assertThat(contasSalvas.size()).isNotZero();
-//		Assertions.assertThat(contasSalvas.size()).isEqualTo(2);
-//		
-//		for (int i = 0; i < conta.getTotalParcela(); i++) {
-//			Assertions.assertThat(contasSalvas.get(i).getDataEmissao()).isBefore(contasSalvas.get(i).getVencimento());
-//			Assertions.assertThat(contasSalvas.get(i).getNotaFiscal()).isEqualTo(contaNova().getNotaFiscal());
-//			Assertions.assertThat(contasSalvas.get(i).getHistorico()).isEqualTo(contaNova().getHistorico());
-//			Assertions.assertThat(contasSalvas.get(i).getFornecedor()).isEqualTo(contaNova().getFornecedor());
-//			Assertions.assertThat(contasSalvas.get(i).getPlanoContaSecundaria()).isEqualTo(contaNova().getPlanoContaSecundaria());
-//			Assertions.assertThat(contasSalvas.get(i).getReterINSS()).isFalse();
-//			Assertions.assertThat(contasSalvas.get(i).getReterCOFINS()).isFalse();
-//			Assertions.assertThat(contasSalvas.get(i).getReterIR()).isFalse();
-//			Assertions.assertThat(contasSalvas.get(i).getIssPorcentagem()).isZero();			
-//			Assertions.assertThat(contasSalvas.get(i).getValor()).isEqualTo(BigDecimal.valueOf(500));
-//		}
-//		
-//		Mockito.verify(repository, Mockito.times(1)).save(contasASalvar);
-//	}	
-//
-//	
-//	
-//	@Test
-//	@DisplayName("Deve salvar uma conta a pagar com 10 parcelas e sem impostos")
-//	public void salvarContaPagar10ParcelasSemImpostos() {
-//		
-//		List<ContaPagar> contasASalvar = new ArrayList<>();
-//		List<ContaPagar> contasSalvas = new ArrayList<>();
-//
-//		ContaPagar conta = contaNova();
-//		conta.setTotalParcela(10);
-//		contasASalvar.add(conta);
-//		
-//		
-//		for(int i = 0; i < conta.getTotalParcela(); i++) {
-//			ContaPagar c = contaNova();
-//			Long id = (long) (i + 1);
-//			c.setId(id);
-//			c.setValor(CalculosComValores.setarValorTotalPositivo(conta.getValor(), BigDecimal.ZERO, BigDecimal.ZERO, conta.getTotalParcela()));
-//			contasSalvas.add(c);
-//		}
-//		
-//		Mockito.when( repository.findByDocumentoAndFornecedorAndEmpresa(
-//				conta.getDocumento(), conta.getFornecedor(), conta.getEmpresa())).thenReturn(Optional.empty());
-//		
-//		Mockito.when(repository.save(contasASalvar)).thenReturn(contasSalvas);
-//		
-//		service.salvar(conta);
-//		
-//		Assertions.assertThat(contasSalvas.size()).isNotNull();
-//		Assertions.assertThat(contasSalvas.size()).isNotZero();
-//		Assertions.assertThat(contasSalvas.size()).isEqualTo(10);
-//		
-//		for (int i = 0; i < conta.getTotalParcela(); i++) {
-//			Assertions.assertThat(contasSalvas.get(i).getDataEmissao()).isBefore(contasSalvas.get(i).getVencimento());
-//			Assertions.assertThat(contasSalvas.get(i).getNotaFiscal()).isEqualTo(contaNova().getNotaFiscal());
-//			Assertions.assertThat(contasSalvas.get(i).getHistorico()).isEqualTo(contaNova().getHistorico());
-//			Assertions.assertThat(contasSalvas.get(i).getFornecedor()).isEqualTo(contaNova().getFornecedor());
-//			Assertions.assertThat(contasSalvas.get(i).getPlanoContaSecundaria()).isEqualTo(contaNova().getPlanoContaSecundaria());
-//			Assertions.assertThat(contasSalvas.get(i).getReterINSS()).isFalse();
-//			Assertions.assertThat(contasSalvas.get(i).getReterCOFINS()).isFalse();
-//			Assertions.assertThat(contasSalvas.get(i).getReterIR()).isFalse();
-//			Assertions.assertThat(contasSalvas.get(i).getIssPorcentagem()).isZero();			
-//			Assertions.assertThat(contasSalvas.get(i).getValor()).isEqualTo(BigDecimal.valueOf(100));
-//		}
-//		
-//		Mockito.verify(repository, Mockito.times(1)).save(contasASalvar);
-//	}	
-//	
-//	
-//	
-//	
-//	@Test
-//	@DisplayName("Deve retornar erro quando a houver uma conta a pagar salva com mesmos dados")
-//	public void erroSalvarContaPagarDuplicada() {
-//		
-//		ContaPagar conta = contaNova();
-//		ContaPagar contaSalva = contaNova();
-//		contaSalva.setId(1l);
-//		
-//		Mockito.when( repository.findByDocumentoAndFornecedorAndEmpresa(
-//				conta.getDocumento(), conta.getFornecedor(), conta.getEmpresa())).thenReturn(Optional.of(contaSalva));
-//		
-//		Throwable exception = Assertions.catchThrowable(() -> service.testeRegistroJaCadastrado((conta)));
-//		
-//		Assertions.assertThat(exception)
-//			.isInstanceOf(DocumentoEFornecedorJaCadastradoException.class)
-//			.hasMessage("Já existe uma conta cadastrada com esta nota fiscal para esse fornecedor!");
-//	}
-//	
+	@Test
+	@DisplayName("Deve salvar uma nova conta a pagar com retenção de IRPF")
+	public void salvarNovaContaPagarRetencaoIRPF() {
+		ContaPagar conta = contaNova();
+		conta.setReterIR(true);
+		conta.getFornecedor().setTipo("F");
+		ContaPagar contaSalva = contaNova();
+		Imposto imposto = novoImposto();
+		imposto.setNome("IRRF");
+		contaSalva.setId(1l);
+		contaSalva.setStatus(StatusContaPagar.ABERTO);
+		contaSalva.setValor(BigDecimal.valueOf(995));
+		contaSalva.getImpostos().add(imposto);
+		Mockito.when(impostoService.novoImposto(conta, "IRRF")).thenReturn(imposto);
+		
+		Mockito.when(impostoService.aliquotaIRRF(conta.getValor(), "F")).thenReturn(BigDecimal.valueOf(1));
+		Mockito.when(impostoService.deducaoIRPF(conta.getValor())).thenReturn(BigDecimal.valueOf(5));
+		
+		Mockito.when(repository.save(conta)).thenReturn(contaSalva);
+		Mockito.doNothing().when(publisher).publishEvent((new ContaPagarSalvaEvent(contaSalva)));
+		
+		service.salvar(conta);
+		
+		assertThat(contaSalva.getId()).isNotNull();
+		assertThat(contaSalva.getStatus()).isEqualTo(StatusContaPagar.ABERTO);
+		assertThat(contaSalva.getValor().setScale(2)).isEqualTo(conta.getValor());
+		assertThat(contaSalva.getImpostos().get(0).getValor()).isEqualTo(BigDecimal.valueOf(5).setScale(2));
+		assertThat(contaSalva.getImpostos()).isNotEmpty();
+		assertThat(contaSalva.getImpostos().size()).isEqualTo(1);
+	}	
+
 	
+	@Test
+	@DisplayName("Deve salvar uma nova conta a pagar com retenção de IRPJ, ISS e PCCS")
+	public void salvarNovaContaPagarRetencaoIRPJISSPCCS() {
+		ContaPagar conta = contaNova();
+		conta.setReterIR(true);
+		conta.setReterCOFINS(true);
+		conta.setIssPorcentagem(BigDecimal.valueOf(5));
+		conta.setValor(BigDecimal.valueOf(2500));
+		conta.getFornecedor().setTipo("J");
+		ContaPagar contaSalva = contaNova();
+
+		Imposto imposto = novoImposto();
+		imposto.setNome("IRRF");
+
+		Imposto impostoCofins = novoImposto();
+		impostoCofins.setNome("PCCS");
+
+		Imposto impostoIss = novoImposto();
+		impostoIss.setNome("ISS");
+		
+		contaSalva.setId(1l);
+		contaSalva.setStatus(StatusContaPagar.ABERTO);
+		contaSalva.setValor(BigDecimal.valueOf(2221.25));
+		contaSalva.getImpostos().add(imposto);
+		contaSalva.getImpostos().add(impostoCofins);
+		contaSalva.getImpostos().add(impostoIss);
+		Mockito.when(impostoService.novoImposto(conta, "IRRF")).thenReturn(imposto);
+		Mockito.when(impostoService.novoImposto(conta, "PCCS")).thenReturn(impostoCofins);
+		Mockito.when(impostoService.novoImposto(conta, "ISS")).thenReturn(impostoIss);
+		
+		Mockito.when(impostoService.aliquotaIRRF(conta.getValor(), "J")).thenReturn(BigDecimal.valueOf(1.5));
+		Mockito.when(impostoService.aliquotaPCCS()).thenReturn(BigDecimal.valueOf(4.65));
+		Mockito.when(impostoService.deducaoIRPF(conta.getValor())).thenReturn(BigDecimal.valueOf(0));
+		
+		Mockito.when(repository.save(conta)).thenReturn(contaSalva);
+		Mockito.doNothing().when(publisher).publishEvent((new ContaPagarSalvaEvent(contaSalva)));
+		
+		service.salvar(conta);
+		
+		BigDecimal vlImpostos = contaSalva.getImpostos().stream().map(i -> i.getValor()).reduce(BigDecimal.ZERO, BigDecimal::add);
+		
+		assertThat(contaSalva.getId()).isNotNull();
+		assertThat(contaSalva.getStatus()).isEqualTo(StatusContaPagar.ABERTO);
+		assertThat(contaSalva.getValor().setScale(2)).isEqualTo(conta.getValor());
+		assertThat(vlImpostos).isEqualTo(BigDecimal.valueOf(278.75).setScale(2));
+		assertThat(contaSalva.getImpostos()).isNotEmpty();
+		assertThat(contaSalva.getImpostos().size()).isEqualTo(3);
+	}
+	
+	
+	@Test
+	@DisplayName("Deve salvar uma nova conta a pagar com retenção de IRPJ, INSS - sendo o INSS ignorado pois só PF")
+	public void salvarNovaContaPagarRetencaoIRPJINSS() {
+		ContaPagar conta = contaNova();
+		conta.setReterIR(true);
+		conta.setReterINSS(true);
+		conta.getFornecedor().setTipo("J");
+		ContaPagar contaSalva = contaNova();
+
+		Imposto imposto = novoImposto();
+		imposto.setNome("IRRF");
+
+		Imposto impostoInss = novoImposto();
+		impostoInss.setNome("INSS");
+		
+		contaSalva.setId(1l);
+		contaSalva.setStatus(StatusContaPagar.ABERTO);
+		contaSalva.setValor(BigDecimal.valueOf(985));
+		contaSalva.getImpostos().add(imposto);
+		contaSalva.getImpostos().add(impostoInss);
+		Mockito.when(impostoService.novoImposto(conta, "IRRF")).thenReturn(imposto);
+		Mockito.when(impostoService.novoImposto(conta, "INSS")).thenReturn(impostoInss);
+		
+		Mockito.when(impostoService.aliquotaIRRF(conta.getValor(), "J")).thenReturn(BigDecimal.valueOf(1.5));
+		Mockito.when(impostoService.deducaoIRPF(conta.getValor())).thenReturn(BigDecimal.valueOf(0));
+		
+		Mockito.when(repository.save(conta)).thenReturn(contaSalva);
+		Mockito.doNothing().when(publisher).publishEvent((new ContaPagarSalvaEvent(contaSalva)));
+		
+		service.salvar(conta);
+		
+	
+		assertThat(contaSalva.getId()).isNotNull();
+		assertThat(contaSalva.getStatus()).isEqualTo(StatusContaPagar.ABERTO);
+		assertThat(contaSalva.getValor().setScale(2)).isEqualTo(conta.getValor());
+		assertThat(contaSalva.getImpostos().get(0).getValor()).isEqualTo(BigDecimal.valueOf(15).setScale(2));
+		assertThat(contaSalva.getImpostos()).isNotEmpty();
+		assertThat(contaSalva.getImpostos().size()).isEqualTo(2);
+	}
+	
+	@Test
+	@DisplayName("Deve salvar uma nova conta a pagar com retenção de IRPF e ISS")
+	public void salvarNovaContaPagarRetencaoIRPFISS() {
+		ContaPagar conta = contaNova();
+		conta.setReterIR(true);
+		conta.setIssPorcentagem(BigDecimal.valueOf(5));
+		conta.setValor(BigDecimal.valueOf(2500));
+		conta.getFornecedor().setTipo("F");
+		ContaPagar contaSalva = contaNova();
+
+		Imposto imposto = novoImposto();
+		imposto.setNome("IRRF");
+
+		Imposto impostoIss = novoImposto();
+		impostoIss.setNome("ISS");
+		
+		contaSalva.setId(1l);
+		contaSalva.setStatus(StatusContaPagar.ABERTO);
+		contaSalva.setValor(BigDecimal.valueOf(2287.50));
+		contaSalva.getImpostos().add(imposto);
+		contaSalva.getImpostos().add(impostoIss);
+		Mockito.when(impostoService.novoImposto(conta, "IRRF")).thenReturn(imposto);
+		Mockito.when(impostoService.novoImposto(conta, "ISS")).thenReturn(impostoIss);
+		
+		Mockito.when(impostoService.aliquotaIRRF(conta.getValor(), "F")).thenReturn(BigDecimal.valueOf(7.5));
+		Mockito.when(impostoService.deducaoIRPF(conta.getValor())).thenReturn(BigDecimal.valueOf(100));
+		
+		Mockito.when(repository.save(conta)).thenReturn(contaSalva);
+		Mockito.doNothing().when(publisher).publishEvent((new ContaPagarSalvaEvent(contaSalva)));
+		
+		service.salvar(conta);
+		
+		BigDecimal vlImpostos = contaSalva.getImpostos().stream().map(i -> i.getValor()).reduce(BigDecimal.ZERO, BigDecimal::add);
+	
+		assertThat(contaSalva.getId()).isNotNull();
+		assertThat(contaSalva.getStatus()).isEqualTo(StatusContaPagar.ABERTO);
+		assertThat(contaSalva.getValor().setScale(2)).isEqualTo(conta.getValor());
+		assertThat(vlImpostos).isEqualTo(BigDecimal.valueOf(212.50).setScale(2));
+		assertThat(contaSalva.getImpostos()).isNotEmpty();
+		assertThat(contaSalva.getImpostos().size()).isEqualTo(2);
+	}
 
 
+	
+	@Test
+	@DisplayName("Deve salvar uma nova conta a pagar com retenção de IRPF um dependente")
+	public void salvarNovaContaPagarRetencaoIRPFComUmDependente() {
+		ContaPagar conta = contaNova();
+		conta.setReterIR(true);
+		conta.setValor(BigDecimal.valueOf(2500));
+		conta.getFornecedor().setTipo("F");
+		conta.getFornecedor().setDependente(1);
+		ContaPagar contaSalva = contaNova();
 
+		Imposto imposto = novoImposto();
+		imposto.setNome("IRRF");
 
+		
+		contaSalva.setId(1l);
+		contaSalva.setStatus(StatusContaPagar.ABERTO);
+		contaSalva.setValor(BigDecimal.valueOf(2287.50));
+		contaSalva.getImpostos().add(imposto);
+		Mockito.when(impostoService.novoImposto(conta, "IRRF")).thenReturn(imposto);
+		
+		Mockito.when(impostoService.aliquotaIRRF(conta.getValor(), "F")).thenReturn(BigDecimal.valueOf(7.5));
+		Mockito.when(impostoService.deducaoIRPF(conta.getValor())).thenReturn(BigDecimal.valueOf(140));
+		
+		Mockito.when(repository.save(conta)).thenReturn(contaSalva);
+		Mockito.doNothing().when(publisher).publishEvent((new ContaPagarSalvaEvent(contaSalva)));
+		
+		service.salvar(conta);
+		
+	
+		assertThat(contaSalva.getId()).isNotNull();
+		assertThat(contaSalva.getStatus()).isEqualTo(StatusContaPagar.ABERTO);
+		assertThat(contaSalva.getValor().setScale(2)).isEqualTo(conta.getValor());
+//		assertThat(vlImpostos).isEqualTo(BigDecimal.valueOf(212.50).setScale(2));
+		assertThat(contaSalva.getImpostos()).isNotEmpty();
+		assertThat(contaSalva.getImpostos().size()).isEqualTo(2);
+	}	
+	
+	
+	
+			
 	private ContaPagar contaNova() {
 		ContaPagar cp = new ContaPagar();
 		cp.setDataEmissao(LocalDate.of(2020, 3, 20));
@@ -274,6 +446,7 @@ public class ContaPagarServiceTest {
 		fornecedor.setNome("FORNECEDOR TESTE LTDA");
 		fornecedor.setFantasia("FORNECEDOR TESTE");
 		fornecedor.setSigla("FORTESTE");
+		fornecedor.setTipo("F");
 		fornecedor.setClifor(true);
 		fornecedor.setEndereco(endereco);
 		Mockito.when(fornecedorRepository.save(Mockito.any(Fornecedor.class))).thenReturn(fornecedor);
@@ -294,6 +467,8 @@ public class ContaPagarServiceTest {
 		imp.setTotal(imp.getValor());
 		imp.setVencimento(LocalDate.of(2020, 7, 15));
 		return imp;
-	}	
+	}
+	
+	
 	
 }

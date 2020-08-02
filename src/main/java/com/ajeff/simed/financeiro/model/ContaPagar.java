@@ -397,7 +397,7 @@ public class ContaPagar implements Serializable{
 	}
 	
 	public boolean isIssRetido() {
-		return this.issPorcentagem != null || this.issPorcentagem.compareTo(BigDecimal.ZERO) ==1;
+		return this.issPorcentagem.compareTo(BigDecimal.ZERO) ==1;
 	}
 
 }
