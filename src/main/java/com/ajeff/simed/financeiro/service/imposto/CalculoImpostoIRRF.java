@@ -16,7 +16,7 @@ public class CalculoImpostoIRRF {
 			throw new ValorInformadoInvalidoException("O valor base ou aliquota do imposto inválido!");
 		}
 		BigDecimal result = valor.multiply( ( aliquota.divide(BigDecimal.valueOf(100)) )).setScale(2, RoundingMode.HALF_UP);
-		return result.compareTo(BigDecimal.ZERO) ==1 ? result : BigDecimal.ZERO;
+		return result;
 	}	
 	
 	

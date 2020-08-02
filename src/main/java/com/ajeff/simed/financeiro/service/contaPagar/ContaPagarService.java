@@ -96,7 +96,7 @@ public class ContaPagarService {
 			pccs.setTotal(pccs.getValor());
 			impostos.add(pccs);
 		}
-
+ 
 		
 		if(contaPagar.getReterIR()) {
 			Imposto ir = impostoService.novoImposto(contaPagar, "IRRF");

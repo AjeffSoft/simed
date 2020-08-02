@@ -6,15 +6,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class CalculoImpostoINSSTest {
 	
-	@BeforeEach
-	public void setUp() {
-	}
 
 	@Test
 	@DisplayName("Deverá calcular valor INSS abaixo do Teto máximo")
@@ -37,7 +33,7 @@ public class CalculoImpostoINSSTest {
 	public void calculoINSSZerado() {
 		BigDecimal valor = new BigDecimal(0);
 		BigDecimal inss = CalculoImpostoINSS.calculo(valor);
-		Assertions.assertEquals(new BigDecimal(0).setScale(2, BigDecimal.ROUND_DOWN), inss);
+		Assertions.assertEquals(new BigDecimal(0), inss);
 	}
 	
 }
