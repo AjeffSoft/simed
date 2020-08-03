@@ -24,6 +24,14 @@
 						<h1 th:if="${contaPagar.novo}">Cadastro de conta a pagar</h1>
 						<h1 th:unless="${contaPagar.novo}">Alterar a conta: [[${contaPagar.documento}]]</h1>
 					</div>
+						
+					<div class="col-sm-2">
+						<div class="aw-page-header-controls">
+							<a class="btn  btn-default" th:href="@{/financeiro/contaPagar/pesquisar}">
+								<i class="glyphicon  glyphicon-zoom-in"></i> <span class="hidden-xs  hidden-sm">Pesquisar</span>
+							</a>
+						</div>
+					</div>						
 				</div>
 			</div>
 		</div>
@@ -47,13 +55,17 @@
 					<input type="hidden" th:field="*{totalParcela}">
 				</div>
 				
+				
+				
+				
+				
 				<div class="row">
 					<div class="form-group  col-lg-12">
 						<ul class="nav nav-tabs  js-abas">
-						  <li role="presentation" class="active"><a href="#dados">Dados Conta</a></li>
-						  <li role="presentation"><a href="#imposto">Imposto</a></li>
-						  <li role="presentation"><a href="#parcelamento">Parcelamento</a></li>
-						  <li role="presentation"><a href="#anexo">Anexar Nota</a></li>
+						  <li role="presentation" class="active"><a href="#">Dados da Conta</a></li>
+						  <li role="presentation"><a href="#">Impostos</a></li>
+						  <li role="presentation"><a href="#">Parcelamento</a></li>
+						  <li role="presentation"><a href="#">Anexo</a></li>
 						</ul>
 					</div>
 				</div>
@@ -165,55 +177,77 @@
 						</div>
 						
 						<div class="form-group">
-							<a class="btn  btn-info js-abas" href="#imposto">Próximo</a>
-							<a class="btn  btn-danger" sec:authorize-url="/financeiro/contaPagar/pesquisar" th:href="@{/financeiro/contaPagar/pesquisar}">Cancelar</a>
+							<a class="btn  btn-primary js-abas" href="#imposto">Próximo</a>
 						</div>
 					</div>
 					
 					
-					<div class="tab-pane" id="imposto">				
+					<div class="tab-pane" id="imposto" th:if="${contaPagar.novo}">				
 						<div class="row">
-							
 							<div class="form-group  col-sm-3">
 								<div>
-			  						<div class="checkbox  checkbox-inline"> 
-				    					<input type="checkbox" id="cNota"/>
-				    					<label for="eNota">IRRF</label>
+			  						<div class="checkbox"> 
+				    					<input type="checkbox" id="cIRRF" th:field="*{reterIR}"/>
+				    					<label for="cIRRF" >Reter Imposto Renda</label>
 			    					</div>
 								</div>
+							</div>
+
+							<div class="form-group  col-sm-3">
+								<div>
+			  						<div class="checkbox"> 
+				    					<input type="checkbox" id="cPCCS" th:field="*{reterCOFINS}"/>
+				    					<label for="cPCCS" >Reter PIS/Cofins/CSLL</label>
+			    					</div>
+								</div>
+							</div>
+
+							<div class="form-group  col-sm-3">
+								<div>
+			  						<div class="checkbox"> 
+				    					<input type="checkbox" id="cINSS" th:field="*{reterINSS}"/>
+				    					<label for="cINSS" >Reter INSS (11%)</label>
+			    					</div>
+								</div>
+							</div>
+							
+							
+							<div class="col-sm-2  form-group">
+								<label for="issPorcentagem" class="control-label">% ISS</label>
 								<div class="input-group">
-									<input id="valor2" type="text" class="form-control  js-decimal"/>
-									<div class="input-group-addon">R$</div>
+									<input id="issPorcentagem" type="text" class="form-control  js-decimal " maxlength="20" th:field="*{issPorcentagem}">
+									<div class="input-group-addon">%</div>
 								</div>
-
-							</div>
-							
-							<div class="form-group  col-sm-3" th:if="${contaPagar.novo}">
-								<label class="control-label">PCCS</label>
-								<div>	
-									<input id="cofins" type="checkbox" checked data-toggle="toggle" class="form-control  toggle"  data-size="small"
-									 data-on="Retido" data-off="Sem Retenção" data-onstyle="primary" data-offstyle="default" th:field="*{reterCOFINS}"/>
-								</div>
-							</div>
-	
-							<div class="form-group  col-sm-3" th:if="${contaPagar.novo}">
-								<label class="control-label">INSS</label>
-								<div>	
-									<input id="impInss" type="checkbox" checked data-toggle="toggle" class="form-control toggle"  data-size="small"
-									 data-on="Retido" data-off="Sem Retenção" data-onstyle="primary" data-offstyle="default" th:field="*{reterINSS}"/>
-								</div>
-							</div>
-							
-							<div class="col-sm-3  form-group" th:if="${contaPagar.novo}">
-								<label for="issPorcentagem" class="control-label">ISS %</label>
-								<input id="issPorcentagem" type="text" class="form-control  js-decimal " maxlength="20" th:field="*{issPorcentagem}">
-							</div>
-
+							</div>							
 						</div>
+
+<!-- 						<div class="row"> -->
+<!-- 							<div class="table-responsive  bw-tabela-simples"> -->
+<!-- 								<table class="table  table-hover"> -->
+<!-- 									<thead> -->
+<!-- 										<tr> -->
+<!-- 											<th class="table-col-minima">IRRF</th> -->
+<!-- 											<th class="table-col-minima">PIS/Cofins/CSLL</th> -->
+<!-- 											<th class="table-col-minima">INSS</th> -->
+<!-- 											<th class="table-col-minima">ISS</th> -->
+<!-- 										</tr> -->
+<!-- 									</thead> -->
+									
+<!-- 									<tbody> -->
+<!-- 										<tr> -->
+<!-- 											<td id="valorIRRF">0,00</td> -->
+<!-- 											<td id="valorPCCS">0,00</td> -->
+<!-- 											<td id="valorINSS">0,00</td> -->
+<!-- 											<td id="valorISS">0,00</td> -->
+<!-- 										</tr> -->
+<!-- 									</tbody> -->
+<!-- 								</table> -->
+<!-- 							</div>	 -->
+<!-- 						</div> -->
 						
 						<div class="form-group">
-							<a class="btn  btn-info js-abas" href="#parcelamento">Próximo</a>
-							<a class="btn  btn-danger" sec:authorize-url="/financeiro/contaPagar/pesquisar" th:href="@{/financeiro/contaPagar/pesquisar}">Cancelar</a>
+							<a class="btn  btn-default  js-abas" href="#dados">Voltar</a>
+							<a class="btn  btn-primary js-abas" href="#parcelamento">Próximo</a>
 						</div>						
 						
 					</div>					
@@ -222,8 +256,8 @@
 						<div class="row">
 							
 							<div class="form-group">
-								<a class="btn  btn-info js-abas" href="#anexo">Próximo</a>
-								<a class="btn  btn-danger" sec:authorize-url="/financeiro/contaPagar/pesquisar" th:href="@{/financeiro/contaPagar/pesquisar}">Cancelar</a>
+								<a class="btn  btn-default  js-abas" href="#imposto">Voltar</a>
+								<a class="btn  btn-primary js-abas" href="#anexo">Próximo</a>
 							</div>						
 						</div>
 					</div>							
@@ -244,8 +278,9 @@
 							</div>
 						</div>
 						<div class="form-group">
+						
+							<a class="btn  btn-default  js-abas" href="#parcelamento">Voltar</a>
 							<button class="btn  btn-success" type="submit">Salvar</button>
-							<a class="btn  btn-danger" sec:authorize-url="/financeiro/contaPagar/pesquisar" th:href="@{/financeiro/contaPagar/pesquisar}">Cancelar</a>
 						</div>						
 						
 						
