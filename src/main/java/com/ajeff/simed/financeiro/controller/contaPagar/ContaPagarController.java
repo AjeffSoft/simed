@@ -1,5 +1,8 @@
 package com.ajeff.simed.financeiro.controller.contaPagar;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -11,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -67,12 +71,14 @@ public class ContaPagarController {
 	
 	
 	@PostMapping(value = {"/nova", "{\\d}"})
-	public ModelAndView nova(@Valid ContaPagar contaPagar, BindingResult result, RedirectAttributes attributes, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
+	public ModelAndView nova(@Valid ContaPagar contaPagar, @RequestParam MultiValueMap<String, String> requests, BindingResult result, RedirectAttributes attributes, @AuthenticationPrincipal UsuarioSistema usuarioSistema) {
 		if (result.hasErrors()) {
 			return nova(contaPagar, usuarioSistema);
 		}
 		try {
-			service.salvar(contaPagar);
+
+			
+			service.salvar(contaPagar, requests);
 		} catch (DocumentoEFornecedorJaCadastradoException e) {
 			result.rejectValue("notaFiscal", e.getMessage(), e.getMessage());
 			return nova(contaPagar, usuarioSistema);

@@ -1,6 +1,8 @@
 package com.ajeff.simed.financeiro.service.contaPagar;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +15,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MultiValueMap;
 
+import com.ajeff.simed.financeiro.dto.ParcelamentoDTO;
 import com.ajeff.simed.financeiro.model.ContaPagar;
 import com.ajeff.simed.financeiro.model.Fornecedor;
 import com.ajeff.simed.financeiro.model.Imposto;
@@ -25,6 +29,8 @@ import com.ajeff.simed.financeiro.service.imposto.CalculoImpostoIRRF;
 import com.ajeff.simed.financeiro.service.imposto.ImpostoService;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.util.DatasUtils;
+import com.google.inject.internal.util.Lists;
+import com.google.inject.internal.util.Strings;
 
 @Service
 public class ContaPagarService {
@@ -40,12 +46,13 @@ public class ContaPagarService {
 	
 	
 	@Transactional
-	public void salvar(ContaPagar contaPagar) {
+	public void salvar(ContaPagar contaPagar, MultiValueMap<String, String> requests) {
 		testeRegistroJaCadastrado(contaPagar);
 		DatasUtils.emissaoMenorOuIgualVencimento(contaPagar.getDataEmissao(), contaPagar.getVencimento());
 		
 		if(contaPagar.isNovo()) {
 			contaPagar.setStatus(StatusContaPagar.ABERTO);
+			parcelamento(contaPagar, requests);
 
 			if(contaPagar.isTemImpostoRetido()) {
 				contaPagar.setImpostos(impostosDaConta(contaPagar));
@@ -58,6 +65,50 @@ public class ContaPagarService {
 	}
 	
 	
+	private void parcelamento(ContaPagar contaPagar, MultiValueMap<String, String> requests) {
+
+		List<ParcelamentoDTO> parcelas = montarParcelamentoDTO(requests);
+		
+		parcelas.stream().forEach(System.out::println);
+	}
+
+
+	private List<ParcelamentoDTO> montarParcelamentoDTO(MultiValueMap<String, String> requests) {
+		List<ParcelamentoDTO> parcelas = new ArrayList<>();
+		
+		
+		List<String> vencs = requests.get("vencimento-parcela");
+		List<String> valores = requests.get("valor-parcela");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+
+		for (int i = 0; i < vencs.size(); i++) {
+			if(!vencs.get(i).equals("") && !valores.get(i).equals("")) {
+				ParcelamentoDTO p = new ParcelamentoDTO();
+				String nn = "";
+				
+				for(String s : valores.get(i).split("")) {
+					
+					
+					if(s.equals(".")) {
+						s = "";
+					}else if(s.equals(",")) {
+						s = ".";
+					}
+					nn += s;
+				}
+				
+				p.setParcela(i+1);
+				p.setValor(new BigDecimal(nn));
+				p.setVencimento(LocalDate.parse(vencs.get(i), formatter));
+				parcelas.add(p);
+			}
+		}
+		
+		return parcelas;
+	}
+
+
 	private BigDecimal calculoValorConta(ContaPagar contaPagar) {
 		if(!contaPagar.getImpostos().isEmpty()) {
 			return contaPagar.getImpostos().stream().map(i -> i.getValor()).reduce(BigDecimal.ZERO, BigDecimal::add);

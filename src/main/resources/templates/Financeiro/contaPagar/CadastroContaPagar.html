@@ -63,9 +63,6 @@
 					<div class="form-group  col-lg-12">
 						<ul class="nav nav-tabs  js-abas">
 						  <li role="presentation" class="active"><a href="#">Dados da Conta</a></li>
-						  <li role="presentation"><a href="#">Impostos</a></li>
-						  <li role="presentation"><a href="#">Parcelamento</a></li>
-						  <li role="presentation"><a href="#">Anexo</a></li>
 						</ul>
 					</div>
 				</div>
@@ -184,67 +181,51 @@
 					
 					<div class="tab-pane" id="imposto" th:if="${contaPagar.novo}">				
 						<div class="row">
-							<div class="form-group  col-sm-3">
-								<div>
-			  						<div class="checkbox"> 
-				    					<input type="checkbox" id="cIRRF" th:field="*{reterIR}"/>
-				    					<label for="cIRRF" >Reter Imposto Renda</label>
-			    					</div>
-								</div>
-							</div>
-
-							<div class="form-group  col-sm-3">
-								<div>
-			  						<div class="checkbox"> 
-				    					<input type="checkbox" id="cPCCS" th:field="*{reterCOFINS}"/>
-				    					<label for="cPCCS" >Reter PIS/Cofins/CSLL</label>
-			    					</div>
-								</div>
-							</div>
-
-							<div class="form-group  col-sm-3">
-								<div>
-			  						<div class="checkbox"> 
-				    					<input type="checkbox" id="cINSS" th:field="*{reterINSS}"/>
-				    					<label for="cINSS" >Reter INSS (11%)</label>
-			    					</div>
-								</div>
-							</div>
-							
-							
-							<div class="col-sm-2  form-group">
-								<label for="issPorcentagem" class="control-label">% ISS</label>
-								<div class="input-group">
-									<input id="issPorcentagem" type="text" class="form-control  js-decimal " maxlength="20" th:field="*{issPorcentagem}">
-									<div class="input-group-addon">%</div>
-								</div>
-							</div>							
-						</div>
-
-<!-- 						<div class="row"> -->
-<!-- 							<div class="table-responsive  bw-tabela-simples"> -->
-<!-- 								<table class="table  table-hover"> -->
-<!-- 									<thead> -->
-<!-- 										<tr> -->
-<!-- 											<th class="table-col-minima">IRRF</th> -->
-<!-- 											<th class="table-col-minima">PIS/Cofins/CSLL</th> -->
-<!-- 											<th class="table-col-minima">INSS</th> -->
-<!-- 											<th class="table-col-minima">ISS</th> -->
-<!-- 										</tr> -->
-<!-- 									</thead> -->
-									
-<!-- 									<tbody> -->
-<!-- 										<tr> -->
-<!-- 											<td id="valorIRRF">0,00</td> -->
-<!-- 											<td id="valorPCCS">0,00</td> -->
-<!-- 											<td id="valorINSS">0,00</td> -->
-<!-- 											<td id="valorISS">0,00</td> -->
-<!-- 										</tr> -->
-<!-- 									</tbody> -->
-<!-- 								</table> -->
-<!-- 							</div>	 -->
-<!-- 						</div> -->
 						
+							<div class="card">
+							  <h3 class="card-header text-center font-weight-bold text-uppercase py-4">Retenção Impostos</h3>
+							  <br/>
+							  <div class="card-body">
+						
+									<div class="form-group  col-sm-3">
+										<div>
+					  						<div class="checkbox"> 
+						    					<input type="checkbox" id="cIRRF" th:field="*{reterIR}"/>
+						    					<label for="cIRRF" >Reter Imposto Renda</label>
+					    					</div>
+										</div>
+									</div>
+		
+									<div class="form-group  col-sm-3">
+										<div>
+					  						<div class="checkbox"> 
+						    					<input type="checkbox" id="cPCCS" th:field="*{reterCOFINS}"/>
+						    					<label for="cPCCS" >Reter PIS/Cofins/CSLL</label>
+					    					</div>
+										</div>
+									</div>
+		
+									<div class="form-group  col-sm-3">
+										<div>
+					  						<div class="checkbox"> 
+						    					<input type="checkbox" id="cINSS" th:field="*{reterINSS}"/>
+						    					<label for="cINSS" >Reter INSS (11%)</label>
+					    					</div>
+										</div>
+									</div>
+									
+									
+									<div class="col-sm-2  form-group">
+										<label for="issPorcentagem" class="control-label">% ISS</label>
+										<div class="input-group">
+											<input id="issPorcentagem" type="text" class="form-control  js-decimal " maxlength="20" th:field="*{issPorcentagem}">
+											<div class="input-group-addon">%</div>
+										</div>
+									</div>
+								</div>
+							</div>								
+						</div>
+					
 						<div class="form-group">
 							<a class="btn  btn-default  js-abas" href="#dados">Voltar</a>
 							<a class="btn  btn-primary js-abas" href="#parcelamento">Próximo</a>
@@ -253,26 +234,190 @@
 					</div>					
 					
 					<div class="tab-pane" id="parcelamento">
+					
 						<div class="row">
-							
-							<div class="form-group">
-								<a class="btn  btn-default  js-abas" href="#imposto">Voltar</a>
-								<a class="btn  btn-primary js-abas" href="#anexo">Próximo</a>
-							</div>						
+			
+							<div class="card">
+							  <h3 class="card-header text-center font-weight-bold text-uppercase py-4">Parcelamento da conta</h3>
+							  <br/>
+							  <div class="card-body">
+							    <div id="tableParcela" class="table-responsive  bw-tabela-simples">
+							      
+							      <table class="table table-bordered table-responsive-md table-striped text-center">
+							        <thead>
+							          <tr>
+							            <th class="text-center">Parcela nº</th>
+							            <th class="text-center">Vencimento</th>
+							            <th class="text-center">Valor R$</th>
+							          </tr>
+							        </thead>
+							        <tbody>
+							         
+<!-- 							         PARCELA 001 -->
+							          <tr>
+							            <td class="pt-3-half" contenteditable="false">01</td>
+							            <td class="pt-3-half" contenteditable="false">
+											<input id="vencimento01" name="vencimento-parcela" type="text" class="form-control  js-date" autocomplete="off"/>
+							            </td>
+							            <td class="pt-3-half" contenteditable="false">
+							            	<input id="valor01" name="valor-parcela" type="text" class="form-control  js-decimal ">
+							            </td>
+							          </tr>
+							          
+<!-- 							         PARCELA 002 -->
+							          <tr>
+							            <td class="pt-3-half" contenteditable="false">02</td>
+							            <td class="pt-3-half" contenteditable="false">
+											<input id="vencimento02" name="vencimento-parcela" type="text" class="form-control  js-date" autocomplete="off"/>
+							            </td>
+							            <td class="pt-3-half" contenteditable="false">
+							            	<input id="valor02" name="valor-parcela" type="text" class="form-control  js-decimal ">
+							            </td>
+							          </tr>
+							          
+<!-- 							         PARCELA 003 -->
+							          <tr>
+							            <td class="pt-3-half" contenteditable="false">03</td>
+							            <td class="pt-3-half" contenteditable="false">
+											<input id="vencimento03" name="vencimento-parcela" type="text" class="form-control  js-date" autocomplete="off"/>
+							            </td>
+							            <td class="pt-3-half" contenteditable="false">
+							            	<input id="valor03" name="valor-parcela" type="text" class="form-control  js-decimal ">
+							            </td>
+							          </tr>
+							          
+<!-- 							         PARCELA 004 -->
+							          <tr>
+							            <td class="pt-3-half" contenteditable="false">04</td>
+							            <td class="pt-3-half" contenteditable="false">
+											<input id="vencimento04" name="vencimento-parcela" type="text" class="form-control  js-date" autocomplete="off"/>
+							            </td>
+							            <td class="pt-3-half" contenteditable="false">
+							            	<input id="valor04" name="valor-parcela" type="text" class="form-control  js-decimal ">
+							            </td>
+							          </tr>
+							          
+<!-- 							         PARCELA 005 -->
+							          <tr>
+							            <td class="pt-3-half" contenteditable="false">01</td>
+							            <td class="pt-3-half" contenteditable="false">
+											<input id="vencimento05" name="vencimento-parcela" type="text" class="form-control  js-date" autocomplete="off"/>
+							            </td>
+							            <td class="pt-3-half" contenteditable="false">
+							            	<input id="valor05" name="valor-parcela" type="text" class="form-control  js-decimal ">
+							            </td>
+							          </tr>
+							          
+<!-- 							         PARCELA 006 -->
+							          <tr>
+							            <td class="pt-3-half" contenteditable="false">06</td>
+							            <td class="pt-3-half" contenteditable="false">
+											<input id="vencimento06" name="vencimento-parcela" type="text" class="form-control  js-date" autocomplete="off"/>
+							            </td>
+							            <td class="pt-3-half" contenteditable="false">
+							            	<input id="valor06" name="valor-parcela" type="text" class="form-control  js-decimal ">
+							            </td>
+							          </tr>
+							          
+<!-- 							         PARCELA 001 -->
+							          <tr>
+							            <td class="pt-3-half" contenteditable="false">07</td>
+							            <td class="pt-3-half" contenteditable="false">
+											<input id="vencimento07" name="vencimento-parcela" type="text" class="form-control  js-date" autocomplete="off"/>
+							            </td>
+							            <td class="pt-3-half" contenteditable="false">
+							            	<input id="valor07" name="valor-parcela" type="text" class="form-control  js-decimal ">
+							            </td>
+							          </tr>
+							          
+<!-- 							         PARCELA 008 -->
+							          <tr>
+							            <td class="pt-3-half" contenteditable="false">08</td>
+							            <td class="pt-3-half" contenteditable="false">
+											<input id="vencimento08" name="vencimento-parcela" type="text" class="form-control  js-date" autocomplete="off"/>
+							            </td>
+							            <td class="pt-3-half" contenteditable="false">
+							            	<input id="valor08" name="valor-parcela" type="text" class="form-control  js-decimal ">
+							            </td>
+							          </tr>
+							          
+<!-- 							         PARCELA 009 -->
+							          <tr>
+							            <td class="pt-3-half" contenteditable="false">09</td>
+							            <td class="pt-3-half" contenteditable="false">
+											<input id="vencimento09" name="vencimento-parcela" type="text" class="form-control  js-date" autocomplete="off"/>
+							            </td>
+							            <td class="pt-3-half" contenteditable="false">
+							            	<input id="valor09" name="valor-parcela" type="text" class="form-control  js-decimal ">
+							            </td>
+							          </tr>
+							          
+<!-- 							         PARCELA 010 -->
+							          <tr>
+							            <td class="pt-3-half" contenteditable="false">10</td>
+							            <td class="pt-3-half" contenteditable="false">
+											<input id="vencimento10" name="vencimento-parcela" type="text" class="form-control  js-date" autocomplete="off"/>
+							            </td>
+							            <td class="pt-3-half" contenteditable="false">
+							            	<input id="valor10" name="valor-parcela" type="text" class="form-control  js-decimal ">
+							            </td>
+							          </tr>
+							          
+<!-- 							         PARCELA 011 -->
+							          <tr>
+							            <td class="pt-3-half" contenteditable="false">11</td>
+							            <td class="pt-3-half" contenteditable="false">
+											<input id="vencimento11" name="vencimento-parcela" type="text" class="form-control  js-date" autocomplete="off"/>
+							            </td>
+							            <td class="pt-3-half" contenteditable="false">
+							            	<input id="valor11" name="valor-parcela" type="text" class="form-control  js-decimal ">
+							            </td>
+							          </tr>
+							          
+<!-- 							         PARCELA 012 -->
+							          <tr>
+							            <td class="pt-3-half" contenteditable="false">12</td>
+							            <td class="pt-3-half" contenteditable="false">
+											<input id="vencimento12" name="vencimento-parcela" type="text" class="form-control  js-date" autocomplete="off"/>
+							            </td>
+							            <td class="pt-3-half" contenteditable="false">
+							            	<input id="valor12" name="valor-parcela" type="text" class="form-control  js-decimal ">
+							            </td>
+							          </tr>
+							          
+							          
+							        </tbody>
+							      </table>
+							    </div>
+							  </div>
+							</div>
+
 						</div>
+						<div class="form-group">
+							<a class="btn  btn-default  js-abas" href="#imposto">Voltar</a>
+							<a class="btn  btn-primary js-abas" href="#anexo">Próximo</a>
+						</div>						
 					</div>							
 					
 					<div class="tab-pane" id="anexo">
 						<div class="row">
-							<div class="form-group  col-sm-12">
-
-								
-								<div class="js-container-upload">
-								
-									<div id="upload-drop" class="bw-upload">
-										<i class="glyphicon  glyphicon-cloud-upload"></i>
-										<span>Arraste o arquivo aqui ou </span>
-										<a class="bw-upload-form-file">selecione <input id="upload-select" type="file" accept=".pdf"/></a>
+							
+							
+							<div class="card">
+							  <h3 class="card-header text-center font-weight-bold text-uppercase py-4">Anexar Arquivo</h3>
+							  <br/>
+							  <div class="card-body">
+							
+							
+									<div class="form-group  col-sm-12">
+										<div class="js-container-upload">
+										
+											<div id="upload-drop" class="bw-upload">
+												<i class="glyphicon  glyphicon-cloud-upload"></i>
+												<span>Arraste o arquivo aqui ou </span>
+												<a class="bw-upload-form-file">selecione <input id="upload-select" type="file" accept=".pdf"/></a>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -319,6 +464,8 @@
 			});
 		});
 	</script>
+	
+	
 </th:block>
 
 </html>
