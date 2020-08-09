@@ -29,8 +29,6 @@ import com.ajeff.simed.financeiro.service.imposto.CalculoImpostoIRRF;
 import com.ajeff.simed.financeiro.service.imposto.ImpostoService;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
 import com.ajeff.simed.util.DatasUtils;
-import com.google.inject.internal.util.Lists;
-import com.google.inject.internal.util.Strings;
 
 @Service
 public class ContaPagarService {
@@ -49,27 +47,62 @@ public class ContaPagarService {
 	public void salvar(ContaPagar contaPagar, MultiValueMap<String, String> requests) {
 		testeRegistroJaCadastrado(contaPagar);
 		DatasUtils.emissaoMenorOuIgualVencimento(contaPagar.getDataEmissao(), contaPagar.getVencimento());
+		List<ContaPagar> contas = new ArrayList<>();
 		
 		if(contaPagar.isNovo()) {
-			contaPagar.setStatus(StatusContaPagar.ABERTO);
-			parcelamento(contaPagar, requests);
-
+			
 			if(contaPagar.isTemImpostoRetido()) {
 				contaPagar.setImpostos(impostosDaConta(contaPagar));
 			}
 			contaPagar.setValor(contaPagar.getValor().subtract(calculoValorConta(contaPagar)));
+
+			contas = parcelamento(contaPagar, requests);
 		}
 		
-		repository.save(contaPagar);
-		publisher.publishEvent(new ContaPagarSalvaEvent(contaPagar));
+		repository.save(contas);
+		publisher.publishEvent(new ContaPagarSalvaEvent(contas.get(0)));
 	}
 	
 	
-	private void parcelamento(ContaPagar contaPagar, MultiValueMap<String, String> requests) {
-
+	private List<ContaPagar> parcelamento(ContaPagar contaPagar, MultiValueMap<String, String> requests) {
+		List<ContaPagar> contas = new ArrayList<>();
 		List<ParcelamentoDTO> parcelas = montarParcelamentoDTO(requests);
 		
+		if(parcelas.size() > 0) {
+			parcelas.stream().forEach( p -> {
+				ContaPagar cp = new ContaPagar();
+				Integer totalParcela = parcelas.size();
+				montarContaPagar(contaPagar, cp, p, totalParcela);
+				contas.add(cp);
+			});
+		}
+		
 		parcelas.stream().forEach(System.out::println);
+		return contas;
+	}
+
+
+	private void montarContaPagar(ContaPagar contaPagar, ContaPagar cp, ParcelamentoDTO p, Integer totalParcela) {
+		cp.setContentType(contaPagar.getContentType());
+		cp.setDataEmissao(contaPagar.getDataEmissao());
+		cp.setDocumento(contaPagar.getDocumento());
+		cp.setEmpresa(contaPagar.getEmpresa());
+		cp.setFixo(contaPagar.getFixo());
+		cp.setFornecedor(contaPagar.getFornecedor());
+		cp.setHistorico(contaPagar.getHistorico());
+		cp.setNotaFiscal(contaPagar.getNotaFiscal());
+		cp.setParcela(p.getParcela());
+		cp.setTotalParcela(totalParcela);
+		cp.setPlanoContaSecundaria(contaPagar.getPlanoContaSecundaria());
+		cp.setRecibo(contaPagar.getRecibo());
+		cp.setStatus(StatusContaPagar.ABERTO);
+		cp.setTemNota(contaPagar.getTemNota());
+		cp.setUpload(contaPagar.getUpload());
+
+//		contaPagar.getImpostos().stream().filter( i -> i.getValor().compareTo(BigDecimal.ZERO) == 1).forEach( i -> cp.setImpostos(i));
+//		cp.setImpostos(impostos);
+//		cp.setValor(valor);
+//		cp.setVencimento(vencimento);		
 	}
 
 

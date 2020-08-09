@@ -218,7 +218,7 @@
 									<div class="col-sm-2  form-group">
 										<label for="issPorcentagem" class="control-label">% ISS</label>
 										<div class="input-group">
-											<input id="issPorcentagem" type="text" class="form-control  js-decimal " maxlength="20" th:field="*{issPorcentagem}">
+											<input id="issPorcentagem" type="text" class="form-control  js-decimal ">
 											<div class="input-group-addon">%</div>
 										</div>
 									</div>
@@ -463,6 +463,26 @@
 				$(this).tab('show');
 			});
 		});
+	</script>
+	
+	<!-- AJAX IMPOSTOS -->
+	<script>
+	
+		$(function(){
+			$('#issPorcentagem').focusout(function(){
+				var aliquota = $(this).val();
+				
+				if(aliquota !== "0,00"){
+					console.log(aliquota);
+					
+					//ajax request
+					$.get("/simed/financeiro/imposto/getISS", function(){
+						alert("foi");
+					})
+				}
+			})
+		});
+	
 	</script>
 	
 	
