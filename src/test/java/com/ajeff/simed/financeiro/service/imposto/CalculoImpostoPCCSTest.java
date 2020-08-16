@@ -21,7 +21,7 @@ public class CalculoImpostoPCCSTest {
 	public void calculoValorPCCS() {
 		BigDecimal valor = new BigDecimal(1000.00);
 		BigDecimal aliquota = new BigDecimal(4.65);
-		BigDecimal result = CalculoImpostoPCCS.calculo(valor, aliquota);
+		BigDecimal result = CalculoImpostoPCCS.calculo(valor, aliquota, "J");
 		Assertions.assertEquals(new BigDecimal(46.50).setScale(2, RoundingMode.HALF_UP), result);
 	}
 
@@ -30,8 +30,17 @@ public class CalculoImpostoPCCSTest {
 	public void calculoValorZeradoPCCS() {
 		BigDecimal valor = new BigDecimal(00);
 		BigDecimal aliquota = new BigDecimal(4.65);
-		BigDecimal result = CalculoImpostoPCCS.calculo(valor, aliquota);
+		BigDecimal result = CalculoImpostoPCCS.calculo(valor, aliquota, "J");
 		Assertions.assertEquals(new BigDecimal(0), result);
 	}
 
+	@Test
+	@DisplayName("Deverá retornar zerado quando o fornecedor for PF para PCCS")
+	public void calculoValorZeradoPCCSPF() {
+		BigDecimal valor = new BigDecimal(1000);
+		BigDecimal aliquota = new BigDecimal(4.65);
+		BigDecimal result = CalculoImpostoPCCS.calculo(valor, aliquota, "F");
+		Assertions.assertEquals(new BigDecimal(0), result);
+	}
+	
 }

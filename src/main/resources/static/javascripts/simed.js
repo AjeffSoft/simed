@@ -196,7 +196,7 @@ Simed.MaskRefFerias = (function(){
 $(function() {
 	var maskMoney = new Simed.MaskMoney();
 	maskMoney.enable();
-	
+
 	var maskPhoneNumber = new Simed.MaskPhoneNumber();
 	maskPhoneNumber.enable();
 

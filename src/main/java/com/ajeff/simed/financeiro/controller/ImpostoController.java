@@ -1,41 +1,22 @@
 package com.ajeff.simed.financeiro.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import java.math.BigDecimal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.ajeff.simed.financeiro.model.Imposto;
-import com.ajeff.simed.financeiro.repository.filter.ImpostoFilter;
+import com.ajeff.simed.financeiro.model.Fornecedor;
+import com.ajeff.simed.financeiro.service.FornecedorService;
 import com.ajeff.simed.financeiro.service.contaPagar.ContaPagarService;
-import com.ajeff.simed.financeiro.service.exception.ImpossivelExcluirEntidade;
-import com.ajeff.simed.financeiro.service.exception.PagamentoNaoEfetuadoException;
-import com.ajeff.simed.financeiro.service.exception.VencimentoMenorEmissaoException;
 import com.ajeff.simed.financeiro.service.imposto.ImpostoService;
-import com.ajeff.simed.geral.controller.page.PageWrapper;
-import com.ajeff.simed.geral.security.UsuarioSistema;
 import com.ajeff.simed.geral.service.EmpresaService;
+import com.ajeff.simed.util.CalculosComValores;
 
 @Controller
 @RequestMapping("/financeiro/imposto")
@@ -46,6 +27,8 @@ public class ImpostoController {
 
 	@Autowired
 	private ImpostoService service;
+	@Autowired
+	private FornecedorService fornecedorService;
 	@Autowired
 	private EmpresaService empresaService;
 	@Autowired
@@ -123,9 +106,38 @@ public class ImpostoController {
 //	}
 	
 	@GetMapping(value = "/getISS", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseBody getISS() {
-		System.out.println("Foi aqui também");
-		return null;
+	public @ResponseBody String getISS(String aliquota, String valor) {
+
+		try {
+			BigDecimal imposto = service.valorISSRetido(CalculosComValores.convertRealToDollar(valor), CalculosComValores.convertRealToDollar(aliquota));
+			return imposto.toString();
+		} catch (NumberFormatException e) {
+			return "ERRO! O valor não pode ser nulo para o calculo do ISS";
+		}
+	}
+	
+	@GetMapping(value = "/getInss", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody String getInss(String valor, String idFornecedor) {
+		try {
+			Long idFornecedorConvert = Long.decode(idFornecedor);
+			Fornecedor forn = fornecedorService.findOne(idFornecedorConvert);
+			BigDecimal imposto = service.valorINSSRetido(CalculosComValores.convertRealToDollar(valor), forn.getTipo());
+			return imposto.toString();
+		} catch (NumberFormatException e) {
+			return "ERRO! O valor não pode ser nulo para o calculo do INSS";
+		}
+	}
+	
+	@GetMapping(value = "/getPccs", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody String getPccs(String valor, String idFornecedor) {
+		try {
+			Long idFornecedorConvert = Long.decode(idFornecedor);
+			Fornecedor forn = fornecedorService.findOne(idFornecedorConvert);
+			BigDecimal imposto = service.valorPCCSRetido(CalculosComValores.convertRealToDollar(valor), forn.getTipo());
+			return imposto.toString();
+		} catch (NumberFormatException e) {
+			return "ERRO! O valor não pode ser nulo para o calculo do PCCS";
+		}
 	}
 	
 }

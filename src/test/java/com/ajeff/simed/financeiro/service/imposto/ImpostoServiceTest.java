@@ -59,7 +59,7 @@ public class ImpostoServiceTest {
 		BigDecimal valor = BigDecimal.valueOf(2000);
 		Mockito.when(tabelaRepository.findOne(1l)).thenReturn(tabela);
 		
-		BigDecimal result = service.valorPCCSRetido(valor);
+		BigDecimal result = service.valorPCCSRetido(valor, "J");
 		
 		assertThat(result).isEqualTo(BigDecimal.valueOf(93).setScale(2));
 	}
@@ -71,7 +71,19 @@ public class ImpostoServiceTest {
 		BigDecimal valor = BigDecimal.valueOf(0);
 		Mockito.when(tabelaRepository.findOne(1l)).thenReturn(tabela);
 		
-		BigDecimal result = service.valorPCCSRetido(valor);
+		BigDecimal result = service.valorPCCSRetido(valor, "J");
+		
+		assertThat(result).isEqualTo(BigDecimal.valueOf(0));
+	}
+	
+	@Test
+	@DisplayName("Deve retornar o valor zerado quando o fornecedor for PF do imposto PCCS")
+	public void deveRetornarValorPCCSZeradoPF() {
+		TabelaIRPJ tabela = tabelaPJ();
+		BigDecimal valor = BigDecimal.valueOf(2000);
+		Mockito.when(tabelaRepository.findOne(1l)).thenReturn(tabela);
+		
+		BigDecimal result = service.valorPCCSRetido(valor, "F");
 		
 		assertThat(result).isEqualTo(BigDecimal.valueOf(0));
 	}
@@ -113,7 +125,7 @@ public class ImpostoServiceTest {
 	public void deveRetornarValorINSS() {
 		BigDecimal valor = BigDecimal.valueOf(2000);
 		
-		BigDecimal result = service.valorINSSRetido(valor);
+		BigDecimal result = service.valorINSSRetido(valor, "F");
 		
 		assertThat(result).isEqualTo(BigDecimal.valueOf(220).setScale(2));
 	}
@@ -123,7 +135,7 @@ public class ImpostoServiceTest {
 	public void deveRetornarValorINSSTetoMaximo() {
 		BigDecimal valor = BigDecimal.valueOf(10000);
 		
-		BigDecimal result = service.valorINSSRetido(valor);
+		BigDecimal result = service.valorINSSRetido(valor, "F");
 		
 		assertThat(result).isEqualTo(BigDecimal.valueOf(671.11).setScale(2));
 	}
@@ -133,7 +145,17 @@ public class ImpostoServiceTest {
 	public void deveRetornarValorINSSZerado() {
 		BigDecimal valor = BigDecimal.valueOf(0);
 		
-		BigDecimal result = service.valorINSSRetido(valor);
+		BigDecimal result = service.valorINSSRetido(valor, "F");
+		
+		assertThat(result).isEqualTo(BigDecimal.valueOf(0));
+	}
+	
+	@Test
+	@DisplayName("Deve retornar zerado quando o tipo do fornecedor for J para calculo do imposto INSS")
+	public void deveRetornarValorINSSZeradoParaPJ() {
+		BigDecimal valor = BigDecimal.valueOf(1800);
+		
+		BigDecimal result = service.valorINSSRetido(valor, "J");
 		
 		assertThat(result).isEqualTo(BigDecimal.valueOf(0));
 	}

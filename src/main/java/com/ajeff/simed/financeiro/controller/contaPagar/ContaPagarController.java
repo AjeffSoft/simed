@@ -163,7 +163,7 @@ public class ContaPagarController {
 	public ModelAndView detalhe(@PathVariable Long id, ContaPagar contaPagar) {
 		ModelAndView mv = new ModelAndView("Financeiro/contaPagar/DetalheContaPagar");
 		contaPagar = service.findOne(id);
-		mv.addObject("impostos", impostoService.findByContaPagar(contaPagar));
+//		mv.addObject("impostos", impostoService.findByContaPagar(contaPagar));
 		mv.addObject(contaPagar);
 		return mv;
 	}

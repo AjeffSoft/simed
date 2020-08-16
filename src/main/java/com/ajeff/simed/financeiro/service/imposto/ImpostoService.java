@@ -48,8 +48,8 @@ public class ImpostoService {
 	/*
 	 * Calculo da aliquota e valor do imposto PIS/COFINS/CSLL retido
 	 */
-	public BigDecimal valorPCCSRetido(BigDecimal valor) {
-		return CalculoImpostoPCCS.calculo(valor, aliquotaPCCS());
+	public BigDecimal valorPCCSRetido(BigDecimal valor, String tipo) {
+		return CalculoImpostoPCCS.calculo(valor, aliquotaPCCS(), tipo);
 	}
 	
 	private BigDecimal aliquotaPCCS() {
@@ -72,8 +72,8 @@ public class ImpostoService {
 	/*
 	 * Calculo do valor do imposto INSS retido - 11%
 	 */
-	public BigDecimal valorINSSRetido(BigDecimal valor) {
-		return CalculoImpostoINSS.calculo(valor);
+	public BigDecimal valorINSSRetido(BigDecimal valor, String tipo) {
+		return CalculoImpostoINSS.calculo(valor, tipo);
 	}	
 	
 

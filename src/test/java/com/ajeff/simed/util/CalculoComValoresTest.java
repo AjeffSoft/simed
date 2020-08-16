@@ -319,6 +319,77 @@ public class CalculoComValoresTest {
 		Assertions.assertThat(result).isZero();
 		Assertions.assertThat(result).isEqualTo(BigDecimal.ZERO);
 	}
+	
+	
+	@Test
+	@DisplayName("Deve converter o valor unidade para o formato do BigDecimal-Dollar")
+	public void converterRealToDolarUnidades() {
+		String valor = "0,05";
+		
+		BigDecimal result = CalculosComValores.convertRealToDollar(valor);
+		
+		Assertions.assertThat(result).isEqualTo(BigDecimal.valueOf(0.05));
+	}
+	
+	@Test
+	@DisplayName("Deve converter o valor dezena para o formato do BigDecimal-Dollar")
+	public void converterRealToDolarDezenas() {
+		String valor = "85,15";
+		
+		BigDecimal result = CalculosComValores.convertRealToDollar(valor);
+		
+		Assertions.assertThat(result).isEqualTo(BigDecimal.valueOf(85.15));
+	}
+	
+	@Test
+	@DisplayName("Deve converter o valor centena para o formato do BigDecimal-Dollar")
+	public void converterRealToDolarCentenas() {
+		String valor = "785,15";
+		
+		BigDecimal result = CalculosComValores.convertRealToDollar(valor);
+		
+		Assertions.assertThat(result).isEqualTo(BigDecimal.valueOf(785.15));
+	}
+	
+	@Test
+	@DisplayName("Deve converter o valor milhar para o formato do BigDecimal-Dollar")
+	public void converterRealToDolarMilhar() {
+		String valor = "6.785,15";
+		
+		BigDecimal result = CalculosComValores.convertRealToDollar(valor);
+		
+		Assertions.assertThat(result).isEqualTo(BigDecimal.valueOf(6785.15));
+	}
+	
+	@Test
+	@DisplayName("Deve converter o valor dezena-milhar para o formato do BigDecimal-Dollar")
+	public void converterRealToDolarDezenaMilhar() {
+		String valor = "86.785,15";
+		
+		BigDecimal result = CalculosComValores.convertRealToDollar(valor);
+		
+		Assertions.assertThat(result).isEqualTo(BigDecimal.valueOf(86785.15));
+	}
+	
+	@Test
+	@DisplayName("Deve converter o valor centena-milhar para o formato do BigDecimal-Dollar")
+	public void converterRealToDolarCentenaMilhar() {
+		String valor = "186.785,15";
+		
+		BigDecimal result = CalculosComValores.convertRealToDollar(valor);
+		
+		Assertions.assertThat(result).isEqualTo(BigDecimal.valueOf(186785.15));
+	}
 
+	@Test
+	@DisplayName("Deve converter o valor mulhao para o formato do BigDecimal-Dollar")
+	public void converterRealToDolarMilhao() {
+		String valor = "5.186.785,15";
+		
+		BigDecimal result = CalculosComValores.convertRealToDollar(valor);
+		
+		Assertions.assertThat(result).isEqualTo(BigDecimal.valueOf(5186785.15));
+	}
+	
 	
 }

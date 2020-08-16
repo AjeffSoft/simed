@@ -16,7 +16,7 @@ public class CalculoImpostoINSSTest {
 	@DisplayName("Deverá calcular valor INSS abaixo do Teto máximo")
 	public void calculoINSSAbaixoTeto() {
 		BigDecimal valor = new BigDecimal(4000.00);
-		BigDecimal inss = CalculoImpostoINSS.calculo(valor);
+		BigDecimal inss = CalculoImpostoINSS.calculo(valor, "F");
 		Assertions.assertEquals(new BigDecimal(440).setScale(2, RoundingMode.HALF_UP), inss);
 	}
 
@@ -24,7 +24,7 @@ public class CalculoImpostoINSSTest {
 	@DisplayName("Deverá calcular valor INSS acima do Teto máximo")
 	public void calculoINSSAcimaTeto() {
 		BigDecimal valor = new BigDecimal(7000.00);
-		BigDecimal inss = CalculoImpostoINSS.calculo(valor);
+		BigDecimal inss = CalculoImpostoINSS.calculo(valor, "F");
 		Assertions.assertEquals(new BigDecimal(671.11).setScale(2, BigDecimal.ROUND_DOWN), inss);
 	}
 
@@ -32,7 +32,15 @@ public class CalculoImpostoINSSTest {
 	@DisplayName("Deverá retornar ZERO quando o valor for zerado")
 	public void calculoINSSZerado() {
 		BigDecimal valor = new BigDecimal(0);
-		BigDecimal inss = CalculoImpostoINSS.calculo(valor);
+		BigDecimal inss = CalculoImpostoINSS.calculo(valor, "F");
+		Assertions.assertEquals(new BigDecimal(0), inss);
+	}
+
+	@Test
+	@DisplayName("Deverá retornar ZERO quando o fornecedor for PJ")
+	public void calculoINSSZeradoPJ() {
+		BigDecimal valor = new BigDecimal(2000);
+		BigDecimal inss = CalculoImpostoINSS.calculo(valor, "J");
 		Assertions.assertEquals(new BigDecimal(0), inss);
 	}
 	

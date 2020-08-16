@@ -20,4 +20,18 @@ public class CalculosComValores {
 		}
 		return result.compareTo(BigDecimal.ZERO) == 1 ? result : BigDecimal.ZERO;
 	}
+	
+	
+	public static BigDecimal convertRealToDollar(String valor) {
+		String dolar = "";
+		for(String s : valor.split("")) {
+			if(s.equals(".")) {
+				s = "";
+			}else if(s.equals(",")) {
+				s = ".";
+			}
+			dolar += s;
+		}
+		return new BigDecimal(dolar);
+	}
 }

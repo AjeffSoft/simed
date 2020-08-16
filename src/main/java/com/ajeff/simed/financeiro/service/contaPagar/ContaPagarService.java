@@ -28,6 +28,7 @@ import com.ajeff.simed.financeiro.service.exception.DocumentoEFornecedorJaCadast
 import com.ajeff.simed.financeiro.service.imposto.CalculoImpostoIRRF;
 import com.ajeff.simed.financeiro.service.imposto.ImpostoService;
 import com.ajeff.simed.geral.service.exception.ImpossivelExcluirEntidade;
+import com.ajeff.simed.util.CalculosComValores;
 import com.ajeff.simed.util.DatasUtils;
 
 @Service
@@ -118,21 +119,8 @@ public class ContaPagarService {
 		for (int i = 0; i < vencs.size(); i++) {
 			if(!vencs.get(i).equals("") && !valores.get(i).equals("")) {
 				ParcelamentoDTO p = new ParcelamentoDTO();
-				String nn = "";
-				
-				for(String s : valores.get(i).split("")) {
-					
-					
-					if(s.equals(".")) {
-						s = "";
-					}else if(s.equals(",")) {
-						s = ".";
-					}
-					nn += s;
-				}
-				
 				p.setParcela(i+1);
-				p.setValor(new BigDecimal(nn));
+				p.setValor(CalculosComValores.convertRealToDollar(valores.get(i)));
 				p.setVencimento(LocalDate.parse(vencs.get(i), formatter));
 				parcelas.add(p);
 			}
