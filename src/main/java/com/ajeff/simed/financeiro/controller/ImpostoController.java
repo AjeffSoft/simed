@@ -112,7 +112,7 @@ public class ImpostoController {
 			BigDecimal imposto = service.valorISSRetido(CalculosComValores.convertRealToDollar(valor), CalculosComValores.convertRealToDollar(aliquota));
 			return imposto.toString();
 		} catch (NumberFormatException e) {
-			return "ERRO! O valor não pode ser nulo para o calculo do ISS";
+			return "Informe o valor da conta para o calculo!";
 		}
 	}
 	
@@ -124,7 +124,7 @@ public class ImpostoController {
 			BigDecimal imposto = service.valorINSSRetido(CalculosComValores.convertRealToDollar(valor), forn.getTipo());
 			return imposto.toString();
 		} catch (NumberFormatException e) {
-			return "ERRO! O valor não pode ser nulo para o calculo do INSS";
+			return "Informe o valor da conta para o calculo!";
 		}
 	}
 	
@@ -136,7 +136,19 @@ public class ImpostoController {
 			BigDecimal imposto = service.valorPCCSRetido(CalculosComValores.convertRealToDollar(valor), forn.getTipo());
 			return imposto.toString();
 		} catch (NumberFormatException e) {
-			return "ERRO! O valor não pode ser nulo para o calculo do PCCS";
+			return "Informe o valor da conta para o calculo!";
+		}
+	}
+
+	@GetMapping(value = "/getIrrf", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody String getIrrf(String valor, String idFornecedor) {
+		try {
+			Long idFornecedorConvert = Long.decode(idFornecedor);
+			Fornecedor forn = fornecedorService.findOne(idFornecedorConvert);
+			BigDecimal imposto = service.valorIRRFRetido(CalculosComValores.convertRealToDollar(valor), BigDecimal.ZERO, BigDecimal.ZERO, forn.getTipo());
+			return imposto.toString();
+		} catch (NumberFormatException e) {
+			return "Informe o valor da conta para o calculo!";
 		}
 	}
 	

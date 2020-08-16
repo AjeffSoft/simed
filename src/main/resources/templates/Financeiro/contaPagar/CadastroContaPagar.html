@@ -150,9 +150,9 @@
 				
 							<div class="form-group  col-sm-1">
 								<label class="control-label">F/V</label>
-								<div>	
-									<input id="fixoVariavel" type="checkbox" checked data-toggle="toggle" class="form-control  toggle"  data-size="small"
-									 data-on="F" data-off="V" data-onstyle="primary" data-offstyle="default" th:field="*{fixo}"/>
+			  						<div class="checkbox  checkbox-inline"> 
+										<input id="fixoVariavel" type="checkbox" th:field="*{fixo}"/>
+										<label for="fixoVariavel">Fixa</label>
 								</div>
 							</div>
 							
@@ -249,9 +249,12 @@
 							          <tr>
 							            <td class="pt-3-half" contenteditable="false">IRRF (PF/PJ)</td>
 							            <td class="pt-3-half" contenteditable="false">
-
+											<select id="marqReterIrrf" class="form-control" th:field="*{reterIR}">
+													<option value="false"> Sem retenção</option>
+													<option value="true"> Reter IRRF</option>
+											</select>
 							            </td>
-							            <td class="pt-3-half" contenteditable="false">0,00</td>
+							            <td class="pt-3-half" contenteditable="false" id="linhaIrrf">0,00</td>
 							          </tr>
 							          
 <!-- 							         PCCS -->
@@ -296,15 +299,10 @@
 							    </div>
 							  </div>
 							</div>
-
-
-
-
-
 						</div>
 					
 						<div class="form-group">
-							<a class="btn  btn-default  js-abas" href="#dados">Voltar</a>
+							<a class="btn  btn-default  js-abas" id="voltarImpostos" href="#dados">Voltar</a>
 							<a class="btn  btn-primary js-abas" href="#parcelamento">Próximo</a>
 						</div>						
 						
@@ -526,6 +524,7 @@
 	<script th:src="@{/javascripts/vendors/upload.min.js}"></script>
 	<script th:src="@{/javascripts/vendors/handlebars.min.js}"></script>
 	<script th:src="@{/javascripts/contaPagar.upload.js}"></script>
+	<script th:src="@{/javascripts/calculo-impostos.js}"></script>
 
 
 	<script>
@@ -537,83 +536,54 @@
 		});
 	</script>
 	
+	
 	<!-- AJAX IMPOSTOS -->
 	<script>
-	
 		$(function(){
-			$('#issPorcentagem').focusout(function(){
-				var aliquota = $(this).val();
-				var valor = $('#valor').val();
-				
-				if(aliquota !== "0,00" && valor !== "0,00"){
-					
-					var request = $.ajax({
-								method: "get",
-								contentType: 'application/json',
-								url: "/simed/financeiro/imposto/getISS",
-								data: {aliquota: aliquota, valor : valor}
-							}).success(function(e){
-								
-								$('#linhaISS').empty();
-								$('#linhaISS').append(e)
-							});
-					
-// 					request.done(function(){
-// 						console.log("Feito! - ")
-// 					});
-					
-// 					request.fail(function(){
-// 						console.log("Erro!!")
-// 					});
-				}else {
-					$('#linhaISS').empty();
-					$('#linhaISS').append("0,00")					
-				}
-			});
 			
+			$('#issPorcentagem').focusout(function(){
+				var valor = $('#valor').val();
+				var aliquotaIss = $(this).val();
+				getIss(valor, aliquotaIss);
+			});
 			
 
 			$('#marqReterINSS').on("change", function(){
-				var valorParaInss = $('#valor').val();
 				if($(this).val() === "S"){
+					var valorParaInss = $('#valor').val();
 					var idFornecedor = $('#fornecedor').val();
-					
-					$.ajax({
-						mothod: 'get',
-						url: '/simed/financeiro/imposto/getInss',
-						contentType: 'application/json',
-						data: {valor: valorParaInss, idFornecedor: idFornecedor}
-					}).success(function(e){
-						$('#linhaInss').empty();
-						$('#linhaInss').append(e);
-					})
+					getInss(valorParaInss, idFornecedor);
 				}else {
-					$('#linhaInss').empty();
-					$('#linhaInss').append("0,00");					
+					zerarImposto('#linhaInss');
+				}	
+			});
+
+			
+			$('#marqReterPCCS').on("change", function(){
+				if($(this).val() === "S"){
+				var valorParaPccs = $('#valor').val();
+				var idFornecedorPccs = $('#fornecedor').val();
+				getPccs(valorParaPccs, idFornecedorPccs);						
+				}else {
+					zerarImposto('#linhaPccs');				
 				}
 			});
 
-			$('#marqReterPCCS').on("change", function(){
-				var valorParaPccs = $('#valor').val();
-				if($(this).val() === "S"){
-					var idFornecedorPccs = $('#fornecedor').val();
-					
-					$.ajax({
-						mothod: 'get',
-						url: '/simed/financeiro/imposto/getPccs',
-						contentType: 'application/json',
-						data: {valor: valorParaPccs, idFornecedor: idFornecedorPccs}
-					}).success(function(e){
-						$('#linhaPccs').empty();
-						$('#linhaPccs').append(e);
-					})
+			
+			$('#marqReterIrrf').on("change", function(){
+				if($(this).val() === "true"){
+					var valorParaIrrf = $('#valor').val();
+					var idFornecedorIrrf = $('#fornecedor').val();
+					getIrrf(valorParaIrrf, idFornecedorIrrf);	
 				}else {
-					$('#linhaPccs').empty();
-					$('#linhaPccs').append("0,00");					
+					zerarImposto('#linhaIrrf');
 				}
 			});
+			
+			$('#voltarImpostos').on('click', function(){
+				resetarCampos();
+			});
 		});
-	
 	</script>
 	
 	
