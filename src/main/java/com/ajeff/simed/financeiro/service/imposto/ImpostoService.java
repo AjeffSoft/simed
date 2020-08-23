@@ -3,6 +3,7 @@ package com.ajeff.simed.financeiro.service.imposto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,14 +83,19 @@ public class ImpostoService {
 	 * Calculo da aliquota e do valor do imposto IRRF retido PF/PJ
 	 */
 	public BigDecimal valorIRRFRetido(BigDecimal valor, BigDecimal inss, BigDecimal dependente, String tipo) {
-
+		BigDecimal aliquota = BigDecimal.ZERO;
+		BigDecimal deducao = BigDecimal.ZERO;
 		if(tipo.equals("J")) {
-			BigDecimal aliquota = aliquotaIRPJ();
+			aliquota = aliquotaIRPJ();
 			return CalculoImpostoIRRF.calculo(valor, aliquota);
 		}else {
 			BigDecimal base = valor.subtract(inss).subtract(dependente).setScale(2);
 			TabelaIRPF tabela = retornaTabelaPFPorValor(base);
-			return CalculoImpostoIRRF.calculo(base, tabela.getAliquota()).subtract(tabela.getDeducao());
+			if(tabela != null) {
+				aliquota = tabela.getAliquota();
+				deducao = tabela.getDeducao();
+			}
+			return CalculoImpostoIRRF.calculo(base, aliquota).subtract(deducao);
 		}
 	}
 	
@@ -108,8 +114,7 @@ public class ImpostoService {
 			return valor.compareTo(t.getValorInicial()) >=0 && valor.compareTo(t.getValorFinal()) <=0; 
 		};
 		
-		return tabelas.stream().filter(i -> filtro.test(i)).findFirst()
-				.orElseThrow( () -> new RegistroNaoCadastradoException("Tabela de aliquotas não encontrada"));
+		 return tabelas.stream().filter(i -> filtro.test(i)).findFirst().orElse(null);
 	}
 	
 

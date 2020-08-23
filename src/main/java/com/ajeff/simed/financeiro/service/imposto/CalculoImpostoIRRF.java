@@ -13,10 +13,11 @@ public class CalculoImpostoIRRF {
 
 	public static BigDecimal calculo(BigDecimal valor, BigDecimal aliquota) {
 		if( valorIsNotValido(valor) || aliquotaIsNotValido(aliquota)) {
-			throw new ValorInformadoInvalidoException("O valor base ou aliquota do imposto inválido!");
+			return BigDecimal.ZERO;
+		}else {
+			BigDecimal result = valor.multiply( ( aliquota.divide(BigDecimal.valueOf(100)) )).setScale(2, RoundingMode.HALF_UP);
+			return result;
 		}
-		BigDecimal result = valor.multiply( ( aliquota.divide(BigDecimal.valueOf(100)) )).setScale(2, RoundingMode.HALF_UP);
-		return result;
 	}	
 	
 	

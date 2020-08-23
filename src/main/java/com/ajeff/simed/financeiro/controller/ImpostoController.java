@@ -141,11 +141,18 @@ public class ImpostoController {
 	}
 
 	@GetMapping(value = "/getIrrf", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody String getIrrf(String valor, String idFornecedor) {
+	public @ResponseBody String getIrrf(String valor, String idFornecedor, String inss) {
+		BigDecimal valorInss = BigDecimal.ZERO;
 		try {
+			
+			if(inss.equals("S")) {
+				String inssRetido = getInss(valor, idFornecedor);
+				valorInss = new BigDecimal(inssRetido);
+			}
+			
 			Long idFornecedorConvert = Long.decode(idFornecedor);
 			Fornecedor forn = fornecedorService.findOne(idFornecedorConvert);
-			BigDecimal imposto = service.valorIRRFRetido(CalculosComValores.convertRealToDollar(valor), BigDecimal.ZERO, BigDecimal.ZERO, forn.getTipo());
+			BigDecimal imposto = service.valorIRRFRetido(CalculosComValores.convertRealToDollar(valor), valorInss, BigDecimal.ZERO, forn.getTipo());
 			return imposto.toString();
 		} catch (NumberFormatException e) {
 			return "Informe o valor da conta para o calculo!";

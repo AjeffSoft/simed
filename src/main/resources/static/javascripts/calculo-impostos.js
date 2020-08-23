@@ -1,3 +1,13 @@
+function formatarValor(valor){
+	if (valor != 0 || valor != ''){
+	  valor = valor.replace(".","");
+	  valor = valor.replace(",",".");
+	}
+
+	return parseFloat(valor);
+}
+
+
 function getIss(valor, aliquotaIss){
 	if(aliquotaIss !== "0,00" && valor !== "0,00"){
 		
@@ -20,8 +30,11 @@ function getInss(valor, idFornecedor){
 		mothod: 'get',
 		url: '/simed/financeiro/imposto/getInss',
 		contentType: 'application/json',
-		data: {valor: valor, idFornecedor: idFornecedor}
+		data: {valor: valor, idFornecedor: idFornecedor},
 	}).success(function(e){
+		if($('#marqReterIrrf').val() === 'true'){
+			getIrrf(valor, idFornecedor);
+		}
 		setarImposto('#linhaInss', e);
 	})
 };
@@ -34,17 +47,24 @@ function getPccs(valor, idFornecedor){
 		data: {valor: valor, idFornecedor: idFornecedor}
 	}).success(function(e){
 		setarImposto('#linhaPccs', e);
+
 	})	
 };
 
 function getIrrf(valor, idFornecedor){
+	var inss = "N";
+	if($('#marqReterINSS').val() === 'S'){
+		inss = "S"
+	}
 	$.ajax({
 		mothod: 'get',
 		url: '/simed/financeiro/imposto/getIrrf',
 		contentType: 'application/json',
-		data: {valor: valor, idFornecedor: idFornecedor}
+		data: {valor: valor, idFornecedor: idFornecedor, inss: inss}
 	}).success(function(e){
 		setarImposto('#linhaIrrf', e);
+		console.log(e);
+
 	})	
 };
 

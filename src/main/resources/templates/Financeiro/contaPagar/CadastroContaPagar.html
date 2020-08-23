@@ -549,11 +549,17 @@
 			
 
 			$('#marqReterINSS').on("change", function(){
+				var valorParaInss = $('#valor').val();
+				var idFornecedor = $('#fornecedor').val();
+				
 				if($(this).val() === "S"){
-					var valorParaInss = $('#valor').val();
-					var idFornecedor = $('#fornecedor').val();
+					
+					
 					getInss(valorParaInss, idFornecedor);
 				}else {
+					if($('#marqReterIrrf').val() === "true"){
+						getIrrf(valorParaInss, idFornecedor);
+					}
 					zerarImposto('#linhaInss');
 				}	
 			});
